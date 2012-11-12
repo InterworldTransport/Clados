@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Package Comments</title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1138.51">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times}
+    p.p3 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Courier}
+    li.li1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times}
+    table.t1 {width: 705.0px}
+    td.td1 {width: 244.0px; margin: 0.5px 0.5px 0.5px 0.5px; padding: 1.0px 1.0px 1.0px 1.0px}
+    td.td2 {width: 178.0px; margin: 0.5px 0.5px 0.5px 0.5px; padding: 1.0px 1.0px 1.0px 1.0px}
+    td.td3 {width: 269.0px; margin: 0.5px 0.5px 0.5px 0.5px; padding: 1.0px 1.0px 1.0px 1.0px}
+    ul.ul1 {list-style-type: disc}
+  </style>
+</head>
+<body>
+<p class="p1">Clifford Algebra Multivectors: [The Clifford Algebra Cl(p,q) has p positive and q negative square generators over the a number field.]</p>
+<h2 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 18.0px Times"><b>Copyright</b></h2>
+<p class="p1">Copyright (c) 1998-2012 Interworld Transport. All rights reserved. ---com.interworldtransport.cladosG-------------------------------------------------</p>
+<p class="p3">Interworld Transport grants you ("Licensee") a license to this software under the terms of the GNU General Public License.<br>
+A full copy of the license can be found bundled with this package or code file.</p>
+<p class="p3">If the license file has become separated from the package, code file, or binary executable, the Licensee is still expected to read about the license at the following URL before accepting this material.</p>
+<p class="p4">http://www.opensource.org/gpl-license.html</p>
+<p class="p3">Use of this code or executable objects derived from it by the Licensee states their willingness to accept the terms of the license.</p>
+<p class="p3">A prospective Licensee unable to find a copy of the license terms should contact Interworld Transport for a free copy.</p>
+<p class="p3">---com.interworldtransport.cladosG-------------------------------------------------</p>
+<h2 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 18.0px Times"><b>Package Contents</b></h2>
+<table width="705.0" cellspacing="0" cellpadding="0" class="t1">
+  <tbody>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p1"><b>Abstract Classes</b></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p1"><b>Final Classes</b></p>
+      </td>
+      <td valign="middle" class="td3">
+        <p class="p1"><b>Extendable Classes</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" class="td1">
+        <ul class="ul1">
+          <li class="li1">AlgebraAbstract</li>
+          <li class="li1">frameAbstract</li>
+          <li class="li1">MonadAbstract</li>
+          <li class="li1">NyadAbstract</li>
+        </ul>
+      </td>
+      <td valign="top" class="td2">
+        <ul class="ul1">
+          <li class="li1">Basis</li>
+          <li class="li1">Foot</li>
+          <li class="li1">GProduct</li>
+        </ul>
+      </td>
+      <td valign="top" class="td3">
+        <ul class="ul1">
+          <li class="li1">AlgebraRealF</li>
+          <li class="li1">AlgebraRealD</li>
+          <li class="li1">AlgebraComplexF</li>
+          <li class="li1">AlgebraComplexD</li>
+          <li class="li1">FrameRealF</li>
+          <li class="li1">FrameRealD</li>
+          <li class="li1">FrameComplexF</li>
+          <li class="li1">FrameComplexD</li>
+          <li class="li1">MonadRealF</li>
+          <li class="li1">MonadRealD</li>
+          <li class="li1">MonadComplexF</li>
+          <li class="li1">MonadComplexD</li>
+          <li class="li1">NyadRealF</li>
+          <li class="li1">NyadRealD</li>
+          <li class="li1">NyadComplexF</li>
+          <li class="li1">NyadComplexD</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h2 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 18.0px Times"><b>Background</b></h2>
+<p class="p1">Clifford Algebras were invented by William Kingdon Clifford in 1878 as part of his attempt to represent geometry in an algebraic manner. The biquaternions are an example of such an algebra and are immediately useful as a space-time algebra. Clifford Algebras might have been in use today in place of the current Gibbs derived systems if Clifford's proponents had better understood his work. Clifford died shortly afterwards in 1879.</p>
+<p class="p3">Clifford Algebras are a compact, efficient way of representing geometry in an encapsulated way. Clifford algebras capture most of the physical needs for vectors, matricies, and higher order tensors in physical applications. The clados package implements Clifford Algebras of at least one generator in a manner that actively blocks many of the simpler programmatic errors an applicaton developer can make while creating physical simulations.</p>
+<p class="p3">The word 'Clados' is an acronym for CLifford Algebra Derived ObjectS. This acronym was chosen largely to avoid name collisions with other JAVA math packages. The Monad class within Clados implements a single algebra object. Most people familiar with Clifford Algebras are more familiar with the term 'Multivector' over 'Monad'. Again, in the interests of avoiding name collisions with the other JAVA packages and their classes, the term 'Monad' will be used and may be treated as a synonym for 'Multivector.' This choice does leave an unplanned benefit for future advancements within Clados. Two algebra objects will be implemented in classes named Dyad and Dyadic. Higher order objects will follow this naming convention.</p>
+<h2 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 18.0px Times"><b>Academic Style</b></h2>
+<p class="p1">The subject of Clifford Algebra and Clifford Analysis is well developed within Mathematics. The use of these algebras in Physics is generally more primitive. The implementation of Clifford Algebras within Clados is done in the 'physicist' style. This means the implementation is a little sloppy compared to its Mathematical roots. The author recognizes that Clados needs a fair amount of work to improve its pedigree, but is satisfied for now with a package that works.</p>
+</body>
+</html>
