@@ -34,11 +34,17 @@ If you don't know what a clifford algebra is it is best to read about them elsew
 but we do have a project related book that might help a little. It doesn't have much
 introductory material, but it does go into each package, what they do and why.
 
+https://docs.google.com/open?id=0B9BesRp5Ts5FM00yNTlva0dlbEE
+
 
 If you have problems or think you have found an issue in Clados, please report
 it at the Clados project site at GitHub. If you can take the time to look and see
 if it is already reported, we would appreciate it. Tell us you found it either way,
 though. It helps to know the number of impacted people.
+
+If you want to chat or check up on what is going on right now, feel free to drop
+by our FaceBook page at Interworld Transport. That is where status updates tend 
+to be posted.
 
 
 Thanks for your support!
