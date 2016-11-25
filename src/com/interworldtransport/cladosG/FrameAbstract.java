@@ -26,7 +26,7 @@ import com.interworldtransport.cladosGExceptions.CladosFrameException;
  * The frame object holds all basis details that support the reference frame for
  * a multivector over a division field {Cl(p,q) x DivField}.
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public abstract class FrameAbstract
@@ -105,7 +105,8 @@ public abstract class FrameAbstract
 	 * @param pM
 	 *            MonadAbstract
 	 * @return boolean
-	 * @throws CladosFrameException
+	 * @throws CladosFrameException This happens when an append would make the
+	 * frame a higher dimensional space than the algebra. Can't happen.
 	 */
 	protected boolean appendMonad(MonadAbstract pM) throws CladosFrameException
 	{

@@ -23,7 +23,7 @@ import com.interworldtransport.cladosF.*;
  * instances of descendants are assumed to originate from Field related 
  * problems.  Common elements from each exception class are found here.
  * <p>
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  *
  */
@@ -46,6 +46,11 @@ public class FieldException extends Exception
 /**
  * This method is the main constructor of all Clados Field Exceptions.
  * It needs only a source Field and message.
+ * 
+ * @param pSource
+ * 			DivField
+ * @param pMessage
+ * 			String
  */
     public FieldException(DivField pSource, String pMessage)
     {
@@ -56,6 +61,8 @@ public class FieldException extends Exception
 
 /**
  * This method delivers a reference to the object that originated the Exception
+ * 
+ * @return DivField
  */
     public DivField  getSource()
     {
@@ -64,6 +71,8 @@ public class FieldException extends Exception
 
 /**
  * This method delivers a the explanation from the field that originated the Exception
+ * 
+ * @return String
  */
     public String  getSourceMessage() 
     {

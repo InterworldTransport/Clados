@@ -38,7 +38,7 @@ import com.interworldtransport.cladosGExceptions.*;
  * and 14 generators inclusive.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public final class Basis
@@ -110,8 +110,9 @@ public final class Basis
 	 * operations in an algebra, so all it does is show the basis.
 	 * 
 	 * @param pGens
-	 *            short This is the number of generators that make up the basis
-	 * @throws CladosMonadException
+	 *            	short This is the number of generators that make up the basis
+	 * @throws 
+	 * 				CladosMonadException Exception thrown with 15 or more generators for now
 	 */
 	public Basis(short pGens) throws CladosMonadException
 	{
@@ -196,7 +197,10 @@ public final class Basis
 
 	/**
 	 * Return the short at (x,y) in the array holding the basis.
-	 * 
+	 * @param p1
+	 * 				short This is the desired blade within the basis.
+	 * @param p2
+	 * 				short This is the desired index within the p1 blade.
 	 * @return short
 	 */
 	public short getBasis(short p1, short p2)
@@ -216,8 +220,9 @@ public final class Basis
 
 	/**
 	 * Return the integer at (x) in the array holding the EddingtonKey.
-	 * 
-	 * @return int
+	 * @param p1
+	 * 				short This is the desired key at p1 .
+	 * @return long
 	 */
 	public long getBasisKey(short p1)
 	{
@@ -228,7 +233,7 @@ public final class Basis
 	 * Get the array used for keeping track of where grades start in the Basis
 	 * array.
 	 * 
-	 * @return int[]
+	 * @return short[]
 	 */
 	public short[] getGradeRange()
 	{
@@ -239,7 +244,9 @@ public final class Basis
 	 * Get the array used for keeping track of where grades start in the Basis
 	 * array.
 	 * 
-	 * @return int
+	 * @param p1
+	 * 			short This is for choosing which grade index range to return. 
+	 * @return short
 	 */
 	public short getGradeRange(short p1)
 	{
@@ -428,6 +435,8 @@ public final class Basis
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
+	 * 
+	 * @return String
 	 */
 	public String toXMLString()
 	{

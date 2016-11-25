@@ -50,7 +50,7 @@ import static com.interworldtransport.cladosF.RealF.*;
  * Properties not requiring a generator of geometry may be adequately defined on
  * Fields and are not intended to be covered in the clados package.
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class MonadRealF extends MonadAbstract
@@ -60,6 +60,9 @@ public class MonadRealF extends MonadAbstract
 	 * makes use of the grade key which is a sum of powers of 10, thus the
 	 * base-10 logarithm will be an integer for pure grade monads and a
 	 * non-integer for multigrade monads.
+	 * 
+	 * @param pM
+	 * 			MonadRealF This is the monad to be tested.
 	 * 
 	 * @return boolean
 	 */
@@ -78,7 +81,9 @@ public class MonadRealF extends MonadAbstract
 	 * @param pM
 	 *            MonadRealF
 	 * @throws CladosMonadException
+	 * 		This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 */
 	public static boolean isIdempotent(MonadRealF pM)
 					throws FieldBinaryException, CladosMonadException
@@ -97,7 +102,9 @@ public class MonadRealF extends MonadAbstract
 	 * @param pM
 	 *            MonadRealF
 	 * @throws CladosMonadException
+	 * 		This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldException
+	 * 		This exception is thrown when the method can't copy the field used by the monad to be checked.
 	 */
 	public static boolean isIdempotentMultiple(MonadRealF pM)
 					throws CladosMonadException, FieldException
@@ -139,7 +146,9 @@ public class MonadRealF extends MonadAbstract
 	 * @param pM
 	 *            MonadRealF
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 */
 	public static boolean isNilpotent(MonadRealF pM)
 					throws FieldBinaryException, CladosMonadException
@@ -181,6 +190,9 @@ public class MonadRealF extends MonadAbstract
 
 	/**
 	 * Display XML string that represents the Monad
+	 * 
+	 * @param pM
+	 * 			MonadRealF This is the monad to be converted to XML.
 	 * 
 	 * @return String
 	 */
@@ -250,8 +262,11 @@ public class MonadRealF extends MonadAbstract
 	 *            String
 	 * @param pM
 	 *            MonadRealF
-	 * @throws CladosMonadException
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
+	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadRealF(String pName, MonadRealF pM)
 					throws BadSignatureException, CladosMonadException
@@ -279,8 +294,13 @@ public class MonadRealF extends MonadAbstract
 	 *            String
 	 * @param pSig
 	 *            String
+	 * @param pF
+	 * 			  RealF
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName,
 					String pFrameName, String pFootName, String pSig, RealF pF)
@@ -317,10 +337,17 @@ public class MonadRealF extends MonadAbstract
 	 *            String
 	 * @param pSig
 	 *            String
+	 * @param pF
+	 * 			  RealF
 	 * @param pSpecial
 	 *            String
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered the default constructor.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * 
+	 * return MonadRealF
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName,
 					String pFrameName, String pFootName, String pSig, RealF pF,
@@ -380,7 +407,10 @@ public class MonadRealF extends MonadAbstract
 	 * @param pC
 	 *            RealF[]
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName,
 					String pFrameName, String pFootName, String pSig, RealF[] pC)
@@ -415,7 +445,10 @@ public class MonadRealF extends MonadAbstract
 	 * @param pM
 	 *            MonadRealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 * @throws CladosMonadBinaryException
+	 *  This exception is thrown when the monads fail a reference match.
+	 * @return MonadRealF
 	 */
 	public MonadRealF add(MonadRealF pM) throws FieldBinaryException,
 					CladosMonadBinaryException
@@ -536,6 +569,9 @@ public class MonadRealF extends MonadAbstract
 	 * Return a field Coefficient for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
 	 * 
+	 * @param pB
+	 * 			int This is the coefficient at the equivalent tuple location.
+	 * 
 	 * @return RealF
 	 */
 	public RealF getCoeff(int pB)
@@ -649,6 +685,10 @@ public class MonadRealF extends MonadAbstract
 	 * 
 	 * @return RealF
 	 * @throws CladosMonadException
+	 * 	This exception is possible because magnitudes are build from sqMagnitudes. 
+	 * 	That means there is an intermediate multiplication steps that could cause
+	 * 	a FieldBinaryException, but never should. If this exception gets thrown here
+	 * 	there is something seriously amiss with magnitude() and sqMagnitude().
 	 */
 	@Override
 	public RealF magnitude() throws CladosMonadException
@@ -671,8 +711,11 @@ public class MonadRealF extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealF
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadRealF
 	 */
 	public MonadRealF multiplyAntisymm(MonadRealF pM)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -703,8 +746,11 @@ public class MonadRealF extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealF
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadRealF
 	 */
 	public MonadRealF multiplyLeft(MonadRealF pM) throws FieldBinaryException,
 					CladosMonadBinaryException
@@ -759,8 +805,11 @@ public class MonadRealF extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealF
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadRealF
 	 */
 	public MonadRealF multiplyRight(MonadRealF pM) throws FieldBinaryException,
 					CladosMonadBinaryException
@@ -815,8 +864,11 @@ public class MonadRealF extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealF
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadRealF
 	 */
 	public MonadRealF multiplySymm(MonadRealF pM) throws FieldBinaryException,
 					CladosMonadBinaryException
@@ -845,6 +897,7 @@ public class MonadRealF extends MonadAbstract
 	 * has a zero magnitude.
 	 * 
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when normalizing a zero or field conflicted monad is tried.
 	 */
 	@Override
 	public MonadRealF normalize() throws CladosMonadException
@@ -904,6 +957,8 @@ public class MonadRealF extends MonadAbstract
 	 * @param pScale
 	 *            RealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the scale field fails a field match with the coefficients.
+	 * @return MonadRealF
 	 */
 	public MonadRealF scale(RealF pScale) throws FieldBinaryException
 	{
@@ -933,6 +988,7 @@ public class MonadRealF extends MonadAbstract
 	 * @param ppC
 	 *            RealF[]
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when the array offered for coordinates is of the wrong length.
 	 */
 	public void setCoeff(RealF[] ppC) throws CladosMonadException
 	{
@@ -1028,8 +1084,11 @@ public class MonadRealF extends MonadAbstract
 	/**
 	 * Return the magnitude squared of the Monad
 	 * 
-	 * @return RealF
 	 * @throws CladosMonadException
+	 *  This exception is thrown when their is a field mismatch between the parts being squared.
+	 *  This should never happen, but the multiplication method checks for it and SqMag makes use 
+	 *  of multiplication... thus it could theoretically be thrown.
+	 * @return RealF
 	 */
 	@Override
 	public RealF sqMagnitude() throws CladosMonadException
@@ -1052,7 +1111,11 @@ public class MonadRealF extends MonadAbstract
 	 * @param pM
 	 *            MonadRealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 * @throws CladosMonadBinaryException
+	 *  This exception is thrown when the monads fail a reference match.
+	 * 
+	 * @return MonadRealF
 	 */
 	public MonadRealF subtract(MonadRealF pM) throws FieldBinaryException,
 					CladosMonadBinaryException

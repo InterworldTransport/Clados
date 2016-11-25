@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
  * ------------------------------------------------------------------------ <br>
- * ---com.interworldtransport.cladosG.FrameRealF<br>
+ * ---com.interworldtransport.cladosG.FrameComplexF<br>
  * -------------------------------------------------------------------- <p>
  * You ("Licensee") are granted a license to this software under the terms of 
  * the GNU General Public License. A full copy of the license can be found 
@@ -13,7 +13,7 @@
  * Use of this code or executable objects derived from it by the Licensee states
  * their willingness to accept the terms of the license. <p> 
  * ------------------------------------------------------------------------ <br>
- * ---com.interworldtransport.cladosG.FrameRealF<br>
+ * ---com.interworldtransport.cladosG.FrameComplexF<br>
  * ------------------------------------------------------------------------ <br>
  */
 package com.interworldtransport.cladosG;
@@ -28,7 +28,7 @@ import com.interworldtransport.cladosGExceptions.CladosFrameException;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class FrameRealF extends FrameAbstract
+public class FrameComplexF extends FrameAbstract 
 {
 	/**
 	 * Return an integer pointing to the part of the nyad that covers the
@@ -36,14 +36,14 @@ public class FrameRealF extends FrameAbstract
 	 * in the nyad that belongs to the algebra.
 	 * 
 	 * @param pRF
-	 *            FrameRealF
+	 *            FrameComplexF
 	 * @param pMonad
-	 *            MonadRealF
+	 *            MonadComplexF
 	 * @return int
 	 */
-	public static int findMonad(FrameRealF pRF, MonadRealF pMonad)
+	public static int findMonad(FrameComplexF pRF, MonadComplexF pMonad)
 	{
-		for (MonadRealF pM : pRF.fBasis)
+		for (MonadComplexF pM : pRF.fBasis)
 			if (pM.isGEqual(pMonad)) return pRF.fBasis.indexOf(pM);
 		return -1;
 	}
@@ -54,19 +54,19 @@ public class FrameRealF extends FrameAbstract
 	 * that belongs to the algebra.
 	 * 
 	 * @param pRF
-	 *            FrameRealF
+	 *            FrameComplexF
 	 * @param pMonad
-	 *            MonadRealF
+	 *            MonadComplexF
 	 * @return boolean
 	 */
-	public static boolean hasMonad(FrameRealF pRF, MonadRealF pMonad)
+	public static boolean hasMonad(FrameComplexF pRF, MonadComplexF pMonad)
 	{
-		for (MonadRealF pM : pRF.fBasis)
+		for (MonadComplexF pM : pRF.fBasis)
 			if (pM.isGEqual(pMonad)) return true;
 		return false;
 	}
 
-	public static boolean isREqual(FrameRealF pRF1, FrameRealF pRF2)
+	public static boolean isREqual(FrameComplexF pRF1, FrameComplexF pRF2)
 	{
 
 		// Check to see if the Algebras match
@@ -78,11 +78,11 @@ public class FrameRealF extends FrameAbstract
 
 		// Now check the monad lists.
 		boolean check = false;
-		for (MonadRealF tSpot : pRF1.getFBasis())
+		for (MonadComplexF tSpot : pRF1.getFBasis())
 		{
 			check = false;
 			String tName1 = tSpot.getName();
-			for (MonadRealF tSpot2 : pRF2.getFBasis())
+			for (MonadComplexF tSpot2 : pRF2.getFBasis())
 			{
 				if (tName1.equals(tSpot2.getName()))
 				{
@@ -119,7 +119,7 @@ public class FrameRealF extends FrameAbstract
 	 * the reference monads.
 	 * 
 	 */
-	public ArrayList<MonadRealF>	fBasis;
+	public ArrayList<MonadComplexF>	fBasis;
 
 	/**
 	 * Frame constructor with an empty basis list.
@@ -129,11 +129,11 @@ public class FrameRealF extends FrameAbstract
 	 * @param pAlg
 	 * 			This is the algebra referenced in the Frame
 	 */
-	public FrameRealF(String pName, AlgebraRealF pAlg)
+	public FrameComplexF(String pName, AlgebraComplexF pAlg)
 	{
 		setName(pName);
 		setAlgebra(pAlg);
-		fBasis = new ArrayList<MonadRealF>(
+		fBasis = new ArrayList<MonadComplexF>(
 						algebra.getGBasis().getBladeCount() - 1);
 		vectorList = null;
 	}
@@ -144,15 +144,15 @@ public class FrameRealF extends FrameAbstract
 	 * @param pName
 	 *            String
 	 * @param pAlg
-	 *            AlgebraRealF
+	 *            AlgebraComplexF
 	 * @param pML
-	 *            ArrayList List contains MonadRealF entries used in construction.
+	 *            ArrayList List contains MonadComplexF entries used in construction.
 	 */
-	public FrameRealF(String pName, AlgebraRealF pAlg, ArrayList<MonadRealF> pML)
+	public FrameComplexF(String pName, AlgebraComplexF pAlg, ArrayList<MonadComplexF> pML)
 	{
 		setName(pName);
 		setAlgebra(pAlg);
-		fBasis = new ArrayList<MonadRealF>(pML);
+		fBasis = new ArrayList<MonadComplexF>(pML);
 	}
 
 	/**
@@ -163,11 +163,11 @@ public class FrameRealF extends FrameAbstract
 	 * (Not sure why the method returns the Frame after the appending operation.(
 	 * 
 	 * @param pM
-	 *            MonadRealF this is the referenced monad for the Frame.
+	 *            MonadComplexF this is the referenced monad for the Frame.
 	 * @throws CladosFrameException Monads in a Frame must satisfy ReferenceMatch
-	 * @return FrameRealF
+	 * @return FrameComplexF
 	 */
-	public FrameRealF appendVMonad(MonadRealF pM) throws CladosFrameException
+	public FrameComplexF appendVMonad(MonadComplexF pM) throws CladosFrameException
 	{
 		// This method works if the foot of pM matches the foot of this nyad
 		// but the algebra of pM is not already used in the monadList.
@@ -183,7 +183,7 @@ public class FrameRealF extends FrameAbstract
 
 		pM.setFrameName(this.name);
 		pM.frame = this;
-		fBasis.add(new MonadRealF(pM));
+		fBasis.add(new MonadComplexF(pM));
 
 		return this;
 	}
@@ -193,7 +193,7 @@ public class FrameRealF extends FrameAbstract
 	 * 
 	 * @return ArrayList (of Monads)
 	 */
-	public ArrayList<MonadRealF> getFBasis()
+	public ArrayList<MonadComplexF> getFBasis()
 	{
 		return fBasis;
 	}
@@ -203,9 +203,9 @@ public class FrameRealF extends FrameAbstract
 	 * 
 	 * @param pj
 	 *            int
-	 * @return MonadRealF
+	 * @return MonadComplexF
 	 */
-	public MonadRealF getFBasis(int pj)
+	public MonadComplexF getFBasis(int pj)
 	{
 		return fBasis.get(pj);
 	}
@@ -215,9 +215,9 @@ public class FrameRealF extends FrameAbstract
 	 * 
 	 * @param pj
 	 *            int
-	 * @return MonadRealF
+	 * @return MonadComplexF
 	 */
-	public MonadRealF getVBasis(int pj)
+	public MonadComplexF getVBasis(int pj)
 	{
 		String tName = vectorList.get(pj);
 		int tSpot = FrameAbstract.findName(this, tName);
@@ -229,9 +229,9 @@ public class FrameRealF extends FrameAbstract
 	 * 
 	 * @param pName
 	 *            String Name of the monad to be found and an index returned.
-	 * @return MonadRealF
+	 * @return MonadComplexF
 	 */
-	public MonadRealF getVBasis(String pName)
+	public MonadComplexF getVBasis(String pName)
 	{
 		int tSpot = FrameAbstract.findName(this, pName);
 		return fBasis.get(tSpot);
@@ -248,10 +248,10 @@ public class FrameRealF extends FrameAbstract
 	 * @param pReferenceIndex
 	 *            short
 	 * @param pM
-	 *            MonadRealF
-	 * @return MonadRealF
+	 *            MonadComplexF
+	 * @return MonadComplexF
 	 */
-	protected MonadRealF multiplyLeft(short pReferenceIndex, MonadRealF pM)
+	protected MonadComplexF multiplyLeft(short pReferenceIndex, MonadComplexF pM)
 	{
 		return null;
 	}
@@ -269,11 +269,11 @@ public class FrameRealF extends FrameAbstract
 	 *            int
 	 * @throws CladosFrameException Monad removal failed. Couldn't find it.
 	 * 
-	 * @return FrameRealF
+	 * @return FrameComplexF
 	 */
-	private FrameRealF removeVMonad(int pthisone) throws CladosFrameException
+	private FrameComplexF removeVMonad(int pthisone) throws CladosFrameException
 	{
-		MonadRealF test = null;
+		MonadComplexF test = null;
 		try
 		{
 			test = fBasis.remove(pthisone);
@@ -295,11 +295,11 @@ public class FrameRealF extends FrameAbstract
 	 * Remove a Monad on the list of monads in this nyad.
 	 * 
 	 * @param pM
-	 *            MonadRealF
+	 *            MonadComplexF
 	 * @throws CladosFrameException Happens when removal fails.
-	 * @return FrameRealF
+	 * @return FrameComplexF
 	 */
-	public FrameRealF removeVMonad(MonadRealF pM) throws CladosFrameException
+	public FrameComplexF removeVMonad(MonadComplexF pM) throws CladosFrameException
 	{
 		int testfind = findMonad(this, pM);
 		if (testfind >= 0)
@@ -311,12 +311,12 @@ public class FrameRealF extends FrameAbstract
 	}
 
 	/**
-	 * Set the Monad List array of this FrameRealF.
+	 * Set the Monad List array of this FrameComplexF.
 	 * 
 	 * @param pML
 	 * 			This is the monad array passed to create this frame.
 	 */
-	protected void setFBasis(ArrayList<MonadRealF> pML)
+	protected void setFBasis(ArrayList<MonadComplexF> pML)
 	{
 		if (pML == null)
 			fBasis = null;

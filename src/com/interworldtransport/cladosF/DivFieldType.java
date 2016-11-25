@@ -42,7 +42,7 @@ package com.interworldtransport.cladosF;
  * identical. This is useful when objects in one algebra might be scaled
  * different than objects in another.
  * <p>
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
@@ -57,14 +57,14 @@ public final class DivFieldType
 		type = pT;
 	}
 
-	public void setType(String pFT)
-	{
-		type = pFT;
-	}
-
 	public String getType()
 	{
 		return type;
+	}
+
+	public void setType(String pFT)
+	{
+		type = pFT;
 	}
 
 }

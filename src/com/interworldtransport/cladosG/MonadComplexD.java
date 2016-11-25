@@ -50,7 +50,7 @@ import static com.interworldtransport.cladosF.ComplexD.*;
  * Properties not requiring a generator of geometry may be adequately defined on
  * Fields and are not intended to be covered in the clados package.
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class MonadComplexD extends MonadAbstract
@@ -61,6 +61,8 @@ public class MonadComplexD extends MonadAbstract
 	 * base-10 logarithm will be an integer for pure grade monads and a
 	 * non-integer for multigrade monads.
 	 * 
+	 * @param pM
+	 * 		MonadComplexD This is the monad to be tested.
 	 * @return boolean
 	 */
 	public static boolean isGZero(MonadComplexD pM)
@@ -78,7 +80,9 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pM
 	 *            MonadComplexD
 	 * @throws CladosMonadException
+	 * 		This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 */
 	public static boolean isIdempotent(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadException
@@ -97,7 +101,9 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pM
 	 *            MonadComplexD
 	 * @throws CladosMonadException
+	 * 		This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldException
+	 * 		This exception is thrown when the method can't copy the field used by the monad to be checked.
 	 */
 	public static boolean isIdempotentMultiple(MonadComplexD pM)
 					throws CladosMonadException, FieldException
@@ -139,7 +145,9 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pM
 	 *            MonadComplexD
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 */
 	public static boolean isNilpotent(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadException
@@ -181,7 +189,8 @@ public class MonadComplexD extends MonadAbstract
 
 	/**
 	 * Display XML string that represents the Monad
-	 * 
+	 * @param pM
+	 * 		MonadComplexD This is the monad to be converted to XML.
 	 * @return String
 	 */
 	public static String toXMLString(MonadComplexD pM)
@@ -210,6 +219,10 @@ public class MonadComplexD extends MonadAbstract
 	 * All clados objects are elements of some algebra. That algebra has a name.
 	 */
 	public AlgebraComplexD	algebra;
+	/**
+	 * All monads reference a frame in order to give meaning to the coordinates.
+	 */
+	protected FrameComplexD	frame;
 	/**
 	 * This array holds the coefficients of the Monad.
 	 */
@@ -247,8 +260,11 @@ public class MonadComplexD extends MonadAbstract
 	 *            String
 	 * @param pM
 	 *            MonadComplexD
-	 * @throws CladosMonadException
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
+	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadComplexD(String pName, MonadComplexD pM)
 					throws BadSignatureException, CladosMonadException
@@ -277,8 +293,13 @@ public class MonadComplexD extends MonadAbstract
 	 *            String
 	 * @param pSig
 	 *            String
+	 * @param pF
+	 * 			  ComplexD
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadComplexD(String pMonadName, String pAlgebraName,
 					String pFrameName, String pFootName, String pSig,
@@ -316,10 +337,15 @@ public class MonadComplexD extends MonadAbstract
 	 *            String
 	 * @param pSig
 	 *            String
+	 * @param pF
+	 * 			  ComplexD
 	 * @param pSpecial
 	 *            String
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered the default constructor.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadComplexD(String pMonadName, String pAlgebraName,
 					String pFrameName, String pFootName, String pSig,
@@ -385,7 +411,10 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pC
 	 *            ComplexD[]
 	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
 	 */
 	public MonadComplexD(String pMonadName, String pAlgebraName,
 					String pFrameName, String pFootName, String pSig,
@@ -421,7 +450,11 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pM
 	 *            MonadComplexD
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 * @throws CladosMonadBinaryException
+	 *  This exception is thrown when the monads fail a reference match.
+	 * 
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD add(MonadComplexD pM) throws FieldBinaryException,
 					CladosMonadBinaryException
@@ -522,7 +555,7 @@ public class MonadComplexD extends MonadAbstract
 	/**
 	 * This method returns the Algebra for this Monad.
 	 * 
-	 * @return
+	 * @return AlgebraComplexD
 	 */
 	public AlgebraComplexD getAlgebra()
 	{
@@ -544,6 +577,11 @@ public class MonadComplexD extends MonadAbstract
 	 * Return a field Coefficient for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
 	 * 
+	 * Why are int's being used here instead of short like everywhere else?
+	 * 
+	 * 
+	 * @param pB
+	 * 		int This is the index of the ComplexD coefficient to be returned.
 	 * @return ComplexD
 	 */
 	public ComplexD getCoeff(int pB)
@@ -658,6 +696,10 @@ public class MonadComplexD extends MonadAbstract
 	 * 
 	 * @return ComplexD
 	 * @throws CladosMonadException
+	 * 	This exception is possible because magnitudes are build from sqMagnitudes. 
+	 * 	That means there is an intermediate multiplication steps that could cause
+	 * 	a FieldBinaryException, but never should. If this exception gets thrown here
+	 * 	there is something seriously amiss with magnitude() and sqMagnitude().
 	 */
 	@Override
 	public ComplexD magnitude() throws CladosMonadException
@@ -680,8 +722,11 @@ public class MonadComplexD extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD multiplyAntisymm(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -712,8 +757,11 @@ public class MonadComplexD extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD multiplyLeft(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -767,8 +815,11 @@ public class MonadComplexD extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD multiplyRight(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -822,8 +873,11 @@ public class MonadComplexD extends MonadAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
-	 * @throws CladosMonadException
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the reference match test fails with the two monads
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the field match test fails with the two monads
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD multiplySymm(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -852,6 +906,7 @@ public class MonadComplexD extends MonadAbstract
 	 * has a zero magnitude.
 	 * 
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when normalizing a zero or field conflicted monad is tried.
 	 */
 	@Override
 	public MonadComplexD normalize() throws CladosMonadException
@@ -919,6 +974,8 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pScale
 	 *            ComplexD
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the scale field fails a field match with the coefficients.
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD scale(ComplexD pScale) throws FieldBinaryException
 	{
@@ -948,6 +1005,7 @@ public class MonadComplexD extends MonadAbstract
 	 * @param ppC
 	 *            ComplexD[]
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when the array offered for coordinates is of the wrong length.
 	 */
 	public void setCoeff(ComplexD[] ppC) throws CladosMonadException
 	{
@@ -1036,9 +1094,12 @@ public class MonadComplexD extends MonadAbstract
 
 	/**
 	 * Return the magnitude squared of the Monad
-	 * 
-	 * @return ComplexD
 	 * @throws CladosMonadException
+	 * 	This exception is thrown when their is a field mismatch between the parts being squared.
+	 *  This should never happen, but the multiplication method checks for it and SqMag makes use 
+	 *  of multiplication... thus it could theoretically be thrown.
+	 *  
+	 * @return ComplexD
 	 */
 	@Override
 	public ComplexD sqMagnitude() throws CladosMonadException
@@ -1061,7 +1122,11 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pM
 	 *            MonadComplexD
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 * @throws CladosMonadBinaryException
+	 *  This exception is thrown when the monads fail a reference match.
+	 * 
+	 * @return MonadComplexD
 	 */
 	public MonadComplexD subtract(MonadComplexD pM)
 					throws FieldBinaryException, CladosMonadBinaryException

@@ -23,7 +23,7 @@ package com.interworldtransport.cladosG;
  * a multivector over a division field {Cl(p,q) x DivField} except the actual 
  * field.  That makes this an abstraction of an algebra.
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public abstract class AlgebraAbstract

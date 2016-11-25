@@ -10,7 +10,6 @@ import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
 import static com.interworldtransport.cladosG.MonadComplexD.*;
-import static com.interworldtransport.cladosF.ComplexD.*;
 import static org.junit.Assert.*;
 
 public class MonadComplexDTest

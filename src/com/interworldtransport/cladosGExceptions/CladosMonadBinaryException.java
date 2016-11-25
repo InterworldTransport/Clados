@@ -24,12 +24,13 @@ import com.interworldtransport.cladosG.*;
  * with unhandled problems involving binary operations.  Common elements from 
  * each exception class are found here.
  * <p>
- * @version 0.90, $Date:$
+ * @version 1.0
  * @author Dr Alfred W Differ
  *
  */
 public class CladosMonadBinaryException extends CladosMonadException 
 {
+	private static final long serialVersionUID = -6955168145086904153L;
 /**
  * This is the second object involved in the Exception if the operation
  * is a binary operation.
@@ -37,6 +38,13 @@ public class CladosMonadBinaryException extends CladosMonadException
     private MonadAbstract  Second;
 /**
  * This method is the constructor for exceptions involving two Monads.
+ * 
+ * @param pSource
+ * 			MonadAbstract
+ * @param pMessage
+ * 			String
+ * @param pSecond
+ * 			MonadAbstract
  */
     public CladosMonadBinaryException(MonadAbstract pSource, String pMessage, MonadAbstract pSecond)
     {
@@ -46,6 +54,8 @@ public class CladosMonadBinaryException extends CladosMonadException
 /**
  * This method delivers a reference to the extra Monad involved in 
  * the exception.
+ * 
+ * @return MonadAbstract
  */
     public MonadAbstract  getSecondMonad()
     {

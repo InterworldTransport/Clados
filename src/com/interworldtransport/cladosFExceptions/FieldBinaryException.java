@@ -23,7 +23,7 @@ import com.interworldtransport.cladosF.*;
  * All instances of descendants are assumed to originate from Field related 
  * problems.  Common elements from each exception class are found here.
  * <p>
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  *
  */
@@ -42,6 +42,13 @@ public class FieldBinaryException extends FieldException
 
 /**
  * This method is the main constructor of all Clados Field Binary Exceptions.
+ * 
+ * @param pSource
+ * 			DivField
+ * @param pMessage
+ * 			String
+ * @param pSecond
+ * 			DivField
  */
     public FieldBinaryException(DivField pSource, String pMessage, DivField pSecond)
     {
@@ -51,6 +58,8 @@ public class FieldBinaryException extends FieldException
 
 /**
  * This method elivers a reference to the object that originated the Exception
+ * 
+ * @return DivField
  */
     public DivField  getSecond()
     {

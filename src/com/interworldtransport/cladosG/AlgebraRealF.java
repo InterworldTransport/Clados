@@ -26,7 +26,7 @@ import com.interworldtransport.cladosGExceptions.CladosMonadException;
  * The algebra object holds all geometric details that support the definition of
  * an algebra over a division field {Cl(p,q) x DivField}.
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class AlgebraRealF extends AlgebraAbstract

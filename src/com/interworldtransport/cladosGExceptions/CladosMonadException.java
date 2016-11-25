@@ -24,12 +24,13 @@ import com.interworldtransport.cladosG.*;
  * with unhandled problems.  Common elements from each exception class
  * are found here.
  * <p>
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  *
  */
 public class CladosMonadException extends Exception 
 {
+	private static final long serialVersionUID = 5625258738212165533L;
 /**
  * The source Monad is the originator of the Exception.
  */
@@ -41,8 +42,10 @@ public class CladosMonadException extends Exception
 /**
  * This method is the main constructor of all Clados Exceptions.
  * It needs only a source Monad and message.
- * @param pSource	Monad
- * @param pMessage	String
+ * @param pSource
+ * 				Monad
+ * @param pMessage	
+ * 				String
  */
     public CladosMonadException(MonadAbstract pSource, String pMessage)
     {
@@ -52,6 +55,8 @@ public class CladosMonadException extends Exception
     }
 /**
  * This method delivers a reference to the Monad that originated the Exception
+ * 
+ * @return MonadAbstract
  */
     public MonadAbstract  getSourceMonad()
     {
@@ -59,6 +64,8 @@ public class CladosMonadException extends Exception
     }
 /**
  * This method delivers a the explanation from the Monad that originated the Exception
+ * 
+ * @return String
  */
     public String  getSourceMessage() 
     {

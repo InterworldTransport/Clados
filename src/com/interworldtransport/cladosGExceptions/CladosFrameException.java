@@ -27,12 +27,13 @@ import com.interworldtransport.cladosG.*;
  * here.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
 public class CladosFrameException extends Exception
 {
+	private static final long serialVersionUID = -5513271199443426633L;
 	/**
 	 * The source NyadRealD is the originator of the Exception.
 	 */
@@ -62,6 +63,8 @@ public class CladosFrameException extends Exception
 	/**
 	 * This method delivers a reference to the NyadRealD that originated the
 	 * Exception
+	 * 
+	 * @return FrameAbstract
 	 */
 	public FrameAbstract getSourceNyad()
 	{
@@ -71,6 +74,8 @@ public class CladosFrameException extends Exception
 	/**
 	 * This method delivers a the explanation from the NyadRealD that originated
 	 * the Exception
+	 * 
+	 * @return String
 	 */
 	public String getSourceMessage()
 	{

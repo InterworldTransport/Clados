@@ -72,7 +72,7 @@ Thanks for your support!
 -------------------------------------------------------------------------------
 Installation:
 
-Clados is a collection of packages meant to be used as a math library  in other 
+Clados is a collection of packages meant to be used as a math library in other 
 applications. Place clados.jar where you normally place 3rd party libraries.
 -------------------------------------------------------------------------------
 

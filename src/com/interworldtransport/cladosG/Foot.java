@@ -37,7 +37,7 @@ import com.interworldtransport.cladosF.*;
  * would assign to the coordinate space that is the manifold at that point. This
  * makes a footPoint the root reference frame.
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public final class Foot

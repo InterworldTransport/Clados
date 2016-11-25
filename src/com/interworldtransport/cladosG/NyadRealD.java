@@ -48,7 +48,7 @@ import static com.interworldtransport.cladosG.MonadRealD.*;
  * members of geometric algebras of different metric and dimensionality.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class NyadRealD extends NyadAbstract
@@ -58,8 +58,8 @@ public class NyadRealD extends NyadAbstract
 	 * algebra named in the parameter. Coverage is true if a monad can be found
 	 * in the nyad that belongs to the algebra.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pAlg
 	 *            String
 	 * @return int
@@ -76,8 +76,8 @@ public class NyadRealD extends NyadAbstract
 	 * in the parameter. Coverage is true if a monad can be found in the nyad
 	 * that belongs to the algebra.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pAlg
 	 *            String
 	 * @return boolean
@@ -379,6 +379,15 @@ public class NyadRealD extends NyadAbstract
 	 * are placed in the same algebra and antisymmetrically multiplied to each
 	 * other. A reference match test must pass for both after the algebra names
 	 * have been changed.
+	 * @param pInto
+	 * 		AlgebraRealD
+	 * @param pFrom
+	 * 		AlgebraRealD
+	 * @throws CladosNyadException
+	 * 	This exception is thrown when the monads to be compressed fail a field match test or 
+	 * 	a reference match test used in multiplication.
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD antisymmCompress(AlgebraRealD pInto, AlgebraRealD pFrom)
 					throws CladosNyadException
@@ -411,6 +420,15 @@ public class NyadRealD extends NyadAbstract
 	 * placed in the same algebra and antisymmetrically multiplied to eachother.
 	 * A reference match test must pass for both after the algebra names have
 	 * been changed.
+	 * 
+	 * @param pInto
+	 * 		int
+	 * @param pFrom
+	 * 		int
+	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the monads to be compressed fail the Field match test
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the monads to be compressed fail a reference match test
 	 */
 	private void antisymmCompress(int pInto, int pFrom)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -432,6 +450,11 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealD
+	 * 
+	 * @throws CladosNyadException
+	 * 		This exception is thrown if the foot of the new monad fails to match
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD appendMonad(MonadRealD pM) throws CladosNyadException
 	{
@@ -463,10 +486,28 @@ public class NyadRealD extends NyadAbstract
 	 * Create a new monad for this nyad using the prototype field and then
 	 * append it to the end of the monadList. A 'zero' for the new algebra will
 	 * be added to the list.
+	 * This method creates a new algebra using the offered name and signature.
+	 * It also creates a new frame using the offered name.
+	 * It is not a copy method.
+	 * 
+	 * @param pName
+	 * 			String
+	 * @param pAlgebra
+	 * 			String
+	 * @param pFrame
+	 * 			String
+	 * @param pSig
+	 * 			String
 	 * 
 	 * @throws CladosMonadException
+	 * 		This exception is thrown when the new monad constructor fails.
 	 * @throws BadSignatureException
+	 * 		This exception is thrown when signature is rejected as invalid.
 	 * @throws CladosNyadException
+	 * 		This exception is thrown when the new monad cannot be appended.
+	 * 		Perhaps there is a reference mismatch or the new monad failed construction.
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD createMonad(String pName, String pAlgebra, String pFrame,
 					String pSig) throws BadSignatureException,
@@ -481,6 +522,8 @@ public class NyadRealD extends NyadAbstract
 
 	/**
 	 * Each of the Monads is turned into its Dual from the left.
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD dualLeft()
 	{
@@ -491,6 +534,8 @@ public class NyadRealD extends NyadAbstract
 
 	/**
 	 * Each of the Monads is turned into its Dual from the right.
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD dualRight()
 	{
@@ -529,6 +574,8 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @param key
 	 *            int
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD pop(int key)
 	{
@@ -549,6 +596,8 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @param key
 	 *            int
+	 * 
+	 * @return NyadRealD
 	 */
 	public NyadRealD push(int key)
 	{
@@ -567,6 +616,8 @@ public class NyadRealD extends NyadAbstract
 	 * @param pthisone
 	 *            int
 	 * @throws CladosNyadException
+	 * 		This exception is thrown when the monad to be removed can't be found.
+	 * @return NyadRealD
 	 */
 	public NyadRealD removeMonad(int pthisone) throws CladosNyadException
 	{
@@ -593,6 +644,9 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealD
+	 * @throws CladosNyadException
+	 * 		This exception is thrown when the monad to be removed can't be found.         
+	 * @return NyadRealD
 	 */
 	public NyadRealD removeMonad(MonadRealD pM) throws CladosNyadException
 	{
@@ -618,6 +672,8 @@ public class NyadRealD extends NyadAbstract
 	 * @param pMag
 	 *            RealD
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
+	 * @return NyadRealD
 	 */
 	public NyadRealD scale(AlgebraRealD pk, RealD pMag)
 					throws FieldBinaryException
@@ -640,6 +696,8 @@ public class NyadRealD extends NyadAbstract
 	 * @param pMag
 	 *            RealD
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
+	 * @return NyadRealD
 	 */
 	public NyadRealD scale(int pk, RealD pMag) throws FieldBinaryException
 	{
@@ -650,6 +708,8 @@ public class NyadRealD extends NyadAbstract
 	/**
 	 * Set the Monad List array of this NyadRealD.  A new ArrayList is created,
 	 * but the Monads list the list are reused.
+	 * @param pML
+	 * 			  ArrayList This is the array of monads in the nyad
 	 */
 	protected void setMonadList(ArrayList<MonadRealD> pML)
 	{
@@ -666,8 +726,15 @@ public class NyadRealD extends NyadAbstract
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
 	 * 
-	 * @throws CladosMonadException
-	 * @throws FieldBinaryException
+	 * @param pInto
+	 * 			  AlgebraRealD
+	 * @param pFrom
+	 * 			  AlgebraRealD
+	 * 
+	 * @throws CladosNyadException
+	 * 		This exception is thrown when the monads being compressed fail a field match or
+	 * 		reference match test used in multiplication.
+	 * @return NyadRealD
 	 */
 	public NyadRealD symmCompress(AlgebraRealD pInto, AlgebraRealD pFrom)
 					throws CladosNyadException
@@ -702,8 +769,15 @@ public class NyadRealD extends NyadAbstract
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
 	 * 
-	 * @throws CladosMonadException
+	 * @param pInto
+	 * 			  int
+	 * @param pFrom
+	 * 			  int
+	 * 
+	 * @throws CladosMonadBinaryException
+	 * 		This exception is thrown when the monads being compressed fail a reference test
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
 	 */
 	private void symmCompress(int pInto, int pFrom)
 					throws FieldBinaryException, CladosMonadBinaryException

@@ -28,7 +28,7 @@ import com.interworldtransport.cladosGExceptions.*;
  * in only one algebra.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public abstract class MonadAbstract
@@ -77,6 +77,9 @@ public abstract class MonadAbstract
 	 * base-10 logarithm will be an integer for pure grade monads and a
 	 * non-integer for multigrade monads.
 	 * 
+	 * @param pM
+	 * 			This parameter offers the Monad being tested.
+	 * 
 	 * @return boolean
 	 */
 	public static boolean isMultiGrade(MonadAbstract pM)
@@ -97,6 +100,9 @@ public abstract class MonadAbstract
 	 * of the grade key which is a sum of powers of 10, thus the base-10
 	 * logarithm will be an integer for pure grade monads and a non-integer for
 	 * multigrade monads.
+	 * 
+	 * @param pM
+	 * 			This parameter offers the Monad being tested.
 	 * 
 	 * @return boolean
 	 */
@@ -136,6 +142,10 @@ public abstract class MonadAbstract
 	 */
 	//public GProduct	product;
 
+	/**
+	 * 
+	 * @return Monad Non-abstract conjugates return Monad of some type.
+	 */
 	public abstract MonadAbstract conjugate();
 
 	public abstract MonadAbstract dualLeft();
@@ -155,7 +165,6 @@ public abstract class MonadAbstract
 	/**
 	 * Return the entire product definition object.
 	 * 
-	 * @return GProduct
 	 */
 //	public GProduct getGProduct()
 //	{
@@ -204,6 +213,10 @@ public abstract class MonadAbstract
 //		return tResult;
 //	}
 
+	/**
+	 * 
+	 * @return String Contains the name of the Monad.
+	 */
 	public String getName()
 	{
 		return name;
@@ -238,8 +251,6 @@ public abstract class MonadAbstract
 	/**
 	 * Set the entire product definition object.
 	 * 
-	 * @param pGP
-	 *            GProduct
 	 */
 //	protected void setGProduct(GProduct pGP)
 //	{

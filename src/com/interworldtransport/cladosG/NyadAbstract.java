@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * (Single monad nyads are essentially monads, but can be expanded.)
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public abstract class NyadAbstract // implements Iterable<MonadAbstract>
@@ -39,8 +39,8 @@ public abstract class NyadAbstract // implements Iterable<MonadAbstract>
 	 * Return an integer pointing to the part of the nyad expressed in the frame
 	 * named in the parameter.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pFrame
 	 *            String
 	 * @return boolean
@@ -57,8 +57,8 @@ public abstract class NyadAbstract // implements Iterable<MonadAbstract>
 	 * Return an integer pointing to the part of the nyad with the expressed
 	 * name.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pName
 	 *            String
 	 * @return boolean
@@ -74,8 +74,8 @@ public abstract class NyadAbstract // implements Iterable<MonadAbstract>
 	 * Return a boolean stating whether or not the nyad is expressed in the
 	 * frame named in the parameter.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pFrame
 	 *            String
 	 * @return boolean
@@ -91,8 +91,8 @@ public abstract class NyadAbstract // implements Iterable<MonadAbstract>
 	 * Return a boolean stating whether or not the nyad contained the named
 	 * monad.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pName
 	 *            String
 	 * @return boolean
@@ -224,6 +224,11 @@ public abstract class NyadAbstract // implements Iterable<MonadAbstract>
 	// //setNameKey();
 	// }
 
+	/**
+	 * 
+	 * @param pF
+	 * 			This parameter sets the foot of the nyad.
+	 */
 	protected void setFootPoint(Foot pF)
 	{
 		footPoint = pF;

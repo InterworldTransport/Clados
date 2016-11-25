@@ -41,7 +41,7 @@ import com.interworldtransport.cladosFExceptions.FieldException;
  * DivFieldF. That can't be done, though, because Float is final.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class RealF extends DivFieldF
@@ -59,6 +59,8 @@ public class RealF extends DivFieldF
 	 * @param pF2
 	 *            RealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when there is a field mismatch
+	 * @return RealF
 	 */
 	public static RealF add(RealF pF1, RealF pF2) throws FieldBinaryException
 	{
@@ -79,6 +81,7 @@ public class RealF extends DivFieldF
 	 * 
 	 * @param pF
 	 *            RealF
+	 * @return RealF
 	 */
 	public static RealF conjugate(RealF pF)
 	{
@@ -92,6 +95,7 @@ public class RealF extends DivFieldF
 	 * 
 	 * @param pF
 	 *            RealF
+	 * @return RealF
 	 */
 	public static RealF copy(RealF pF)
 	{
@@ -105,13 +109,27 @@ public class RealF extends DivFieldF
 	 * 
 	 * @param pF
 	 *            RealF
+	 * @return RealF
 	 */
 	public static RealF copyzero(RealF pF)
 	{
 		return new RealF(pF.getFieldType());
 	}
 
-	
+	/**
+	 * Static method that creates a new RealD with a copy of the parameter. This
+	 * copy does not reuse a field type reference so it is likely to fail type
+	 * mismatch tests.
+	 * 
+	 * @param pR
+	 *            float
+	 * 
+	 * @return RealF
+	 */
+	public static RealF create(float pR)
+	{
+		return new RealF(pR);
+	}
 
 	/**
 	 * Static divide method that creates a new RealD with the product pF1 / pF2.
@@ -121,6 +139,8 @@ public class RealF extends DivFieldF
 	 * @param pF2
 	 *            RealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when there is a field mismatch.
+	 * @return RealF
 	 */
 	public static RealF divide(RealF pF1, RealF pF2)
 					throws FieldBinaryException
@@ -155,6 +175,9 @@ public class RealF extends DivFieldF
 
 	/**
 	 * This method checks to see if the value is infinite.
+	 * @param pF
+	 * 		RealF
+	 * @return boolean
 	 */
 	public static boolean isInfinite(RealF pF)
 	{
@@ -163,6 +186,9 @@ public class RealF extends DivFieldF
 
 	/**
 	 * This method checks to see if the value is not a number at all. NAN
+	 * @param pF
+	 * 		RealF
+	 * @return boolean
 	 */
 	public static boolean isNaN(RealF pF)
 	{
@@ -171,6 +197,10 @@ public class RealF extends DivFieldF
 
 	/**
 	 * This method checks to see if the number is exactly zero.
+	 * 
+	 * @param pF
+	 * 		RealF
+	 * @return boolean
 	 */
 	public static boolean isZero(RealF pF)
 	{
@@ -185,6 +215,11 @@ public class RealF extends DivFieldF
 	 * perform a field type safety check and will throw the exception if that
 	 * test fails.
 	 * 
+	 * @param pL
+	 * 		RealF[]
+	 * 
+	 * @throws FieldBinaryException
+	 * 	This exception is thrown when sqMagnitude fails with the RealF array
 	 * @return RealF
 	 */
 	public static RealF ModulusList(RealF[] pL) throws FieldBinaryException
@@ -207,6 +242,8 @@ public class RealF extends DivFieldF
 	 * @param pF2
 	 *            RealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when there is a field mismatch.
+	 * @return RealF
 	 */
 	public static RealF multiply(RealF pF1, RealF pF2)
 					throws FieldBinaryException
@@ -223,6 +260,11 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Static zero construction method with copied field type
+	 * 
+	 * @param pR
+	 * 		RealF
+	 * 
+	 * @return RealF
 	 */
 	public static RealF ONE(RealF pR)
 	{
@@ -231,6 +273,11 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Static one construction method
+	 * 
+	 * @param pS
+	 * 		String
+	 * 
+	 * @return RealF
 	 */
 	public static RealF ONE(String pS)
 	{
@@ -243,8 +290,15 @@ public class RealF extends DivFieldF
 	 * on the list. It does not perform a field type safety check and will throw
 	 * the exception if that test fails.
 	 * 
-	 * @return RealF
+	 * @param pL
+	 * 		RealF[]
+	 * 
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when there is a field mismatch. This shouldn't happen
+	 * 	but because the operation multiplies the field object by itself, it is 
+	 * 	technically possible.
+	 * 
+	 * @return RealF
 	 */
 	public static RealF SQModulusList(RealF[] pL) throws FieldBinaryException
 	{
@@ -266,6 +320,8 @@ public class RealF extends DivFieldF
 	 * @param pF2
 	 *            RealF
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown when there is a field mismatch.
+	 * @return RealF
 	 */
 	public static RealF subtract(RealF pF1, RealF pF2)
 					throws FieldBinaryException
@@ -279,9 +335,14 @@ public class RealF extends DivFieldF
 			throw (new FieldBinaryException(pF1,
 							"Static Subtraction error found", pF2));
 	}
-
+	
 	/**
 	 * Static zero construction method with copied field type
+	 * 
+	 * @param pR
+	 * 		RealF
+	 * 
+	 * @return RealF
 	 */
 	public static RealF ZERO(RealF pR)
 	{
@@ -290,6 +351,11 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Static zero construction method
+	 * 
+	 * @param pS
+	 * 		String
+	 * 
+	 * @return RealF
 	 */
 	public static RealF ZERO(String pS)
 	{
@@ -308,6 +374,9 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Basic Constructor with only the field type to initialize.
+	 * 
+	 * @param pT
+	 * 		DivFieldType
 	 */
 	public RealF(DivFieldType pT)
 	{
@@ -318,6 +387,11 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Basic Constructor with everything to initialize.
+	 * 
+	 * @param pT
+	 * 		DivFieldType
+	 * @param pR
+	 * 		float
 	 */
 	public RealF(DivFieldType pT, float pR)
 	{
@@ -328,6 +402,9 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Basic Constructor with only the number to initialize.
+	 * 
+	 * @param pR
+	 * 		float
 	 */
 	public RealF(float pR)
 	{
@@ -338,6 +415,8 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Copy Constructor that reuses the field type reference.
+	 * @param pR
+	 * 			RealF
 	 */
 	public RealF(RealF pR)
 	{
@@ -349,6 +428,10 @@ public class RealF extends DivFieldF
 	/**
 	 * Copy Constructor that reuses the field type reference while allowing the
 	 * value to be set.
+	 * @param pR
+	 * 		RealF
+	 * @param pF
+	 * 		float
 	 */
 	public RealF(RealF pR, float pF)
 	{
@@ -362,7 +445,11 @@ public class RealF extends DivFieldF
 	 * result.
 	 * 
 	 * @throws FieldBinaryException
+	 * 	This exception is thrown if there is a field mismatch
 	 * @see com.interworldtransport.cladosF.DivFieldF#add(com.interworldtransport.cladosF.DivFieldF)
+	 * 
+	 * 
+	 * @return RealF
 	 */
 	@Override
 	public RealF add(DivFieldF pF) throws FieldBinaryException
@@ -380,6 +467,8 @@ public class RealF extends DivFieldF
 	/**
 	 * This is the self-altering conjugate method. This object changes when all
 	 * of its imaginary members are set to their additive inverses.
+	 * 
+	 * @return RealF
 	 */
 	public RealF conjugate()
 	{
@@ -389,6 +478,9 @@ public class RealF extends DivFieldF
 	/**
 	 * This method divides real numbers and changes this object to be the
 	 * result.
+	 * 
+	 * @param pF
+	 * 		DivFieldF
 	 * 
 	 * @see com.interworldtransport.cladosF.DivFieldF#divide(com.interworldtransport.cladosF.DivFieldF)
 	 */
@@ -449,6 +541,11 @@ public class RealF extends DivFieldF
 
 	/**
 	 * This method inverts real numbers.
+	 * 
+	 * @throws FieldException
+	 * 	This exception is thrown if someone tries to invert a ZERO.
+	 * 
+	 * @return RealF
 	 */
 	public RealF invert() throws FieldException
 	{
@@ -462,6 +559,9 @@ public class RealF extends DivFieldF
 	/**
 	 * This method multiplies real numbers and changes this object to be the
 	 * result.
+	 * 
+	 * @param pF
+	 * 		DivFieldF
 	 * 
 	 * @see com.interworldtransport.cladosF.DivFieldF#multiply(com.interworldtransport.cladosF.DivFieldF)
 	 */
@@ -480,6 +580,11 @@ public class RealF extends DivFieldF
 
 	/**
 	 * Scale method multiplies the modulus by the scale
+	 * 
+	 * @param pS
+	 * 		float
+	 * 
+	 * @return RealF
 	 */
 	public RealF scale(float pS)
 	{

@@ -48,7 +48,7 @@ import static com.interworldtransport.cladosG.MonadComplexD.*;
  * members of geometric algebras of different metric and dimensionality.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class NyadComplexD extends NyadAbstract
@@ -58,8 +58,8 @@ public class NyadComplexD extends NyadAbstract
 	 * algebra named in the parameter. Coverage is true if a monad can be found
 	 * in the nyad that belongs to the algebra.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pAlg
 	 *            String
 	 * @return int
@@ -76,8 +76,8 @@ public class NyadComplexD extends NyadAbstract
 	 * in the parameter. Coverage is true if a monad can be found in the nyad
 	 * that belongs to the algebra.
 	 * 
-	 * @param NyadAbstract
-	 *            pN
+	 * @param pN
+	 * 			NyadAbstract
 	 * @param pAlg
 	 *            String
 	 * @return boolean
@@ -379,6 +379,15 @@ public class NyadComplexD extends NyadAbstract
 	 * are placed in the same algebra and antisymmetrically multiplied to each
 	 * other. A reference match test must pass for both after the algebra names
 	 * have been changed.
+	 * @param pInto
+	 * 		AlgebraComplexD
+	 * @param pFrom
+	 * 		AlgebraComplexD
+	 * @throws CladosNyadException
+	 * 	This exception is thrown when the monads to be compressed fail a field match test or 
+	 * 	a reference match test used in multiplication.
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD antisymmCompress(AlgebraComplexD pInto, AlgebraComplexD pFrom)
 					throws CladosNyadException
@@ -411,6 +420,14 @@ public class NyadComplexD extends NyadAbstract
 	 * placed in the same algebra and antisymmetrically multiplied to eachother.
 	 * A reference match test must pass for both after the algebra names have
 	 * been changed.
+	 * @param pInto
+	 * 		int
+	 * @param pFrom
+	 * 		int
+	 * @throws FieldBinaryException
+	 * 	This exception is thrown when the monads to be compressed fail the Field match test
+	 * @throws CladosMonadBinaryException
+	 * 	This exception is thrown when the monads to be compressed fail a reference match test
 	 */
 	private void antisymmCompress(int pInto, int pFrom)
 					throws FieldBinaryException, CladosMonadBinaryException
@@ -432,6 +449,10 @@ public class NyadComplexD extends NyadAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
+	 * @throws CladosNyadException
+	 * 		This exception is thrown if the foot of the new monad fails to match
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD appendMonad(MonadComplexD pM) throws CladosNyadException
 	{
@@ -463,10 +484,28 @@ public class NyadComplexD extends NyadAbstract
 	 * Create a new monad for this nyad using the prototype field and then
 	 * append it to the end of the monadList. A 'zero' for the new algebra will
 	 * be added to the list.
+	 * This method creates a new algebra using the offered name and signature.
+	 * It also creates a new frame using the offered name.
+	 * It is not a copy method.
+	 * 
+	 * @param pName
+	 * 			String
+	 * @param pAlgebra
+	 * 			String
+	 * @param pFrame
+	 * 			String
+	 * @param pSig
+	 * 			String
 	 * 
 	 * @throws CladosMonadException
+	 * 		This exception is thrown when the new monad constructor fails.
 	 * @throws BadSignatureException
+	 * 		This exception is thrown when signature is rejected as invalid.
 	 * @throws CladosNyadException
+	 * 		This exception is thrown when the new monad cannot be appended.
+	 * 		Perhaps there is a reference mismatch or the new monad failed construction.
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD createMonad(String pName, String pAlgebra, String pFrame,
 					String pSig) throws BadSignatureException,
@@ -481,6 +520,8 @@ public class NyadComplexD extends NyadAbstract
 
 	/**
 	 * Each of the Monads is turned into its Dual from the left.
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD dualLeft()
 	{
@@ -491,6 +532,8 @@ public class NyadComplexD extends NyadAbstract
 
 	/**
 	 * Each of the Monads is turned into its Dual from the right.
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD dualRight()
 	{
@@ -529,6 +572,8 @@ public class NyadComplexD extends NyadAbstract
 	 * 
 	 * @param key
 	 *            int
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD pop(int key)
 	{
@@ -549,6 +594,8 @@ public class NyadComplexD extends NyadAbstract
 	 * 
 	 * @param key
 	 *            int
+	 * 
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD push(int key)
 	{
@@ -567,6 +614,8 @@ public class NyadComplexD extends NyadAbstract
 	 * @param pthisone
 	 *            int
 	 * @throws CladosNyadException
+	 * 		This exception is thrown when the monad to be removed can't be found.
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD removeMonad(int pthisone) throws CladosNyadException
 	{
@@ -593,6 +642,9 @@ public class NyadComplexD extends NyadAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
+	 * @throws CladosNyadException
+	 * 		This exception is thrown when the monad to be removed can't be found.         
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD removeMonad(MonadComplexD pM) throws CladosNyadException
 	{
@@ -618,6 +670,8 @@ public class NyadComplexD extends NyadAbstract
 	 * @param pMag
 	 *            ComplexD
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD scale(AlgebraComplexD pk, ComplexD pMag)
 					throws FieldBinaryException
@@ -640,6 +694,8 @@ public class NyadComplexD extends NyadAbstract
 	 * @param pMag
 	 *            ComplexD
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD scale(int pk, ComplexD pMag) throws FieldBinaryException
 	{
@@ -650,6 +706,9 @@ public class NyadComplexD extends NyadAbstract
 	/**
 	 * Set the Monad List array of this NyadComplexD.  A new ArrayList is created,
 	 * but the Monads list the list are reused.
+	 * 
+	 * @param pML
+	 * 	ArrayList Contains the list of monads for the nyad
 	 */
 	protected void setMonadList(ArrayList<MonadComplexD> pML)
 	{
@@ -666,8 +725,15 @@ public class NyadComplexD extends NyadAbstract
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
 	 * 
-	 * @throws CladosMonadException
-	 * @throws FieldBinaryException
+	 * @param pInto
+	 * 			  AlgebraComplexD
+	 * @param pFrom
+	 * 			  AlgebraComplexD
+	 * 
+	 * @throws CladosNyadException
+	 * 		This exception is thrown when the monads being compressed fail a field match or
+	 * 		reference match test used in multiplication.
+	 * @return NyadComplexD
 	 */
 	public NyadComplexD symmCompress(AlgebraComplexD pInto, AlgebraComplexD pFrom)
 					throws CladosNyadException
@@ -702,8 +768,15 @@ public class NyadComplexD extends NyadAbstract
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
 	 * 
-	 * @throws CladosMonadException
+	 * @param pInto
+	 * 			  int
+	 * @param pFrom
+	 * 			  int
+	 * 
+	 * @throws CladosMonadBinaryException
+	 * 		This exception is thrown when the monads being compressed fail a reference test
 	 * @throws FieldBinaryException
+	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
 	 */
 	private void symmCompress(int pInto, int pFrom)
 					throws FieldBinaryException, CladosMonadBinaryException

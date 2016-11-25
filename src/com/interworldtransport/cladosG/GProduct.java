@@ -40,7 +40,7 @@ import com.interworldtransport.cladosGExceptions.*;
  * GProduct or higher.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public final class GProduct
@@ -76,12 +76,35 @@ public final class GProduct
 	private short[][]	result;
 
 	/**
+	 * Copy constructor of GProduct with other GProduct passed in. This
+	 * constructor enables a multivector to have its own GProduct object that
+	 * happens to share a Basis with some other GProduct object. This saves
+	 * construction time and memory, while preventing multivectors with
+	 * different reference frames from performing improper math operations that
+	 * can't be stopped through type safety.
+	 * 
+	 * @param pGP
+	 *            GProduct
+	 */
+	public GProduct(GProduct pGP)
+	{
+		signature = new String(pGP.getSignature());
+		validateSignature(signature);
+		aBasis = pGP.getBasis();
+		result = new short[getBladeCount()][getBladeCount()];
+		result = pGP.getResult();
+	}
+
+	/**
 	 * Main constructor of ProductTable with signature information passed in. It
 	 * figures out the rest of what it needs.
 	 * 
 	 * @param pSig
 	 *            String
-	 * @throws CladosMonadException
+   	 * @throws CladosMonadException
+	 * 			This exception is thrown when a Basis fails to form.
+	 * @throws BadSignatureException
+	 * 			This exception is thrown when an invalid signature is found
 	 */
 	public GProduct(String pSig) throws BadSignatureException,
 					CladosMonadException
@@ -119,216 +142,6 @@ public final class GProduct
 							"Valid signature was expected.");
 		}
 		// Fill in any other helpful things to be kept here.
-	}
-
-	/**
-	 * Copy constructor of GProduct with other GProduct passed in. This
-	 * constructor enables a multivector to have its own GProduct object that
-	 * happens to share a Basis with some other GProduct object. This saves
-	 * construction time and memory, while preventing multivectors with
-	 * different reference frames from performing improper math operations that
-	 * can't be stopped through type safety.
-	 * 
-	 * @param pGP
-	 *            GProduct
-	 */
-	public GProduct(GProduct pGP)
-	{
-		signature = new String(pGP.getSignature());
-		validateSignature(signature);
-		aBasis = pGP.getBasis();
-		result = new short[getBladeCount()][getBladeCount()];
-		result = pGP.getResult();
-	}
-
-	/**
-	 * Return the signature of the generator geometry. This lists the squares of
-	 * the generators in their numeric order.
-	 * 
-	 * @return String
-	 */
-	public String getSignature()
-	{
-		return signature;
-	}
-
-	/**
-	 * Get the linear dimension of the vector space that uses the associated
-	 * Basis.
-	 * 
-	 * @return short
-	 */
-	public short getBladeCount()
-	{
-		return aBasis.getBladeCount();
-	}
-
-	/**
-	 * Get the grade count of the algebra that uses this GProduct.
-	 * 
-	 * @return short
-	 */
-	public short getGradeCount()
-	{
-		return aBasis.getGradeCount();
-	}
-
-	/**
-	 * Return whole result array. Meant for copy constructors.
-	 * 
-	 * @return short[][]
-	 */
-	public short[][] getResult()
-	{
-		return result;
-	}
-
-	/**
-	 * Return row pj of result array. Meant for alternate multiplication
-	 * methods.
-	 * 
-	 * @param pj
-	 *            short
-	 * @return short[][]
-	 */
-	public short[] getResult(short pj)
-	{
-		return result[pj];
-	}
-
-	/**
-	 * Return an element of the array holding the geometric multiplication
-	 * results.
-	 * 
-	 * @param pj
-	 *            short
-	 * @param pk
-	 *            short
-	 * @return short
-	 */
-	public short getResult(short pj, short pk)
-	{
-		return result[pj][pk];
-	}
-
-	/**
-	 * Return an element of the array holding the geometric multiplication
-	 * results.
-	 * 
-	 * @param pj
-	 *            short
-	 * @param pk
-	 *            short
-	 * @return int
-	 */
-	public short getSign(short pj, short pk)
-	{
-		if (result[pj][pk] >= 0)
-			return 1;
-		else
-			return -1;
-	}
-
-	/**
-	 * Return a measure of whether blades pj and pk commute. Return a 1 if they
-	 * commute. Return a 0 otherwise.
-	 * 
-	 * @param pj
-	 *            short
-	 * @param pk
-	 *            short
-	 * @return int
-	 */
-	public short getCommuteSign(short pj, short pk)
-	{
-		if (result[pj][pk] == result[pk][pj])
-			return 1;
-		else
-			return 0;
-	}
-
-	/**
-	 * Return a measure of whether blades pj and pk anticommute. Return a 1 if
-	 * they anticommute. Return a 0 otherwise.
-	 * 
-	 * @param pj
-	 *            short
-	 * @param pk
-	 *            short
-	 * @return int
-	 */
-	public short getACommuteSign(short pj, short pk)
-	{
-		if (result[pj][pk] == result[pk][pj] * -1)
-			return 1;
-		else
-			return 0;
-	}
-
-	/**
-	 * Get start and end index from the GradeRange array for grade pGrade.
-	 * 
-	 * @param pGrade
-	 *            short
-	 * @return short[]
-	 */
-	public short[] getGradeRange(short pGrade)
-	{
-		short[] tR = new short[2];
-		tR[0] = aBasis.getGradeRange(pGrade);
-
-		if (pGrade == aBasis.getGradeCount() - 1)
-			tR[1] = tR[0];
-		else
-			tR[1] = (short) (aBasis.getGradeRange((short) (pGrade + 1)) - 1);
-
-		return tR;
-	}
-
-	/**
-	 * Basic Get method for the Basis generated by the signature of this
-	 * GProduct.
-	 * 
-	 * @return Basis
-	 */
-	public Basis getBasis()
-	{
-		return aBasis;
-	}
-
-	/**
-	 * Return a measure of the validitity of the Signature string. A string with
-	 * +'s and -'s will pass. No other one does.
-	 * 
-	 * This method also established the internal integer representation of the
-	 * signature.
-	 * 
-	 * @param pSg
-	 *            String
-	 */
-	private boolean validateSignature(String pSg)
-	{
-		nSignature = new short[pSg.length()];
-		for (int j = 0; j < pSg.length(); j++)
-		{
-			if (pSg.substring(j, j + 1).equals("+"))
-			{
-				nSignature[j] = 0;
-			}
-			else
-			{
-				if (pSg.substring(j, j + 1).equals("-"))
-				{
-					nSignature[j] = 1;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}
-		signature = pSg;
-		return true;
 	}
 
 	/**
@@ -458,8 +271,165 @@ public final class GProduct
 	}
 
 	/**
+	 * Return a measure of whether blades pj and pk anticommute. Return a 1 if
+	 * they anticommute. Return a 0 otherwise.
+	 * 
+	 * @param pj
+	 *            short
+	 * @param pk
+	 *            short
+	 * @return int
+	 */
+	public short getACommuteSign(short pj, short pk)
+	{
+		if (result[pj][pk] == result[pk][pj] * -1)
+			return 1;
+		else
+			return 0;
+	}
+
+	/**
+	 * Basic Get method for the Basis generated by the signature of this
+	 * GProduct.
+	 * 
+	 * @return Basis
+	 */
+	public Basis getBasis()
+	{
+		return aBasis;
+	}
+
+	/**
+	 * Get the linear dimension of the vector space that uses the associated
+	 * Basis.
+	 * 
+	 * @return short
+	 */
+	public short getBladeCount()
+	{
+		return aBasis.getBladeCount();
+	}
+
+	/**
+	 * Return a measure of whether blades pj and pk commute. Return a 1 if they
+	 * commute. Return a 0 otherwise.
+	 * 
+	 * @param pj
+	 *            short
+	 * @param pk
+	 *            short
+	 * @return int
+	 */
+	public short getCommuteSign(short pj, short pk)
+	{
+		if (result[pj][pk] == result[pk][pj])
+			return 1;
+		else
+			return 0;
+	}
+
+	/**
+	 * Get the grade count of the algebra that uses this GProduct.
+	 * 
+	 * @return short
+	 */
+	public short getGradeCount()
+	{
+		return aBasis.getGradeCount();
+	}
+
+	/**
+	 * Get start and end index from the GradeRange array for grade pGrade.
+	 * 
+	 * @param pGrade
+	 *            short
+	 * @return short[]
+	 */
+	public short[] getGradeRange(short pGrade)
+	{
+		short[] tR = new short[2];
+		tR[0] = aBasis.getGradeRange(pGrade);
+
+		if (pGrade == aBasis.getGradeCount() - 1)
+			tR[1] = tR[0];
+		else
+			tR[1] = (short) (aBasis.getGradeRange((short) (pGrade + 1)) - 1);
+
+		return tR;
+	}
+
+	/**
+	 * Return whole result array. Meant for copy constructors.
+	 * 
+	 * @return short[][]
+	 */
+	public short[][] getResult()
+	{
+		return result;
+	}
+
+	/**
+	 * Return row pj of result array. Meant for alternate multiplication
+	 * methods.
+	 * 
+	 * @param pj
+	 *            short
+	 * @return short[][]
+	 */
+	public short[] getResult(short pj)
+	{
+		return result[pj];
+	}
+
+	/**
+	 * Return an element of the array holding the geometric multiplication
+	 * results.
+	 * 
+	 * @param pj
+	 *            short
+	 * @param pk
+	 *            short
+	 * @return short
+	 */
+	public short getResult(short pj, short pk)
+	{
+		return result[pj][pk];
+	}
+
+	/**
+	 * Return an element of the array holding the geometric multiplication
+	 * results.
+	 * 
+	 * @param pj
+	 *            short
+	 * @param pk
+	 *            short
+	 * @return int
+	 */
+	public short getSign(short pj, short pk)
+	{
+		if (result[pj][pk] >= 0)
+			return 1;
+		else
+			return -1;
+	}
+
+	/**
+	 * Return the signature of the generator geometry. This lists the squares of
+	 * the generators in their numeric order.
+	 * 
+	 * @return String
+	 */
+	public String getSignature()
+	{
+		return signature;
+	}
+
+	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
+	 * 
+	 * @return String This is the XML string export of an object.
 	 */
 	public String toXMLString()
 	{
@@ -481,5 +451,41 @@ public final class GProduct
 		rB.append("</ProductTable>\n");
 		rB.append("</GProduct>\n");
 		return rB.toString();
+	}
+
+	/**
+	 * Return a measure of the validitity of the Signature string. A string with
+	 * +'s and -'s will pass. No other one does.
+	 * 
+	 * This method also established the internal integer representation of the
+	 * signature.
+	 * 
+	 * @param pSg
+	 *            String
+	 * @return boolean This boolean states whether the GProduct signature is valid.
+	 */
+	private boolean validateSignature(String pSg)
+	{
+		nSignature = new short[pSg.length()];
+		for (int j = 0; j < pSg.length(); j++)
+		{
+			if (pSg.substring(j, j + 1).equals("+"))
+			{
+				nSignature[j] = 0;
+			}
+			else
+			{
+				if (pSg.substring(j, j + 1).equals("-"))
+				{
+					nSignature[j] = 1;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+		signature = pSg;
+		return true;
 	}
 }

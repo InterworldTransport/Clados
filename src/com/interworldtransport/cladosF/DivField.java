@@ -18,7 +18,6 @@
  */
 package com.interworldtransport.cladosF;
 
-import com.interworldtransport.cladosFExceptions.*;
 
 /**
  * This class implements the concept of a Division Field from mathematics. Field
@@ -28,29 +27,33 @@ import com.interworldtransport.cladosFExceptions.*;
  * FieldElements are not named. They do not have any geometric properties. Treat
  * them like you would any other number you could plug into a simple calculator.
  * <p>
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
 public abstract class DivField
 {
 	/**
+	 * Check to see if the incoming argument is of the same field type as the
+	 * current object.
+	 * 
+	 * @param pE
+	 *            DivFieldD
+	 * @param pF
+	 *            DivFieldD
+	 * @return boolean
+	 */
+	public static boolean isTypeMatch(DivField pE, DivField pF)
+	{
+		return pE.getFieldType().equals(pF.getFieldType());
+	}
+
+	/**
 	 * Object for the field type. A string used to be used here, but an object
 	 * lets us reuse the object through a reference allowing all coefficients in
 	 * the monads of a nyad to point to the same place.
 	 */
 	protected DivFieldType	FieldType;
-
-	/**
-	 * Set method for FieldType
-	 * 
-	 * @param pType
-	 *            DivFieldType
-	 */
-	public void setFieldType(DivFieldType pType)
-	{
-		FieldType = pType;
-	}
 
 	/**
 	 * Get method for FieldType
@@ -73,28 +76,26 @@ public abstract class DivField
 	}
 
 	/**
-	 * Check to see if the incoming argument is of the same field type as the
-	 * current object.
+	 * Set method for FieldType
 	 * 
-	 * @param pE
-	 *            DivFieldD
-	 * @param pF
-	 *            DivFieldD
-	 * @throws FieldBinaryException
+	 * @param pType
+	 *            DivFieldType
 	 */
-	public static boolean isTypeMatch(DivField pE, DivField pF)
+	public void setFieldType(DivFieldType pType)
 	{
-		return pE.getFieldType().equals(pF.getFieldType());
+		FieldType = pType;
 	}
 
 	/**
-	 * Return a string representation of the field element. * @return String
-	 */
-	public abstract String toXMLString();
-
-	/**
 	 * Return a string representation of the real value
+	 * @return String
 	 */
 	public abstract String toString();
+
+	/**
+	 * Return a string representation of the field element. 
+	 * @return String
+	 */
+	public abstract String toXMLString();
 
 }

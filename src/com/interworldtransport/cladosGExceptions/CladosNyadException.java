@@ -26,12 +26,13 @@ import com.interworldtransport.cladosG.*;
  * unhandled problems. Common elements from each exception class are found here.
  * <p>
  * 
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
 public class CladosNyadException extends Exception
 {
+	private static final long serialVersionUID = 8525503660269803527L;
 	/**
 	 * The source NyadRealD is the originator of the Exception.
 	 */
@@ -61,6 +62,8 @@ public class CladosNyadException extends Exception
 	/**
 	 * This method delivers a reference to the NyadRealD that originated the
 	 * Exception
+	 * 
+	 * @return NyadAbstract
 	 */
 	public NyadAbstract getSourceNyad()
 	{
@@ -70,6 +73,8 @@ public class CladosNyadException extends Exception
 	/**
 	 * This method delivers a the explanation from the NyadRealD that originated
 	 * the Exception
+	 * 
+	 * @return String
 	 */
 	public String getSourceMessage()
 	{

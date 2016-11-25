@@ -24,7 +24,7 @@ import com.interworldtransport.cladosG.*;
  * GProduct can be built from simple signatures, but the string must be
  * well formed.
  * <p>
- * @version 0.90, $Date$
+ * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class BadSignatureException extends Exception
@@ -42,6 +42,11 @@ public class BadSignatureException extends Exception
 /**
  * Construct this exception.  This exception must have the source monad and a
  * message complaining about the expectations of the source.
+ * 
+ * @param pSource
+ * 			GProduct
+ * @param pMessage
+ * 			String
  */
     public BadSignatureException(GProduct pSource, String pMessage)
     {
@@ -51,6 +56,8 @@ public class BadSignatureException extends Exception
 	}
 /**
  * This method delivers a reference to the source object that originated the Exception
+ * 
+ * @return GProduct
  */
     public GProduct  getSource()
     {
@@ -58,6 +65,8 @@ public class BadSignatureException extends Exception
 	}
 /**
  * This method delivers a the explanation from the source code that originated the Exception
+ * 
+ * @return String
  */
     public String  getSourceMessage() 
     {
