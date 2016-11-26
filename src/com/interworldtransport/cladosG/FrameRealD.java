@@ -146,7 +146,8 @@ public class FrameRealD extends FrameAbstract
 	 * @param pAlg
 	 *            AlgebraRealD
 	 * @param pML
-	 *            ArrayList List contains MonadRealD entries used in construction.
+	 * 			  ArrayList 
+	 * 			  List contains MonadRealD entries used in construction.
 	 */
 	public FrameRealD(String pName, AlgebraRealD pAlg, ArrayList<MonadRealD> pML)
 	{
@@ -160,11 +161,12 @@ public class FrameRealD extends FrameAbstract
 	 * not create a new copy of the Monad offered as a parameter. The Frame DOES
 	 * wind up referencing the passed Monad.
 	 * 
-	 * (Not sure why the method returns the Frame after the appending operation.(
+	 * Not sure why the method returns the Frame after the appending operation.
 	 * 
 	 * @param pM
 	 *            MonadRealD this is the referenced monad for the Frame.
-	 * @throws CladosFrameException Monads in a Frame must satisfy ReferenceMatch
+	 * @throws CladosFrameException 
+	 * 	Monads in a Frame must satisfy ReferenceMatch
 	 * @return FrameRealD
 	 */
 	public FrameRealD appendVMonad(MonadRealD pM) throws CladosFrameException

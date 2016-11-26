@@ -134,6 +134,14 @@ public abstract class MonadAbstract
 	 * All objects of this class have a name independent of all other features.
 	 */
 	public String	name;
+	
+	/**
+	 * This boolean is a flag used internally by multiplication methods to make
+	 * those methods a little more efficient. A sparse monad has mostly zero 
+	 * coefficients and is directed to multiply grade by grade instead of using
+	 * the generic algorithm.
+	 */
+	protected boolean sparseFlag=true;
 
 	/**
 	 * This class holds the ProductTable associated with the generators of the
@@ -163,15 +171,6 @@ public abstract class MonadAbstract
 	}
 
 	/**
-	 * Return the entire product definition object.
-	 * 
-	 */
-//	public GProduct getGProduct()
-//	{
-//		return product;
-//	}
-
-	/**
 	 * Return the grade key for the monad
 	 * 
 	 * @return long
@@ -182,44 +181,22 @@ public abstract class MonadAbstract
 	}
 
 	/**
-	 * Return the grade list for this monad.
-	 */
-//	public boolean[] getGrades()
-//	{
-//		boolean[] tResult = new boolean[product.getGradeCount()];
-//		for (int k = 0; k <= product.getGradeCount() - 1; k++)
-//			tResult[k] = false;
-//
-//		if (gradeKey == 1) // Monad is a scalar, so set temp[0]=true and be done
-//		{
-//			tResult[0] = true;
-//			return tResult;
-//		}
-//
-//		double tGradeKey = gradeKey;
-//		// Loop down from the highest grade to the lowest testing gradeKey to
-//		// see if
-//		// it is larger than 10^grade. If it is, then that grade is in the
-//		// Monad. If
-//		// not, then subtract 10^grade and try the next lowest grade.
-//		for (int k = product.getGradeCount() - 1; k >= 0; k--)
-//		{
-//			if (Math.log10(tGradeKey) >= k)
-//			{
-//				tResult[k] = true;
-//				tGradeKey = gradeKey - Math.pow(10, k);
-//			}
-//		}
-//		return tResult;
-//	}
-
-	/**
 	 * 
 	 * @return String Contains the name of the Monad.
 	 */
 	public String getName()
 	{
 		return name;
+	}
+	
+	/**
+	 * This method returns the sparse flag of the monad in case
+	 * someone wants to know. It is just a gettor method, though.
+	 * @return boolean
+	 */
+	public boolean getSparseFlag()
+	{
+		return sparseFlag;
 	}
 
 	public abstract MonadAbstract gradePart(short pGrade)
@@ -248,20 +225,23 @@ public abstract class MonadAbstract
 	 */
 	protected abstract void setFrameName(String pFrameName);
 
-	/**
-	 * Set the entire product definition object.
-	 * 
-	 */
-//	protected void setGProduct(GProduct pGP)
-//	{
-//		product = pGP;
-//	}
-
 	protected abstract void setGradeKey();
 
 	public void setName(String pName)
 	{
 		name = pName;
+	}
+	
+
+	/**
+	 * This method sets the sparse flag of the monad. 
+	 * It is just a settor method.
+	 * @param pSparse
+	 * 	boolean
+	 */
+	public void setSparseFlag(boolean pSparse)
+	{
+		this.sparseFlag=pSparse;
 	}
 
 	public abstract MonadAbstract SP();

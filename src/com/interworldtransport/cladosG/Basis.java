@@ -110,9 +110,9 @@ public final class Basis
 	 * operations in an algebra, so all it does is show the basis.
 	 * 
 	 * @param pGens
-	 *            	short This is the number of generators that make up the basis
+	 * 		short This is the number of generators that make up the basis
 	 * @throws 
-	 * 				CladosMonadException Exception thrown with 15 or more generators for now
+	 * 		CladosMonadException Exception thrown with 15 or more generators
 	 */
 	public Basis(short pGens) throws CladosMonadException
 	{
