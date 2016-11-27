@@ -48,7 +48,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		return rB.toString();
 	}
 
-	public RealF	protoNumber;
+	protected RealF	protoNumber;
 
 	public AlgebraRealF(String pS, Foot pF, GProduct pGP)
 	{

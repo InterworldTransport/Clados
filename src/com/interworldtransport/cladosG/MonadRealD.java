@@ -723,25 +723,23 @@ public class MonadRealD extends MonadAbstract
 	 * @return MonadRealD
 	 */
 	public MonadRealD multiplyAntisymm(MonadRealD pM)
-					throws FieldBinaryException, CladosMonadBinaryException
+				throws FieldBinaryException, CladosMonadBinaryException
 	{
-		if (isReferenceMatch(this, pM)) // Don't try if not a reference match
-		{
-			MonadRealD halfTwo = new MonadRealD(this);
-			halfTwo.multiplyRight(pM);
+		if (!isReferenceMatch(this, pM)) 
+			throw new CladosMonadBinaryException(this,"Asymm multiply fails reference match.", pM);
+		// Don't try if not a reference match
+		if (isGZero(this)) return this;//obviously
+		if (isGZero(pM)) return pM;//equally obvious
+			
+		MonadRealD halfTwo = new MonadRealD(this);
+		halfTwo.multiplyRight(pM);
 
-			multiplyLeft(pM);
-			subtract(halfTwo);
+		multiplyLeft(pM);
+		subtract(halfTwo);
 
-			scale(new RealD(cM[0], 0.5D));
-			setGradeKey();
-			return this;
-		}
-		else
-		{
-			throw new CladosMonadBinaryException(this,
-							"Can't symm multiply when frames don't match.", pM);
-		}
+		scale(new RealD(cM[0], 0.5f));
+		setGradeKey();
+		return this;
 	}
 
 	/**
@@ -757,50 +755,115 @@ public class MonadRealD extends MonadAbstract
 	 * 	This exception is thrown when the field match test fails with the two monads
 	 * @return MonadRealD
 	 */
-	public MonadRealD multiplyLeft(MonadRealD pM) throws FieldBinaryException,
-					CladosMonadBinaryException
-	{
-		if (isReferenceMatch(this, pM)) // Don't try if not a reference match
-		{
-			RealD[] tNewCoeff = new RealD[getAlgebra().getGProduct()
-							.getBladeCount()]; // new coeff
-			// array
-			for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
-				tNewCoeff[k] = ZERO(cM[0]);
-
-			for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++) // row
-																					// blade
-																					// in
-			// product array
+	public MonadRealD multiplyLeft(MonadRealD pM) 
+			throws FieldBinaryException, CladosMonadBinaryException
 			{
-				for (short j = 0; j < getAlgebra().getGProduct()
-								.getBladeCount(); j++) // column
-				// blade in
-				// product
-				// array
+				if (!isReferenceMatch(this, pM)) 
+					throw new CladosMonadBinaryException(this,"Left multiply fails reference match.", pM);
+				// Don't try if not a reference match
+				if (isGZero(this)) return this;//obviously
+				if (isGZero(pM)) return pM;//equally obvious
+				
+				
+				RealD[] tNewCoeff = new RealD[getAlgebra().getGProduct().getBladeCount()]; 
+				// new coeff array built to hold result
+				for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
+					tNewCoeff[k] = ZERO(cM[0]);
+				// new coeff array populated with ZEROES from the field.
+					
+				if (sparseFlag)
+				{	
+				/* Use gradeKey to find the non-zero grades.
+				 * gradeKey is is a long with a 1 in a digit if the ten's power
+				 * represented by that digit is represented as a grade in a monad.
+				 * 
+				 * For example: gradeKey=101 means the monad is a sum of bivector and scalar
+				 * because 10^2+10^0 = 101.
+				 * 
+				 * In a sparse monad, the gradeKey will have few 1's, so multiplication
+				 * can be simplified by not looping through each blade. Instead, we parse
+				 * the gradeKey and only loop through the blades for grades that could
+				 * be non-ZERO.
+				 */
+					long tempGradeKey=gradeKey;				
+					short logKey=(short) Math.floor(Math.log(tempGradeKey));
+					short[] tSpot={0,0};
+						
+					//logKey is the highest grade with non-zero blades
+					//tSpot will point at the blades of that grade
+					while (logKey>=0.0D)
+					{
+						tSpot = getAlgebra().getGProduct().getGradeRange(logKey);
+						for (short i = tSpot[0]; i <= tSpot[1]; i++)
+						{
+							// Looping through row blades in product array for grade logKey
+							if (isZero(pM.getCoeff(i))) continue;
+							// This is a weak form of the sparse flag kept here.
+							for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+							// Looping through column blades in product array
+							{
+								if (isZero(cM[j])) continue;
+								// This is a weak form of the sparse flag repeated here.
+								// Don't bother summing on zeroes.
+								
+								// multiply the coefficients first
+								RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]);
+								
+								// find the blade to which this partial product contributes
+								short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
+									
+								// Adjust sign of contribution for product sign of blades
+								tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
+									
+								// Add the contribution to new coeff array
+								tNewCoeff[prd].add(tCtrbt);
+										
+							}// blade i in 'this' multiplied by pM is done.
+						}
+						//Subtract 10^logKey so we can mark that the grade is done.
+						tempGradeKey -= Math.pow(10, logKey);
+						
+						//if tempGradeKey is zero, we've processed all grades including scalar.
+						if (tempGradeKey==0) break;
+						
+						//logKey can be zero for scalar grade.
+						logKey=(short) Math.floor(Math.log(tempGradeKey));
+							
+					}// tNewCoeff now has a copy of the coefficients needed for 'this'.
+				}
+				else //loop through the blades in 'this' individually.
 				{
-					// multiply the coefficients first
-					RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]);
-					// find the blade to which this partial product contributes
-					short prd = (short) (Math.abs(getAlgebra().getGProduct()
-									.getResult(i, j)) - 1);
-					// Adjust sign of contribution for product sign of blades
-					tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
-					// Add the contribution to new coeff array
-					tNewCoeff[prd].add(tCtrbt);
-				}// pM multiplied by blade i in 'this' is done.
-			}// tNewCoeff now has a copy of the coefficients needed for 'this'.
-			setCoeffInternal(tNewCoeff); // set the coeffs for this product
-											// result
-			setGradeKey();
-			return this;
-		}
-		else
-		{
-			throw new CladosMonadBinaryException(this,
-							"Can't left multiply when frames don't match.", pM);
-		}
-	}
+					for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
+					// Looping through row blades in product array
+					{
+						if (isZero(pM.getCoeff(i))) continue;
+						// This is a weak form of the sparse flag that notes a zero coefficient
+						// in pM need not be processed because it won't contribute to any sums.
+						
+						for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+						// Looping through column blades in product array
+						{
+							// multiply the coefficients first
+							RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]);
+								
+							// find the blade to which this partial product contributes
+							short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
+								
+							// Adjust sign of contribution for product sign of blades
+							tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
+								
+							// Add the contribution to new coeff array
+							tNewCoeff[prd].add(tCtrbt);
+								
+						}// blade i in 'this' multiplied by pM is done.
+							
+					}// tNewCoeff now has a copy of the coefficients needed for 'this'.
+				}
+				// set the coeffs for this product result
+				setCoeffInternal(tNewCoeff); 
+				setGradeKey();
+				return this;	
+			}
 
 	/**
 	 * Monad rightside multiplication: (pM this) This operation is allowed when
@@ -815,50 +878,114 @@ public class MonadRealD extends MonadAbstract
 	 * 	This exception is thrown when the field match test fails with the two monads
 	 * @return MonadRealD
 	 */
-	public MonadRealD multiplyRight(MonadRealD pM) throws FieldBinaryException,
-					CladosMonadBinaryException
-	{
-		if (isReferenceMatch(this, pM)) // Don't try if not a reference match
-		{
-			RealD[] tNewCoeff = new RealD[getAlgebra().getGProduct()
-							.getBladeCount()]; // new coeff
-			// array
-			for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
-				tNewCoeff[k] = ZERO(cM[0]);
-
-			for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++) // row
-																					// blade
-																					// in
-			// product array
+	public MonadRealD multiplyRight(MonadRealD pM) 
+			throws FieldBinaryException, CladosMonadBinaryException
 			{
-				for (short j = 0; j < getAlgebra().getGProduct()
-								.getBladeCount(); j++) // column
-				// blade in
-				// product
-				// array
+				if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
+					throw new CladosMonadBinaryException(this,"Right multiply fails reference match.", pM);
+				if (isGZero(this)) return this;//obviously
+				if (isGZero(pM)) return pM;//equally obvious
+					
+				RealD[] tNewCoeff = new RealD[getAlgebra().getGProduct().getBladeCount()]; 
+				// new coeff array
+				for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
+					tNewCoeff[k] = ZERO(cM[0]);
+				// new coeff array built to hold result
+					
+				if (sparseFlag)
 				{
-					// multiply the coefficients first
-					RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]);
-					// find the blade to which this partial product contributes
-					short drp = (short) (Math.abs(getAlgebra().getGProduct()
-									.getResult(j, i)) - 1);
-					// Adjust sign of contribution for product sign of blades
-					tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
-					// Add the contribution to new coeff array
-					tNewCoeff[drp].add(tCtrbt);
-				}// pM multiplied by blade i in 'this' is done.
-			}// tNewCoeff now has a copy of the coefficients needed for 'this'.
-			setCoeffInternal(tNewCoeff); // set the coeffs for this product
-											// result
-			setGradeKey();
-			return this;
-		}
-		else
-		{
-			throw new CladosMonadBinaryException(this,
-							"Can't left multiply when frames don't match.", pM);
-		}
-	}
+				/* Use gradeKey to find the non-zero grades.
+				 * gradeKey is is a long with a 1 in a digit if the ten's power
+				 * represented by that digit is represented as a grade in a monad.
+				 * 
+				 * For example: gradeKey=1001 means the monad is a sum of trivector and scalar
+				 * because 10^3+10^0 = 1001.
+				 * 
+				 * In a sparse monad, the gradeKey will have few 1's, so multiplication
+				 * can be simplified by not looping through each blade. Instead, we parse
+				 * the gradeKey and only loop through the blades for grades that could
+				 * be non-ZERO.
+				 */
+					long tempGradeKey=gradeKey;				
+					short logKey=(short) Math.floor(Math.log(tempGradeKey));
+					short[] tSpot={0,0};
+						
+					//logKey is the highest grade with non-zero blades
+					//tSpot will point at the blades of that grade
+					while (logKey>=0.0D)
+					{
+						tSpot = getAlgebra().getGProduct().getGradeRange(logKey);
+						for (short i = tSpot[0]; i <= tSpot[1]; i++)
+						{
+							// Looping through row blades in product array for grade logKey
+							if (isZero(pM.getCoeff(i))) continue;
+							// This is a weak form of the sparse flag kept here.
+							for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+							// Looping through column blades in product array
+							{
+								if (isZero(cM[j])) continue;
+								// This is a weak form of the sparse flag repeated here.
+								// Don't bother summing on zeroes.
+								
+								// multiply the coefficients first
+								RealD tCtrbt = multiply(cM[j], pM.getCoeff(i));
+										
+								// find the blade to which this partial product contributes
+								short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
+										
+								// Adjust sign of contribution for product sign of blades
+								tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
+										
+								// Add the contribution to new coeff array
+								tNewCoeff[prd].add(tCtrbt);
+										
+							}// blade i in 'this' multiplied by pM is done.
+						}
+						//Subtract 10^logKey so we can mark that the grade is done.
+						tempGradeKey -= Math.pow(10, logKey);
+						
+						//if tempGradeKey is zero, we've processed all grades including scalar.
+						if (tempGradeKey==0) break;
+							
+						//logKey can be zero for scalar grade.
+						logKey=(short) Math.floor(Math.log(tempGradeKey));
+							
+					}// tNewCoeff now has a copy of the coefficients needed for 'this'.
+						
+				}
+				else //loop through the blades in 'this' individually.
+				{
+					for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++) 
+					// Looping through row blades in product array
+					{
+						if (isZero(pM.getCoeff(i))) continue;
+						// This is a weak form of the sparse flag that notes a zero coefficient
+						// in pM need not be processed because it won't contribute to any sums.
+							
+						for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+						// Looping through column blades in product array
+						{
+							// multiply the coefficients first
+							RealD tCtrbt = multiply(cM[j], pM.getCoeff(i));
+								
+							// find the blade to which this partial product contributes
+							short drp = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
+								
+							// Adjust sign of contribution for product sign of blades
+							tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
+								
+							// Add the contribution to new coeff array
+							tNewCoeff[drp].add(tCtrbt);
+								
+						}// pM multiplied by blade i in 'this' is done.
+						
+					}// tNewCoeff now has a copy of the coefficients needed for 'this'.
+				}
+				// set the coeffs for this product result
+				setCoeffInternal(tNewCoeff); 
+				setGradeKey();
+				return this;	
+			}
 
 	/**
 	 * Monad symmetric multiplication: 1/2(pM this + this pM) This operation is
@@ -873,26 +1000,24 @@ public class MonadRealD extends MonadAbstract
 	 * 	This exception is thrown when the field match test fails with the two monads
 	 * @return MonadRealD
 	 */
-	public MonadRealD multiplySymm(MonadRealD pM) throws FieldBinaryException,
-					CladosMonadBinaryException
+	public MonadRealD multiplySymm(MonadRealD pM) 
+			throws FieldBinaryException, CladosMonadBinaryException
 	{
-		if (isReferenceMatch(this, pM)) // Don't try if not a reference match
-		{
-			MonadRealD halfTwo = new MonadRealD(this);
-			halfTwo.multiplyRight(pM);
+		if (isReferenceMatch(this, pM)) 
+			throw new CladosMonadBinaryException(this,"Symm multiply fails reference match.", pM);
+		// Don't try if not a reference match
+		if (isGZero(this)) return this;//obviously
+		if (isGZero(pM)) return pM;//equally obvious
+			
+		MonadRealD halfTwo = new MonadRealD(this);
+		halfTwo.multiplyRight(pM);
 
-			multiplyLeft(pM);
-			add(halfTwo);
+		multiplyLeft(pM);
+		add(halfTwo);
 
-			scale(new RealD(cM[0], 0.5d));
-			setGradeKey();
-			return this;
-		}
-		else
-		{
-			throw new CladosMonadBinaryException(this,
-							"Can't symm multiply when frames don't match.", pM);
-		}
+		scale(new RealD(cM[0], 0.5f));
+		setGradeKey();
+		return this;
 	}
 
 	/**
@@ -939,6 +1064,17 @@ public class MonadRealD extends MonadAbstract
 		return this;
 	}
 
+	/**
+	 * This method is a concession to the old notation for the Pseudo Scalar
+	 * Part of a monad. It returns the pscalar part coefficient.
+	 * @return RealD
+	 */
+	@Override
+	public RealD PSPc()
+	{
+		return cM[getAlgebra().getGProduct().getGradeCount()];
+	}
+	
 	/**
 	 * Reverse the multiplication order of all geometry generators in the Monad.
 	 * Active Reversion: Alternating pairs of grades switch signs as a result of

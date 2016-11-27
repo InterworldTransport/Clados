@@ -212,6 +212,8 @@ public abstract class MonadAbstract
 	public abstract MonadAbstract normalize() throws CladosMonadException;
 
 	public abstract MonadAbstract PSP();
+	
+	public abstract DivField PSPc();
 
 	public abstract MonadAbstract reverse();
 

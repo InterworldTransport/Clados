@@ -102,6 +102,29 @@ public class FrameRealD extends FrameAbstract
 	}
 
 	/**
+	 * Display XML string that represents the Frame
+	 * @param pM
+	 * 		FrameRealD This is the Frame to be converted to XML.
+	 * @return String
+	 */
+	public static String toXMLString(FrameRealD pM)
+	{
+		StringBuffer rB = new StringBuffer("<Frame name=\"" + pM.getName()
+						+ "\" ");
+		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
+		rB.append(">\n");
+		
+		rB.append(AlgebraRealD.toXMLString((AlgebraRealD)pM.getAlgebra()));
+
+		for (int i=0; i==pM.getFBasis().size(); i++)
+		{
+			rB.append(MonadRealD.toXMLString(pM.getFBasis(i)));
+		}
+		rB.append("</Frame>\n");
+		return rB.toString();
+	}
+	
+	/**
 	 * The fBasis holds vector monads that represent the reference directions to
 	 * be used by any monad that refers to this frame object. Multiplication and
 	 * addition in the monad are performed relative to these reference
@@ -114,13 +137,19 @@ public class FrameRealD extends FrameAbstract
 	 * generators in the algebra. This is represented by the fact that the
 	 * reference monads refer to the frame to which they are attached.
 	 * Multiplication at the frame level never calls on the multiplication of
-	 * the reference monads, so there is no danger of a loop occuring. The frame
+	 * the reference monads, so there is no danger of a loop occurring. The frame
 	 * must be able to resolve operations without calling on the operations of
 	 * the reference monads.
 	 * 
 	 */
-	public ArrayList<MonadRealD>	fBasis;
-
+	protected ArrayList<MonadRealD>	fBasis;
+	
+	/**
+	 * The reciprocal frame can be referenced from here if it is known. There is
+	 * no plan to construct one automatically from this frame.
+	 */
+	protected FrameRealD			reciprocal;
+	
 	/**
 	 * Frame constructor with an empty basis list.
 	 * 
@@ -135,9 +164,9 @@ public class FrameRealD extends FrameAbstract
 		setAlgebra(pAlg);
 		fBasis = new ArrayList<MonadRealD>(
 						algebra.getGBasis().getBladeCount() - 1);
-		vectorList = null;
+		nameList = null;
 	}
-
+	
 	/**
 	 * Frame Constructor with a full basis list.
 	 * 
@@ -159,20 +188,17 @@ public class FrameRealD extends FrameAbstract
 	/**
 	 * Add another Monad to the list of monads in this frame. This method does
 	 * not create a new copy of the Monad offered as a parameter. The Frame DOES
-	 * wind up referencing the passed Monad.
-	 * 
-	 * Not sure why the method returns the Frame after the appending operation.
+	 * wind up referencing the passed Monad..
 	 * 
 	 * @param pM
 	 *            MonadRealD this is the referenced monad for the Frame.
 	 * @throws CladosFrameException 
 	 * 	Monads in a Frame must satisfy ReferenceMatch
-	 * @return FrameRealD
 	 */
-	public FrameRealD appendVMonad(MonadRealD pM) throws CladosFrameException
+	public void appendNamedMonad(MonadRealD pM) throws CladosFrameException
 	{
-		// This method works if the foot of pM matches the foot of this nyad
-		// but the algebra of pM is not already used in the monadList.
+		// This method works if the foot of pM matches the foot of this frame
+		// and the algebra of pM matches the one for this frame.
 
 		// A check should be made to ensure pM is OK to append.
 		// The footPoint objects must match.
@@ -183,45 +209,54 @@ public class FrameRealD extends FrameAbstract
 		// Add Monad to the ArrayList
 		fBasis.ensureCapacity(fBasis.size() + 1);
 
-		pM.setFrameName(this.name);
-		pM.frame = this;
+		//pM.setFrameName(this.name); 	//Seems like a circular reference to me.
+		//pM.frame = this;				//Circular reference? Frame monads should be in default basis
+				
+		pM.setFrameName(null);
+		pM.frame = null;
 		fBasis.add(new MonadRealD(pM));
-
-		return this;
 	}
 
 	/**
-	 * Return the array of Monads
+	 * Return the array of Monads used as the frame's basis. 
+	 * This basically just hands the whole thing over for another object to mangle.
+	 * DANGER
 	 * 
 	 * @return ArrayList (of Monads)
 	 */
-	public ArrayList<MonadRealD> getFBasis()
+	@Override
+	protected ArrayList<MonadRealD> getFBasis()
 	{
 		return fBasis;
 	}
 
 	/**
 	 * Return the element of the array of Monads at the jth index.
+	 * This basically just hands it over for another object to mangle.
+	 * DANGER
 	 * 
 	 * @param pj
 	 *            int
 	 * @return MonadRealD
 	 */
-	public MonadRealD getFBasis(int pj)
+	protected MonadRealD getFBasis(int pj)
 	{
 		return fBasis.get(pj);
 	}
 
 	/**
 	 * Return the element of the array of Monads at the jth index of vectors.
+	 * This basically just finds it by name then hands it over 
+	 * for another object to mangle.
+	 * DANGER
 	 * 
 	 * @param pj
 	 *            int
 	 * @return MonadRealD
 	 */
-	public MonadRealD getVBasis(int pj)
+	public MonadRealD getNameBasis(int pj)
 	{
-		String tName = vectorList.get(pj);
+		String tName = nameList.get(pj);
 		int tSpot = FrameAbstract.findName(this, tName);
 		return fBasis.get(tSpot);
 	}
@@ -258,6 +293,25 @@ public class FrameRealD extends FrameAbstract
 		return null;
 	}
 
+	/**
+	 * Monad rightside multiplication: (index direction, pM). The Frame resolves
+	 * what monad would result if the product was between pM and a monad with a
+	 * single blade described by the indexed direction. The indexed monad
+	 * happens to be in the fBasis list at that index.
+	 * <p>
+	 * Multiplication between pM
+	 * 
+	 * @param pReferenceIndex
+	 *            short
+	 * @param pM
+	 *            MonadRealD
+	 * @return MonadRealD
+	 */
+	protected MonadRealD multiplyRight(short pReferenceIndex, MonadRealF pM)
+	{
+		return null;
+	}
+	
 	@Override
 	protected void orthogonalizeOn(MonadAbstract pM)
 	{
@@ -269,11 +323,10 @@ public class FrameRealD extends FrameAbstract
 	 * 
 	 * @param pthisone
 	 *            int
-	 * @throws CladosFrameException Monad removal failed. Couldn't find it.
-	 * 
-	 * @return FrameRealD
+	 * @throws CladosFrameException 
+	 * 	Monad removal failed. Couldn't find it.
 	 */
-	private FrameRealD removeVMonad(int pthisone) throws CladosFrameException
+	protected void removeNamedMonad(int pthisone) throws CladosFrameException
 	{
 		MonadRealD test = null;
 		try
@@ -289,8 +342,6 @@ public class FrameRealD extends FrameAbstract
 		{
 			if (test != null) fBasis.trimToSize();
 		}
-
-		return this;
 	}
 
 	/**
@@ -298,18 +349,17 @@ public class FrameRealD extends FrameAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealD
-	 * @throws CladosFrameException Happens when removal fails.
-	 * @return FrameRealD
+	 * @throws CladosFrameException 
+	 * 	Happens when removal fails.
 	 */
-	public FrameRealD removeVMonad(MonadRealD pM) throws CladosFrameException
+	protected void removeRefMonad(MonadRealD pM) throws CladosFrameException
 	{
 		int testfind = findMonad(this, pM);
 		if (testfind >= 0)
-			removeVMonad(testfind);
+			removeNamedMonad(testfind);
 		else
 			throw new CladosFrameException(this,
 							"Can't find the Monad to remove.");
-		return this;
 	}
 
 	/**

@@ -47,13 +47,13 @@ public final class Basis
 	 * This integer is the number of grades in the algebra. It is one more than
 	 * the number of generators and is used often enough to be worth keeping.
 	 */
-	private short		gradeCount;
+	protected short		gradeCount;
 	/**
 	 * This integer is the number of independent blades in an algebra. It is a
 	 * count of the number of vBasis rows and is used often enough to be worth
 	 * keeping around.
 	 */
-	private short		bladeCount;
+	protected short		bladeCount;
 	/**
 	 * This array holds the representation of the vBasis. The vBasis is a
 	 * complete list of unique blades for an algebra.
@@ -66,7 +66,7 @@ public final class Basis
 	 * dimension of an algebra using this basis because only one permutation of
 	 * each distinct subset of generators is found in the rows of the array.
 	 */
-	private short[][]	vBasis;
+	protected short[][]	vBasis;
 	/**
 	 * This array holds the integer keys for each member of the Basis. The key
 	 * for each blade is an integer built from sums of powers of the number of
@@ -88,7 +88,7 @@ public final class Basis
 	 * efficiencies in calculations and sorting because basis elements of
 	 * similar grade sort together.
 	 */
-	private long[]		vKey;
+	protected long[]	vKey;
 	/**
 	 * This array is used for keeping track of where grades start and stop in
 	 * the vBasis. The difference between GradeRange[k] and GradeRange[k+1] is
@@ -101,7 +101,7 @@ public final class Basis
 	 * regular methods of a monad. Efficiency demands that they be stored here
 	 * for later use.
 	 */
-	private short[]		gradeRange;
+	protected short[]	gradeRange;
 
 	/**
 	 * This is the basic constructor. It takes the number of generators as it's
@@ -264,22 +264,21 @@ public final class Basis
 	 * memory for a large basis. Efforts to streamline code and memory footprint
 	 * in this method could have a large impact.
 	 */
-	@SuppressWarnings("unused")
-	private void fillBasis()
+	//@SuppressWarnings("unused")
+	protected void fillBasis()
 	{
 		int tempPermTest = 0;
 		int tempPermFilter = 0;
 		long tempBubbleSpotL = 0;
 		short tempBubbleSpotI = 0;
 
-		for (int k = 0; k < bladeCount; k++) // basis row counter 0 thru
-												// BladeCount-1
+		for (int k = 0; k < bladeCount; k++) 
+		// basis row counter 0 thru BladeCount-1
 		{
 			vKey[k] = 0;
 			tempPermTest = k; // Starts as row counter
-			for (int m = 0; m < gradeCount - 1; m++) // generator (column)
-														// counter 0 thru
-														// GradeCount-2
+			for (int m = 0; m < gradeCount - 1; m++) 
+			// generator (column) counter 0 thru GradeCount-2
 			{
 				tempPermFilter = (int) Math.pow(2, gradeCount - 2 - m);
 				;
@@ -301,9 +300,9 @@ public final class Basis
 			// generators
 			// but they are already mostly sorted.
 
-			if (true) // Trying to speed up this section with a different sort
-						// TODO Work out the 'else' sort routine until it
-						// matches
+			if (true) 
+			// Trying to speed up this section with a different sort
+			// TODO Work out the 'else' sort routine until it matches
 			{
 				for (int m = 0; m <= gradeCount - 3; m++)
 				{
@@ -330,8 +329,8 @@ public final class Basis
 				int q = gradeCount - 1;
 				short[] tempGens = new short[q];
 				q--;
-				for (int m = gradeCount - 2; m >= 0; m--) // Only one pass is
-															// needed?
+				for (int m = gradeCount - 2; m >= 0; m--) 
+				// Only one pass is needed?
 				{
 					if (vBasis[k][m] != 0)
 					{
@@ -410,7 +409,7 @@ public final class Basis
 	 * many blades existed for a particular grade. Now it uses the Key and its
 	 * Base(GradeCount) encoding to do it better and faster.
 	 */
-	private void fillGradeRange()
+	protected void fillGradeRange()
 	{
 		gradeRange[0] = 0; // The scalar
 		gradeRange[1] = 1; // The scalar

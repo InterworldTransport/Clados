@@ -45,17 +45,17 @@ public final class Foot
 	/**
 	 * This String is the name the footPoint of the Reference Frame of the Monad
 	 */
-	private String				footName;
+	protected String			footName;
 	/**
 	 * This object defines the type of numbers used by all objects that share
 	 * this footPoint.
 	 */
-	private DivFieldType		numType;
+	protected DivFieldType		numType;
 	/**
 	 * This is the list of known reference frames defined elsewhere against this
 	 * footPoint.
 	 */
-	private ArrayList<String>	rFrames;
+	protected ArrayList<String>	rFrames;
 
 	/**
 	 * Build the footPoint object from scratch.

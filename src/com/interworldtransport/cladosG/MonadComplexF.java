@@ -948,6 +948,17 @@ public class MonadComplexF extends MonadAbstract
 	}
 
 	/**
+	 * This method is a concession to the old notation for the Pseudo Scalar
+	 * Part of a monad. It returns the pscalar part coefficient.
+	 * @return ComplexF
+	 */
+	@Override
+	public ComplexF PSPc()
+	{
+		return cM[getAlgebra().getGProduct().getGradeCount()];
+	}
+	
+	/**
 	 * Reverse the multiplication order of all geometry generators in the Monad.
 	 * Active Reversion: Alternating pairs of grades switch signs as a result of
 	 * all the permutation, so the easiest thing to do is to change the

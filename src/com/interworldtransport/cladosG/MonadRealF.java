@@ -715,27 +715,23 @@ public class MonadRealF extends MonadAbstract
 	 * @return MonadRealF
 	 */
 	public MonadRealF multiplyAntisymm(MonadRealF pM)
-					throws FieldBinaryException, CladosMonadBinaryException
+			throws FieldBinaryException, CladosMonadBinaryException
 	{
-		if (isReferenceMatch(this, pM)) // Don't try if not a reference match
-		{
-			if (isGZero(this)) return this;//obviously
-			if (isGZero(pM)) return pM;//equally obvious
-			
-			MonadRealF halfTwo = new MonadRealF(this);
-			halfTwo.multiplyRight(pM);
-
-			multiplyLeft(pM);
-			subtract(halfTwo);
-
-			scale(new RealF(cM[0], 0.5f));
-			setGradeKey();
-			return this;
-		}
-		else
-		{
+		if (!isReferenceMatch(this, pM)) 
 			throw new CladosMonadBinaryException(this,"Asymm multiply fails reference match.", pM);
-		}
+		// Don't try if not a reference match
+		if (isGZero(this)) return this;//obviously
+		if (isGZero(pM)) return pM;//equally obvious
+			
+		MonadRealF halfTwo = new MonadRealF(this);
+		halfTwo.multiplyRight(pM);
+
+		multiplyLeft(pM);
+		subtract(halfTwo);
+
+		scale(new RealF(cM[0], 0.5f));
+		setGradeKey();
+		return this;	
 	}
 
 	/**
@@ -795,21 +791,25 @@ public class MonadRealF extends MonadAbstract
 					if (isZero(pM.getCoeff(i))) continue;
 					// This is a weak form of the sparse flag kept here.
 					for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
-						// Looping through column blades in product array
-						{
-							// multiply the coefficients first
-							RealF tCtrbt = multiply(pM.getCoeff(i), cM[j]);
+					// Looping through column blades in product array
+					{
+						if (isZero(cM[j])) continue;
+						// This is a weak form of the sparse flag repeated here.
+						// Don't bother summing on zeroes.
+						
+						// multiply the coefficients first
+						RealF tCtrbt = multiply(pM.getCoeff(i), cM[j]);
+						
+						// find the blade to which this partial product contributes
+						short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
 							
-							// find the blade to which this partial product contributes
-							short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
+						// Adjust sign of contribution for product sign of blades
+						tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
 							
-							// Adjust sign of contribution for product sign of blades
-							tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
-							
-							// Add the contribution to new coeff array
-							tNewCoeff[prd].add(tCtrbt);
+						// Add the contribution to new coeff array
+						tNewCoeff[prd].add(tCtrbt);
 								
-						}// blade i in 'this' multiplied by pM is done.
+					}// blade i in 'this' multiplied by pM is done.
 				}
 				//Subtract 10^logKey so we can mark that the grade is done.
 				tempGradeKey -= Math.pow(10, logKey);
@@ -912,21 +912,25 @@ public class MonadRealF extends MonadAbstract
 					if (isZero(pM.getCoeff(i))) continue;
 					// This is a weak form of the sparse flag kept here.
 					for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
-						// Looping through column blades in product array
-						{
-							// multiply the coefficients first
-							RealF tCtrbt = multiply(cM[j], pM.getCoeff(i));
+					// Looping through column blades in product array
+					{
+						if (isZero(cM[j])) continue;
+						// This is a weak form of the sparse flag repeated here.
+						// Don't bother summing on zeroes.
+						
+						// multiply the coefficients first
+						RealF tCtrbt = multiply(cM[j], pM.getCoeff(i));
 								
-							// find the blade to which this partial product contributes
-							short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
+						// find the blade to which this partial product contributes
+						short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
 								
-							// Adjust sign of contribution for product sign of blades
-							tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
+						// Adjust sign of contribution for product sign of blades
+						tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
 								
-							// Add the contribution to new coeff array
-							tNewCoeff[prd].add(tCtrbt);
+						// Add the contribution to new coeff array
+						tNewCoeff[prd].add(tCtrbt);
 								
-						}// blade i in 'this' multiplied by pM is done.
+					}// blade i in 'this' multiplied by pM is done.
 				}
 				//Subtract 10^logKey so we can mark that the grade is done.
 				tempGradeKey -= Math.pow(10, logKey);
@@ -987,28 +991,24 @@ public class MonadRealF extends MonadAbstract
 	 * 	This exception is thrown when the field match test fails with the two monads
 	 * @return MonadRealF
 	 */
-	public MonadRealF multiplySymm(MonadRealF pM) throws FieldBinaryException,
-					CladosMonadBinaryException
+	public MonadRealF multiplySymm(MonadRealF pM) 
+			throws FieldBinaryException, CladosMonadBinaryException
 	{
-		if (isReferenceMatch(this, pM)) // Don't try if not a reference match
-		{
-			if (isGZero(this)) return this;//obviously
-			if (isGZero(pM)) return pM;//equally obvious
-			
-			MonadRealF halfTwo = new MonadRealF(this);
-			halfTwo.multiplyRight(pM);
-
-			multiplyLeft(pM);
-			add(halfTwo);
-
-			scale(new RealF(cM[0], 0.5f));
-			setGradeKey();
-			return this;
-		}
-		else
-		{
+		if (isReferenceMatch(this, pM)) 
 			throw new CladosMonadBinaryException(this,"Symm multiply fails reference match.", pM);
-		}
+		// Don't try if not a reference match
+		if (isGZero(this)) return this;//obviously
+		if (isGZero(pM)) return pM;//equally obvious
+			
+		MonadRealF halfTwo = new MonadRealF(this);
+		halfTwo.multiplyRight(pM);
+
+		multiplyLeft(pM);
+		add(halfTwo);
+
+		scale(new RealF(cM[0], 0.5f));
+		setGradeKey();
+		return this;
 	}
 
 	/**
@@ -1045,6 +1045,17 @@ public class MonadRealF extends MonadAbstract
 	{
 		gradePart(getAlgebra().getGProduct().getGradeCount());
 		return this;
+	}
+	
+	/**
+	 * This method is a concession to the old notation for the Pseudo Scalar
+	 * Part of a monad. It returns the pscalar part coefficient.
+	 * @return RealF
+	 */
+	@Override
+	public RealF PSPc()
+	{
+		return cM[getAlgebra().getGProduct().getGradeCount()];
 	}
 
 	/**

@@ -56,7 +56,7 @@ public final class GProduct
 	 * negative squares appear as one (1). This array is kept to increase the
 	 * speed of product calculations.
 	 */
-	private short[]		nSignature;
+	protected short[]	nSignature;
 	/**
 	 * This basis holds a representation of all the elements that can be built
 	 * from the generators that space the algebra's vector space.
@@ -73,7 +73,7 @@ public final class GProduct
 	 * The +1 offsets are present because java arrays start with an index of 0,
 	 * while the lowest rank blade is #1.
 	 */
-	private short[][]	result;
+	protected short[][]	result;
 
 	/**
 	 * Copy constructor of GProduct with other GProduct passed in. This
@@ -106,8 +106,8 @@ public final class GProduct
 	 * @throws BadSignatureException
 	 * 			This exception is thrown when an invalid signature is found
 	 */
-	public GProduct(String pSig) throws BadSignatureException,
-					CladosMonadException
+	public GProduct(String pSig) 
+			throws BadSignatureException, CladosMonadException
 	{
 		// Validate pSig to ensure it has only the information we want. Then
 		// save it internally
@@ -138,8 +138,7 @@ public final class GProduct
 		}
 		else
 		{
-			throw new BadSignatureException(this,
-							"Valid signature was expected.");
+			throw new BadSignatureException(this, "Valid signature expected.");
 		}
 		// Fill in any other helpful things to be kept here.
 	}
@@ -170,7 +169,7 @@ public final class GProduct
 	 * @param k
 	 *            short
 	 */
-	private void fillResult(short j, short k)
+	protected void fillResult(short j, short k)
 	{
 		int[] bothOps = new int[2 * (aBasis.getGradeCount() - 1)];
 		int signFlip = 0;
@@ -454,17 +453,17 @@ public final class GProduct
 	}
 
 	/**
-	 * Return a measure of the validitity of the Signature string. A string with
+	 * Return a measure of the validity of the Signature string. A string with
 	 * +'s and -'s will pass. No other one does.
 	 * 
-	 * This method also established the internal integer representation of the
+	 * This method also establishes the internal integer representation of the
 	 * signature.
 	 * 
 	 * @param pSg
 	 *            String
 	 * @return boolean This boolean states whether the GProduct signature is valid.
 	 */
-	private boolean validateSignature(String pSg)
+	protected boolean validateSignature(String pSg)
 	{
 		nSignature = new short[pSg.length()];
 		for (int j = 0; j < pSg.length(); j++)
@@ -481,7 +480,10 @@ public final class GProduct
 				}
 				else
 				{
+					nSignature=null;
 					return false;
+					// Yes... it was possible nSignature would be partially
+					// constructed when this happens.
 				}
 			}
 		}

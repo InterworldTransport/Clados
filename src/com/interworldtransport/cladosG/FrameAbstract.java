@@ -20,8 +20,6 @@ package com.interworldtransport.cladosG;
 
 import java.util.ArrayList;
 
-import com.interworldtransport.cladosGExceptions.CladosFrameException;
-
 /**
  * The frame object holds all basis details that support the reference frame for
  * a multivector over a division field {Cl(p,q) x DivField}.
@@ -42,8 +40,8 @@ public abstract class FrameAbstract
 	 */
 	public static int findName(FrameAbstract pRF, String pName)
 	{
-		for (String pM : pRF.vectorList)
-			if (pM.equals(pName)) return pRF.vectorList.indexOf(pM);
+		for (String pM : pRF.nameList)
+			if (pM.equals(pName)) return pRF.nameList.indexOf(pM);
 		return -1;
 	}
 
@@ -59,7 +57,7 @@ public abstract class FrameAbstract
 	 */
 	public static boolean hasName(FrameAbstract pRF, String pName)
 	{
-		for (String pM : pRF.vectorList)
+		for (String pM : pRF.nameList)
 			if (pM.equals(pName)) return true;
 		return false;
 	}
@@ -70,60 +68,57 @@ public abstract class FrameAbstract
 	 * default product table are kept at this level as they do not depend on the
 	 * division field used to represent scale.
 	 */
-	public AlgebraAbstract		algebra;
+	protected AlgebraAbstract	algebra;
+	
+	/**
+	 * The fBasis holds vector monads that represent the reference directions to
+	 * be used by any monad that refers to this frame object. Multiplication and
+	 * addition in the monad are performed relative to these reference
+	 * directions. Addition at the monad level can be done directly with no
+	 * reference to the default basis in the algebra. Multiplication, however,
+	 * is handed off to the reference frame since the product of two reference
+	 * directions might result in a combination result.
+	 * <p>
+	 * The monads in the frame use the default basis constructed from the
+	 * generators in the algebra. This is represented by the fact that the
+	 * reference monads refer to the frame to which they are attached.
+	 * Multiplication at the frame level never calls on the multiplication of
+	 * the reference monads, so there is no danger of a loop occurring. The frame
+	 * must be able to resolve operations without calling on the operations of
+	 * the reference monads.
+	 * 
+	 */
+	protected ArrayList<?>		fBasis;
 	/**
 	 * The name of the frame is used in other places as a key. It should tell a
 	 * reader what the frame was meant for with a quick glance.
 	 */
-	public String				name;
+	protected String			name;
+	
 	/**
-	 * The vectorList holds the names of the monads in a full basis that
+	 * The nameList holds the names of the monads in a full basis that
 	 * represent the 'vector' directions. This is the only list that can
-	 * distinguish between a reference frames so-called vectors and the vectors
+	 * distinguish between a reference frame's so-called vectors and the vectors
 	 * of the default basis.
 	 * <p>
 	 * The monads in this list need not be grade=1 according to the default
 	 * basis. Grade state of a monad will depend on which subspaces it occupies
 	 * relative to the outer products of the vectors in this list.
 	 */
-	public ArrayList<String>	vectorList;
-
+	protected ArrayList<String>	nameList;
+	
 	/**
-	 * Add another name to the list that signifies which monads represent
-	 * 'vector' directions in a frame. The method returns false if the vector is
-	 * already represented in the list or if the list is full and true if it
-	 * wasn't in the list but is now.
-	 * <p>
-	 * One error condition can occur where a vectorList is already full as far
-	 * as the algebra is concerned. This occurs when the vectorList size matches
-	 * the gradeCount-1 of the Algebra. Appending is not allowed at this point
-	 * and an exception is thrown.
-	 * <p>
-	 * The boolean response enables a reference frame to rebuild the higher
-	 * order blades after this new one is added.
-	 * 
-	 * @param pM
-	 *            MonadAbstract
-	 * @return boolean
-	 * @throws CladosFrameException This happens when an append would make the
-	 * frame a higher dimensional space than the algebra. Can't happen.
+	 * The reciprocal frame can be referenced from here if it is known. There is
+	 * no plan to construct one automatically from this frame.
 	 */
-	protected boolean appendMonad(MonadAbstract pM) throws CladosFrameException
-	{
-		if (getFrameOrder() >= algebra.getGProduct().getGradeCount() - 1)
-			throw new CladosFrameException(this,
-							"Frame already full when another append was tried.");
-		for (String tS : vectorList)
-			if (tS.equals(pM.getName())) return false;
-		vectorList.ensureCapacity(vectorList.size() + 1);
-		vectorList.add(pM.getName());
-		return true;
-	}
+	protected FrameAbstract		reciprocal;
 
 	public AlgebraAbstract getAlgebra()
 	{
 		return algebra;
 	}
+
+	protected abstract ArrayList<?> getFBasis();
 
 	/**
 	 * Return the order of this Frame
@@ -132,12 +127,16 @@ public abstract class FrameAbstract
 	 */
 	public short getFrameOrder()
 	{
-		return (short) vectorList.size();
+		return (short) nameList.size();
 	}
 
 	public String getName()
 	{
 		return name;
+	}
+
+	public FrameAbstract getReciprocal() {
+		return reciprocal;
 	}
 
 	protected abstract void orthogonalizeOn(MonadAbstract pM);
@@ -150,5 +149,9 @@ public abstract class FrameAbstract
 	protected void setName(String pName)
 	{
 		name = pName;
+	}
+
+	protected void setReciprocal(FrameAbstract reciprocal) {
+		this.reciprocal = reciprocal;
 	}
 }

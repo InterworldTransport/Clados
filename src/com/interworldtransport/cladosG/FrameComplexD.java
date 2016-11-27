@@ -100,6 +100,29 @@ public class FrameComplexD extends FrameAbstract
 		// test for their counterparts (by name) in the other list.
 		return true;
 	}
+	
+	/**
+	 * Display XML string that represents the Frame
+	 * @param pM
+	 * 		FrameRealF This is the Frame to be converted to XML.
+	 * @return String
+	 */
+	public static String toXMLString(FrameComplexD pM)
+	{
+		StringBuffer rB = new StringBuffer("<Frame name=\"" + pM.getName()
+						+ "\" ");
+		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
+		rB.append(">\n");
+
+		rB.append(AlgebraComplexD.toXMLString((AlgebraComplexD)pM.getAlgebra()));
+		
+		for (int i=0; i==pM.getFBasis().size(); i++)
+		{
+			rB.append(MonadComplexD.toXMLString(pM.getFBasis(i)));
+		}
+		rB.append("</Frame>\n");
+		return rB.toString();
+	}
 
 	/**
 	 * The fBasis holds vector monads that represent the reference directions to
@@ -120,7 +143,13 @@ public class FrameComplexD extends FrameAbstract
 	 * 
 	 */
 	public ArrayList<MonadComplexD>	fBasis;
-
+	
+	/**
+	 * The reciprocal frame can be referenced from here if it is known. There is
+	 * no plan to construct one automatically from this frame.
+	 */
+	protected FrameComplexD			reciprocal;
+	
 	/**
 	 * Frame constructor with an empty basis list.
 	 * 
@@ -135,7 +164,7 @@ public class FrameComplexD extends FrameAbstract
 		setAlgebra(pAlg);
 		fBasis = new ArrayList<MonadComplexD>(
 						algebra.getGBasis().getBladeCount() - 1);
-		vectorList = null;
+		nameList = null;
 	}
 
 	/**
@@ -154,23 +183,23 @@ public class FrameComplexD extends FrameAbstract
 		setAlgebra(pAlg);
 		fBasis = new ArrayList<MonadComplexD>(pML);
 	}
-
+	
 	/**
 	 * Add another Monad to the list of monads in this frame. This method does
 	 * not create a new copy of the Monad offered as a parameter. The Frame DOES
 	 * wind up referencing the passed Monad.
 	 * 
-	 * (Not sure why the method returns the Frame after the appending operation.(
+	 * Not sure why the method returns the Frame after the appending operation.
 	 * 
 	 * @param pM
 	 *            MonadComplexD this is the referenced monad for the Frame.
-	 * @throws CladosFrameException Monads in a Frame must satisfy ReferenceMatch
-	 * @return FrameComplexD
+	 * @throws CladosFrameException 
+	 * 	Monads in a Frame must satisfy ReferenceMatch
 	 */
-	public FrameComplexD appendVMonad(MonadComplexD pM) throws CladosFrameException
+	public void appendNamedMonad(MonadComplexD pM) throws CladosFrameException
 	{
-		// This method works if the foot of pM matches the foot of this nyad
-		// but the algebra of pM is not already used in the monadList.
+		// This method works if the foot of pM matches the foot of this frame
+		// and the algebra of pM matches the one for this frame.
 
 		// A check should be made to ensure pM is OK to append.
 		// The footPoint objects must match.
@@ -181,45 +210,54 @@ public class FrameComplexD extends FrameAbstract
 		// Add Monad to the ArrayList
 		fBasis.ensureCapacity(fBasis.size() + 1);
 
-		pM.setFrameName(this.name);
-		pM.frame = this;
+		//pM.setFrameName(this.name); 	//Seems like a circular reference to me.
+		//pM.frame = this;				//Circular reference? Frame monads should be in default basis
+				
+		pM.setFrameName(null);
+		pM.frame = null;
 		fBasis.add(new MonadComplexD(pM));
-
-		return this;
 	}
 
 	/**
-	 * Return the array of Monads
+	 * Return the array of Monads used as the frame's basis. 
+	 * This basically just hands the whole thing over for another object to mangle.
+	 * DANGER
 	 * 
 	 * @return ArrayList (of Monads)
 	 */
-	public ArrayList<MonadComplexD> getFBasis()
+	@Override
+	protected ArrayList<MonadComplexD> getFBasis()
 	{
 		return fBasis;
 	}
 
 	/**
 	 * Return the element of the array of Monads at the jth index.
+	 * This basically just hands it over for another object to mangle.
+	 * DANGER
 	 * 
 	 * @param pj
 	 *            int
 	 * @return MonadComplexD
 	 */
-	public MonadComplexD getFBasis(int pj)
+	protected MonadComplexD getFBasis(int pj)
 	{
 		return fBasis.get(pj);
 	}
 
 	/**
 	 * Return the element of the array of Monads at the jth index of vectors.
+	 * This basically just finds it by name then hands it over 
+	 * for another object to mangle.
+	 * DANGER
 	 * 
 	 * @param pj
 	 *            int
 	 * @return MonadComplexD
 	 */
-	public MonadComplexD getVBasis(int pj)
+	public MonadComplexD getNameBasis(int pj)
 	{
-		String tName = vectorList.get(pj);
+		String tName = nameList.get(pj);
 		int tSpot = FrameAbstract.findName(this, tName);
 		return fBasis.get(tSpot);
 	}
@@ -255,6 +293,25 @@ public class FrameComplexD extends FrameAbstract
 	{
 		return null;
 	}
+	
+	/**
+	 * Monad rightside multiplication: (index direction, pM). The Frame resolves
+	 * what monad would result if the product was between pM and a monad with a
+	 * single blade described by the indexed direction. The indexed monad
+	 * happens to be in the fBasis list at that index.
+	 * <p>
+	 * Multiplication between pM
+	 * 
+	 * @param pReferenceIndex
+	 *            short
+	 * @param pM
+	 *            MonadComplexD
+	 * @return MonadComplexD
+	 */
+	protected MonadComplexD multiplyRight(short pReferenceIndex, MonadRealF pM)
+	{
+		return null;
+	}
 
 	@Override
 	protected void orthogonalizeOn(MonadAbstract pM)
@@ -267,11 +324,10 @@ public class FrameComplexD extends FrameAbstract
 	 * 
 	 * @param pthisone
 	 *            int
-	 * @throws CladosFrameException Monad removal failed. Couldn't find it.
-	 * 
-	 * @return FrameComplexD
+	 * @throws CladosFrameException 
+	 * 	Monad removal failed. Couldn't find it.
 	 */
-	private FrameComplexD removeVMonad(int pthisone) throws CladosFrameException
+	protected void removeNamedMonad(int pthisone) throws CladosFrameException
 	{
 		MonadComplexD test = null;
 		try
@@ -287,8 +343,6 @@ public class FrameComplexD extends FrameAbstract
 		{
 			if (test != null) fBasis.trimToSize();
 		}
-
-		return this;
 	}
 
 	/**
@@ -296,18 +350,17 @@ public class FrameComplexD extends FrameAbstract
 	 * 
 	 * @param pM
 	 *            MonadComplexD
-	 * @throws CladosFrameException Happens when removal fails.
-	 * @return FrameComplexD
+	 * @throws CladosFrameException 
+	 * 	Happens when removal fails.
 	 */
-	public FrameComplexD removeVMonad(MonadComplexD pM) throws CladosFrameException
+	protected void removeRefMonad(MonadComplexD pM) throws CladosFrameException
 	{
 		int testfind = findMonad(this, pM);
 		if (testfind >= 0)
-			removeVMonad(testfind);
+			removeNamedMonad(testfind);
 		else
 			throw new CladosFrameException(this,
 							"Can't find the Monad to remove.");
-		return this;
 	}
 
 	/**

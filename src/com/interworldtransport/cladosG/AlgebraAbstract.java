@@ -18,6 +18,8 @@
  */
 package com.interworldtransport.cladosG;
 
+import com.interworldtransport.cladosF.*;
+
 /**
  * The algebra object holds all geometric details that support the definition of
  * a multivector over a division field {Cl(p,q) x DivField} except the actual 
@@ -28,16 +30,25 @@ package com.interworldtransport.cladosG;
  */
 public abstract class AlgebraAbstract
 {
-	public Foot		footPoint;
-	public Basis	gBasis;
-	public GProduct	gProduct;
-	public String	name;
+	protected Foot		footPoint;
+	protected Basis		gBasis;
+	protected GProduct	gProduct;
+	protected String	name;
+	protected DivField	protoNumber;
 	
+	/**
+	 * This method returns the Algebra's name.
+	 * @return String
+	 */
 	public String getAlgebraName()
 	{
 		return name;
 	}
 
+	/**
+	 * This method returns a reference to the Foot of the algebra.
+	 * @return Foot
+	 */
 	public Foot getFootPoint()
 	{
 		return footPoint;
