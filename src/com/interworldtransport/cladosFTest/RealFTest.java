@@ -1,43 +1,44 @@
-package com.interworldtransport.cladosF;
+package com.interworldtransport.cladosFTest;
 
 import org.junit.*;
 import static org.junit.Assert.*;
-import static com.interworldtransport.cladosF.ComplexF.*;
+import static com.interworldtransport.cladosF.RealF.*;
 
+import com.interworldtransport.cladosF.RealF;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
 
-public class ComplexFTest // extends TestCase
+public class RealFTest // extends TestCase
 {
 
-	public ComplexF		tReal0;
-	public ComplexF		tReal1;
-	public ComplexF		tReal1n;
-	public ComplexF		tReal2;
-	public ComplexF		tReal3;
-	public ComplexF		tReal4;
-	public ComplexF		tReal5;
-	public ComplexF		tReal6;
-	public ComplexF		tReal7;
-	public ComplexF		tReal8;
-	public ComplexF		tReal9;
-	public ComplexF[]	tReals;
+	public RealF	tReal0;
+	public RealF	tReal1;
+	public RealF	tReal1n;
+	public RealF	tReal2;
+	public RealF	tReal3;
+	public RealF	tReal4;
+	public RealF	tReal5;
+	public RealF	tReal6;
+	public RealF	tReal7;
+	public RealF	tReal8;
+	public RealF	tReal9;
+	public RealF[]	tReals;
 
 	@Before
 	public void setUp()
 	{
-		tReal0 = ZERO("Test:ComplexF");
-		tReal1 = ONE("Test:ComplexF");
-		tReal1n = new ComplexF(tReal1.getFieldType(), -1f);
-		tReal2 = new ComplexF(tReal1.getFieldType(), Float.MAX_VALUE);
-		tReal3 = new ComplexF(tReal1.getFieldType(), Float.MAX_EXPONENT);
-		tReal4 = new ComplexF(tReal1.getFieldType(), Float.NaN);
-		tReal5 = new ComplexF(tReal1.getFieldType(), Float.POSITIVE_INFINITY);
-		tReal6 = new ComplexF(tReal1.getFieldType(), Float.NEGATIVE_INFINITY);
-		tReal7 = new ComplexF(tReal1.getFieldType(), Float.MIN_NORMAL);
-		tReal8 = new ComplexF(tReal1.getFieldType(), Float.MIN_VALUE);
-		tReal9 = new ComplexF(tReal1.getFieldType(), Float.MIN_EXPONENT);
-		tReals = new ComplexF[10];
+		tReal0 = ZERO("Test:RealF");
+		tReal1 = ONE("Test:RealF");
+		tReal1n = new RealF(tReal1.getFieldType(), -1f);
+		tReal2 = new RealF(tReal1.getFieldType(), Float.MAX_VALUE);
+		tReal3 = new RealF(tReal1.getFieldType(), Float.MAX_EXPONENT);
+		tReal4 = new RealF(tReal1.getFieldType(), Float.NaN);
+		tReal5 = new RealF(tReal1.getFieldType(), Float.POSITIVE_INFINITY);
+		tReal6 = new RealF(tReal1.getFieldType(), Float.NEGATIVE_INFINITY);
+		tReal7 = new RealF(tReal1.getFieldType(), Float.MIN_NORMAL);
+		tReal8 = new RealF(tReal1.getFieldType(), Float.MIN_VALUE);
+		tReal9 = new RealF(tReal1.getFieldType(), Float.MIN_EXPONENT);
+		tReals = new RealF[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
 		tReals[2] = tReal2;
@@ -130,7 +131,7 @@ public class ComplexFTest // extends TestCase
 	{
 		assertTrue(isEqual(tReal0.conjugate(), ZERO(tReal0)));
 		assertFalse(isEqual(tReal1.conjugate(), tReal1n));
-		ComplexF tR = conjugate(tReal0);
+		RealF tR = conjugate(tReal0);
 		assertTrue(isEqual(tR, tReal0));
 	}
 

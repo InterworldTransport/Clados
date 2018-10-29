@@ -1,43 +1,44 @@
-package com.interworldtransport.cladosF;
+package com.interworldtransport.cladosFTest;
 
 import org.junit.*;
 import static org.junit.Assert.*;
-import static com.interworldtransport.cladosF.RealF.*;
+import static com.interworldtransport.cladosF.ComplexD.*;
 
+import com.interworldtransport.cladosF.ComplexD;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
 
-public class RealFTest // extends TestCase
+public class ComplexDTest  //extends TestCase
 {
 
-	public RealF	tReal0;
-	public RealF	tReal1;
-	public RealF	tReal1n;
-	public RealF	tReal2;
-	public RealF	tReal3;
-	public RealF	tReal4;
-	public RealF	tReal5;
-	public RealF	tReal6;
-	public RealF	tReal7;
-	public RealF	tReal8;
-	public RealF	tReal9;
-	public RealF[]	tReals;
+	public ComplexD		tReal0;
+	public ComplexD		tReal1;
+	public ComplexD		tReal1n;
+	public ComplexD		tReal2;
+	public ComplexD		tReal3;
+	public ComplexD		tReal4;
+	public ComplexD		tReal5;
+	public ComplexD		tReal6;
+	public ComplexD		tReal7;
+	public ComplexD		tReal8;
+	public ComplexD		tReal9;
+	public ComplexD[]	tReals;
 
 	@Before
 	public void setUp()
 	{
-		tReal0 = ZERO("Test:RealF");
-		tReal1 = ONE("Test:RealF");
-		tReal1n = new RealF(tReal1.getFieldType(), -1f);
-		tReal2 = new RealF(tReal1.getFieldType(), Float.MAX_VALUE);
-		tReal3 = new RealF(tReal1.getFieldType(), Float.MAX_EXPONENT);
-		tReal4 = new RealF(tReal1.getFieldType(), Float.NaN);
-		tReal5 = new RealF(tReal1.getFieldType(), Float.POSITIVE_INFINITY);
-		tReal6 = new RealF(tReal1.getFieldType(), Float.NEGATIVE_INFINITY);
-		tReal7 = new RealF(tReal1.getFieldType(), Float.MIN_NORMAL);
-		tReal8 = new RealF(tReal1.getFieldType(), Float.MIN_VALUE);
-		tReal9 = new RealF(tReal1.getFieldType(), Float.MIN_EXPONENT);
-		tReals = new RealF[10];
+		tReal0 = ZERO("Test:ComplexD");
+		tReal1 = ONE("Test:ComplexD");
+		tReal1n = new ComplexD(tReal1.getFieldType(), -1d);
+		tReal2 = new ComplexD(tReal1.getFieldType(), Double.MAX_VALUE);
+		tReal3 = new ComplexD(tReal1.getFieldType(), Double.MAX_EXPONENT);
+		tReal4 = new ComplexD(tReal1.getFieldType(), Double.NaN);
+		tReal5 = new ComplexD(tReal1.getFieldType(), Double.POSITIVE_INFINITY);
+		tReal6 = new ComplexD(tReal1.getFieldType(), Double.NEGATIVE_INFINITY);
+		tReal7 = new ComplexD(tReal1.getFieldType(), Double.MIN_NORMAL);
+		tReal8 = new ComplexD(tReal1.getFieldType(), Double.MIN_VALUE);
+		tReal9 = new ComplexD(tReal1.getFieldType(), Double.MIN_EXPONENT);
+		tReals = new ComplexD[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
 		tReals[2] = tReal2;
@@ -98,31 +99,31 @@ public class RealFTest // extends TestCase
 	@Test
 	public void testGetReal()
 	{
-		float t1 = tReal1.getReal();
-		float t1n = tReal1n.getReal();
-		assertTrue(t1 == t1n * -1f);
+		double t1 = tReal1.getReal();
+		double t1n = tReal1n.getReal();
+		assertTrue(t1 == t1n * -1d);
 	}
 
 	@Test
 	public void testGetModulus()
 	{
-		assertTrue(tReal0.getModulus() == 0f);
-		assertTrue(tReal1.getModulus() > 0f);
-		assertTrue(Float.isNaN(tReal4.getModulus()));
-		assertTrue(Float.isInfinite(tReal5.getModulus()));
-		assertTrue(Float.isInfinite(tReal6.getModulus()));
-		assertTrue(Float.isInfinite(tReal2.getModulus()));
+		assertTrue(tReal0.getModulus() == 0d);
+		assertTrue(tReal1.getModulus() > 0d);
+		assertTrue(Double.isNaN(tReal4.getModulus()));
+		assertTrue(Double.isInfinite(tReal5.getModulus()));
+		assertTrue(Double.isInfinite(tReal6.getModulus()));
+		assertTrue(Double.isInfinite(tReal2.getModulus()));
 	}
 
 	@Test
 	public void testGetSQModulus()
 	{
-		assertTrue(tReal0.getModulus() == 0f);
-		assertTrue(tReal1.getModulus() > 0f);
-		assertTrue(Float.isNaN(tReal4.getModulus()));
-		assertTrue(Float.isInfinite(tReal5.getModulus()));
-		assertTrue(Float.isInfinite(tReal6.getModulus()));
-		assertTrue(Float.isInfinite(tReal2.getModulus()));
+		assertTrue(tReal0.getModulus() == 0d);
+		assertTrue(tReal1.getModulus() > 0d);
+		assertTrue(Double.isNaN(tReal4.getModulus()));
+		assertTrue(Double.isInfinite(tReal5.getModulus()));
+		assertTrue(Double.isInfinite(tReal6.getModulus()));
+		assertTrue(Double.isInfinite(tReal2.getModulus()));
 	}
 
 	@Test
@@ -130,23 +131,23 @@ public class RealFTest // extends TestCase
 	{
 		assertTrue(isEqual(tReal0.conjugate(), ZERO(tReal0)));
 		assertFalse(isEqual(tReal1.conjugate(), tReal1n));
-		RealF tR = conjugate(tReal0);
+		ComplexD tR = conjugate(tReal0);
 		assertTrue(isEqual(tR, tReal0));
 	}
 
 	@Test
 	public void testScale()
 	{
-		assertTrue(isEqual(tReal1n.scale(-1f), tReal1));
-		tReal1n.scale(-1f);
+		assertTrue(isEqual(tReal1n.scale(-1d), tReal1));
+		tReal1n.scale(-1d);
 	}
 
 	@Test(expected = FieldException.class)
 	public void testInvert() throws FieldException
 	{
-		tReal1n.scale(-1f);
+		tReal1n.scale(-1d);
 		assertTrue(isEqual(tReal1n.invert(), tReal1));
-		tReal1n.scale(-1f);
+		tReal1n.scale(-1d);
 		assertFalse(isEqual(tReal0.invert(), tReal5));
 	}
 
@@ -155,7 +156,7 @@ public class RealFTest // extends TestCase
 	{
 		assertTrue(isZero(add(tReal1, tReal1n)));
 		assertTrue(isZero(tReal1.add(tReal1n)));
-		assertFalse(isEqual(tReal1.add(tReal1n).scale(-1f), tReal1n));
+		assertFalse(isEqual(tReal1.add(tReal1n).scale(-1d), tReal1n));
 	}
 
 	@Test

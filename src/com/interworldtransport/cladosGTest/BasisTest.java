@@ -1,6 +1,8 @@
-package com.interworldtransport.cladosG;
+package com.interworldtransport.cladosGTest;
 
 import org.junit.*;
+
+import com.interworldtransport.cladosG.Basis;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
 
 import static org.junit.Assert.*;
@@ -8,6 +10,8 @@ import static org.junit.Assert.*;
 public class BasisTest
 {
 	Basis	tBasis4;
+	Basis	tBasis42;
+	Basis	tBasis43;
 	Basis	tBasis8;
 	Basis	tBasis10;
 	Basis	tBasis14;
@@ -16,6 +20,8 @@ public class BasisTest
 	public void setUp() throws CladosMonadException
 	{
 		tBasis4 = new Basis((short) 4);
+		tBasis42 = new Basis(tBasis4);
+		tBasis43 = new Basis((short) 4);
 		tBasis8 = new Basis((short) 8);
 		tBasis10 = new Basis((short) 10);
 		tBasis14 = new Basis((short) 14);
@@ -62,6 +68,14 @@ public class BasisTest
 		{
 			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[4-k+1] - tSpot[4-k]);
 		}
-
+	}
+	
+	@Test
+	public void testIndependence()
+	{
+		assertTrue(tBasis4.getBasis().equals(tBasis42.getBasis()));
+		// Using the copy constructor results in both Basis objects sharing vBasis
+		assertFalse(tBasis4.getBasis().equals(tBasis43.getBasis()));
+		// Using the raw constructor results in both Basis object not sharing a vBasis.
 	}
 }

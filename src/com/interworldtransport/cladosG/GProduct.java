@@ -1,17 +1,23 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.GProduct<br>
  * -------------------------------------------------------------------- <p>
- * You ("Licensee") are granted a license to this software under the terms of 
- * the GNU General Public License. A full copy of the license can be found 
- * bundled with this package or code file. If the license file has become 
- * separated from the package, code file, or binary executable, the Licensee is
- * still expected to read about the license at the following URL before 
- * accepting this material. 
- * <code>http://www.opensource.org/gpl-license.html</code><p> 
- * Use of this code or executable objects derived from it by the Licensee states
- * their willingness to accept the terms of the license. <p> 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version. 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.<p>
+ * 
+ * Use of this code or executable objects derived from it by the Licensee 
+ * states their willingness to accept the terms of the license. <p> 
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * 
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.GProduct<br>
  * ------------------------------------------------------------------------ <br>
@@ -123,7 +129,7 @@ public final class GProduct
 
 			result = new short[aBasis.getBladeCount()][aBasis.getBladeCount()];
 
-			for (int j = 0; j < aBasis.getBladeCount(); j++)
+			for (short j = 0; j < aBasis.getBladeCount(); j++)
 			{
 				result[0][j] = (short) (j + 1);
 				result[j][0] = (short) (j + 1);
@@ -172,7 +178,7 @@ public final class GProduct
 	protected void fillResult(short j, short k)
 	{
 		int[] bothOps = new int[2 * (aBasis.getGradeCount() - 1)];
-		int signFlip = 0;
+		short signFlip = 0;
 		long bothOpsKey = 0L;
 
 		int tempBubbleSpot = 0;
@@ -205,7 +211,7 @@ public final class GProduct
 			}
 		} // end of doubleSort sort
 
-		signFlip = signFlip % 2; // commutation sign tracking is being done.
+		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
 
 		// Now we need to remove generator pairs and track signs.
 		for (int m = 2 * (aBasis.getGradeCount() - 1) - 1; m >= 1; m--)
@@ -220,7 +226,7 @@ public final class GProduct
 				// flip sign again if generator has negative square.
 			}
 		}
-		signFlip = signFlip % 2; // commutation sign tracking is being done.
+		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
 
 		// Now sort again.
 		for (int m = 0; m < 2 * aBasis.getGradeCount() - 2; m++)
@@ -241,7 +247,7 @@ public final class GProduct
 			}// end of inside doublesort pass
 		} // end of outside doubleSort sort
 
-		signFlip = signFlip % 2; // commutation sign tracking is being done.
+		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
 
 		// At this point doubleSort should be fully sorted and have no
 		// duplicate generators. Now we need to Key the basis element in

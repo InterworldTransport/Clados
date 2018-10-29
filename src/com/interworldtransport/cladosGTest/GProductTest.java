@@ -1,7 +1,8 @@
-package com.interworldtransport.cladosG;
+package com.interworldtransport.cladosGTest;
 
 import org.junit.*;
 
+import com.interworldtransport.cladosG.GProduct;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
 

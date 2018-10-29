@@ -1,4 +1,4 @@
-package com.interworldtransport.cladosG;
+package com.interworldtransport.cladosGTest;
 
 import org.junit.*;
 
@@ -6,12 +6,14 @@ import com.interworldtransport.cladosF.DivFieldType;
 import com.interworldtransport.cladosF.RealF;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
+import com.interworldtransport.cladosG.MonadRealF;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
-import static com.interworldtransport.cladosG.MonadRealF.*;
+
 import static com.interworldtransport.cladosF.RealF.*;
 import static org.junit.Assert.*;
+import static com.interworldtransport.cladosG.MonadRealF.*;
 
 public class MonadRealFTest
 {

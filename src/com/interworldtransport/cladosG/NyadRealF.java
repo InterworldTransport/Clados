@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.NyadRealF<br>
  * -------------------------------------------------------------------- <p>
@@ -18,12 +18,13 @@
  */
 package com.interworldtransport.cladosG;
 
+import static com.interworldtransport.cladosG.MonadRealF.*;
+
 import java.util.ArrayList;
 
 import com.interworldtransport.cladosF.*;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosGExceptions.*;
-import static com.interworldtransport.cladosG.MonadRealF.*;
 
 /**
  * Multivector Lists over a shared division field and shared algebraic foot.

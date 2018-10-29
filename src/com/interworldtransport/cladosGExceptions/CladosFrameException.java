@@ -18,7 +18,7 @@
  */
 package com.interworldtransport.cladosGExceptions;
 
-import com.interworldtransport.cladosG.*;
+import com.interworldtransport.cladosG.FrameAbstract;
 
 /**
  * This class is designed to be the top of the CladosG frame exception family.

@@ -17,7 +17,8 @@
  * ------------------------------------------------------------------------ <br>
  */
 package com.interworldtransport.cladosGExceptions;
-import com.interworldtransport.cladosG.*;
+
+import com.interworldtransport.cladosG.MonadAbstract;
 /**
  * This class is designed to be the top of the CladosG exception family.  
  * All instances of descendants are assumed to originate from geometric objects

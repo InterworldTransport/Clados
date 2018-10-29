@@ -1,17 +1,19 @@
-package com.interworldtransport.cladosG;
+package com.interworldtransport.cladosGTest;
 
 import org.junit.*;
 
-import com.interworldtransport.cladosF.DivFieldType;
 import com.interworldtransport.cladosF.ComplexF;
+import com.interworldtransport.cladosF.DivFieldType;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
+import com.interworldtransport.cladosG.MonadComplexF;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
-import static com.interworldtransport.cladosG.MonadComplexF.*;
+
 import static com.interworldtransport.cladosF.ComplexF.*;
 import static org.junit.Assert.*;
+import static com.interworldtransport.cladosG.MonadComplexF.*;
 
 public class MonadComplexFTest
 {

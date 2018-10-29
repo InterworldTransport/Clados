@@ -1,17 +1,23 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.FrameComplexD<br>
  * -------------------------------------------------------------------- <p>
- * You ("Licensee") are granted a license to this software under the terms of 
- * the GNU General Public License. A full copy of the license can be found 
- * bundled with this package or code file. If the license file has become 
- * separated from the package, code file, or binary executable, the Licensee is
- * still expected to read about the license at the following URL before 
- * accepting this material. 
- * <code>http://www.opensource.org/gpl-license.html</code><p> 
- * Use of this code or executable objects derived from it by the Licensee states
- * their willingness to accept the terms of the license. <p> 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version. 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.<p>
+ * 
+ * Use of this code or executable objects derived from it by the Licensee 
+ * states their willingness to accept the terms of the license. <p> 
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * 
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.FrameComplexD<br>
  * ------------------------------------------------------------------------ <br>

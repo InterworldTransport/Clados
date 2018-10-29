@@ -1,17 +1,23 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.Basis<br>
  * -------------------------------------------------------------------- <p>
- * You ("Licensee") are granted a license to this software under the terms of 
- * the GNU General Public License. A full copy of the license can be found 
- * bundled with this package or code file. If the license file has become 
- * separated from the package, code file, or binary executable, the Licensee is
- * still expected to read about the license at the following URL before 
- * accepting this material. 
- * <code>http://www.opensource.org/gpl-license.html</code><p> 
- * Use of this code or executable objects derived from it by the Licensee states
- * their willingness to accept the terms of the license. <p> 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version. 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.<p>
+ * 
+ * Use of this code or executable objects derived from it by the Licensee 
+ * states their willingness to accept the terms of the license. <p> 
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * 
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.Basis<br>
  * ------------------------------------------------------------------------ <br>
@@ -34,9 +40,27 @@ import com.interworldtransport.cladosGExceptions.*;
  * a monad. In algebras with a moderate number of generators this will matter a
  * great deal.
  * <p>
- * The choice of shorts limits this class to supporting products with between 1
- * and 14 generators inclusive.
+ * The choice of shorts limits this class to algebras with between 1 and 14
+ * generators inclusive (with 16284 blades) because 2^15-1 is the max for 
+ * signed shorts and 15 generators produce 2^15 blades. Switching to int's 
+ * enables up to 30 generators and 1,073,741,824 blades. Switching to long's 
+ * enables up to 62 generators and 4,611,686,018,427,387,904 blades. Perhaps 
+ * when that kind of hardware is available, this class should be updated. 8)
  * <p>
+ * There is a speed improvement for sorting keys in an Eddington basis
+ * if we use a 3-way median quicksort algorithm instead of the heapsort
+ * algorith. This improvement comes at the cost of memory used, so there
+ * might be a penalty in memory allocation overhead. Heapsort is stingy
+ * with extra memory being used, so careful implementation of the 
+ * algorithm should avoid the overhead. Heapsort has been chosen here to
+ * leave room for the physical model being implemented.
+ * <p>
+ * The penalty for heap sort for 4 generator algebras in establishing
+ * a basis is about 2x the number of swaps, but the total swaps amount
+ * to about 60. On even an old machine, this will be lightning fast.
+ * That means it isn't worth worrying about which sort is faster in
+ * filling a basis. It might make more sense to focus on sorts for 
+ * the geometric product instead.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -100,6 +124,15 @@ public final class Basis
 	 * creates the information for coefficients that would get calculated in
 	 * regular methods of a monad. Efficiency demands that they be stored here
 	 * for later use.
+	 * 
+	 * The size of the gradeRange array is always generators+2.
+	 * gradeRange[0] is always 0
+	 * gradeRange[1] is always 1
+	 * gradeRange[gradeCount-1] is always bladeCount-1
+	 * The way to interpret these fixed entries is scalars are always in the
+	 * first slot of a basis, vectors always start in the second slot, and the
+	 * pscalar is always found in the last slot. All other entries in this 
+	 * array have to be calculated and clados does it using the vKey.
 	 */
 	protected short[]	gradeRange;
 
@@ -264,140 +297,116 @@ public final class Basis
 	 * memory for a large basis. Efforts to streamline code and memory footprint
 	 * in this method could have a large impact.
 	 */
-	//@SuppressWarnings("unused")
 	protected void fillBasis()
 	{
-		int tempPermTest = 0;
-		int tempPermFilter = 0;
-		long tempBubbleSpotL = 0;
-		short tempBubbleSpotI = 0;
-
-		for (int k = 0; k < bladeCount; k++) 
+		short tempPermTest = 0;
+		short tempPermFilter = 0;
+		short q = (short) (gradeCount - 2);
+		short k=0;
+		short m=0;
+		short[] tempGens = new short[gradeCount - 1];
+		
+		for (k = 0; k < bladeCount; k++) 
 		// basis row counter 0 thru BladeCount-1
 		{
-			vKey[k] = 0;
-			tempPermTest = k; // Starts as row counter
-			for (int m = 0; m < gradeCount - 1; m++) 
+			tempPermTest = k; 
+			// Starts as row counter but gets decremented whenever
+			// a particular generator is NOT chosen for the k'th row
+			// of the basis. It is decremented by the size of the filter
+			// that detects when to drop a generator from the list.
+			
+			for (m = 0; m < gradeCount - 1; m++) 
 			// generator (column) counter 0 thru GradeCount-2
 			{
-				tempPermFilter = (int) Math.pow(2, gradeCount - 2 - m);
-				;
+				tempPermFilter = (short) Math.pow(2, gradeCount - 2 - m);
+				// This is the filter that is used to detect when to drop
+				// a generator from the k'th row of the basis.
+				
 				if (tempPermTest < tempPermFilter)
 				{
-					vBasis[k][m] = (short) (m + 1); // m+1 generator in this
-													// row. (Never 0)
+					tempGens[m] = (short) (m+1); // m+1'th generator (Never 0)
+					// Writing to tempGens but will copy back to vBasis shortly
 				}
 				else
 				{
-					vBasis[k][m] = 0; // null (0) generator if filter fails
-					tempPermTest -= tempPermFilter; // decrement test if filter
-													// fails
+					tempPermTest -= tempPermFilter; 
+					// decrement tempPermTest because the m'th generator
+					// was dropped from this row of the basis.
+					
+					tempGens[m] = 0;
+					// and here we actually drop the m'th generator
 				}
 			}
-			// Row filled but unsorted. If generator m appears in a row it will
-			// always
-			// appear in column m-1 at this point. Next up is to sort the
-			// generators
-			// but they are already mostly sorted.
-
-			if (true) 
-			// Trying to speed up this section with a different sort
-			// TODO Work out the 'else' sort routine until it matches
+			// tempGens filled but unsorted. If generator m appears in a row 
+			// it will always appear in column m-1. All that is needed next 
+			// is to slice the 0's out of the row. We start on the right of 
+			// tempGens and look for columns that aren't zero and copy them 
+			// back to vBasis.
+			
+			q = (short) (gradeCount - 2);
+			for (m = (short) (gradeCount - 2); m>-1; m--) 
+			// generator (column) counter GradeCount-2 through 0 [decreasing]
+			// Only one pass is needed
 			{
-				for (int m = 0; m <= gradeCount - 3; m++)
+				if (tempGens[m] != 0) // Found one to copy.
 				{
-					for (int p = m + 1; p <= gradeCount - 2; p++)
-					{
-						if (vBasis[k][m] > vBasis[k][p])
-						{
-							tempBubbleSpotI = vBasis[k][m];
-							vBasis[k][m] = vBasis[k][p];
-							vBasis[k][p] = (short) tempBubbleSpotI;
-							tempBubbleSpotI = 0;
-						}
-					}
+					vBasis[k][q] = tempGens[m];
+					// This causes vBasis to fill from the bottom up.
+					// This is closer to how it will sort out later.
+					tempGens[m] = 0; // Clears tempGens for use with next k.
+					q--; // Slide left in vBasis for next possible entry.
 				}
 			}
-			else
-			{
-				// All that is needed is to slice the 0's out of the row so we
-				// start on the right and look for columns that aren't zero.
-				// If they aren't, they get copied to a temporary array which
-				// gets
-				// copied back once all the zero's in the first round are sliced
-				// out.
-				int q = gradeCount - 1;
-				short[] tempGens = new short[q];
-				q--;
-				for (int m = gradeCount - 2; m >= 0; m--) 
-				// Only one pass is needed?
-				{
-					if (vBasis[k][m] != 0)
-					{
-						tempGens[q] = vBasis[k][m];
-						q--;
-					}
-
-				}
-				for (int m = 0; m > gradeCount - 2; m++)
-				{
-					vBasis[k][m] = tempGens[m];
-				}
-			}
-
-			// Row filled and sorted. The generators used in row k will now
-			// appear in
-			// ascending order with 0's padding the lowest columns. Thus a
-			// vector blade
-			// will have a single generator in the GradeCount-2 column and 0's
-			// in the
-			// earlier columns.
-
-			for (int m = 0; m <= gradeCount - 2; m++)
-			{
-				vKey[k] += (long) vBasis[k][m]
-								* Math.pow(gradeCount, gradeCount - 2 - m);
-			}
-			// Base (GradeCount) representation of Eddington Number is now
-			// complete
+			// vBasis row filled properly. The generators used in row k will
+			// appear in ascending order with 0's padding the lowest columns. 
+			// Thus a vector blade will have a single generator in the 
+			// GradeCount-2 column and 0's in the earlier columns.
+		
+			// Base (GradeCount) representation of Eddington Number
 			// Ex: 3 generators implies Base-4 keys stuffed into Base-10 array
 			// Right-most generator is the one's digit
 			// Middle generator is the 4's digit
 			// Left-most generator is the 16's digit
 			// Ex: 8 generators implies Base-9 keys stuffed into a Base-10 array
-
-		}
-		// All Eddington Numbers are now written, sorted horizontally, and
-		// calculated.
-
-		// It is now time to sort them vertically and call it a basis.
-		int p = 0;
-		int m = 0;
-		for (int k = 0; k < bladeCount - 1; k++)
-		{
-			for (p = bladeCount - 1; p > k; p--)
-			// Done from bottom up for speed. We know a bit about how the keys
-			// are initially populated and this way should be faster.
+			
+			vKey[k] = 0;
+			for (m = 0; m < gradeCount - 1; m++)
 			{
-				if (vKey[k] > vKey[p])
-				{
-					tempBubbleSpotL = vKey[k]; // Swap the Keys.
-					vKey[k] = vKey[p];
-					vKey[p] = tempBubbleSpotL;
+				vKey[k] += (long) vBasis[k][m]
+							* Math.pow(gradeCount, gradeCount - 2 - m);
+			}
+		}
+		
+		// All Eddington Numbers are written. The Keys are written too.
+		// It is time to sort the blades by key and call it a basis.
+		// Sort method relies on Heap Sort.
+		
+		// Build heap (rearrange array) 
+		for (k = (short) (bladeCount / 2 - 1); k >= 0; k--) 
+		{
+			heapifyKey(vKey, bladeCount, k); 
+		}
+		
+		// One by one extract an element from heap 
+		// working from the far end of the key array back to the top.
+		for (k= (short) (bladeCount-1); k>=0; k--) 
+		{ 
+			// Move current root to end 
+			long tempRoot = vKey[0]; 
+			vKey[0] = vKey[k]; 
+			vKey[k] = tempRoot; 
+					
+			// Move corresponding basis row with its key
+			for (m = 0; m < gradeCount - 1; m++) // Swap the Basis rows.
+			{
+				short tempBasisSpot = vBasis[0][m];
+				vBasis[0][m] = vBasis[k][m];
+				vBasis[k][m] = tempBasisSpot;
+			}
 
-					for (m = 0; m < gradeCount - 1; m++) // Swap the Basis rows.
-					{
-						tempBubbleSpotI = vBasis[k][m];
-						vBasis[k][m] = vBasis[p][m];
-						vBasis[p][m] = tempBubbleSpotI;
-					}
-					tempBubbleSpotL = 0;
-					tempBubbleSpotI = 0;
-					m = 0;
-				}// end of pair swap
-			}// end of inside sorting pass
-			p = bladeCount - 1;
-		}// end of outside sorting pass
+			// call max heapify on the reduced heap 
+			heapifyKey(vKey, k, (short) 0); 
+		} 
 
 		// All Eddington Numbers are now written, calculated, and sorted.
 	}
@@ -408,6 +417,12 @@ public final class Basis
 	 * function used to use factorials and binomial coefficients to find how
 	 * many blades existed for a particular grade. Now it uses the Key and its
 	 * Base(GradeCount) encoding to do it better and faster.
+	 * 
+	 * Do not call this function unless the vBasis is properly sorted first.
+	 * That sort causes the vKey array to sort in ascending order and that is
+	 * crucial to this function. Any other arrangement utterly invalidates
+	 * the gradeRange array.
+	 * 
 	 */
 	protected void fillGradeRange()
 	{
@@ -415,10 +430,13 @@ public final class Basis
 		gradeRange[1] = 1; // The scalar
 		gradeRange[gradeCount - 1] = (short) (bladeCount - 1); // The pscalar
 		short m = 0;
-		for (int j = 2; j < gradeCount - 1; j++) // Skipping scalar and pscalar
+		
+		for (short j = 2; j < gradeCount - 1; j++) 
+		// Loop through the grades skipping scalar, vector, and pscalar
 		{
-			long test = (long) Math.pow(gradeCount, j - 1); // Floor Key for
-															// Grade j
+			long test = (long) Math.pow(gradeCount, j - 1); 
+			// Ceiling Key for grade j-1
+			
 			while (m < bladeCount)
 			{
 				if (vKey[m] > test)
@@ -426,11 +444,53 @@ public final class Basis
 					gradeRange[j] = m;
 					break; // Found first key. Move to next grade.
 				}
+				// Otherwise move to next blade.
 				m++;
 			} // All blades searched
-		} // All grades ranged
+		} // All blades ranged as grades. Get along little dogie.
 	}
 
+	/**
+	 * To heapify a subtree rooted with node i. 
+	 * @param vKey long[]
+	 * @param heapSize int
+	 * @param point int
+	 * 			re-useable index on vKey needed because we recurse
+	 */
+	private	void heapifyKey(long vKey[], short heapSize, short point) 
+		{ 
+			short largest = point; // Initialize largest as root 
+			short left = (short) (2*point + 1);  
+			short right = (short) (2*point + 2);  
+
+			// If left child is larger than root 
+			if (left < heapSize && vKey[left] > vKey[largest]) 
+				largest = left; 
+
+			// If right child is larger than largest so far 
+			if (right < heapSize && vKey[right] > vKey[largest]) 
+				largest = right; 
+			
+			// If largest is not root 
+			if (largest != point) 
+			{ 
+				short tempBasisSpot;
+				long swap = vKey[point]; 
+				vKey[point] = vKey[largest]; 
+				vKey[largest] = swap; 
+				
+				for (int m = 0; m < gradeCount - 1; m++) // Swap the Basis rows.
+				{
+					tempBasisSpot = vBasis[point][m];
+					vBasis[point][m] = vBasis[largest][m];
+					vBasis[largest][m] = tempBasisSpot;
+				}
+
+				// Recursively heapify the affected sub-tree 
+				heapifyKey(vKey, heapSize, largest); 
+			} 
+		}
+	
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String

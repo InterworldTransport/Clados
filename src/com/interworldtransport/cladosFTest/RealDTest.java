@@ -1,43 +1,44 @@
-package com.interworldtransport.cladosF;
+package com.interworldtransport.cladosFTest;
 
 import org.junit.*;
 import static org.junit.Assert.*;
-import static com.interworldtransport.cladosF.ComplexD.*;
+import static com.interworldtransport.cladosF.RealD.*;
 
+import com.interworldtransport.cladosF.RealD;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
 
-public class ComplexDTest  //extends TestCase
+public class RealDTest // extends TestCase
 {
 
-	public ComplexD		tReal0;
-	public ComplexD		tReal1;
-	public ComplexD		tReal1n;
-	public ComplexD		tReal2;
-	public ComplexD		tReal3;
-	public ComplexD		tReal4;
-	public ComplexD		tReal5;
-	public ComplexD		tReal6;
-	public ComplexD		tReal7;
-	public ComplexD		tReal8;
-	public ComplexD		tReal9;
-	public ComplexD[]	tReals;
+	public RealD	tReal0;
+	public RealD	tReal1;
+	public RealD	tReal1n;
+	public RealD	tReal2;
+	public RealD	tReal3;
+	public RealD	tReal4;
+	public RealD	tReal5;
+	public RealD	tReal6;
+	public RealD	tReal7;
+	public RealD	tReal8;
+	public RealD	tReal9;
+	public RealD[]	tReals;
 
 	@Before
 	public void setUp()
 	{
-		tReal0 = ZERO("Test:ComplexD");
-		tReal1 = ONE("Test:ComplexD");
-		tReal1n = new ComplexD(tReal1.getFieldType(), -1d);
-		tReal2 = new ComplexD(tReal1.getFieldType(), Double.MAX_VALUE);
-		tReal3 = new ComplexD(tReal1.getFieldType(), Double.MAX_EXPONENT);
-		tReal4 = new ComplexD(tReal1.getFieldType(), Double.NaN);
-		tReal5 = new ComplexD(tReal1.getFieldType(), Double.POSITIVE_INFINITY);
-		tReal6 = new ComplexD(tReal1.getFieldType(), Double.NEGATIVE_INFINITY);
-		tReal7 = new ComplexD(tReal1.getFieldType(), Double.MIN_NORMAL);
-		tReal8 = new ComplexD(tReal1.getFieldType(), Double.MIN_VALUE);
-		tReal9 = new ComplexD(tReal1.getFieldType(), Double.MIN_EXPONENT);
-		tReals = new ComplexD[10];
+		tReal0 = ZERO("Test:RealD");
+		tReal1 = ONE("Test:RealD");
+		tReal1n = new RealD(tReal1.getFieldType(), -1d);
+		tReal2 = new RealD(tReal1.getFieldType(), Double.MAX_VALUE);
+		tReal3 = new RealD(tReal1.getFieldType(), Double.MAX_EXPONENT);
+		tReal4 = new RealD(tReal1.getFieldType(), Double.NaN);
+		tReal5 = new RealD(tReal1.getFieldType(), Double.POSITIVE_INFINITY);
+		tReal6 = new RealD(tReal1.getFieldType(), Double.NEGATIVE_INFINITY);
+		tReal7 = new RealD(tReal1.getFieldType(), Double.MIN_NORMAL);
+		tReal8 = new RealD(tReal1.getFieldType(), Double.MIN_VALUE);
+		tReal9 = new RealD(tReal1.getFieldType(), Double.MIN_EXPONENT);
+		tReals = new RealD[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
 		tReals[2] = tReal2;
@@ -130,7 +131,7 @@ public class ComplexDTest  //extends TestCase
 	{
 		assertTrue(isEqual(tReal0.conjugate(), ZERO(tReal0)));
 		assertFalse(isEqual(tReal1.conjugate(), tReal1n));
-		ComplexD tR = conjugate(tReal0);
+		RealD tR = conjugate(tReal0);
 		assertTrue(isEqual(tR, tReal0));
 	}
 

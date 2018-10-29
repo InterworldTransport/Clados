@@ -1,17 +1,23 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.Foot<br>
  * -------------------------------------------------------------------- <p>
- * You ("Licensee") are granted a license to this software under the terms of 
- * the GNU General Public License. A full copy of the license can be found 
- * bundled with this package or code file. If the license file has become 
- * separated from the package, code file, or binary executable, the Licensee is
- * still expected to read about the license at the following URL before 
- * accepting this material. 
- * <code>http://www.opensource.org/gpl-license.html</code><p> 
- * Use of this code or executable objects derived from it by the Licensee states
- * their willingness to accept the terms of the license. <p> 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version. 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.<p>
+ * 
+ * Use of this code or executable objects derived from it by the Licensee 
+ * states their willingness to accept the terms of the license. <p> 
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * 
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.Foot<br>
  * ------------------------------------------------------------------------ <br>
@@ -21,7 +27,8 @@ package com.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosF.DivField;
+import com.interworldtransport.cladosF.DivFieldType;
 
 /**
  * Objects within the cladosG package have a number of attributes in common that
@@ -73,6 +80,23 @@ public final class Foot
 		rFrames = new ArrayList<String>(1);
 		rFrames.add(pName);
 	}
+	
+	/**
+	 * Build the footPoint object from scratch.
+	 * 
+	 * @param pName
+	 *            String This string will be the name of the foot point.
+	 * @param pFT
+	 *            DivFieldType This object defines the kind of numbers that are
+	 *            meaningful for this foot point
+	 */
+	public Foot(String pName, DivField pF)
+	{
+		setFootName(pName);
+		setNumberType(pF.getFieldType());
+		rFrames = new ArrayList<String>(1);
+		rFrames.add(pName);
+	}
 
 	/**
 	 * This method appends a frame name from the list of known frames for this
@@ -81,7 +105,7 @@ public final class Foot
 	 * @param pRF
 	 *            String Reference Frame name to remove
 	 */
-	protected void appendIfUniqueRFrame(String pRF)
+	public void appendIfUniqueRFrame(String pRF)
 	{
 		for (String tS : rFrames)
 			if (tS.equals(pRF)) return;
@@ -96,7 +120,7 @@ public final class Foot
 	 * @param pRF
 	 *            String Reference Frame name to remove
 	 */
-	protected void appendRFrame(String pRF)
+	public void appendRFrame(String pRF)
 	{
 		rFrames.ensureCapacity(rFrames.size() + 1);
 		rFrames.add(pRF);
@@ -107,12 +131,12 @@ public final class Foot
 		return footName;
 	}
 
-	protected DivFieldType getNumberType()
+	public DivFieldType getNumberType()
 	{
 		return numType;
 	}
 
-	protected ArrayList<String> getReferenceFrames()
+	public ArrayList<String> getReferenceFrames()
 	{
 		return rFrames;
 	}
@@ -125,7 +149,7 @@ public final class Foot
 	 * @param pRF
 	 *            String Reference Frame name to remove
 	 */
-	protected void removeRFrames(String pRF)
+	public void removeRFrames(String pRF)
 	{
 		ListIterator<String> li = rFrames.listIterator();
 		do
@@ -144,7 +168,7 @@ public final class Foot
 		this.footName = footName;
 	}
 
-	protected void setNumberType(DivFieldType fN)
+	public void setNumberType(DivFieldType fN)
 	{
 		this.numType = fN;
 	}

@@ -17,7 +17,8 @@
  * ------------------------------------------------------------------------ <br>
  */
 package com.interworldtransport.cladosGExceptions;
-import com.interworldtransport.cladosG.*;
+
+import com.interworldtransport.cladosG.GProduct;
 /** com.interworldtransport.cladosGExceptions.BadSignatureException  Bad signature handler for GProduct.
  * <p>
  * This class is designed to be the handler of signature definition exceptions.

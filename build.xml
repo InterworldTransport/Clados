@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="Clados" default="dist" basedir=".">
+  <description>
+    simple example build file
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="junit" location="junit"/>
+  <property name="dist" location="dist"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source">
+    <!-- Compile the Java code from ${src} into ${build} -->
+    <javac includeantruntime="false" srcdir="${src}" destdir="${build}" />  	
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/Clados-${DSTAMP}.jar" basedir="${build}"/>
+  </target>
+
+  <target name="javadoc">
+    <javadoc access="public" author="true" classpath="/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.launcher_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.suite.api_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.migrationsupport_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.commons_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.engine_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.apiguardian_1.0.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.vintage.engine_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.opentest4j_1.0.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.engine_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.runner_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.params_5.1.0.v20180327-1502.jar" destdir="doc" doctitle="CladosOne" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="/Users/alfredwdiffer/eclipse-workspace/CladosOne/src/overview.html" packagenames="com.interworldtransport.cladosFExceptions,com.interworldtransport.cladosF,com.interworldtransport.cladosGExceptions,com.interworldtransport.cladosG" source="10" sourcepath="src" splitindex="true" use="true" version="true">
+        <link href="http://hamcrest.org/JavaHamcrest/javadoc/1.3/"/>
+        <link href="http://ota4j-team.github.io/opentest4j/docs/current/api/"/>
+        <link href="https://apiguardian-team.github.io/apiguardian/docs/current/api/"/>
+        <link href="http://junit.org/junit5/docs/current/api/"/>
+        <link href="http://junit.org/junit4/javadoc/latest/"/>
+    </javadoc>
+  </target>
+	
+  <target name="clean"
+        description="clean up">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>
