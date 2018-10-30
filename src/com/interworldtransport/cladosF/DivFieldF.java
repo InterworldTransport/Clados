@@ -29,10 +29,13 @@ import com.interworldtransport.cladosFExceptions.*;
 /**
  * This class implements the concept of a Division Field from mathematics. Field
  * objects within the clados packages are used as 'numbers' in the definition of
- * an algebra. All CladosObjects use FieldElements as a result.
+ * an algebra. All CladosObjects use DivField's as a result.
  * <p>
- * FieldElements are not named. They do not have any geometric properties. Treat
+ * DivField's are not named. They do not have any geometric properties. Treat
  * them like you would any other number you could plug into a simple calculator.
+ * <p>
+ * The number array to be plugged in appears here, but this is still an 
+ * abstract class.
  * <p>
  * @version 1.0
  * @author Dr Alfred W Differ

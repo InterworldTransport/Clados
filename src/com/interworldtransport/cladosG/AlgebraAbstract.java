@@ -40,6 +40,14 @@ public abstract class AlgebraAbstract
 	protected Basis		gBasis;
 	protected GProduct	gProduct;
 	protected String	name;
+	
+	/**
+	 * When an algebra's number system is examined at this level, the only thing
+	 * the algebra knows about it is what is present in the DivField class. That 
+	 * means the DivFieldType can be accessed as an object or as the string within.
+	 * 
+	 * That's all.
+	 */
 	protected DivField	protoNumber;
 	
 	/**
@@ -80,23 +88,48 @@ public abstract class AlgebraAbstract
 		return gProduct;
 	}
 
-	protected void setAlgebraName(String pName)
+	/**
+	 * Resetting the algebra name is mildly useful when its purpose
+	 * in a model shifts. Otherwise, it will probably not be used.
+	 * Once it is set by the constructor, it will probably remain.
+	 * 
+	 * @param pName
+	 */
+	public void setAlgebraName(String pName)
 	{
 		name = pName;
 	}
 
-	protected void setFootPoint(Foot footPoint)
+	/**
+	 * This method is a little dangerous and should use used only
+	 * with great caution. Ideally, it would never be used because 
+	 * an algebra is defined relative to a tangent point on a 
+	 * sub-manifold. Sometimes, however, one might find that two 
+	 * seemingly distinct feet are actually the same. In this limited 
+	 * case it should be possible for a model writer to adjust an
+	 * algebra to point at a different foot after construction.
+	 * 
+	 * @param footPoint
+	 */
+	public void setFootPoint(Foot footPoint)
 	{
 		this.footPoint = footPoint;
 	}
 
 	/**
-	 * Set the entire product definition object.
+	 * This method is a little dangerous and should use used only
+	 * with great caution. Ideally, it would never be used because 
+	 * an algebra is defined relative to a tangent point and the
+	 * coordinates there form both a geometric basis on which a
+	 * geometric product is defined. Sometimes, however, one might 
+	 * find that two seemingly distinct feet are actually the same. 
+	 * In this limited case it should be possible to adjust an
+	 * algebra to at a different gProduct after construction.
 	 * 
 	 * @param pGP
 	 *            GProduct
 	 */
-	protected void setGProduct(GProduct pGP)
+	public void setGProduct(GProduct pGP)
 	{
 		gProduct = pGP;
 		gBasis = pGP.getBasis();

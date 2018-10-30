@@ -54,6 +54,13 @@ public class AlgebraRealF extends AlgebraAbstract
 		return rB.toString();
 	}
 
+	/**
+	 * When an algebra's number system is examined at this level, the algebra 
+	 * knows the DivField class object, the name within that, and the fact that 
+	 * floats are being used to represent real numbers.
+	 * 
+	 * That's all.
+	 */
 	protected RealF	protoNumber;
 
 	public AlgebraRealF(String pS, Foot pF, GProduct pGP)

@@ -54,6 +54,13 @@ public class AlgebraRealD extends AlgebraAbstract
 		return rB.toString();
 	}
 
+	/**
+	 * When an algebra's number system is examined at this level, the algebra 
+	 * knows the DivField class object, the name within that, and the fact that 
+	 * doubles are being used to represent real numbers.
+	 * 
+	 * That's all.
+	 */
 	public RealD	protoNumber;
 
 	public AlgebraRealD(String pS, Foot pF, GProduct pGP)

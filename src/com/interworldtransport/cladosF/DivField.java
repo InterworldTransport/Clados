@@ -27,10 +27,14 @@ package com.interworldtransport.cladosF;
 /**
  * This class implements the concept of a Division Field from mathematics. Field
  * objects within the clados packages are used as 'numbers' in the definition of
- * an algebra. All CladosObjects use FieldElements as a result.
+ * an algebra. All CladosObjects use DivFields as a result.
  * <p>
- * FieldElements are not named. They do not have any geometric properties. Treat
+ * FivFields are not named. They do not have any geometric properties. Treat
  * them like you would any other number you could plug into a simple calculator.
+ * <p>
+ * The number to be plugged in, though, doesn't appear until later in a child
+ * of this class. This matters because the number of reals involved varies.
+ * Besides... this class is abstract.
  * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -43,9 +47,9 @@ public abstract class DivField
 	 * current object.
 	 * 
 	 * @param pE
-	 *            DivFieldD
+	 *            DivField
 	 * @param pF
-	 *            DivFieldD
+	 *            DivField
 	 * @return boolean
 	 */
 	public static boolean isTypeMatch(DivField pE, DivField pF)

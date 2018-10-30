@@ -1,0 +1,90 @@
+package com.interworldtransport.cladosGTest;
+
+import org.junit.*;
+import static org.junit.Assert.*;
+
+import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosG.*;
+//import static com.interworldtransport.cladosG.AlgebraRealF.*;
+
+import com.interworldtransport.cladosGExceptions.BadSignatureException;
+import com.interworldtransport.cladosGExceptions.CladosMonadException;
+
+public class AlgebraRealFTest 
+{
+
+	protected String		fName	= "Test:TangentPoint";
+	protected String		aName	= "Test Algebra";
+	protected String		pSig31	= "-+++";
+	protected String		pSig13	= "+---";
+	protected DivFieldType	fType;
+	protected RealF			rNumber;
+	protected Foot			tFoot;
+	protected Foot			tFoot2;
+	protected GProduct		gProduct;
+	protected AlgebraRealF	alg1;
+	protected AlgebraRealF	alg2;
+	protected AlgebraRealF	alg3;
+	
+	@Before
+	public void setUp() throws CladosMonadException, BadSignatureException
+	{
+		fType = new DivFieldType("Test:NumberType");
+		rNumber = new RealF(fType,0.0f);
+		tFoot = new Foot(fName, fType);
+		tFoot2 = new Foot(fName, rNumber);
+		
+		alg1= new AlgebraRealF(aName, tFoot, pSig31);
+		alg2= new AlgebraRealF(aName, tFoot, pSig13);
+	}
+
+	@Test
+	public void testCompareCores() throws CladosMonadException, BadSignatureException
+	{
+		assertTrue(alg1.getFootPoint() == alg2.getFootPoint());
+		assertFalse(alg1.getGBasis() == alg2.getGBasis());
+		assertFalse(alg1.getGProduct() == alg2.getGProduct());
+		//Two algebras share the foot, but use different signatures
+		//to overlay metrics on their coordinate systems.
+		
+		tFoot.setNumberType(rNumber.getFieldType());
+		alg3= new AlgebraRealF(aName, tFoot, pSig31);
+		assertTrue(alg1.getFootPoint() == alg3.getFootPoint());
+		assertTrue(alg1.getFootPoint() == alg2.getFootPoint());
+		//because the Foot is shared between algebras, changing the number
+		//type to use to build alg3 changes it for the others as well.
+		
+		alg3.setFootPoint(tFoot2);
+		assertFalse(alg1.getFootPoint() == alg3.getFootPoint());
+		//Both feet are essentially the same inside, but represented as two distinct objects.
+		//That should cause this test to be false.
+	}
+
+	@Test
+	public void testCompareSignatures()
+	{
+		assertFalse(alg1.getGProduct().getSignature().equals(alg2.getGProduct().getSignature()));
+		//exposing the different signatures another way
+	}
+	
+	@Test
+	public void testCompareCounts()
+	{
+		assertTrue(alg1.getGProduct().getGradeCount() == alg2.getGProduct().getGradeCount());
+		assertTrue(alg1.getGProduct().getBladeCount() == alg2.getGProduct().getBladeCount());
+		//Different signatures does not lead to different grade and blade counts.
+	}
+	
+	@Test
+	public void testStaticOp()
+	{
+		RealF result=AlgebraRealF.generateNumber(alg1, 10.0f);
+		assertTrue(result != null);
+		assertTrue(result.getFieldType() == alg1.getFootPoint().getNumberType());
+		//this shows that an algebra can be used to generate numbers of the same type
+		//by using the static method built into the class. This method is picky, but 
+		//when used properly it will safely generate matches that will pass reference
+		//tests.
+	}
+
+}
