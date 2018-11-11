@@ -47,6 +47,13 @@ public class FootTest
 		assertTrue(tFoot.getReferenceFrames().size() == 2);
 		tFoot.removeRFrames(fName + "-Spherical2");
 		assertTrue(tFoot.getReferenceFrames().size() == 1);
+		tFoot.removeRFrames("Un-named frame that shouldn't be found.");
+		assertTrue(tFoot.getReferenceFrames().size() == 1);
+		//Attempting to remove a frame that isn't there silently moves on.
+		//If one needs to ensure the frame was there and confirm it's 
+		//removal, one should find it first.
+		assertTrue(tFoot.getReferenceFrames()
+				.indexOf("Un-named frame that shouldn't be found.") == -1);
 	}
 	
 	@Test

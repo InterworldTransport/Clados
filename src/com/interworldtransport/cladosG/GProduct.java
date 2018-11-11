@@ -65,9 +65,10 @@ public final class GProduct
 	protected short[]	nSignature;
 	/**
 	 * This basis holds a representation of all the elements that can be built
-	 * from the generators that space the algebra's vector space.
+	 * from the generators to span the algebra's vector space. It is the
+	 * Eddington Basis.
 	 */
-	protected Basis		aBasis;
+	protected Basis		eddingtonBasis;
 	/**
 	 * This array holds the geometric multiplication table for a Clifford
 	 * algebra using the associated basis. The array contains numbers that
@@ -85,9 +86,10 @@ public final class GProduct
 	 * Copy constructor of GProduct with other GProduct passed in. This
 	 * constructor enables a multivector to have its own GProduct object that
 	 * happens to share a Basis with some other GProduct object. This saves
-	 * construction time and memory, while preventing multivectors with
-	 * different reference frames from performing improper math operations that
-	 * can't be stopped through type safety.
+	 * construction time and memory because the basis isn't really the physical
+	 * distinction between reference frames. This constuctor enables two 
+	 * different algebras to share a basis without forcing them to share
+	 * the GProduct object.
 	 * 
 	 * @param pGP
 	 *            GProduct
@@ -96,9 +98,9 @@ public final class GProduct
 	{
 		signature = new String(pGP.getSignature());
 		validateSignature(signature);
-		aBasis = pGP.getBasis();
+		eddingtonBasis = pGP.getBasis();
 		result = new short[getBladeCount()][getBladeCount()];
-		result = pGP.getResult();
+		result = pGP.getResult().clone();
 	}
 
 	/**
@@ -122,21 +124,21 @@ public final class GProduct
 		{
 			// Figure out linear dimension and grade count. Both are needed
 			// often.
-			aBasis = new Basis((short) pSig.length());
+			eddingtonBasis = new Basis((short) pSig.length());
 
 			// Fill the ProductResult array with integers representing Vector
 			// Basis elements that show the product of two other such elements.
 
-			result = new short[aBasis.getBladeCount()][aBasis.getBladeCount()];
+			result = new short[eddingtonBasis.getBladeCount()][eddingtonBasis.getBladeCount()];
 
-			for (short j = 0; j < aBasis.getBladeCount(); j++)
+			for (short j = 0; j < eddingtonBasis.getBladeCount(); j++)
 			{
 				result[0][j] = (short) (j + 1);
 				result[j][0] = (short) (j + 1);
 			} // Scalar section of product result finished early
-			for (short j = 1; j < aBasis.getBladeCount(); j++)
+			for (short j = 1; j < eddingtonBasis.getBladeCount(); j++)
 			{// counter for row element in product
-				for (short k = 1; k < aBasis.getBladeCount(); k++)
+				for (short k = 1; k < eddingtonBasis.getBladeCount(); k++)
 				{// counter for column element in product
 					fillResult(j, k);
 				}
@@ -177,47 +179,57 @@ public final class GProduct
 	 */
 	protected void fillResult(short j, short k)
 	{
-		int[] bothOps = new int[2 * (aBasis.getGradeCount() - 1)];
+		short[] bothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
+		short m = 0;
 		short signFlip = 0;
-		long bothOpsKey = 0L;
-
-		int tempBubbleSpot = 0;
-
-		signFlip = 0;
-		bothOpsKey = 0L;
+		short tempBubbleSpot = 0;			//yes. There is a bubble sort. Not a big one.
+		
 		// Set up row with all generators for each basis element j and k
-		for (short m = 0; m < aBasis.getGradeCount() - 1; m++)
+		for (m = 0; m < eddingtonBasis.getGradeCount() - 1; m++)
 		{
 			// Copy VectorBasis' into doubleSort to find new element
-			bothOps[m] = aBasis.getBasis(j, m);
-			bothOps[m + aBasis.getGradeCount() - 1] = aBasis.getBasis(k, m);
+			bothOps[m] = eddingtonBasis.getBasis(j, m);
+			bothOps[m + eddingtonBasis.getGradeCount() - 1] = eddingtonBasis.getBasis(k, m);
 		}
-
-		for (int m = 0; m < 2 * aBasis.getGradeCount() - 2; m++)
-		{
-			for (int n = 0; n < 2 * aBasis.getGradeCount() - 3; n++)
-			{
-				// Swap on doubleSort
-				if (bothOps[n] > bothOps[n + 1])
-				{
-					tempBubbleSpot = bothOps[n];
-					bothOps[n] = bothOps[n + 1];
-					bothOps[n + 1] = tempBubbleSpot;
-					if (!(bothOps[n] == 0 || bothOps[n + 1] == 0))
-					{
-						signFlip += 1;
-					}
-				}
-			}
-		} // end of doubleSort sort
-
-		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
-
-		// Now we need to remove generator pairs and track signs.
-		for (int m = 2 * (aBasis.getGradeCount() - 1) - 1; m >= 1; m--)
+		// bothOps filled but unsorted. That means the zero slots in the kth blade (if any)
+		// will be to the right of non-zero indexes in the jth blade. Basically, the first
+		// blade is in the first half of the array, the second blade in the second half.
+		// All that is needed next is to slice the 0's out of the row and then pad them back
+		// on the left.
+		// We start on the right of bothOps and look for columns that aren't zero and copy 
+		// them out.
+		
+		bothOps=settleGenerators(bothOps);
+		
+		// bothOps filled and partially sorted. That means the zero slots in both blades (if any)
+		// will be to the left of all of non-zero indexes in the both blades.
+		// All that is needed next is to sort the non-zero's on the right of bothOps.
+		
+		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
 		{
 			if (bothOps[m] == 0) continue;
-			if (bothOps[m] == bothOps[m - 1])
+			
+			for (short n = 0; n < 2 * eddingtonBasis.getGradeCount() - 3; n++)
+			{
+				if (bothOps[n] <= bothOps[n + 1]) continue;
+				
+				tempBubbleSpot = bothOps[n];
+				bothOps[n] = bothOps[n + 1];
+				bothOps[n + 1] = tempBubbleSpot;
+				signFlip += 1;
+			}
+		} 
+		// bothOps filled and sorted, but index pairs are still possible.
+
+		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
+		
+		//**************************************************************************
+
+		// Now we need to remove generator pairs and track signs.
+		for (m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m >= 1; m--)
+		{
+			//if (bothOps[m] == 0) continue;
+			if (bothOps[m] == bothOps[m - 1] && bothOps[m] != 0)
 			{
 				signFlip += nSignature[bothOps[m] - 1];
 				bothOps[m] = 0;
@@ -228,51 +240,38 @@ public final class GProduct
 		}
 		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
 
-		// Now sort again.
-		for (int m = 0; m < 2 * aBasis.getGradeCount() - 2; m++)
-		{
-			for (int n = 0; n < 2 * aBasis.getGradeCount() - 3; n++)
-			{
-				// Swap on doubleSort
-				if (bothOps[n] > bothOps[n + 1])
-				{
-					tempBubbleSpot = bothOps[n];
-					bothOps[n] = bothOps[n + 1];
-					bothOps[n + 1] = tempBubbleSpot;
-					if (!(bothOps[n] == 0 || bothOps[n + 1] == 0))
-					{
-						signFlip += 1;
-					}
-				}
-			}// end of inside doublesort pass
-		} // end of outside doubleSort sort
-
-		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
+		// Now settle again.
+		bothOps=settleGenerators(bothOps);
+		
+		//**************************************************************************
 
 		// At this point doubleSort should be fully sorted and have no
-		// duplicate generators. Now we need to Key the basis element in
-		// doubleSort to identify it
-		for (int m = 0; m < 2 * (aBasis.getGradeCount() - 1); m++)
-		{// temporary counter
-			bothOpsKey += (int) bothOps[m]
-							* Math.pow(aBasis.getGradeCount(),
-											2 * (aBasis.getGradeCount()) - 3
-															- m);
-		} // Base (GradeCount) representation of Vector Number is in doubleKey
-
-		// Compare doubleKey against vKey to find match
+		// duplicate generators. Now we need to Key the discovered basis element
+		
+		// Base (GradeCount) representation of Eddington Number
+		// Ex: 3 generators implies Base-4 keys stuffed into Base-10 array
+		// Right-most generator is the one's digit
+		// Middle generator is the 4's digit
+		// Left-most generator is the 16's digit
+		// Ex: 8 generators implies Base-9 keys stuffed into a Base-10 array
+					
+		long bothOpsKey = 0L;
+		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
+			bothOpsKey += (long) bothOps[m]*Math.pow(eddingtonBasis.getGradeCount(),
+													2*(eddingtonBasis.getGradeCount()) -3-m);
+		
+		// Compare bothOpsKey against vKey to find match
 		result[j][k] = 0;
-		for (short q = 0; q < aBasis.getBladeCount(); q++)
-		{// temporary counter
-			if (bothOpsKey == aBasis.getBasisKey(q))
-			{ // We have a match!
-				result[j][k] = (short) ((q + 1) * Math.pow(-1.0, signFlip));
-
-				break; // Good enough. Go on to next ProductResult piece
+		long[] pKey = eddingtonBasis.getBasisKey();
+		for (m = 0; m < eddingtonBasis.getBladeCount(); m++)
+		{
+			if (bothOpsKey == pKey[m])
+			{
+				result[j][k] = (short) ((m + 1) * Math.pow(-1.0, signFlip));
+				break; // Good enough. Done identifying resulting blade & its sign
 			}
-
-		}// Found result[j][k] and sign successfully
-		signFlip = 0;
+		}
+		assert(result[j][k]!=0);	// if result entry is not zero, fill is complete.
 	}
 
 	/**
@@ -287,10 +286,13 @@ public final class GProduct
 	 */
 	public short getACommuteSign(short pj, short pk)
 	{
-		if (result[pj][pk] == result[pk][pj] * -1)
+		short left=result[pj][pk];
+		short right=result[pk][pj];
+		
+		if (left == right * -1)
 			return 1;
-		else
-			return 0;
+		
+		return 0;
 	}
 
 	/**
@@ -301,7 +303,7 @@ public final class GProduct
 	 */
 	public Basis getBasis()
 	{
-		return aBasis;
+		return eddingtonBasis;
 	}
 
 	/**
@@ -312,7 +314,7 @@ public final class GProduct
 	 */
 	public short getBladeCount()
 	{
-		return aBasis.getBladeCount();
+		return eddingtonBasis.getBladeCount();
 	}
 
 	/**
@@ -340,7 +342,7 @@ public final class GProduct
 	 */
 	public short getGradeCount()
 	{
-		return aBasis.getGradeCount();
+		return eddingtonBasis.getGradeCount();
 	}
 
 	/**
@@ -353,12 +355,12 @@ public final class GProduct
 	public short[] getGradeRange(short pGrade)
 	{
 		short[] tR = new short[2];
-		tR[0] = aBasis.getGradeRange(pGrade);
+		tR[0] = eddingtonBasis.getGradeRange(pGrade);
 
-		if (pGrade == aBasis.getGradeCount() - 1)
+		if (pGrade == eddingtonBasis.getGradeCount() - 1)
 			tR[1] = tR[0];
 		else
-			tR[1] = (short) (aBasis.getGradeRange((short) (pGrade + 1)) - 1);
+			tR[1] = (short) (eddingtonBasis.getGradeRange((short) (pGrade + 1)) - 1);
 
 		return tR;
 	}
@@ -413,10 +415,10 @@ public final class GProduct
 	 */
 	public short getSign(short pj, short pk)
 	{
-		if (result[pj][pk] >= 0)
-			return 1;
-		else
+		if (result[pj][pk] < 0)
 			return -1;
+		
+		return 1;
 	}
 
 	/**
@@ -431,6 +433,32 @@ public final class GProduct
 	}
 
 	/**
+	 * This is a private method used to settle generators to the end during
+	 * the fillResult method.
+	 * 
+	 * @param sortArray
+	 * @return
+	 */
+	private short[] settleGenerators(short[] sortArray)
+	{
+		short[] tempBothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
+		short q = (short) (2 * eddingtonBasis.getGradeCount() - 3);
+		
+		for (short m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m>-1; m--) 
+		// generator (column) counter GradeCount-2 through 0 [decreasing]
+		// Only one pass is needed
+		{
+			if (sortArray[m] != 0) // Found one to copy.
+			{
+				tempBothOps[q] = sortArray[m];
+				q--; // Slide left in vBasis for next possible entry.
+			}
+		}
+		return tempBothOps;
+		
+	}
+	
+	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
 	 * 
@@ -440,12 +468,12 @@ public final class GProduct
 	{
 		StringBuffer rB = new StringBuffer("<GProduct signature=\"" + signature
 						+ "\">\n");
-		rB.append(aBasis.toXMLString());
-		rB.append("<ProductTable rows=\"" + aBasis.getBladeCount() + "\">\n");
-		for (short k = 0; k < aBasis.getBladeCount(); k++) // Appending rows
+		rB.append(eddingtonBasis.toXMLString());
+		rB.append("<ProductTable rows=\"" + eddingtonBasis.getBladeCount() + "\">\n");
+		for (short k = 0; k < eddingtonBasis.getBladeCount(); k++) // Appending rows
 		{
 			rB.append("\t<row number=\"" + k + "\" entries=\"");
-			for (short m = 0; m < aBasis.getBladeCount(); m++)
+			for (short m = 0; m < eddingtonBasis.getBladeCount(); m++)
 			{
 				rB.append(getResult(k, m));
 				rB.append(",");

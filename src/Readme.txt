@@ -1,32 +1,25 @@
-Copyright © 2016 Alfred Differ. All rights reserved.
+Copyright © 2018 Alfred Differ. All rights reserved.
 ------------------------------------------------------------------------ 
 ---com.interworldtransport.*
 -------------------------------------------------------------------- 
-You ("Licensee") are granted a license to this software under the terms of 
-the GNU General Public License. A full copy of the license can be found 
-bundled with this package or code file. If the license file has become 
-separated from the package, code file, or binary executable, the Licensee is
-still expected to read about the license at the following URL before 
-accepting this material. 
-http://www.opensource.org/gpl-license.html
-Use of this code or executable objects derived from it by the Licensee states
-their willingness to accept the terms of the license.
+This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version. 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.<p>
+ 
+ Use of this code or executable objects derived from it by the Licensee 
+ states their willingness to accept the terms of the license. <p> 
+ 
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.<p>
 ------------------------------------------------------------------------
 ---com.interworldtransport.*
 ------------------------------------------------------------------------
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-FITNESS FOR A PARTICULAR PURPOSE.  
 
-We cannot guarantee that this release will not do harm to your work, system,
-or career options.  We do testing in order to deliver quality packages before
-each release, but you are completely on your own.  We recommend you defend
-your own code by testing this release in an area not critical to your work until 
-you can decide on the risks involved yourself.
-
-THIS SOFTWARE IS SUPPLIED COMPLETELY "AS IS".  NO WARRANTY....
-
--------------------------------------------------------------------------------
 Having said all that, if you want support, bug fixes, or a different license
 arrangement, let me know. I understand that some cannot stick their heads out
 regarding usage of code written by others. I AM interested in how people use 
@@ -44,6 +37,8 @@ It is a set of java packages that implement multi-vectors in Clifford Algebras.
 	cladosF				- The number package
 	cladosGExceptions	- The geometry exception package
 	cladosFExceptions	- The number exception package
+	cladosGTest			- The geometry test package
+	cladosFTest			- The number test package
 
 If you don't know what a Clifford Algebra is, consider yourself encouraged to 
 read about them elsewhere.  Geometric Algebras are a variation on a theme, so 

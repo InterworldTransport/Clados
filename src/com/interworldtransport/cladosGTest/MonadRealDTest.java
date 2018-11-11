@@ -91,11 +91,11 @@ public class MonadRealDTest
 	{
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(RealD.ZERO(tM5.getCoeff(0)))));
+		assertTrue(isGZero(tM5.scale(RealD.ZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 		assertTrue(isEqual(tM6.normalize().magnitude(),
-						RealD.ONE(tM7.getCoeff(0))));
+						RealD.ONE(tM7.getCoeff((short) 0))));
 		assertTrue(hasGrade(tM6, 2));
 		assertFalse(hasGrade(tM7, 0));
 	}
@@ -105,11 +105,11 @@ public class MonadRealDTest
 					CladosMonadBinaryException, CladosMonadException
 	{
 		tM6.add(tM7);
-		tM7.scale(new RealD(tM6.getCoeff(0), 2.0f));
+		tM7.scale(new RealD(tM6.getCoeff((short) 0), 2.0f));
 		assertTrue(tM6.isGEqual(tM7));
 		tM6.subtract(tM7)
 						.subtract(tM7)
-						.scale(new RealD(tM7.getCoeff(0).getFieldType(), -1.0f));
+						.scale(new RealD(tM7.getCoeff((short) 0).getFieldType(), -1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 		
 	}
@@ -120,25 +120,23 @@ public class MonadRealDTest
 		tM8.gradePart((short) 4).normalize();
 		
 		tM6.multiplyLeft(tM8).dualLeft();
-		tM6.scale(new RealD(tM6.getCoeff(0), -1f));
+		tM6.scale(new RealD(tM6.getCoeff((short) 0), -1f));
 		assertTrue(tM6.isGEqual(tM7));
 		
 		tM6.multiplyRight(tM8).dualRight();
-		tM6.scale(new RealD(tM6.getCoeff(0), -1f));
+		tM6.scale(new RealD(tM6.getCoeff((short) 0), -1f));
 		assertTrue(tM6.isGEqual(tM7));
 		
 		tM5.setCoeff(tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
 		
 		tM6.multiplySymm(tM8);
-		tM6.scale(new RealD(tM6.getCoeff(0), -1f));
-		System.out.println(toXMLString(tM6));
+		tM6.scale(new RealD(tM6.getCoeff((short) 0), -1f));
 		assertFalse(tM6.isGEqual(tM7));
 		
 		tM6.setCoeff(tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
-		tM6.scale(new RealD(tM6.getCoeff(0), -1f));
-		//System.out.println(toXMLString(tM6));
+		tM6.scale(new RealD(tM6.getCoeff((short) 0), -1f));
 		assertFalse(tM6.isGEqual(tM7));
 	}
 }

@@ -401,7 +401,7 @@ public class ComplexD extends DivFieldD
 	 */
 	public static ComplexD ZERO(String pS)
 	{
-		return new ComplexD(new DivFieldType(pS), 0.0, 0.0);
+		return new ComplexD(new DivFieldType(pS), 0.0D, 0.0D);
 	}
 	
 	/**

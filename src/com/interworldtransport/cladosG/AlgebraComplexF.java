@@ -50,7 +50,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 		rB.append(pA.protoNumber.toXMLString()+"\n");
 		rB.append(pA.getFootPoint().toXMLString());
 		rB.append(pA.getGProduct().toXMLString());
-		rB.append("\n</Algebra>\n");
+		rB.append("</Algebra>\n");
 		return rB.toString();
 	}
 
@@ -63,7 +63,25 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 */
 	public ComplexF	protoNumber;
 
-	public AlgebraComplexF(String pS, Foot pF, GProduct pGP)
+	/**
+	 * This is the constructor that assumes a Foot and GProduct have been instantiated. 
+	 * It takes the ComplexF number type from the Foot and points at the offered GProduct causing
+	 * it to be shared. It takes in one string for the algebra name as well and then produces 
+	 * an AlgebraComplexF. If anything is wrong with the signature it throws an exception. 
+	 * Any other error throws a general monad exception.
+	 * 
+	 * THIS CONSTRUCTOR is the one that enables algebras to function as light weight frames.
+	 * Two algebras can have different names but share a Foot and GProduct and cause reference
+	 * matches to fail. This is the behavior necessary to prevent unintended operations between
+	 * monads in different frames.
+	 * 
+	 * @param pS			This is the Algebra's name
+	 * @param pF			This is the foot being offered for reference
+	 * @param pGP			This is the geometric product being offered for reference
+	 */
+	public AlgebraComplexF(	String pS, 
+							Foot pF, 
+							GProduct pGP)
 	{
 		setAlgebraName(pS);
 		setFootPoint(pF);
@@ -71,9 +89,29 @@ public class AlgebraComplexF extends AlgebraAbstract
 		gBasis = pGP.getBasis();
 		protoNumber = new ComplexF(pF.getNumberType(), 1.0f, 0.0f);
 	}
-
-	public AlgebraComplexF(String pS, Foot pFoot, String pSig)
-					throws BadSignatureException, CladosMonadException
+	/**
+	 * This is the constructor that assumes a Foot has been instantiated, so it takes
+	 * the ComplexF number type from there. It takes in two strings (one name and a 
+	 * product signature) and the Foot and produces an AlgebraComplexF. If anything is wrong 
+	 * with the signature it throws an exception. Any other error throws a general monad
+	 * exception.
+	 * 
+	 * THIS CONSTRUCTOR is the one that enables algebras to function as medium weight frames.
+	 * Two algebras can have different names and GProducts but share a Foot and cause reference
+	 * matches to fail. This is the behavior necessary to prevent unintended operations between
+	 * monads expressed using different signatures in their geometric products.
+	 * 
+	 * @param pS			This is the Algebra's name
+	 * @param pFoot			This is the foot being offered for reference
+	 * @param pSig			This is the signature of the GProduct
+	 * @throws BadSignatureException
+	 * @throws CladosMonadException
+	 */
+	public AlgebraComplexF(	String pS, 
+							Foot pFoot, 
+							String pSig)
+					throws 	BadSignatureException, 
+							CladosMonadException
 	{
 		setAlgebraName(pS);
 		setFootPoint(pFoot);
@@ -82,8 +120,30 @@ public class AlgebraComplexF extends AlgebraAbstract
 		protoNumber = new ComplexF(pFoot.getNumberType(), 1.0f, 0.0f);
 	}
 
-	public AlgebraComplexF(String pS, String pFootName, String pSig, ComplexF pF)
-					throws BadSignatureException, CladosMonadException
+	/**
+	 * This is the raw constructor that assumes only the number type has been
+	 * instantiated. It takes in three strings (two names and a product signature)
+	 * and the example ComplexF and produces an AlgebraComplexF. If anything is wrong 
+	 * with the signature it throws an exception. Any other error throws a general 
+	 * monad exception.
+	 * 
+	 * This is the constructor that ensures algebra reference match failures even
+	 * when exact same string names are used to construct all its parts. Because the
+	 * Foot object is constructed within, the algebra will be distinct by definition.
+	 * 
+	 * @param pS			This is the Algebra's name
+	 * @param pFootName		This is the Foot's name
+	 * @param pSig			This is the signature of the GProduct
+	 * @param pF			This is the number type to use expressed as a ComplexF
+	 * @throws BadSignatureException
+	 * @throws CladosMonadException
+	 */
+	public AlgebraComplexF(	String pS, 
+							String pFootName, 
+							String pSig, 
+							ComplexF pF)
+					throws 	BadSignatureException, 
+							CladosMonadException
 	{
 		setAlgebraName(pS);
 		setFootPoint(new Foot(pFootName, pF.getFieldType()));

@@ -25,7 +25,7 @@
 package com.interworldtransport.cladosG;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
+//import java.util.ListIterator;
 
 import com.interworldtransport.cladosF.DivField;
 import com.interworldtransport.cladosF.DivFieldType;
@@ -86,7 +86,7 @@ public final class Foot
 	 * 
 	 * @param pName
 	 *            String This string will be the name of the foot point.
-	 * @param pFT
+	 * @param pF
 	 *            DivFieldType This object defines the kind of numbers that are
 	 *            meaningful for this foot point
 	 */
@@ -151,16 +151,21 @@ public final class Foot
 	 */
 	public void removeRFrames(String pRF)
 	{
-		ListIterator<String> li = rFrames.listIterator();
-		do
-		{
-			if (li.next().equals(pRF))
-			{
-				li.remove();
-				break;
-			}
-		}
-		while (li.hasNext());
+		//for (String tS : rFrames)
+		//{
+		//	if (tS.equals(pRF))
+				rFrames.remove(pRF);
+		//}
+		//ListIterator<String> li = rFrames.listIterator();
+		//do
+		//{
+		//	if (li.next().equals(pRF))
+		//	{
+		//		li.remove();
+		//		break;
+		//	}
+		//}
+		//while (li.hasNext());
 	}
 
 	public void setFootName(String footName)

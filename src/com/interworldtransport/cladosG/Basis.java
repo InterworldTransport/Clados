@@ -82,13 +82,15 @@ public final class Basis
 	 * This array holds the representation of the vBasis. The vBasis is a
 	 * complete list of unique blades for an algebra.
 	 * 
-	 * A column entry in a row is a generator (int) used to construct a blade.
+	 * A column entry in a row is a generator (short) used to construct a blade.
 	 * The generators in a row are sorted in ascending order. Only positive,
 	 * non-zero integers represent generators.
 	 * 
 	 * A row of the matrix is a blade. The number of rows is the linear
 	 * dimension of an algebra using this basis because only one permutation of
 	 * each distinct subset of generators is found in the rows of the array.
+	 * 
+	 * So... this is the Eddington Basis.
 	 */
 	protected short[][]	vBasis;
 	/**
@@ -151,7 +153,7 @@ public final class Basis
 	{
 		if (pGens > 14)
 			throw new CladosMonadException(null,
-							"Can't support more than 14 generators");
+					"Can't support more than 14 generators using 16 bit integers");
 		gradeCount = (short) (pGens + 1);
 		bladeCount = (short) Math.pow(2, pGens);
 		vBasis = new short[bladeCount][pGens];
@@ -371,10 +373,7 @@ public final class Basis
 			
 			vKey[k] = 0;
 			for (m = 0; m < gradeCount - 1; m++)
-			{
-				vKey[k] += (long) vBasis[k][m]
-							* Math.pow(gradeCount, gradeCount - 2 - m);
-			}
+				vKey[k] += (long) vBasis[k][m]*Math.pow(gradeCount, gradeCount -2-m);
 		}
 		
 		// All Eddington Numbers are written. The Keys are written too.

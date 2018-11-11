@@ -648,7 +648,7 @@ public class RealF extends DivFieldF
 	public String toXMLString()
 	{
 		return ("<RealF type=\"" + getFieldTypeString() + "\" value=\""
-						+ getReal() + "\" />");
+				+ getReal() + "\" />");
 	}
 
 }

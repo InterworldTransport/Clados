@@ -10,79 +10,122 @@ import static org.junit.Assert.*;
 
 public class GProductTest
 {
-	GProduct	tGP4;
-	GProduct	tGP8;
-	//GProduct	tGP10;
-	GProduct	tGP12;
-
-	@Before
-	public void setUp() throws CladosMonadException, BadSignatureException
-	{
-		tGP4 = new GProduct("-+++");
-		tGP8 = new GProduct("-+++-+++");
-		//tGP10 = new GProduct("-++++-++++");
-		tGP12 = new GProduct("-+++-+++-+++");
-	}
+	String		pSig4="-+++";
+	String		pSig8="-+++-+++";
+	String		pSig10="+++-++++++";
+	String		pSig12="-+++-+++-+++";
+	String		pSig14="++-+++-+++-+++";
 
 	@Test
-	public void testGradeCount()
+	public void test4s() throws CladosMonadException, BadSignatureException
 	{
-		assertTrue(tGP4.getGradeCount() == 5);
-		assertTrue(tGP8.getGradeCount() == 9);
-		//assertTrue(tGP10.getGradeCount() == 11);
-		assertTrue(tGP12.getGradeCount() == 13);
+		GProduct tGP = new GProduct(pSig4);
+		//System.out.println(tGP.toXMLString());
+		assertTrue(tGP.getSignature().equals("-+++"));
+		assertTrue(tGP.getGradeCount() == 5);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 4));
+		
+		int tS=(int)Math.pow(2,4);
+		int tSum=tS*(tS+1)/2;
+		for (short k=0; k<tGP.getBladeCount(); k++)
+		{
+			short[] tSpot=tGP.getResult(k);
+			int tSumP=0;
+			for (int j=0; j<tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+			
+			assertTrue(tSum==tSumP);
+		}
+		
+		GProduct tGPClone = new GProduct(tGP);
+		assertTrue(tGPClone.getBasis().equals(tGP.getBasis()));
+		assertFalse(tGPClone.getResult().equals(tGP.getResult()));
+		
+		
 	}
-
+	
 	@Test
-	public void testBladeCount()
+	public void test8s() throws CladosMonadException, BadSignatureException
 	{
-		assertTrue(tGP4.getBladeCount() == Math.pow(2, 4));
-		assertTrue(tGP8.getBladeCount() == Math.pow(2, 8));
-		//assertTrue(tGP10.getBladeCount() == Math.pow(2, 10));
-		assertTrue(tGP12.getBladeCount() == Math.pow(2, 12));
+		GProduct tGP = new GProduct(pSig8);
+		assertTrue(tGP.getSignature().equals("-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 9);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 8));
+		
+		int tS=(int)Math.pow(2,8);
+		int tSum=tS*(tS+1)/2;
+		for (short k=0; k<tGP.getBladeCount(); k++)
+		{
+			short[] tSpot=tGP.getResult(k);
+			int tSumP=0;
+			for (int j=0; j<tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+			
+			assertTrue(tSum==tSumP);
+		}
 	}
-
+	
 	@Test
-	public void testProductResult()
+	public void test10s() throws CladosMonadException, BadSignatureException
 	{
+		GProduct tGP = new GProduct(pSig10);
+		assertTrue(tGP.getSignature().equals("+++-++++++"));
+		assertTrue(tGP.getGradeCount() == 11);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 10));
+		
+		int tS=(int)Math.pow(2,10);
+		int tSum=tS*(tS+1)/2;
+		for (short k=0; k<tGP.getBladeCount(); k++)
+		{
+			short[] tSpot=tGP.getResult(k);
+			int tSumP=0;
+			for (int j=0; j<tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+			
+			assertTrue(tSum==tSumP);
+		}
+	}
+	
+	@Test
+	public void test12s() throws CladosMonadException, BadSignatureException
+	{
+		GProduct tGP = new GProduct(pSig12);
+		assertTrue(tGP.getSignature().equals("-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 13);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 12));
+		
 		int tS=(int)Math.pow(2,12);
 		int tSum=tS*(tS+1)/2;
-		for (short k=0; k<tGP12.getBladeCount(); k++)
+		for (short k=0; k<tGP.getBladeCount(); k++)
 		{
-			short[] tSpot=tGP12.getResult(k);
+			short[] tSpot=tGP.getResult(k);
 			int tSumP=0;
 			for (int j=0; j<tSpot.length; j++)
-			{
 				tSumP += Math.abs(tSpot[j]);
-			}
+			
 			assertTrue(tSum==tSumP);
 		}
-		
-		tS=(int)Math.pow(2,8);
-		tSum=tS*(tS+1)/2;
-		for (short k=0; k<tGP8.getBladeCount(); k++)
-		{
-			short[] tSpot=tGP8.getResult(k);
-			int tSumP=0;
-			for (int j=0; j<tSpot.length; j++)
-			{
-				tSumP += Math.abs(tSpot[j]);
-			}
-			assertTrue(tSum==tSumP);
-		}
-		
-		tS=(int)Math.pow(2,4);
-		tSum=tS*(tS+1)/2;
-		for (short k=0; k<tGP4.getBladeCount(); k++)
-		{
-			short[] tSpot=tGP4.getResult(k);
-			int tSumP=0;
-			for (int j=0; j<tSpot.length; j++)
-			{
-				tSumP += Math.abs(tSpot[j]);
-			}
-			assertTrue(tSum==tSumP);
-		}
-		
 	}
+	
+	//@Test
+	//public void test14s() throws CladosMonadException, BadSignatureException
+	//{
+	//	GProduct tGP = new GProduct(pSig14);
+	//	assertTrue(tGP.getSignature().equals("++-+++-+++-+++"));
+	//	assertTrue(tGP.getGradeCount() == 15);
+	//	assertTrue(tGP.getBladeCount() == Math.pow(2, 14));
+	//	
+	//	int tS=(int)Math.pow(2,14);
+	//	int tSum=tS*(tS+1)/2;
+	//	for (short k=0; k<tGP.getBladeCount(); k++)
+	//	{
+	//		short[] tSpot=tGP.getResult(k);
+	//		int tSumP=0;
+	//		for (int j=0; j<tSpot.length; j++)
+	//			tSumP += Math.abs(tSpot[j]);
+	//		
+	//		assertTrue(tSum==tSumP);
+	//	}
+	//}
+	
 }

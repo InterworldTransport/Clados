@@ -208,7 +208,7 @@ public abstract class MonadAbstract
 	public abstract MonadAbstract gradePart(short pGrade)
 					throws CladosMonadException;
 
-	public abstract MonadAbstract gradeSupress(int pGrade)
+	public abstract MonadAbstract gradeSuppress(short pGrade)
 					throws CladosMonadException;
 
 	public abstract MonadAbstract invert();
@@ -243,7 +243,8 @@ public abstract class MonadAbstract
 
 	/**
 	 * This method sets the sparse flag of the monad. 
-	 * It is just a settor method.
+	 * It is just a settor method. It alteres the computational 
+	 * strategy used by Monads when multiplication occurs.
 	 * @param pSparse
 	 * 	boolean
 	 */

@@ -91,7 +91,7 @@ public class MonadComplexFTest
 	{
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(ComplexF.ZERO(tM5.getCoeff(0)))));
+		assertTrue(isGZero(tM5.scale(ComplexF.ZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 		
@@ -99,7 +99,7 @@ public class MonadComplexFTest
 		//System.out.println(toXMLString(tM6));
 		//System.out.println(tM6.magnitude().toXMLString());
 		//System.out.println(ComplexF.ONE(tM7.getCoeff(0)).toXMLString());
-		assertTrue(isEqual(tM6.magnitude(), ComplexF.ONE(tM7.getCoeff(0))));
+		assertTrue(isEqual(tM6.magnitude(), ComplexF.ONE(tM7.getCoeff((short) 0))));
 		
 		assertTrue(hasGrade(tM6, 2));
 		assertTrue(hasGrade(tM7, 0));
@@ -110,11 +110,11 @@ public class MonadComplexFTest
 					CladosMonadBinaryException, CladosMonadException
 	{
 		tM6.add(tM7);
-		tM7.scale(new ComplexF(tM6.getCoeff(0), 2.0f, 0.0f));
+		tM7.scale(new ComplexF(tM6.getCoeff((short) 0), 2.0f, 0.0f));
 		assertTrue(tM6.isGEqual(tM7));
 		tM6.subtract(tM7)
 						.subtract(tM7)
-						.scale(new ComplexF(tM7.getCoeff(0).getFieldType(),
+						.scale(new ComplexF(tM7.getCoeff((short) 0).getFieldType(),
 										-1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 
@@ -125,28 +125,28 @@ public class MonadComplexFTest
 					CladosMonadBinaryException, CladosMonadException
 	{
 		tM8.gradePart((short) 4).normalize();
-		System.out.println(toXMLString(tM8));
+		//System.out.println(toXMLString(tM8));
 		tM6.multiplyLeft(tM8).dualLeft();
-		tM6.scale(new ComplexF(tM6.getCoeff(0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		//System.out.println(toXMLString(tM6));
 		//System.out.println(toXMLString(tM7));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM6.multiplyRight(tM8).dualRight();
-		tM6.scale(new ComplexF(tM6.getCoeff(0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM5.setCoeff(tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
 
 		tM6.multiplySymm(tM8);
-		tM6.scale(new ComplexF(tM6.getCoeff(0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 
 		tM6.setCoeff(tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
-		tM6.scale(new ComplexF(tM6.getCoeff(0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 	}
