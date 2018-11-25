@@ -119,36 +119,27 @@ public final class GProduct
 	{
 		// Validate pSig to ensure it has only the information we want. Then
 		// save it internally
-		boolean check = validateSignature(pSig);
-		if (check)
-		{
-			// Figure out linear dimension and grade count. Both are needed
-			// often.
-			eddingtonBasis = new Basis((short) pSig.length());
-
-			// Fill the ProductResult array with integers representing Vector
-			// Basis elements that show the product of two other such elements.
-
-			result = new short[eddingtonBasis.getBladeCount()][eddingtonBasis.getBladeCount()];
-
-			for (short j = 0; j < eddingtonBasis.getBladeCount(); j++)
-			{
-				result[0][j] = (short) (j + 1);
-				result[j][0] = (short) (j + 1);
-			} // Scalar section of product result finished early
-			for (short j = 1; j < eddingtonBasis.getBladeCount(); j++)
-			{// counter for row element in product
-				for (short k = 1; k < eddingtonBasis.getBladeCount(); k++)
-				{// counter for column element in product
-					fillResult(j, k);
-				}
-			}
-		}
-		else
-		{
+		//boolean check = validateSignature(pSig);
+		if (!validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature expected.");
+		
+		eddingtonBasis = new Basis((short) pSig.length());
+
+		// Fill the ProductResult array with integers representing Vector
+		// Basis elements that show the product of two other such elements.
+		result = new short[eddingtonBasis.getBladeCount()][eddingtonBasis.getBladeCount()];
+		
+		for (short j = 0; j < eddingtonBasis.getBladeCount(); j++)
+		{
+			result[0][j] = (short) (j + 1);
+			result[j][0] = (short) (j + 1);
+		} // Scalar section of product result finished early
+		
+		for (short j = 1; j < eddingtonBasis.getBladeCount(); j++) // row
+		{
+			for (short k = 1; k < eddingtonBasis.getBladeCount(); k++) // column
+				fillResult(j, k); // counter for column element in product
 		}
-		// Fill in any other helpful things to be kept here.
 	}
 
 	/**
@@ -245,7 +236,7 @@ public final class GProduct
 		
 		//**************************************************************************
 
-		// At this point doubleSort should be fully sorted and have no
+		// At this point bothOps should be fully sorted and have no
 		// duplicate generators. Now we need to Key the discovered basis element
 		
 		// Base (GradeCount) representation of Eddington Number
@@ -272,6 +263,7 @@ public final class GProduct
 			}
 		}
 		assert(result[j][k]!=0);	// if result entry is not zero, fill is complete.
+		// This assertion prevents us from using light-like generators
 	}
 
 	/**

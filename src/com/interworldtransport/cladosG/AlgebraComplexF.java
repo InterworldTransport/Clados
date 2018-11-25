@@ -61,7 +61,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * 
 	 * That's all.
 	 */
-	public ComplexF	protoNumber;
+	protected ComplexF	protoNumber;
 
 	/**
 	 * This is the constructor that assumes a Foot and GProduct have been instantiated. 
@@ -89,6 +89,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 		gBasis = pGP.getBasis();
 		protoNumber = new ComplexF(pF.getNumberType(), 1.0f, 0.0f);
 	}
+	
 	/**
 	 * This is the constructor that assumes a Foot has been instantiated, so it takes
 	 * the ComplexF number type from there. It takes in two strings (one name and a 

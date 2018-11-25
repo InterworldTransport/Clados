@@ -77,6 +77,41 @@ public class NyadRealD extends NyadAbstract
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
 		return -1;
 	}
+	
+	/**
+	 * Return an integer pointing to the part of the nyad expressed in the frame
+	 * named in the parameter.
+	 * 
+	 * @param pN
+	 * 			NyadRealD
+	 * @param pFrame
+	 *            String
+	 * @return boolean
+	 */
+	public static int findFrame(NyadRealD pN, String pFrame)
+	{
+		for (MonadRealD pM : pN.getMonadList())
+			if (pFrame.equals(pM.getFrameName()))
+				return pN.monadList.indexOf(pM);
+		return -1;
+	}
+	
+	/**
+	 * Return an integer pointing to the part of the nyad with the expressed
+	 * name.
+	 * 
+	 * @param pN
+	 * 			NyadRealD
+	 * @param pName
+	 *            String
+	 * @return boolean
+	 */
+	public static int findName(NyadRealD pN, String pName)
+	{
+		for (MonadRealD pM : pN.getMonadList())
+			if (pName.equals(pM.getName())) return pN.monadList.indexOf(pM);
+		return -1;
+	}
 
 	/**
 	 * Return a boolean stating whether or not the nyad covers the algebra named
@@ -93,6 +128,40 @@ public class NyadRealD extends NyadAbstract
 	{
 		for (MonadRealD pM : pN.monadList)
 			if (pAlg.equals(pM.getAlgebra())) return true;
+		return false;
+	}
+	
+	/**
+	 * Return a boolean stating whether or not the nyad is expressed in the
+	 * frame named in the parameter.
+	 * 
+	 * @param pN
+	 * 			NyadRealD
+	 * @param pFrame
+	 *            String
+	 * @return boolean
+	 */
+	public static boolean hasFrame(NyadRealD pN, String pFrame)
+	{
+		for (MonadRealD pM : pN.getMonadList())
+			if (pFrame.equals(pM.getFrameName())) return true;
+		return false;
+	}
+	
+	/**
+	 * Return a boolean stating whether or not the nyad contained the named
+	 * monad.
+	 * 
+	 * @param pN
+	 * 			NyadRealD
+	 * @param pName
+	 *            String
+	 * @return boolean
+	 */
+	public static boolean hasName(NyadRealD pN, String pName)
+	{
+		for (MonadRealD pM : pN.getMonadList())
+			if (pName.equals(pM.getName())) return true;
 		return false;
 	}
 
@@ -386,6 +455,7 @@ public class NyadRealD extends NyadAbstract
 	 * are placed in the same algebra and antisymmetrically multiplied to each
 	 * other. A reference match test must pass for both after the algebra names
 	 * have been changed.
+	 * 
 	 * @param pInto
 	 * 		AlgebraRealD
 	 * @param pFrom
@@ -432,6 +502,7 @@ public class NyadRealD extends NyadAbstract
 	 * 		int
 	 * @param pFrom
 	 * 		int
+	 * 
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the monads to be compressed fail the Field match test
 	 * @throws CladosMonadBinaryException
@@ -471,21 +542,16 @@ public class NyadRealD extends NyadAbstract
 		// A check should be made to ensure pM is OK to append.
 		// The footPoint objects must match.
 		if (!pM.getAlgebra().getFootPoint().equals(getFootPoint()))
-			throw new CladosNyadException(this,
-							"Nyads should not have foot name mismatch");
+			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
 		
 		// Now that the feet are guaranteed the same, it is time to 
 		// avoid duplication of algebra names in the monad list
-		if (!hasAlgebra(this, pM.getAlgebra()))
-		{
-			// Add Monad to the ArrayList
-			monadList.ensureCapacity(monadList.size() + 1);
-			monadList.add(new MonadRealD(pM));
-		}
-		else
-			throw new CladosNyadException(this,
-							"Nyads should have unique algebra names");
-
+		if (hasAlgebra(this, pM.getAlgebra()))
+			throw new CladosNyadException(this,	"Monads in a nyad should have unique Algebras");
+				
+		// Add Monad to the ArrayList
+		monadList.ensureCapacity(monadList.size() + 1);
+		monadList.add(new MonadRealD(pM));
 		return this;
 	}
 
@@ -520,9 +586,12 @@ public class NyadRealD extends NyadAbstract
 					String pSig) throws BadSignatureException,
 					CladosMonadException, CladosNyadException
 	{
-
-		MonadRealD tM = new MonadRealD(pName, pAlgebra, pFrame, getFootPoint()
-						.getFootName(), pSig, protoOne);
+		MonadRealD tM = new MonadRealD(	pName, 
+										pAlgebra, 
+										pFrame, 
+										getFootPoint(), 
+										pSig, 
+										protoOne);
 		appendMonad(tM);
 		return this;
 	}
@@ -571,6 +640,16 @@ public class NyadRealD extends NyadAbstract
 	public MonadRealD getMonadList(int pj)
 	{
 		return monadList.get(pj);
+	}
+	
+	/**
+	 * Return the order of this Nyad
+	 * 
+	 * @return short
+	 */
+	public int getNyadOrder()
+	{
+		return monadList.size();
 	}
 
 	/**
@@ -661,8 +740,7 @@ public class NyadRealD extends NyadAbstract
 		if (testfind >= 0)
 			removeMonad(testfind);
 		else
-			throw new CladosNyadException(this,
-							"Can't find the Monad to remove.");
+			throw new CladosNyadException(this,	"Can't find the Monad to remove.");
 		return this;
 	}
 
@@ -716,7 +794,7 @@ public class NyadRealD extends NyadAbstract
 	 * Set the Monad List array of this NyadRealD.  A new ArrayList is created,
 	 * but the Monads list the list are reused.
 	 * @param pML
-	 * 			  ArrayList This is the array of monads in the nyad
+	 * 		ArrayList Contains the list of monads for the nyad
 	 */
 	protected void setMonadList(ArrayList<MonadRealD> pML)
 	{
@@ -734,9 +812,9 @@ public class NyadRealD extends NyadAbstract
 	 * changed.
 	 * 
 	 * @param pInto
-	 * 			  AlgebraRealD
+	 * 			AlgebraRealD
 	 * @param pFrom
-	 * 			  AlgebraRealD
+	 * 			AlgebraRealD
 	 * 
 	 * @throws CladosNyadException
 	 * 		This exception is thrown when the monads being compressed fail a field match or
@@ -798,5 +876,4 @@ public class NyadRealD extends NyadAbstract
 		tempRight = monadList.remove(pFrom);
 		monadList.trimToSize();
 	}
-
 }

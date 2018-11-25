@@ -354,6 +354,49 @@ public class MonadComplexF extends MonadAbstract
 	}
 
 	/**
+	 * Special constructor of Monad with most information passed in. This one
+	 * will create a default 'Zero' Monad while re-using the Foot of another.
+	 * 
+	 * @param pMonadName
+	 *            String
+	 * @param pAlgebraName
+	 *            String
+	 * @param pFrameName
+	 *            String
+	 * @param pFoot
+	 *            Foot
+	 * @param pSig
+	 *            String
+	 * @param pF
+	 * 			  ComplexF
+	 * @throws BadSignatureException
+	 * 	This exception is thrown if the signature string offered is rejected.
+	 * @throws CladosMonadException
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
+	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 */
+	public MonadComplexF(	String pMonadName, 
+						String pAlgebraName,
+						String pFrameName, 
+						Foot pFoot, 
+						String pSig, 
+						ComplexF pF)
+				throws BadSignatureException, CladosMonadException
+	{
+		setAlgebra(new AlgebraComplexF(pAlgebraName, pFoot, pSig));
+
+		setName(pMonadName);
+		setFrameName(pFrameName);
+
+		cM = new ComplexF[getAlgebra().getGProduct().getBladeCount()];
+		ComplexF tR = ZERO(pF);
+		for (int k = 0; k < cM.length; k++)
+			cM[k] = copy(tR);
+		// cM array now filled with zeros that all share the same DivFieldType
+		setGradeKey();
+	}
+	
+	/**
 	 * Special constructor of Monad with most information passed in. 'Special
 	 * Case' strings determine the coefficients automatically. 'Unit Scalar' and
 	 * 'Unit PScalar' are recognized special cases. All unrecognized strings

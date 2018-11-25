@@ -3,15 +3,21 @@
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.NyadRealF<br>
  * -------------------------------------------------------------------- <p>
- * You ("Licensee") are granted a license to this software under the terms of 
- * the GNU General Public License. A full copy of the license can be found 
- * bundled with this package or code file. If the license file has become 
- * separated from the package, code file, or binary executable, the Licensee is
- * still expected to read about the license at the following URL before 
- * accepting this material. 
- * <code>http://www.opensource.org/gpl-license.html</code><p> 
- * Use of this code or executable objects derived from it by the Licensee states
- * their willingness to accept the terms of the license. <p> 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version. 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.<p>
+ * 
+ * Use of this code or executable objects derived from it by the Licensee 
+ * states their willingness to accept the terms of the license. <p> 
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * 
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.NyadRealF<br>
  * ------------------------------------------------------------------------ <br>
@@ -60,15 +66,50 @@ public class NyadRealF extends NyadAbstract
 	 * in the nyad that belongs to the algebra.
 	 * 
 	 * @param pN
-	 * 			NyadAbstract
+	 * 			NyadRealF
 	 * @param pAlg
 	 *            String
 	 * @return int
 	 */
 	public static int findAlgebra(NyadRealF pN, AlgebraRealF pAlg)
 	{
-		for (MonadRealF pM : pN.monadList)
+		for (MonadRealF pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
+		return -1;
+	}
+	
+	/**
+	 * Return an integer pointing to the part of the nyad expressed in the frame
+	 * named in the parameter.
+	 * 
+	 * @param pN
+	 * 			NyadRealF
+	 * @param pFrame
+	 *            String
+	 * @return boolean
+	 */
+	public static int findFrame(NyadRealF pN, String pFrame)
+	{
+		for (MonadRealF pM : pN.getMonadList())
+			if (pFrame.equals(pM.getFrameName()))
+				return pN.monadList.indexOf(pM);
+		return -1;
+	}
+	
+	/**
+	 * Return an integer pointing to the part of the nyad with the expressed
+	 * name.
+	 * 
+	 * @param pN
+	 * 			NyadRealF
+	 * @param pName
+	 *            String
+	 * @return boolean
+	 */
+	public static int findName(NyadRealF pN, String pName)
+	{
+		for (MonadRealF pM : pN.getMonadList())
+			if (pName.equals(pM.getName())) return pN.monadList.indexOf(pM);
 		return -1;
 	}
 
@@ -78,15 +119,49 @@ public class NyadRealF extends NyadAbstract
 	 * that belongs to the algebra.
 	 * 
 	 * @param pN
-	 * 			NyadAbstract
+	 * 			NyadRealF
 	 * @param pAlg
 	 *            String
 	 * @return boolean
 	 */
 	public static boolean hasAlgebra(NyadRealF pN, AlgebraRealF pAlg)
 	{
-		for (MonadRealF pM : pN.monadList)
+		for (MonadRealF pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return true;
+		return false;
+	}
+	
+	/**
+	 * Return a boolean stating whether or not the nyad is expressed in the
+	 * frame named in the parameter.
+	 * 
+	 * @param pN
+	 * 			NyadRealF
+	 * @param pFrame
+	 *            String
+	 * @return boolean
+	 */
+	public static boolean hasFrame(NyadRealF pN, String pFrame)
+	{
+		for (MonadRealF pM : pN.getMonadList())
+			if (pFrame.equals(pM.getFrameName())) return true;
+		return false;
+	}
+	
+	/**
+	 * Return a boolean stating whether or not the nyad contained the named
+	 * monad.
+	 * 
+	 * @param pN
+	 * 			NyadRealF
+	 * @param pName
+	 *            String
+	 * @return boolean
+	 */
+	public static boolean hasName(NyadRealF pN, String pName)
+	{
+		for (MonadRealF pM : pN.getMonadList())
+			if (pName.equals(pM.getName())) return true;
 		return false;
 	}
 
@@ -456,6 +531,7 @@ public class NyadRealF extends NyadAbstract
 	 * 
 	 * @throws CladosNyadException
 	 * 		This exception is thrown if the foot of the new monad fails to match
+	 * 
 	 * @return NyadRealF
 	 */
 	public NyadRealF appendMonad(MonadRealF pM) throws CladosNyadException
@@ -466,21 +542,16 @@ public class NyadRealF extends NyadAbstract
 		// A check should be made to ensure pM is OK to append.
 		// The footPoint objects must match.
 		if (!pM.getAlgebra().getFootPoint().equals(getFootPoint()))
-			throw new CladosNyadException(this,
-							"Nyads should not have foot name mismatch");
+			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
 
 		// Now that the feet are guaranteed the same, it is time to
 		// avoid duplication of algebra names in the monad list
-		if (!hasAlgebra(this, pM.getAlgebra()))
-		{
-			// Add Monad to the ArrayList
-			monadList.ensureCapacity(monadList.size() + 1);
-			monadList.add(new MonadRealF(pM));
-		}
-		else
-			throw new CladosNyadException(this,
-							"Nyads should have unique algebra names");
-
+		if (hasAlgebra(this, pM.getAlgebra()))
+			throw new CladosNyadException(this,	"Monads in a nyad should have unique Algebras");
+				
+		// Add Monad to the ArrayList
+		monadList.ensureCapacity(monadList.size() + 1);
+		monadList.add(new MonadRealF(pM));
 		return this;
 	}
 
@@ -515,9 +586,12 @@ public class NyadRealF extends NyadAbstract
 					String pSig) throws BadSignatureException,
 					CladosMonadException, CladosNyadException
 	{
-
-		MonadRealF tM = new MonadRealF(pName, pAlgebra, pFrame, getFootPoint()
-						.getFootName(), pSig, protoOne);
+		MonadRealF tM = new MonadRealF(	pName, 
+										pAlgebra, 
+										pFrame, 
+										getFootPoint(), 
+										pSig, 
+										protoOne);
 		appendMonad(tM);
 		return this;
 	}
@@ -566,6 +640,16 @@ public class NyadRealF extends NyadAbstract
 	public MonadRealF getMonadList(int pj)
 	{
 		return monadList.get(pj);
+	}
+	
+	/**
+	 * Return the order of this Nyad
+	 * 
+	 * @return short
+	 */
+	public int getNyadOrder()
+	{
+		return monadList.size();
 	}
 
 	/**
@@ -623,7 +707,7 @@ public class NyadRealF extends NyadAbstract
 	 */
 	public NyadRealF removeMonad(int pthisone) throws CladosNyadException
 	{
-		MonadRealF test = null;
+		MonadRealF test = null;		
 		try
 		{
 			test = monadList.remove(pthisone);
@@ -646,7 +730,6 @@ public class NyadRealF extends NyadAbstract
 	 * 
 	 * @param pM
 	 *            MonadRealF
-	 * 
 	 * @throws CladosNyadException
 	 * 		This exception is thrown when the monad to be removed can't be found.
 	 * @return NyadRealF
@@ -657,8 +740,7 @@ public class NyadRealF extends NyadAbstract
 		if (testfind >= 0)
 			removeMonad(testfind);
 		else
-			throw new CladosNyadException(this,
-							"Can't find the Monad to remove.");
+			throw new CladosNyadException(this,	"Can't find the Monad to remove.");
 		return this;
 	}
 
@@ -712,7 +794,7 @@ public class NyadRealF extends NyadAbstract
 	 * Set the Monad List array of this NyadRealF. A new ArrayList is created,
 	 * but the Monads list the list are reused.
 	 * @param pML
-	 * 		ArrayList
+	 * 		ArrayList Contains the list of monads for the nyad
 	 */
 	protected void setMonadList(ArrayList<MonadRealF> pML)
 	{
@@ -728,14 +810,15 @@ public class NyadRealF extends NyadAbstract
 	 * placed in the same algebra and symmetrically multiplied to each other. A
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
+	 * 
 	 * @param pInto
-	 * 		AlgebraRealF
+	 * 			AlgebraRealF
 	 * @param pFrom
-	 * 		AlgebraRealF
+	 * 			AlgebraRealF
+	 * 
 	 * @throws CladosNyadException
 	 * 		This exception is thrown when the monads being compressed fail a field match or
 	 * 		reference match test used in multiplication.
-	 * 
 	 * @return NyadRealF
 	 */
 	public NyadRealF symmCompress(AlgebraRealF pInto, AlgebraRealF pFrom)
@@ -770,6 +853,7 @@ public class NyadRealF extends NyadAbstract
 	 * placed in the same algebra and symmetrically multiplied to each other. A
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
+	 * 
 	 * @param pInto
 	 * 		int
 	 * @param pFrom
@@ -792,5 +876,4 @@ public class NyadRealF extends NyadAbstract
 		tempRight = monadList.remove(pFrom);
 		monadList.trimToSize();
 	}
-
 }

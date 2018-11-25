@@ -61,7 +61,7 @@ public class AlgebraComplexD extends AlgebraAbstract
 	 * 
 	 * That's all.
 	 */
-	public ComplexD	protoNumber;
+	protected ComplexD	protoNumber;
 
 	/**
 	 * This is the constructor that assumes a Foot and GProduct have been instantiated. 

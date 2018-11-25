@@ -61,7 +61,7 @@ public class AlgebraRealD extends AlgebraAbstract
 	 * 
 	 * That's all.
 	 */
-	public RealD	protoNumber;
+	protected RealD	protoNumber;
 
 	/**
 	 * This is the constructor that assumes a Foot and GProduct have been instantiated. 

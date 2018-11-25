@@ -36,9 +36,29 @@ import com.interworldtransport.cladosF.*;
  */
 public abstract class AlgebraAbstract
 {
+	/**
+	 * All algebra types share some elements that are not dependent on number types.
+	 * The first among them is the 'tangent point' of the sub-manifold represented
+	 * by the algebra. This is the Foot.
+	 */
 	protected Foot		footPoint;
+	/**
+	 * The second among the common elements is the Eddington basis formed from all 
+	 * blades that can be produced through  exterior products of generating 
+	 * 'coordinate' vectors. For N generators, there are 2^N blades.
+	 */
 	protected Basis		gBasis;
+	/**
+	 * The third among the common elements is the geometric product table formed
+	 * by every product possible using members of the Eddington basis. This class
+	 * has a few helper methods for dealing with symmetric and antisymmetric products
+	 * and detection of other useful conditions.
+	 */
 	protected GProduct	gProduct;
+	/**
+	 * Finally, the algebra has a name because this helps distinguish different 
+	 * reference frames associated with the same tangent point Foot.
+	 */
 	protected String	name;
 	
 	/**

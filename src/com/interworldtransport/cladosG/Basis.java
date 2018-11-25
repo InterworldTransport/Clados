@@ -59,8 +59,7 @@ import com.interworldtransport.cladosGExceptions.*;
  * a basis is about 2x the number of swaps, but the total swaps amount
  * to about 60. On even an old machine, this will be lightning fast.
  * That means it isn't worth worrying about which sort is faster in
- * filling a basis. It might make more sense to focus on sorts for 
- * the geometric product instead.
+ * filling a basis.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -86,7 +85,7 @@ public final class Basis
 	 * The generators in a row are sorted in ascending order. Only positive,
 	 * non-zero integers represent generators.
 	 * 
-	 * A row of the matrix is a blade. The number of rows is the linear
+	 * A row of the array is a blade. The number of rows is the linear
 	 * dimension of an algebra using this basis because only one permutation of
 	 * each distinct subset of generators is found in the rows of the array.
 	 * 
@@ -147,13 +146,12 @@ public final class Basis
 	 * @param pGens
 	 * 		short This is the number of generators that make up the basis
 	 * @throws 
-	 * 		CladosMonadException Exception thrown with 15 or more generators
+	 * 		CladosMonadException Exception thrown if not 1 to 14 generators
 	 */
 	public Basis(short pGens) throws CladosMonadException
 	{
-		if (pGens > 14)
-			throw new CladosMonadException(null,
-					"Can't support more than 14 generators using 16 bit integers");
+		if (pGens <=0 | pGens > 14)
+			throw new CladosMonadException(null, "Supported range is 1<->14 using 16 bit integers");
 		gradeCount = (short) (pGens + 1);
 		bladeCount = (short) Math.pow(2, pGens);
 		vBasis = new short[bladeCount][pGens];
@@ -254,7 +252,7 @@ public final class Basis
 	}
 
 	/**
-	 * Return the integer at (x) in the array holding the EddingtonKey.
+	 * Return the long at p1 in the EddingtonKey array.
 	 * @param p1
 	 * 				short This is the desired key at p1 .
 	 * @return long
@@ -382,9 +380,7 @@ public final class Basis
 		
 		// Build heap (rearrange array) 
 		for (k = (short) (bladeCount / 2 - 1); k >= 0; k--) 
-		{
 			heapifyKey(vKey, bladeCount, k); 
-		}
 		
 		// One by one extract an element from heap 
 		// working from the far end of the key array back to the top.
@@ -406,7 +402,6 @@ public final class Basis
 			// call max heapify on the reduced heap 
 			heapifyKey(vKey, k, (short) 0); 
 		} 
-
 		// All Eddington Numbers are now written, calculated, and sorted.
 	}
 
@@ -484,7 +479,6 @@ public final class Basis
 					vBasis[point][m] = vBasis[largest][m];
 					vBasis[largest][m] = tempBasisSpot;
 				}
-
 				// Recursively heapify the affected sub-tree 
 				heapifyKey(vKey, heapSize, largest); 
 			} 

@@ -17,7 +17,7 @@ public class GProductTest
 	String		pSig14="++-+++-+++-+++";
 
 	@Test
-	public void test4s() throws CladosMonadException, BadSignatureException
+	public void test04s() throws CladosMonadException, BadSignatureException
 	{
 		GProduct tGP = new GProduct(pSig4);
 		//System.out.println(tGP.toXMLString());
@@ -45,7 +45,7 @@ public class GProductTest
 	}
 	
 	@Test
-	public void test8s() throws CladosMonadException, BadSignatureException
+	public void test08s() throws CladosMonadException, BadSignatureException
 	{
 		GProduct tGP = new GProduct(pSig8);
 		assertTrue(tGP.getSignature().equals("-+++-+++"));
