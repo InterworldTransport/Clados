@@ -413,7 +413,7 @@ public class NyadComplexD extends NyadAbstract
 	public NyadComplexD(String pName, MonadComplexD pM)
 	{
 		setName(pName);
-		setFootPoint(pM.getAlgebra().getFootPoint());
+		setFootPoint(pM.getAlgebra().getFoot());
 		protoOne = new ComplexD(pM.getAlgebra().protoNumber, 1.0d, 0.0d);
 
 		monadList = new ArrayList<MonadComplexD>(1);
@@ -541,7 +541,7 @@ public class NyadComplexD extends NyadAbstract
 		
 		// A check should be made to ensure pM is OK to append.
 		// The footPoint objects must match.
-		if (!pM.getAlgebra().getFootPoint().equals(getFootPoint()))
+		if (!pM.getAlgebra().getFoot().equals(getFootPoint()))
 			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
 		
 		// Now that the feet are guaranteed the same, it is time to 

@@ -14,6 +14,7 @@ public class ComplexDTest  //extends TestCase
 	public ComplexD		tReal0;
 	public ComplexD		tReal1;
 	public ComplexD		tReal1n;
+	public ComplexD		tReal1i;
 	public ComplexD		tReal2;
 	public ComplexD		tReal3;
 	public ComplexD		tReal4;
@@ -30,6 +31,7 @@ public class ComplexDTest  //extends TestCase
 		tReal0 = ZERO("Test:ComplexD");
 		tReal1 = ONE("Test:ComplexD");
 		tReal1n = new ComplexD(tReal1.getFieldType(), -1d);
+		tReal1i = new ComplexD(tReal1.getFieldType(), 0.0d, 1.0d);
 		tReal2 = new ComplexD(tReal1.getFieldType(), Double.MAX_VALUE);
 		tReal3 = new ComplexD(tReal1.getFieldType(), Double.MAX_EXPONENT);
 		tReal4 = new ComplexD(tReal1.getFieldType(), Double.NaN);
@@ -94,6 +96,18 @@ public class ComplexDTest  //extends TestCase
 	public void testIsNaN()
 	{
 		assertTrue(isNaN(tReal4));
+	}
+	
+	@Test
+	public void testIsImaginary()
+	{
+		assertTrue(isImaginary(tReal1i));
+	}
+	
+	@Test
+	public void testIsReal()
+	{
+		assertTrue(isReal(tReal1n));
 	}
 
 	@Test

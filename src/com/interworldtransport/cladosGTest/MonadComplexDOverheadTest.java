@@ -4,46 +4,21 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import com.interworldtransport.cladosF.DivFieldType;
-import com.interworldtransport.cladosF.RealF;
-import com.interworldtransport.cladosG.MonadRealF;
+import com.interworldtransport.cladosF.ComplexD;
+import com.interworldtransport.cladosG.MonadComplexD;
 
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
 
-public class MonadRealFOverheadTest 
+public class MonadComplexDOverheadTest 
 {
-	String		fType="TestMonadRealFs";
-	String		mName="Test MonadRealF ";
+	String		fType="TestMonadComplexDs";
+	String		mName="Test MonadComplexD ";
 	String		ftName="Foot Default";
 	String		aName="Motion Algebra";
-	RealF[]		cRF;
-	MonadRealF	tM0;
+	ComplexD[]		cRF;
+	MonadComplexD	tM0;
 	
-	
-	@Test
-	public void testGen00() throws BadSignatureException, CladosMonadException
-	{
-		for (short m=0; m<10000; m++)
-		{
-			int pGen=0;
-			int bladeCount= (int) Math.pow(2, pGen);
-			
-			cRF = new RealF[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
-			
-			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
-			
-			tM0=new MonadRealF(	mName+"0", 
-								aName,
-								ftName+" Frame", 
-								ftName, 
-								"", 
-								cRF);
-			assertFalse(tM0 == null);
-		}
-		
-	}
 	@Test
 	public void testGen01() throws BadSignatureException, CladosMonadException
 	{
@@ -52,13 +27,13 @@ public class MonadRealFOverheadTest
 			int pGen=1;
 			int bladeCount= (int) Math.pow(2, pGen);
 			
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 			
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 			
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 								aName,
 								ftName+" Frame", 
 								ftName, 
@@ -76,13 +51,13 @@ public class MonadRealFOverheadTest
 			int pGen=2;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -99,13 +74,13 @@ public class MonadRealFOverheadTest
 			int pGen=3;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -122,13 +97,13 @@ public class MonadRealFOverheadTest
 			int pGen=4;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -145,13 +120,13 @@ public class MonadRealFOverheadTest
 			int pGen=5;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -168,13 +143,13 @@ public class MonadRealFOverheadTest
 			int pGen=6;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -191,13 +166,13 @@ public class MonadRealFOverheadTest
 			int pGen=7;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -214,13 +189,13 @@ public class MonadRealFOverheadTest
 			int pGen=8;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -238,13 +213,13 @@ public class MonadRealFOverheadTest
 			int pGen=9;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -261,13 +236,13 @@ public class MonadRealFOverheadTest
 			int pGen=10;
 			int bladeCount= (int) Math.pow(2, pGen);
 		
-			cRF = new RealF[bladeCount];
+			cRF = new ComplexD[bladeCount];
 			DivFieldType tSpot = new DivFieldType(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
-				cRF[k] = new RealF(tSpot, (float) k);
+				cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-			tM0=new MonadRealF(	mName+"0", 
+			tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -284,13 +259,13 @@ public class MonadRealFOverheadTest
 		int pGen=11;
 		int bladeCount= (int) Math.pow(2, pGen);
 		
-		cRF = new RealF[bladeCount];
+		cRF = new ComplexD[bladeCount];
 		DivFieldType tSpot = new DivFieldType(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
-			cRF[k] = new RealF(tSpot, (float) k);
+			cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-		tM0=new MonadRealF(	mName+"0", 
+		tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -307,13 +282,13 @@ public class MonadRealFOverheadTest
 		int pGen=12;
 		int bladeCount= (int) Math.pow(2, pGen);
 		
-		cRF = new RealF[bladeCount];
+		cRF = new ComplexD[bladeCount];
 		DivFieldType tSpot = new DivFieldType(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
-			cRF[k] = new RealF(tSpot, (float) k);
+			cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-		tM0=new MonadRealF(	mName+"0", 
+		tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -329,13 +304,13 @@ public class MonadRealFOverheadTest
 		int pGen=13;
 		int bladeCount= (int) Math.pow(2, pGen);
 		
-		cRF = new RealF[bladeCount];
+		cRF = new ComplexD[bladeCount];
 		DivFieldType tSpot = new DivFieldType(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
-			cRF[k] = new RealF(tSpot, (float) k);
+			cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-		tM0=new MonadRealF(	mName+"0", 
+		tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 
@@ -350,13 +325,13 @@ public class MonadRealFOverheadTest
 		int pGen=14;
 		int bladeCount= (int) Math.pow(2, pGen);
 		
-		cRF = new RealF[bladeCount];
+		cRF = new ComplexD[bladeCount];
 		DivFieldType tSpot = new DivFieldType(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
-			cRF[k] = new RealF(tSpot, (float) k);
+			cRF[k] = new ComplexD(tSpot, (double) k, (double) k);
 		
-		tM0=new MonadRealF(	mName+"0", 
+		tM0=new MonadComplexD(	mName+"0", 
 							aName,
 							ftName+" Frame", 
 							ftName, 

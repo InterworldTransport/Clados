@@ -122,5 +122,4 @@ public abstract class DivFieldF extends DivField
 	 * Return a string representation of the field element. * @return String
 	 */
 	public abstract String toXMLString();
-
 }

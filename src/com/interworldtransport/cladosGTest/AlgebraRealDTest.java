@@ -40,7 +40,7 @@ public class AlgebraRealDTest
 	@Test
 	public void testCompareCores() throws CladosMonadException, BadSignatureException
 	{
-		assertTrue(alg1.getFootPoint() == alg2.getFootPoint());
+		assertTrue(alg1.getFoot() == alg2.getFoot());
 		assertFalse(alg1.getGBasis() == alg2.getGBasis());
 		assertFalse(alg1.getGProduct() == alg2.getGProduct());
 		//Two algebras share the foot, but use different signatures
@@ -48,13 +48,13 @@ public class AlgebraRealDTest
 		
 		tFoot.setNumberType(rNumber.getFieldType());
 		alg3= new AlgebraRealD(aName, tFoot, pSig31);
-		assertTrue(alg1.getFootPoint() == alg3.getFootPoint());
-		assertTrue(alg1.getFootPoint() == alg2.getFootPoint());
+		assertTrue(alg1.getFoot() == alg3.getFoot());
+		assertTrue(alg1.getFoot() == alg2.getFoot());
 		//because the Foot is shared between algebras, changing the number
 		//type to use to build alg3 changes it for the others as well.
 		
-		alg3.setFootPoint(tFoot2);
-		assertFalse(alg1.getFootPoint() == alg3.getFootPoint());
+		alg3.setFoot(tFoot2);
+		assertFalse(alg1.getFoot() == alg3.getFoot());
 		//Both feet are essentially the same inside, but represented as two distinct objects.
 		//That should cause this test to be false.
 	}
@@ -79,7 +79,7 @@ public class AlgebraRealDTest
 	{
 		RealD result=AlgebraRealD.generateNumber(alg1, 10.0d);
 		assertTrue(result != null);
-		assertTrue(result.getFieldType() == alg1.getFootPoint().getNumberType());
+		assertTrue(result.getFieldType() == alg1.getFoot().getNumberType());
 		//this shows that an algebra can be used to generate numbers of the same type
 		//by using the static method built into the class. This method is picky, but 
 		//when used properly it will safely generate matches that will pass reference

@@ -48,7 +48,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 						+ pA.getAlgebraName() + "\" ");
 		rB.append(">\n");
 		rB.append(pA.protoNumber.toXMLString()+"\n");
-		rB.append(pA.getFootPoint().toXMLString());
+		rB.append(pA.getFoot().toXMLString());
 		rB.append(pA.getGProduct().toXMLString());
 		rB.append("</Algebra>\n");
 		return rB.toString();
@@ -84,7 +84,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 							GProduct pGP)
 	{
 		setAlgebraName(pS);
-		setFootPoint(pF);
+		setFoot(pF);
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
 		protoNumber = new ComplexF(pF.getNumberType(), 1.0f, 0.0f);
@@ -102,6 +102,11 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * matches to fail. This is the behavior necessary to prevent unintended operations between
 	 * monads expressed using different signatures in their geometric products.
 	 * 
+	 * This is also the one that enables a zero or one generator algebra to be used as a 'number'
+	 * in a nyad. Because the Foot is reused, the DivFieldType will match and no field mismatches
+	 * will happen. The small algebra can be set up to imitate real or complex numbers and take
+	 * on the role of 'scale' in a nyad. [This may result in eliminating this class.]
+	 * 
 	 * @param pS			This is the Algebra's name
 	 * @param pFoot			This is the foot being offered for reference
 	 * @param pSig			This is the signature of the GProduct
@@ -115,7 +120,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 							CladosMonadException
 	{
 		setAlgebraName(pS);
-		setFootPoint(pFoot);
+		setFoot(pFoot);
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
 		protoNumber = new ComplexF(pFoot.getNumberType(), 1.0f, 0.0f);
@@ -147,9 +152,9 @@ public class AlgebraComplexF extends AlgebraAbstract
 							CladosMonadException
 	{
 		setAlgebraName(pS);
-		setFootPoint(new Foot(pFootName, pF.getFieldType()));
+		setFoot(new Foot(pFootName, pF.getFieldType()));
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
-		protoNumber = new ComplexF(footPoint.getNumberType(), 1.0f, 0.0f);
+		protoNumber = new ComplexF(foot.getNumberType(), 1.0f, 0.0f);
 	}
 }

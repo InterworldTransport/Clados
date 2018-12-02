@@ -43,8 +43,7 @@ package com.interworldtransport.cladosF;
 public abstract class DivField
 {
 	/**
-	 * Check to see if the incoming argument is of the same field type as the
-	 * current object.
+	 * Check to see if the two argument are of the same field type.
 	 * 
 	 * @param pE
 	 *            DivField
@@ -54,7 +53,10 @@ public abstract class DivField
 	 */
 	public static boolean isTypeMatch(DivField pE, DivField pF)
 	{
-		return pE.getFieldType().equals(pF.getFieldType());
+		if(pE.FieldType==null && pF.FieldType==null)
+			return true;
+			
+		return pE.FieldType == pF.FieldType;
 	}
 
 	/**

@@ -491,29 +491,37 @@ public final class GProduct
 	 */
 	protected boolean validateSignature(String pSg)
 	{
+		if (pSg == null)
+			return false;
+		
+		if (pSg.length() == 0)
+		{
+			nSignature = new short[1];
+			nSignature[0]=0;
+			signature=pSg;
+			return true;
+		}
+		
 		nSignature = new short[pSg.length()];
-		for (int j = 0; j < pSg.length(); j++)
+		for (short j = 0; j < pSg.length(); j++)
 		{
 			if (pSg.substring(j, j + 1).equals("+"))
 			{
 				nSignature[j] = 0;
+				continue;
 			}
-			else
+				
+			if (pSg.substring(j, j + 1).equals("-"))
 			{
-				if (pSg.substring(j, j + 1).equals("-"))
-				{
-					nSignature[j] = 1;
-				}
-				else
-				{
-					nSignature=null;
-					return false;
-					// Yes... it was possible nSignature would be partially
-					// constructed when this happens.
-				}
+				nSignature[j] = 1;
+				continue;
 			}
+				
+			nSignature=null;
+			return false;
+			// Yes... it is possible nSignature was partially constructed
 		}
 		signature = pSg;
-		return true;
+		return true;	
 	}
 }

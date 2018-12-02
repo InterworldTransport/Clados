@@ -41,7 +41,7 @@ public abstract class AlgebraAbstract
 	 * The first among them is the 'tangent point' of the sub-manifold represented
 	 * by the algebra. This is the Foot.
 	 */
-	protected Foot		footPoint;
+	protected Foot		foot;
 	/**
 	 * The second among the common elements is the Eddington basis formed from all 
 	 * blades that can be produced through  exterior products of generating 
@@ -83,9 +83,9 @@ public abstract class AlgebraAbstract
 	 * This method returns a reference to the Foot of the algebra.
 	 * @return Foot
 	 */
-	public Foot getFootPoint()
+	public Foot getFoot()
 	{
-		return footPoint;
+		return foot;
 	}
 
 	/**
@@ -131,9 +131,9 @@ public abstract class AlgebraAbstract
 	 * 
 	 * @param footPoint
 	 */
-	public void setFootPoint(Foot footPoint)
+	public void setFoot(Foot footPoint)
 	{
-		this.footPoint = footPoint;
+		foot = footPoint;
 	}
 
 	/**

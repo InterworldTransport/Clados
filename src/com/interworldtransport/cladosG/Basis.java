@@ -49,7 +49,7 @@ import com.interworldtransport.cladosGExceptions.*;
  * <p>
  * There is a speed improvement for sorting keys in an Eddington basis
  * if we use a 3-way median quicksort algorithm instead of the heapsort
- * algorith. This improvement comes at the cost of memory used, so there
+ * algorithm. This improvement comes at the cost of memory used, so there
  * might be a penalty in memory allocation overhead. Heapsort is stingy
  * with extra memory being used, so careful implementation of the 
  * algorithm should avoid the overhead. Heapsort has been chosen here to
@@ -146,19 +146,30 @@ public final class Basis
 	 * @param pGens
 	 * 		short This is the number of generators that make up the basis
 	 * @throws 
-	 * 		CladosMonadException Exception thrown if not 1 to 14 generators
+	 * 		CladosMonadException Exception thrown if not 0 to 14 generators
 	 */
 	public Basis(short pGens) throws CladosMonadException
 	{
-		if (pGens <=0 | pGens > 14)
-			throw new CladosMonadException(null, "Supported range is 1<->14 using 16 bit integers");
+		if (pGens <0 | pGens > 14)
+			throw new CladosMonadException(null, "Supported range is 0<->14 using 16 bit integers");
+		
 		gradeCount = (short) (pGens + 1);
 		bladeCount = (short) Math.pow(2, pGens);
-		vBasis = new short[bladeCount][pGens];
 		vKey = new long[bladeCount];
 		gradeRange = new short[gradeCount];
-		fillBasis();
-		fillGradeRange();
+		if (pGens==0)
+		{
+			vBasis = new short[bladeCount][gradeCount];
+			vBasis[0][0]=(short) 0;
+			vKey[0]=0;
+			gradeRange[0]=0;
+		}
+		else
+		{
+			vBasis = new short[bladeCount][pGens];
+			fillBasis();
+			fillGradeRange();
+		}
 	}
 
 	/**

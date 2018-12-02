@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 
 public class BasisTest
 {
+	Basis	tBasis0;
 	Basis	tBasis4;
 	Basis	tBasis42;
 	Basis	tBasis43;
@@ -19,6 +20,7 @@ public class BasisTest
 	@Before
 	public void setUp() throws CladosMonadException
 	{
+		tBasis0 = new Basis((short) 0);
 		tBasis4 = new Basis((short) 4);
 		tBasis42 = new Basis(tBasis4);
 		tBasis43 = new Basis((short) 4);
@@ -30,6 +32,7 @@ public class BasisTest
 	@Test
 	public void testGradeCount()
 	{
+		assertTrue(tBasis0.getGradeCount() == 1);
 		assertTrue(tBasis4.getGradeCount() == 5);
 		assertTrue(tBasis8.getGradeCount() == 9);
 		assertTrue(tBasis10.getGradeCount() == 11);
@@ -39,6 +42,7 @@ public class BasisTest
 	@Test
 	public void testBladeCount()
 	{
+		assertTrue(tBasis0.getBladeCount() == Math.pow(2,0));
 		assertTrue(tBasis4.getBladeCount() == Math.pow(2,4));
 		assertTrue(tBasis8.getBladeCount() == Math.pow(2,8));
 		assertTrue(tBasis10.getBladeCount() == Math.pow(2,10));
@@ -50,24 +54,23 @@ public class BasisTest
 	{
 		short[] tSpot = tBasis14.getGradeRange();	
 		for (int k=1; k<0.5*(tBasis14.getGradeCount()-1); k++)
-		{
 			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[14-k+1] - tSpot[14-k]);
-		}
+		
 		tSpot = tBasis10.getGradeRange();	
 		for (int k=1; k<0.5*(tBasis10.getGradeCount()-1); k++)
-		{
 			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[10-k+1] - tSpot[10-k]);
-		}
+		
 		tSpot = tBasis8.getGradeRange();	
 		for (int k=1; k<0.5*(tBasis8.getGradeCount()-1); k++)
-		{
 			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[8-k+1] - tSpot[8-k]);
-		}
+		
 		tSpot = tBasis4.getGradeRange();	
 		for (int k=1; k<0.5*(tBasis4.getGradeCount()-1); k++)
-		{
 			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[4-k+1] - tSpot[4-k]);
-		}
+		
+		tSpot = tBasis0.getGradeRange();
+		assertTrue(tSpot[0]==0);
+		
 	}
 	
 	@Test

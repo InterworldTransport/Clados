@@ -24,8 +24,7 @@
  */
 package com.interworldtransport.cladosF;
 
-import com.interworldtransport.cladosFExceptions.FieldBinaryException;
-import com.interworldtransport.cladosFExceptions.FieldException;
+import com.interworldtransport.cladosFExceptions.*;
 
 /**
  * This class implements the concept of a Real Field from mathematics. Field
@@ -46,17 +45,11 @@ import com.interworldtransport.cladosFExceptions.FieldException;
  * Ideally, this would extend java.lang.Float and implement an interface called
  * DivFieldF. That can't be done, though, because Float is final.
  * <p>
- * 
  * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class RealF extends DivFieldF
 {
-	/**
-	 * The number(s)!
-	 */
-	// private float[] vals = new float[1];
-
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
 	 * 
@@ -70,14 +63,11 @@ public class RealF extends DivFieldF
 	 */
 	public static RealF add(RealF pF1, RealF pF2) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(pF1, pF2) | !RealF.isNaN(pF1) | !RealF.isNaN(pF2)
-						| !RealF.isInfinite(pF1) | !RealF.isInfinite(pF2))
-		{
+		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
+						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
 			return new RealF(pF1.getFieldType(), pF1.getReal() + pF2.getReal());
-		}
-		else
-			throw (new FieldBinaryException(pF1, "Static Addition error found",
-							pF2));
+		
+		throw (new FieldBinaryException(pF1, "Static Addition error found",	pF2));
 	}
 
 	/**
@@ -130,6 +120,7 @@ public class RealF extends DivFieldF
 	 * @param pR
 	 *            float
 	 * 
+	 * 
 	 * @return RealF
 	 */
 	public static RealF create(float pR)
@@ -151,15 +142,19 @@ public class RealF extends DivFieldF
 	public static RealF divide(RealF pF1, RealF pF2)
 					throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(pF1, pF2) | !RealF.isZero(pF2)
-						| !RealF.isNaN(pF1) | !RealF.isNaN(pF2)
-						| !RealF.isInfinite(pF1) | !RealF.isInfinite(pF2))
-		{
+		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isZero(pF2)
+						&& !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
+						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
 			return new RealF(pF1.getFieldType(), pF1.getReal() / pF2.getReal());
-		}
-		else
-			throw (new FieldBinaryException(pF1, "Static Division error found",
-							pF2));
+		
+		throw (new FieldBinaryException(pF1, "Static Division error found",	pF2));
+		
+		
+		
+		
+		
+		
+		
 	}
 
 	/**
@@ -176,9 +171,23 @@ public class RealF extends DivFieldF
 	 */
 	public static boolean isEqual(RealF pE, RealF pF)
 	{
-		return RealF.isTypeMatch(pE, pF) & pE.getReal() == pF.getReal();
+		return 	   DivField.isTypeMatch(pE, pF) 
+				&& (pE.getReal() == pF.getReal());
+		
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This method checks to see if the value is infinite.
 	 * @param pF
@@ -201,6 +210,19 @@ public class RealF extends DivFieldF
 		return Float.isNaN(pF.getReal());
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This method checks to see if the number is exactly zero.
 	 * 
@@ -214,7 +236,7 @@ public class RealF extends DivFieldF
 	}
 
 	/**
-	 * This static method takes a list of RealD objects and returns one RealD
+	 * This static method takes a list of RealF objects and returns one RealF
 	 * that has a value that is equal to the square root of the sum of the
 	 * SQModulus of each entry on the list. Because these are real numbers,
 	 * though, we get away with simply summing the moduli instead. It does not
@@ -233,9 +255,8 @@ public class RealF extends DivFieldF
 		RealF tR = new RealF(pL[0].getFieldType(), pL[0].getModulus());
 
 		for (int j = 1; j < pL.length; j++)
-		{
 			tR.add(new RealF(pL[j].getFieldType(), pL[j].getModulus()));
-		}
+		
 		return tR;
 	}
 
@@ -251,19 +272,19 @@ public class RealF extends DivFieldF
 	 * 	This exception is thrown when there is a field mismatch.
 	 * @return RealF
 	 */
-	public static RealF multiply(RealF pF1, RealF pF2)
-					throws FieldBinaryException
+	public static RealF multiply(RealF pF1, RealF pF2) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(pF1, pF2) | !RealF.isNaN(pF1) | !RealF.isNaN(pF2)
-						| !RealF.isInfinite(pF1) | !RealF.isInfinite(pF2))
-		{
+		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
+						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
 			return new RealF(pF1.getFieldType(), pF1.getReal() * pF2.getReal());
-		}
-		else
-			throw (new FieldBinaryException(pF1,
-							"Static Multiplication error found", pF2));
+		
+		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
 
+	
+	
+	
+	
 	/**
 	 * Static zero construction method with copied field type
 	 * 
@@ -300,9 +321,8 @@ public class RealF extends DivFieldF
 	 * 		RealF[]
 	 * 
 	 * @throws FieldBinaryException
-	 * 	This exception is thrown when there is a field mismatch. This shouldn't happen
-	 * 	but because the operation multiplies the field object by itself, it is 
-	 * 	technically possible.
+	 * 	This exception occurs when there is a field mismatch. It should never happen
+	 * 	but the implementation uses multiplication, thus it is technically possible.
 	 * 
 	 * @return RealF
 	 */
@@ -311,15 +331,13 @@ public class RealF extends DivFieldF
 		RealF tR = new RealF(pL[0].getFieldType(), pL[0].getSQModulus());
 
 		for (int j = 1; j < pL.length; j++)
-		{
 			tR.add(new RealF(pL[j].getFieldType(), pL[j].getSQModulus()));
-		}
+		
 		return tR;
 	}
 
 	/**
-	 * Static subtract method that creates a new RealD with the difference pF1 -
-	 * pF2.
+	 * Static subtract method that creates a new RealD with the difference pF1-pF2.
 	 * 
 	 * @param pF1
 	 *            RealF
@@ -329,17 +347,13 @@ public class RealF extends DivFieldF
 	 * 	This exception is thrown when there is a field mismatch.
 	 * @return RealF
 	 */
-	public static RealF subtract(RealF pF1, RealF pF2)
-					throws FieldBinaryException
+	public static RealF subtract(RealF pF1, RealF pF2) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(pF1, pF2) | !RealF.isNaN(pF1) | !RealF.isNaN(pF2)
-						| !RealF.isInfinite(pF1) | !RealF.isInfinite(pF2))
-		{
+		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
+						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
 			return new RealF(pF1.getFieldType(), pF1.getReal() - pF2.getReal());
-		}
-		else
-			throw (new FieldBinaryException(pF1,
-							"Static Subtraction error found", pF2));
+		
+		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
 	
 	/**
@@ -376,6 +390,7 @@ public class RealF extends DivFieldF
 		vals = new float[1];
 		setFieldType(new DivFieldType("Real"));
 		setReal(0.0F);
+		
 	}
 
 	/**
@@ -389,6 +404,7 @@ public class RealF extends DivFieldF
 		vals = new float[1];
 		setFieldType(pT);
 		setReal(0.0F);
+		
 	}
 
 	/**
@@ -404,21 +420,28 @@ public class RealF extends DivFieldF
 		vals = new float[1];
 		setFieldType(pT);
 		setReal(pR);
+		
 	}
 
-	/**
-	 * Basic Constructor with only the number to initialize.
-	 * 
-	 * @param pR
-	 * 		float
-	 */
-	public RealF(float pR)
-	{
-		vals = new float[1];
-		setFieldType(new DivFieldType("Real"));
-		setReal(pR);
-	}
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Copy Constructor that reuses the field type reference.
 	 * @param pR
@@ -429,6 +452,7 @@ public class RealF extends DivFieldF
 		vals = new float[1];
 		setFieldType(pR.getFieldType());
 		setReal(pR.getReal());
+		
 	}
 
 	/**
@@ -436,6 +460,8 @@ public class RealF extends DivFieldF
 	 * value to be set.
 	 * @param pR
 	 * 		RealF
+	 * 
+	 * 
 	 * @param pF
 	 * 		float
 	 */
@@ -444,29 +470,46 @@ public class RealF extends DivFieldF
 		vals = new float[1];
 		setFieldType(pR.getFieldType());
 		setReal(pF);
+		
+	}
+	
+	/**
+	 * Basic Constructor with only the number to initialize.
+	 * 
+	 * @param pR
+	 * 		float
+	 * 
+	 * 
+	 */
+	public RealF(float pR)
+	{
+		vals = new float[1];
+		setFieldType(new DivFieldType("Real"));
+		setReal(pR);
+		
 	}
 
 	/**
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
 	 * 
+	 * @param pF
+	 * 		DivFieldF
+	 * 
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown if there is a field mismatch
 	 * @see com.interworldtransport.cladosF.DivFieldF#add(com.interworldtransport.cladosF.DivFieldF)
-	 * 
 	 * 
 	 * @return RealF
 	 */
 	@Override
 	public RealF add(DivFieldF pF) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(this, pF))
-		{
-			setReal(getReal() + ((RealF) pF).getReal());
-		}
-		else
-			throw (new FieldBinaryException(this,
-							"Addition failed type match test", pF));
+		if (!RealF.isTypeMatch(this, pF))		
+			throw (new FieldBinaryException(this, "Addition failed type match test", pF));
+		
+		setReal(getReal() + ((RealF) pF).getReal());
+		
 		return this;
 	}
 
@@ -478,6 +521,7 @@ public class RealF extends DivFieldF
 	 */
 	public RealF conjugate()
 	{
+		
 		return this;
 	}
 
@@ -489,24 +533,50 @@ public class RealF extends DivFieldF
 	 * 		DivFieldF
 	 * 
 	 * @see com.interworldtransport.cladosF.DivFieldF#divide(com.interworldtransport.cladosF.DivFieldF)
+	 * 
+	 * @return RealF
 	 */
 	@Override
 	public RealF divide(DivFieldF pF) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(this, pF))
-		{
-			if (!RealF.isZero((RealF) pF))
-				setReal(getReal() / ((RealF) pF).getReal());
-			else
-				throw (new FieldBinaryException(this,
-								"Divide by Zero detected", pF));
-		}
-		else
-			throw (new FieldBinaryException(this,
-							"Divide failed type match test", pF));
+		if (!RealF.isTypeMatch(this, pF))
+			throw (new FieldBinaryException(this, "Divide failed type match test", pF));
+		
+		if (RealF.isZero((RealF) pF))
+			throw (new FieldBinaryException(this, "Divide by Zero detected", pF));
+		
+		
+		
+		
+		
+		setReal(getReal() / ((RealF) pF).getReal());
 		return this;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
@@ -555,10 +625,13 @@ public class RealF extends DivFieldF
 	 */
 	public RealF invert() throws FieldException
 	{
-		if (!RealF.isZero(this))
-			setReal(1.0F / getReal());
-		else
+		if (RealF.isZero(this))
 			throw new FieldException(this, "Can't invert a zero RealF");
+		
+		
+		
+		
+		setReal(1.0F / getReal());
 		return this;
 	}
 
@@ -570,17 +643,18 @@ public class RealF extends DivFieldF
 	 * 		DivFieldF
 	 * 
 	 * @see com.interworldtransport.cladosF.DivFieldF#multiply(com.interworldtransport.cladosF.DivFieldF)
+	 * 
+	 * @return RealF
 	 */
 	@Override
 	public RealF multiply(DivFieldF pF) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(this, pF))
-		{
-			setReal(getReal() * ((RealF) pF).getReal());
-		}
-		else
-			throw (new FieldBinaryException(this,
-							"Multiply failed type match test", pF));
+		if (!RealF.isTypeMatch(this, pF))
+			throw (new FieldBinaryException(this, "Multiply failed type match test", pF));
+		
+		
+		
+		setReal(getReal() * ((RealF) pF).getReal());
 		return this;
 	}
 
@@ -595,9 +669,30 @@ public class RealF extends DivFieldF
 	public RealF scale(float pS)
 	{
 		setReal(pS * getReal());
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		return this;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Set the real numeric value
 	 * 
@@ -613,18 +708,25 @@ public class RealF extends DivFieldF
 	 * This method subtracts real numbers and changes this object to be the
 	 * result.
 	 * 
+	 * @param pF
+	 *            DivFieldF 
+	 *
 	 * @see com.interworldtransport.cladosF.DivFieldF#subtract(com.interworldtransport.cladosF.DivFieldF)
+	 * 
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when there is a field mismatch.
+	 * 
+	 * @return RealF
 	 */
 	@Override
 	public RealF subtract(DivFieldF pF) throws FieldBinaryException
 	{
-		if (RealF.isTypeMatch(this, pF))
-		{
-			setReal(getReal() - ((RealF) pF).getReal());
-		}
-		else
-			throw (new FieldBinaryException(this,
-							"Subtraction failed type match test", pF));
+		if (!RealF.isTypeMatch(this, pF))
+			throw (new FieldBinaryException(this, "Subtraction failed type match test", pF));
+		
+		
+		
+		setReal(getReal() - ((RealF) pF).getReal());
 		return this;
 	}
 
@@ -632,6 +734,8 @@ public class RealF extends DivFieldF
 	 * Return a string representation of the real value.
 	 * 
 	 * @see com.interworldtransport.cladosF.DivFieldF#toString()
+	 * 
+	 * @return String
 	 */
 	@Override
 	public String toString()
@@ -643,12 +747,13 @@ public class RealF extends DivFieldF
 	 * Return a string representation of the real value.
 	 * 
 	 * @see com.interworldtransport.cladosF.DivFieldF#toXMLString()
+	 * 
+	 * @return String
 	 */
 	@Override
 	public String toXMLString()
 	{
 		return ("<RealF type=\"" + getFieldTypeString() + "\" value=\""
-				+ getReal() + "\" />");
+						+ getReal() + "\" />");
 	}
-
 }

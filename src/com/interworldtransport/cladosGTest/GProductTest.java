@@ -10,12 +10,38 @@ import static org.junit.Assert.*;
 
 public class GProductTest
 {
+	String		pSig0="";
 	String		pSig4="-+++";
 	String		pSig8="-+++-+++";
 	String		pSig10="+++-++++++";
 	String		pSig12="-+++-+++-+++";
 	String		pSig14="++-+++-+++-+++";
 
+	@Test
+	public void test00s() throws CladosMonadException, BadSignatureException
+	{
+		GProduct tGP = new GProduct(pSig0);
+		assertTrue(tGP.getSignature().equals(""));
+		assertTrue(tGP.getGradeCount() == 1);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 0));
+		
+		int tS=(int)Math.pow(2,0);
+		int tSum=tS*(tS+1)/2;
+		for (short k=0; k<tGP.getBladeCount(); k++)
+		{
+			short[] tSpot=tGP.getResult(k);
+			int tSumP=0;
+			for (int j=0; j<tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+			
+			assertTrue(tSum==tSumP);
+		}
+		
+		GProduct tGPClone = new GProduct(tGP);
+		assertTrue(tGPClone.getBasis().equals(tGP.getBasis()));
+		assertFalse(tGPClone.getResult().equals(tGP.getResult()));
+	}
+	
 	@Test
 	public void test04s() throws CladosMonadException, BadSignatureException
 	{

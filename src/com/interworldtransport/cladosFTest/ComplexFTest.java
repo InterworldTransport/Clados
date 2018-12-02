@@ -14,6 +14,7 @@ public class ComplexFTest // extends TestCase
 	public ComplexF		tReal0;
 	public ComplexF		tReal1;
 	public ComplexF		tReal1n;
+	public ComplexF		tReal1i;
 	public ComplexF		tReal2;
 	public ComplexF		tReal3;
 	public ComplexF		tReal4;
@@ -29,7 +30,8 @@ public class ComplexFTest // extends TestCase
 	{
 		tReal0 = ZERO("Test:ComplexF");
 		tReal1 = ONE("Test:ComplexF");
-		tReal1n = new ComplexF(tReal1.getFieldType(), -1f);
+		tReal1n = new ComplexF(tReal1.getFieldType(), -1.0f);
+		tReal1i = new ComplexF(tReal1.getFieldType(), 0.0f, 1.0f);
 		tReal2 = new ComplexF(tReal1.getFieldType(), Float.MAX_VALUE);
 		tReal3 = new ComplexF(tReal1.getFieldType(), Float.MAX_EXPONENT);
 		tReal4 = new ComplexF(tReal1.getFieldType(), Float.NaN);
@@ -94,6 +96,18 @@ public class ComplexFTest // extends TestCase
 	public void testIsNaN()
 	{
 		assertTrue(isNaN(tReal4));
+	}
+	
+	@Test
+	public void testIsImaginary()
+	{
+		assertTrue(isImaginary(tReal1i));
+	}
+	
+	@Test
+	public void testIsReal()
+	{
+		assertTrue(isReal(tReal1n));
 	}
 
 	@Test

@@ -788,7 +788,7 @@ public class MonadRealF extends MonadAbstract
 	 * that gets called.
 	 * 
 	 * @param pM
-	 *            MonadAbstract
+	 *            MonadRealF
 	 * @return boolean
 	 */
 	public boolean isGEqual(MonadRealF pM)
@@ -796,9 +796,8 @@ public class MonadRealF extends MonadAbstract
 		if (!isReferenceMatch(this, pM)) return false;
 
 		for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
-		{
-			if (!isEqual(cM[i], pM.getCoeff(i))) return false;
-		}
+			if (!RealF.isEqual(cM[i], pM.getCoeff(i))) return false;
+		
 		return true;
 	}
 
@@ -1251,6 +1250,8 @@ public class MonadRealF extends MonadAbstract
 		
 		for (int k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
 			cM[k] = new RealF(ppC[k]);	
+		
+		setGradeKey();
 	}
 
 	/**
@@ -1265,14 +1266,16 @@ public class MonadRealF extends MonadAbstract
 	{
 		for (int k = 0; k < ppC.length; k++)
 			cM[k] = new RealF(ppC[k]);
+		
+		setGradeKey();
 	}
 
 	@Override
 	public void setFrameName(String pRName)
 	{
-		getAlgebra().getFootPoint().removeRFrames(frameName);
+		getAlgebra().getFoot().removeRFrames(frameName);
 		frameName = pRName;
-		getAlgebra().getFootPoint().appendIfUniqueRFrame(pRName);
+		getAlgebra().getFoot().appendIfUniqueRFrame(pRName);
 	}
 
 	/**

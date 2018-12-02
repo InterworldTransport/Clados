@@ -183,12 +183,6 @@ public class NyadRealF extends NyadAbstract
 	 */
 	public static boolean isMEqual(NyadRealF pTs, NyadRealF pN)
 	{
-		// Checking for full reference matches first simply duplicates the work
-		// here.
-		// Each isGEqual test first tests for reference match. It is enough to
-		// do
-		// the front part of the reference match method.
-
 		// Check first to see if the Nyads are of the same order. Return false
 		// if they are not.
 		if (pTs.getNyadOrder() != pN.getNyadOrder()) return false;
@@ -384,7 +378,7 @@ public class NyadRealF extends NyadAbstract
 	 * when constructing other parts of the NyadRealF to ensure field type
 	 * safety.
 	 */
-	protected RealF					protoOne;
+	public RealF					protoOne;
 
 	/**
 	 * Simple copy constructor of a NyadRealF. The passed NyadRealF will be
@@ -413,7 +407,7 @@ public class NyadRealF extends NyadAbstract
 	public NyadRealF(String pName, MonadRealF pM)
 	{
 		setName(pName);
-		setFootPoint(pM.getAlgebra().getFootPoint());
+		setFootPoint(pM.getAlgebra().getFoot());
 		protoOne = new RealF(pM.getAlgebra().protoNumber, 1.0f);
 
 		monadList = new ArrayList<MonadRealF>(1);
@@ -443,7 +437,8 @@ public class NyadRealF extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		protoOne = RealF.ZERO(getFootPoint().getFootName() + "-RealF");
+		//protoOne = RealF.ZERO(getFootPoint().getFootName() + "-RealF");
+		protoOne=pN.protoOne;
 		if (pN.getMonadList() == null)
 			monadList = null;
 		else
@@ -541,7 +536,7 @@ public class NyadRealF extends NyadAbstract
 
 		// A check should be made to ensure pM is OK to append.
 		// The footPoint objects must match.
-		if (!pM.getAlgebra().getFootPoint().equals(getFootPoint()))
+		if (!pM.getAlgebra().getFoot().equals(getFootPoint()))
 			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
 
 		// Now that the feet are guaranteed the same, it is time to

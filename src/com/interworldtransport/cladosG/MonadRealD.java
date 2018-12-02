@@ -1270,9 +1270,9 @@ public class MonadRealD extends MonadAbstract
 	@Override
 	public void setFrameName(String pRName)
 	{
-		getAlgebra().getFootPoint().removeRFrames(frameName);
+		getAlgebra().getFoot().removeRFrames(frameName);
 		frameName = pRName;
-		getAlgebra().getFootPoint().appendIfUniqueRFrame(pRName);
+		getAlgebra().getFoot().appendIfUniqueRFrame(pRName);
 	}
 
 	/**
