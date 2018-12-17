@@ -67,16 +67,46 @@ import com.interworldtransport.cladosGExceptions.*;
 public final class Basis
 {
 	/**
+	 * This is just a factory method to help name a particular constructor.
+	 * It is used in place of 'new Basis(short)'.
+	 * 
+	 * @param numberOfGenerators Short representing unique algebraic directions
+	 * @return Basis Factory method returns a Basis with numberOfGenerators
+	 * @throws CladosMonadException
+	 */
+	public static final Basis using(short numberOfGenerators)
+			throws CladosMonadException
+	{
+		return new Basis(numberOfGenerators);	
+	}
+	/**
+	 * This is just a factory method to help name the copy constructor for Basis.
+	 * It is used in place of 'new Basis(Basis)'.
+	 * 
+	 * @param pBasis Basis object to be copied
+	 * @return Basis Factory method returns a new, independent pBasis copy
+	 */
+	public static final Basis copyOf(Basis pBasis)
+	{
+		return new Basis(pBasis);
+	}
+	/**
+	 * This is the maximum number of generators (14) a basis can support for now.
+	 * This maximum is a result of the choice to represent bladeCount with 16-bit
+	 * signed shorts.
+	 */
+	public static final short MAX_GEN=14;
+	/**
 	 * This integer is the number of grades in the algebra. It is one more than
 	 * the number of generators and is used often enough to be worth keeping.
 	 */
-	protected short		gradeCount;
+	private final short	gradeCount;
 	/**
 	 * This integer is the number of independent blades in an algebra. It is a
 	 * count of the number of vBasis rows and is used often enough to be worth
 	 * keeping around.
 	 */
-	protected short		bladeCount;
+	private final short	bladeCount;
 	/**
 	 * This array holds the representation of the vBasis. The vBasis is a
 	 * complete list of unique blades for an algebra.
@@ -91,7 +121,7 @@ public final class Basis
 	 * 
 	 * So... this is the Eddington Basis.
 	 */
-	protected short[][]	vBasis;
+	private final short[][]	vBasis;
 	/**
 	 * This array holds the integer keys for each member of the Basis. The key
 	 * for each blade is an integer built from sums of powers of the number of
@@ -113,7 +143,7 @@ public final class Basis
 	 * efficiencies in calculations and sorting because basis elements of
 	 * similar grade sort together.
 	 */
-	protected long[]	vKey;
+	private final long[]	vKey;
 	/**
 	 * This array is used for keeping track of where grades start and stop in
 	 * the vBasis. The difference between GradeRange[k] and GradeRange[k+1] is
@@ -135,7 +165,7 @@ public final class Basis
 	 * pscalar is always found in the last slot. All other entries in this 
 	 * array have to be calculated and clados does it using the vKey.
 	 */
-	protected short[]	gradeRange;
+	private final short[]	gradeRange;
 
 	/**
 	 * This is the basic constructor. It takes the number of generators as it's
@@ -150,11 +180,12 @@ public final class Basis
 	 */
 	public Basis(short pGens) throws CladosMonadException
 	{
-		if (pGens <0 | pGens > 14)
+		if (pGens <0 | pGens > MAX_GEN)
 			throw new CladosMonadException(null, "Supported range is 0<->14 using 16 bit integers");
 		
 		gradeCount = (short) (pGens + 1);
-		bladeCount = (short) Math.pow(2, pGens);
+		bladeCount = (short) (1 << pGens);
+		//bladeCount = (short) Math.pow(2, pGens);
 		vKey = new long[bladeCount];
 		gradeRange = new short[gradeCount];
 		if (pGens==0)
@@ -308,7 +339,7 @@ public final class Basis
 	 * memory for a large basis. Efforts to streamline code and memory footprint
 	 * in this method could have a large impact.
 	 */
-	protected void fillBasis()
+	private void fillBasis()
 	{
 		short tempPermTest = 0;
 		short tempPermFilter = 0;
@@ -329,7 +360,8 @@ public final class Basis
 			for (m = 0; m < gradeCount - 1; m++) 
 			// generator (column) counter 0 thru GradeCount-2
 			{
-				tempPermFilter = (short) Math.pow(2, gradeCount - 2 - m);
+				tempPermFilter = (short) (1 << gradeCount - 2 - m);
+				//tempPermFilter = (short) Math.pow(2, gradeCount - 2 - m);
 				// This is the filter that is used to detect when to drop
 				// a generator from the k'th row of the basis.
 				
@@ -429,7 +461,7 @@ public final class Basis
 	 * the gradeRange array.
 	 * 
 	 */
-	protected void fillGradeRange()
+	private void fillGradeRange()
 	{
 		gradeRange[0] = 0; // The scalar
 		gradeRange[1] = 1; // The scalar

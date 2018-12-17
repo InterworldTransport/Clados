@@ -37,9 +37,9 @@ import com.interworldtransport.cladosFExceptions.*;
  * without having to maintain many different types of monads and nyads. If Java
  * came with primitive types for complex and quaternion fields, and other
  * primitives implemented a 'Field' interface, I wouldn't bother writing this
- * object or any of the other decendents of DivFieldD.
+ * object or any of the other descendants of DivFieldD.
  * <p>
- * Applications requiring speed should use the monads and nyads that impliment
+ * Applications requiring speed should use the monads and nyads that implement
  * numbers as primitives. Those classes are marked as such within the library.
  * <p>
  * Ideally, this would extend java.lang.Double and implement an interface called
@@ -48,7 +48,7 @@ import com.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class ComplexD extends DivFieldD
+public class ComplexD extends DivField implements DivisableD
 {
 	/**
 	 * Static add method that creates a new ComplexD with the sum pF1 + pF2.
@@ -85,20 +85,6 @@ public class ComplexD extends DivFieldD
 	}
 
 	/**
-	 * Static method that creates a new ComplexD with a copy of the parameter.
-	 * This copy reuses the field type reference to ensure it will pass a type
-	 * match test.
-	 * 
-	 * @param pF
-	 *            ComplexD
-	 * @return ComplexD
-	 */
-	public static ComplexD copy(ComplexD pF)
-	{
-		return new ComplexD(pF);
-	}
-
-	/**
 	 * Static method that creates a new ComplexD with a copy of the field type
 	 * but not the value. Since this copy reuses the field type reference it
 	 * will pass a type match test with pF but not the isEqual test.
@@ -107,9 +93,103 @@ public class ComplexD extends DivFieldD
 	 *            ComplexD
 	 * @return ComplexD
 	 */
-	public static ComplexD copyzero(ComplexD pF)
+	//public static ComplexD copyAsZero(ComplexD pF)
+	//{
+	//	return new ComplexD(pF.getFieldType());
+	//}
+
+	/**
+	 * This static method takes a list of ComplexD objects and returns one
+	 * ComplexD that has a real value that is equal to the square root of the
+	 * sum of the SQModulus of each entry on the list. <p>
+	 * It does not perform a field type safety check and will throw the exception 
+	 * if that test fails.
+	 * 
+	 * @param pL
+	 * 			ComplexD[]
+	 * 
+	 * @throws FieldBinaryException
+	 * 	This exception happens when there is a field mismatch. It shouldn't happen
+	 * 	but it is technically possible because of the dependence on sqMagnitude.	 * 
+	 * @return ComplexD
+	 */
+	public static ComplexD copyFromModuliSum(ComplexD[] pL) throws FieldBinaryException
 	{
-		return new ComplexD(pF.getFieldType());
+		ComplexD tR = ComplexD.copyFromSQModuliSum(pL);
+		// now figure out how to do the SQRT of this complex object.
+		double tM = Math.sqrt(tR.getModulus());
+		double tA = tR.getArgument() / 2;
+		tR.setReal(tM * Math.cos(tA));
+		tR.setImg(tM * Math.sin(tA));
+		return tR;
+	}
+
+	/**
+	 * This static method takes a list of RealD objects and returns one RealD
+	 * that has a value that is equal to the sum of the SQModulus of each entry
+	 * on the list. It does not perform a field type safety check and will throw
+	 * the exception if that test fails.
+	 * 
+	 * @param pL
+	 * 			ComplexD[]
+	 * 
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when there is a field mismatch. It should never happen
+	 * 	but the implementation uses multiplication, thus it is technically possible.
+	 * 
+	 * @return ComplexD
+	 */
+	public static ComplexD copyFromSQModuliSum(ComplexD[] pL) throws FieldBinaryException
+	{
+		ComplexD tR = ComplexD.copyONE(pL[0]).scale(pL[0].getSQModulus());
+
+		for (int j = 1; j < pL.length; j++)
+			if (isTypeMatch(pL[j], tR))
+				tR.add(ComplexD.copyONE(pL[j]).scale(pL[j].getSQModulus()));
+			else
+				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+		
+		return tR;
+	}
+	
+	/**
+	 * Static method that creates a new ComplexD with a copy of the parameter.
+	 * This copy reuses the field type reference to ensure it will pass a type
+	 * match test.
+	 * 
+	 * @param pF
+	 *            ComplexD
+	 * @return ComplexD
+	 */
+	public static ComplexD copyOf(ComplexD pF)
+	{
+		return new ComplexD(pF);
+	}
+
+	/**
+	 * Static zero construction method with copied field type
+	 * 
+	 * @param pR
+	 * 			ComplexD
+	 * 
+	 * @return ComplexD
+	 */
+	public static ComplexD copyONE(ComplexD pR)
+	{
+		return new ComplexD(pR.getFieldType(), 1.0d, 0.0d);
+	}
+
+	/**
+	 * Static zero construction method with copied field type
+	 * 
+	 * @param pR
+	 * 			ComplexD
+	 * 
+	 * @return ComplexD
+	 */
+	public static ComplexD copyZERO(ComplexD pR)
+	{
+		return new ComplexD(pR.getFieldType(), 0.0d, 0.0d);
 	}
 
 	/**
@@ -127,7 +207,7 @@ public class ComplexD extends DivFieldD
 	{
 		return new ComplexD(pR, pI);
 	}
-	
+
 	/**
 	 * Static divide method that creates a new ComplexD with the product pF1 / pF2.
 	 * 
@@ -153,8 +233,7 @@ public class ComplexD extends DivFieldD
 			tZ.scale(1.0D / pF2.getSQModulus());
 			return tZ;
 		}
-		else
-			throw (new FieldBinaryException(pF1, "Static Division error found",	pF2));
+		throw (new FieldBinaryException(pF1, "Static Division error found",	pF2));
 	}
 
 	/**
@@ -186,7 +265,7 @@ public class ComplexD extends DivFieldD
 	{
 		return (pF.getReal() == 0.0d && pF.getImg() != 0.0d);
 	}
-
+	
 	/**
 	 * This method checks to see if either value is infinite.
 	 * 
@@ -198,7 +277,7 @@ public class ComplexD extends DivFieldD
 	{
 		return Double.isInfinite(pF.getReal()) || Double.isInfinite(pF.getImg());
 	}
-
+	
 	/**
 	 * This method checks to see if either value is not a number at all. NAN
 	 * 
@@ -222,7 +301,7 @@ public class ComplexD extends DivFieldD
 	{
 		return (pF.getImg() == 0.0d);
 	}
-
+	
 	/**
 	 * This method checks to see if the number is exactly zero.
 	 * 
@@ -234,32 +313,7 @@ public class ComplexD extends DivFieldD
 	{
 		return (pF.getReal() == 0.0D && pF.getImg() == 0.0D);
 	}
-	
-	/**
-	 * This static method takes a list of ComplexD objects and returns one
-	 * ComplexD that has a real value that is equal to the square root of the
-	 * sum of the SQModulus of each entry on the list. It does not perform a
-	 * field type safety check and will throw the exception if that test fails.
-	 * 
-	 * @param pL
-	 * 			ComplexD[]
-	 * 
-	 * @throws FieldBinaryException
-	 * 	This exception happens when there is a field mismatch. It shouldn't happen
-	 * 	but it is technically possible because of the dependence on sqMagnitude.	 * 
-	 * @return ComplexD
-	 */
-	public static ComplexD ModulusList(ComplexD[] pL) throws FieldBinaryException
-	{
-		ComplexD tR = ComplexD.SQModulusList(pL);
-		// now figure out how to do the SQRT of this complex object.
-		double tM = Math.sqrt(tR.getModulus());
-		double tA = tR.getArgument() / 2;
-		tR.setReal(tM * Math.cos(tA));
-		tR.setImg(tM * Math.sin(tA));
-		return tR;
-	}
-	
+
 	/**
 	 * Static multiply method that creates a new ComplexD with the product pF1 *
 	 * pF2.
@@ -281,21 +335,7 @@ public class ComplexD extends DivFieldD
 			double tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
 			return new ComplexD(pF1.getFieldType(), tempR, tempI);
 		}
-		else
-			throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
-	}
-
-	/**
-	 * Static zero construction method with copied field type
-	 * 
-	 * @param pR
-	 * 			ComplexD
-	 * 
-	 * @return ComplexD
-	 */
-	public static ComplexD ONE(ComplexD pR)
-	{
-		return new ComplexD(pR.getFieldType(), 1.0d, 0.0d);
+		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
 	
 	/**
@@ -306,34 +346,22 @@ public class ComplexD extends DivFieldD
 	 * 
 	 * @return ComplexD
 	 */
-	public static ComplexD ONE(String pS)
+	public static ComplexD newONE(String pS)
 	{
 		return new ComplexD(new DivFieldType(pS), 1.0d, 0.0d);
 	}
 
 	/**
-	 * This static method takes a list of RealD objects and returns one RealD
-	 * that has a value that is equal to the sum of the SQModulus of each entry
-	 * on the list. It does not perform a field type safety check and will throw
-	 * the exception if that test fails.
+	 * Static zero construction method
 	 * 
-	 * @param pL
-	 * 			ComplexD[]
-	 * 
-	 * @throws FieldBinaryException
-	 * 	This exception occurs when there is a field mismatch. It should never happen
-	 * 	but the implementation uses multiplication, thus it is technically possible.
+	 * @param pS
+	 * 			String
 	 * 
 	 * @return ComplexD
 	 */
-	public static ComplexD SQModulusList(ComplexD[] pL) throws FieldBinaryException
+	public static ComplexD newZERO(String pS)
 	{
-		ComplexD tR = new ComplexD(pL[0].getFieldType(), 0, 0);
-
-		for (int j = 1; j < pL.length; j++)
-			tR.add(new ComplexD(pL[j].getFieldType(), pL[j].getSQModulus(), 0.0d));
-		
-		return tR;
+		return new ComplexD(new DivFieldType(pS), 0.0D, 0.0D);
 	}
 	
 	/**
@@ -355,32 +383,8 @@ public class ComplexD extends DivFieldD
 		
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
-
-	/**
-	 * Static zero construction method with copied field type
-	 * 
-	 * @param pR
-	 * 			ComplexD
-	 * 
-	 * @return ComplexD
-	 */
-	public static ComplexD ZERO(ComplexD pR)
-	{
-		return new ComplexD(pR.getFieldType(), 0.0d, 0.0d);
-	}
 	
-	/**
-	 * Static zero construction method
-	 * 
-	 * @param pS
-	 * 			String
-	 * 
-	 * @return ComplexD
-	 */
-	public static ComplexD ZERO(String pS)
-	{
-		return new ComplexD(new DivFieldType(pS), 0.0D, 0.0D);
-	}
+	protected double[]	vals;
 	
 	/**
 	 * Basic Constructor with no values to initialize.
@@ -393,6 +397,38 @@ public class ComplexD extends DivFieldD
 		setImg(0.0D);
 	}
 
+	/**
+	 * Copy Constructor that reuses the field type reference.
+	 * 
+	 * @param pC
+	 * 		ComplexD
+	 */
+	public ComplexD(ComplexD pC)
+	{
+		vals	= new double[2];
+		setFieldType(pC.getFieldType());
+		setReal(pC.getReal());
+		setImg(pC.getImg());
+	}
+	
+	/**
+	 * Copy Constructor that reuses the field type reference while allowing the
+	 * values to be set.
+	 * @param pC
+	 * 		ComplexD
+	 * @param pR
+	 * 		double
+	 * @param pI
+	 * 		double
+	 */
+	public ComplexD(ComplexD pC, double pR, double pI)
+	{
+		vals = new double[2];
+		setFieldType(pC.getFieldType());
+		setReal(pR);
+		setImg(pI);
+	}
+	
 	/**
 	 * Basic Constructor with only the field type to initialize.
 	 * 
@@ -422,7 +458,7 @@ public class ComplexD extends DivFieldD
 		setReal(pR);
 		setImg(0.0D);
 	}
-	
+
 	/**
 	 * Basic Constructor with everything to initialize it.
 	 * 
@@ -437,38 +473,6 @@ public class ComplexD extends DivFieldD
 	{
 		vals = new double[2];
 		setFieldType(pT);
-		setReal(pR);
-		setImg(pI);
-	}
-	
-	/**
-	 * Copy Constructor that reuses the field type reference.
-	 * 
-	 * @param pC
-	 * 		ComplexD
-	 */
-	public ComplexD(ComplexD pC)
-	{
-		vals	= new double[2];
-		setFieldType(pC.getFieldType());
-		setReal(pC.getReal());
-		setImg(pC.getImg());
-	}
-
-	/**
-	 * Copy Constructor that reuses the field type reference while allowing the
-	 * values to be set.
-	 * @param pC
-	 * 		ComplexD
-	 * @param pR
-	 * 		double
-	 * @param pI
-	 * 		double
-	 */
-	public ComplexD(ComplexD pC, double pR, double pI)
-	{
-		vals = new double[2];
-		setFieldType(pC.getFieldType());
 		setReal(pR);
 		setImg(pI);
 	}
@@ -498,16 +502,16 @@ public class ComplexD extends DivFieldD
 	 * 
 	 * @throws FieldBinaryException
 	 * 	This exception occurs when a field mismatch happens
-	 * @see com.interworldtransport.cladosF.DivFieldD#add(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#add(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexD add(DivFieldD pF) throws FieldBinaryException
+	public ComplexD add(DivisableD pF) throws FieldBinaryException
 	{
-		if (!ComplexD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Addition failed type match test", pF));
-		
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
+				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
+			throw (new FieldBinaryException(this, "Addition failed type match test", (DivField) pF));
 		setReal(getReal() + ((ComplexD) pF).getReal());
 		setImg(getImg() + ((ComplexD) pF).getImg());
 		return this;
@@ -519,6 +523,7 @@ public class ComplexD extends DivFieldD
 	 * 
 	 * @return ComplexD
 	 */
+	@Override
 	public ComplexD conjugate()
 	{
 		setImg(-1.0D * getImg());
@@ -532,18 +537,18 @@ public class ComplexD extends DivFieldD
 	 * @param pF
 	 * 		DivFieldD
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#divide(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#divide(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @return ComplexD
 	 */
 	@Override
-	public ComplexD divide(DivFieldD pF) throws FieldBinaryException
+	public ComplexD divide(DivisableD pF) throws FieldBinaryException
 	{
-		if (!ComplexD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Divide failed type match test", pF));
-			
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
+				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
+			throw (new FieldBinaryException(this, "Divide failed type match test", (DivField) pF));
 		if (ComplexD.isZero((ComplexD) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", pF));
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (DivField) pF));
 		
 		ComplexD tempZ = (ComplexD) pF;
 		tempZ.conjugate();
@@ -563,8 +568,8 @@ public class ComplexD extends DivFieldD
 	{
 		if (!ComplexD.isImaginary(this))
 			return Math.atan(getImg() / getReal());
-		else
-			return (getImg() >= 0) ? Math.PI / 2.0D : 3.0D * Math.PI / 2.0D;
+		
+		return (getImg() >= 0) ? Math.PI / 2.0D : 3.0D * Math.PI / 2.0D;
 	}
 
 	/**
@@ -623,6 +628,7 @@ public class ComplexD extends DivFieldD
 	 * 
 	 * @return ComplexD 
 	 */
+	@Override
 	public ComplexD invert() throws FieldException
 	{
 		if (ComplexD.isZero(this))
@@ -642,16 +648,16 @@ public class ComplexD extends DivFieldD
 	 * @param pF
 	 * 		DivFieldD
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#multiply(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#multiply(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @return ComplexD
 	 */
 	@Override
-	public ComplexD multiply(DivFieldD pF) throws FieldBinaryException
+	public ComplexD multiply(DivisableD pF) throws FieldBinaryException
 	{
-		if (!ComplexD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match test", pF));
-		
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
+				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
+			throw (new FieldBinaryException(this, "Multiply failed type match test", (DivField) pF));
 		ComplexD tempZ = (ComplexD) pF;
 		setReal(getReal() * tempZ.getReal() - getImg() * tempZ.getImg());
 		setImg(getReal() * tempZ.getImg() + getImg() * tempZ.getReal());
@@ -666,19 +672,12 @@ public class ComplexD extends DivFieldD
 	 * 
 	 * @return ComplexD
 	 */
+	@Override
 	public ComplexD scale(double pS)
 	{
 		double tempS = Math.sqrt(Math.abs(pS));
-		if (pS < 0)
-		{
-			setReal(-1.0f * tempS * getReal());
-			setImg(-1.0f * tempS * getImg());
-		}
-		else
-		{
-			setReal(tempS * getReal());
-			setImg(tempS * getImg());
-		}
+		setReal(Math.signum(pS) * tempS * getReal());
+		setImg(Math.signum(pS) * tempS * getImg());
 		return this;
 	}
 
@@ -711,7 +710,7 @@ public class ComplexD extends DivFieldD
 	 * @param pF
 	 *            DivFieldD
 	 *            
-	 * @see com.interworldtransport.cladosF.DivFieldD#subtract(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#subtract(com.interworldtransport.cladosF.DivisableD)
 	 *            
 	 * @throws FieldBinaryException
 	 * 	This exception occurs when there is a field mismatch.
@@ -719,11 +718,11 @@ public class ComplexD extends DivFieldD
 	 * @return ComplexD
 	 */
 	@Override
-	public ComplexD subtract(DivFieldD pF) throws FieldBinaryException
+	public ComplexD subtract(DivisableD pF) throws FieldBinaryException
 	{
-		if (!ComplexD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match test", pF));
-		
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
+				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
+			throw (new FieldBinaryException(this, "Subtraction failed type match test", (DivField) pF));
 		ComplexD tempZ = (ComplexD) pF;
 		setReal(getReal() - tempZ.getReal());
 		setImg(getImg() - tempZ.getImg());
@@ -733,7 +732,7 @@ public class ComplexD extends DivFieldD
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#toString()
+	 * @see com.interworldtransport.cladosF.DivisableD#toString()
 	 * 
 	 * @return String
 	 */
@@ -746,7 +745,7 @@ public class ComplexD extends DivFieldD
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#toXMLString()
+	 * @see com.interworldtransport.cladosF.DivisableD#toXMLString()
 	 * 
 	 * @return String
 	 */

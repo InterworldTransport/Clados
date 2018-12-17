@@ -55,8 +55,8 @@ public abstract class MonadAbstract
 		long tSpot = (pM.getGradeKey()) / ((long) Math.pow(10, pGrade));
 		if (tSpot % 2 == 1)
 			return true;
-		else
-			return false;
+		
+		return false;
 	}
 
 	/**
@@ -73,8 +73,8 @@ public abstract class MonadAbstract
 	{
 		if (Math.pow(10, pGrade) == pM.getGradeKey())
 			return true;
-		else
-			return false;
+
+		return false;
 	}
 
 	/**
@@ -95,8 +95,8 @@ public abstract class MonadAbstract
 			double temp = Math.log10(pM.getGradeKey());
 			if (Math.floor(temp) == temp)
 				return false;
-			else
-				return true;
+			
+			return true;
 		}
 		return false; // Special case of a zero Monad which is not multigrade.
 	}
@@ -119,8 +119,8 @@ public abstract class MonadAbstract
 			double temp = Math.log10(pM.getGradeKey());
 			if (Math.floor(temp) == temp)
 				return true;
-			else
-				return false;
+			
+			return false;
 		}
 		return true;
 	}
@@ -128,18 +128,18 @@ public abstract class MonadAbstract
 	/**
 	 * This String is the name of the Reference Frame of the Monad
 	 */
-	public String	frameName;
+	protected String	frameName;
 
 	/**
 	 * This long holds a key that shows which grades are present in the monad.
 	 * The key is a sum over powers of 10 with the grade as the exponent.
 	 */
-	public long		gradeKey;
+	protected long		gradeKey;
 
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
-	public String	name;
+	protected String	name;
 	
 	/**
 	 * This boolean is a flag used internally by multiplication methods to make
@@ -248,7 +248,7 @@ public abstract class MonadAbstract
 	 * @param pSparse
 	 * 	boolean
 	 */
-	public void setSparseFlag(boolean pSparse)
+	protected void setSparseFlag(boolean pSparse)
 	{
 		this.sparseFlag=pSparse;
 	}

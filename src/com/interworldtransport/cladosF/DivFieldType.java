@@ -53,6 +53,11 @@ package com.interworldtransport.cladosF;
 
 public final class DivFieldType
 {
+	public static final DivFieldType generate(String pT)
+	{
+		return new DivFieldType(pT);
+	}
+	
 	private String	type;
 
 	public DivFieldType(String pT)

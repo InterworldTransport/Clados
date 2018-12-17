@@ -125,11 +125,11 @@ public class MonadRealD extends MonadAbstract
 		check1.multiplyLeft(pM);
 
 		short k = 0;
-		RealD fstnzeroC = ZERO("Place Holder");
+		RealD fstnzeroC = newZERO("Place Holder");
 		while (isZero(fstnzeroC)
 						& k <= pM.getAlgebra().getGProduct().getBladeCount() - 1)
 		{
-			fstnzeroC = copy(pM.getCoeff(k));
+			fstnzeroC = copyOf(pM.getCoeff(k));
 			k++;
 		}
 
@@ -346,9 +346,9 @@ public class MonadRealD extends MonadAbstract
 		setFrameName(pFrameName);
 		
 		cM = new RealD[getAlgebra().getGProduct().getBladeCount()];
-		RealD tR = ZERO(pF);
+		RealD tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
-			cM[k] = copy(tR);
+			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same DivFieldType
 		setGradeKey();
 	}
@@ -389,9 +389,9 @@ public class MonadRealD extends MonadAbstract
 		setFrameName(pFrameName);
 
 		cM = new RealD[getAlgebra().getGProduct().getBladeCount()];
-		RealD tR = ZERO(pF);
+		RealD tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
-			cM[k] = copy(tR);
+			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same DivFieldType
 		setGradeKey();
 	}
@@ -460,24 +460,24 @@ public class MonadRealD extends MonadAbstract
 		
 		case 1:		// Unit Scalar case
 			tSpot = getAlgebra().getGProduct().getGradeRange((short) 0);
-			cM[tSpot[0]] = ONE(cM[tSpot[0]]);
+			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			break;
 		
 		case 2:		// Unit -Scalar case
 			tSpot = getAlgebra().getGProduct().getGradeRange((short) 0);
-			cM[tSpot[0]] = ONE(cM[tSpot[0]]);
+			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			break;
 			
 		case 3:		// Unit PScalar case
 			tSpot = getAlgebra().getGProduct().getGradeRange(
 							(short) (getAlgebra().getGProduct().getGradeCount() - 1));
-			cM[tSpot[0]] = ONE(cM[tSpot[0]]);
+			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			break;
 			
 		case 4:		// Unit -PScalar case
 			tSpot = getAlgebra().getGProduct().getGradeRange(
 							(short) (getAlgebra().getGProduct().getGradeCount() - 1));
-			cM[tSpot[0]] = ONE(cM[tSpot[0]]);
+			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			cM[tSpot[0]].scale(-1.0f);
 			break;
 			
@@ -623,7 +623,7 @@ public class MonadRealD extends MonadAbstract
 			// resulting blade of left-product because tSpot[0] points at PScalar
 			short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(tSpot[0], j)) - 1);
 			// new coefficient is old coeff moved to left-dual blade.
-			tNewCoeff[prd] = copy(cM[j]);
+			tNewCoeff[prd] = copyOf(cM[j]);
 			// now account for possible sign flip from left dual
 			tNewCoeff[prd].scale(getAlgebra().getGProduct().getSign(tSpot[0], j));
 			// sign flip works because number type accepts scaling by raw shorts
@@ -652,7 +652,7 @@ public class MonadRealD extends MonadAbstract
 			// resulting blade of left-product because tSpot[0] points at PScalar
 			short drp = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot[0])) - 1);
 			// new coefficient is old coeff moved to left-dual blade.
-			tNewCoeff[drp] = copy(cM[j]);
+			tNewCoeff[drp] = copyOf(cM[j]);
 			// now account for possible sign flip from left dual
 			tNewCoeff[drp].scale(getAlgebra().getGProduct().getSign(j, tSpot[0]));
 			// sign flip works because number type accepts scaling by raw shorts
@@ -817,7 +817,7 @@ public class MonadRealD extends MonadAbstract
 	{
 		try
 		{
-			return ModulusList(cM);
+			return copyFromModuliSum(cM);
 		}
 		catch (FieldBinaryException e)
 		{
@@ -883,7 +883,7 @@ public class MonadRealD extends MonadAbstract
 		RealD[] tNewCoeff = new RealD[getAlgebra().getGProduct().getBladeCount()]; 
 		// new coeff array built to hold result
 		for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
-			tNewCoeff[k] = ZERO(cM[0]);
+			tNewCoeff[k] = copyZERO(cM[0]);
 		// new coeff array populated with ZEROES from the field.
 					
 		if (sparseFlag)
@@ -1003,7 +1003,7 @@ public class MonadRealD extends MonadAbstract
 		RealD[] tNewCoeff = new RealD[getAlgebra().getGProduct().getBladeCount()]; 
 		// new coeff array
 		for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
-			tNewCoeff[k] = ZERO(cM[0]);
+			tNewCoeff[k] = copyZERO(cM[0]);
 		// new coeff array built to hold result
 					
 		if (sparseFlag)
@@ -1339,7 +1339,7 @@ public class MonadRealD extends MonadAbstract
 	{
 		try
 		{
-			return SQModulusList(cM);
+			return copyFromSQModuliSum(cM);
 		}
 		catch (FieldBinaryException e)
 		{

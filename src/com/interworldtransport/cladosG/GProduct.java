@@ -52,23 +52,18 @@ import com.interworldtransport.cladosGExceptions.*;
 public final class GProduct
 {
 	/**
-	 * This string holds the signature information describing the squares of all
-	 * geometry generators present on the multiplication table.
+	 * This basis holds a representation of all the elements that can be built
+	 * from the generators to span the algebra's vector space. It is the
+	 * Eddington Basis.
 	 */
-	protected String	signature;
+	private final Basis		eddingtonBasis;
 	/**
 	 * This integer array is an internal translation of the product signature.
 	 * Generators with a positive square appear as a zero (0) while those with
 	 * negative squares appear as one (1). This array is kept to increase the
 	 * speed of product calculations.
 	 */
-	protected short[]	nSignature;
-	/**
-	 * This basis holds a representation of all the elements that can be built
-	 * from the generators to span the algebra's vector space. It is the
-	 * Eddington Basis.
-	 */
-	protected Basis		eddingtonBasis;
+	private final short[]	nSignature;
 	/**
 	 * This array holds the geometric multiplication table for a Clifford
 	 * algebra using the associated basis. The array contains numbers that
@@ -80,7 +75,12 @@ public final class GProduct
 	 * The +1 offsets are present because java arrays start with an index of 0,
 	 * while the lowest rank blade is #1.
 	 */
-	protected short[][]	result;
+	private final short[][]	result;
+	/**
+	 * This string holds the signature information describing the squares of all
+	 * geometry generators present on the multiplication table.
+	 */
+	private final String	signature;
 
 	/**
 	 * Copy constructor of GProduct with other GProduct passed in. This
@@ -94,12 +94,35 @@ public final class GProduct
 	 * @param pGP
 	 *            GProduct
 	 */
-	public GProduct(GProduct pGP)
+	public GProduct(GProduct pGP) throws BadSignatureException
 	{
 		signature = new String(pGP.getSignature());
-		validateSignature(signature);
+		if (!validateSignature(signature))
+			throw new BadSignatureException(this, "Valid signature expected.");
+		
+		if (signature.length() == 0)
+			nSignature = new short[1];
+		else	
+			nSignature = new short[signature.length()];
+		
+		int m=0;
+		for (char b : signature.toCharArray())
+		{
+			switch (b)
+			{
+				case '+':
+					nSignature[m] = 0;
+					m++;
+					break;
+				case '-':
+					nSignature[m] = 1;
+					m++;
+					break;
+			}
+		}
+		
 		eddingtonBasis = pGP.getBasis();
-		result = new short[getBladeCount()][getBladeCount()];
+		
 		result = pGP.getResult().clone();
 	}
 
@@ -122,6 +145,27 @@ public final class GProduct
 		//boolean check = validateSignature(pSig);
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature expected.");
+		signature = pSig;
+		if (signature.length() == 0)
+			nSignature = new short[1];
+		else
+			nSignature = new short[signature.length()];
+		
+		int m=0;
+		for (char b : signature.toCharArray())
+		{
+			switch (b)
+			{
+				case '+':
+					nSignature[m] = 0;
+					m++;
+					break;
+				case '-':
+					nSignature[m] = 1;
+					m++;
+					break;
+			}
+		}
 		
 		eddingtonBasis = new Basis((short) pSig.length());
 
@@ -135,135 +179,9 @@ public final class GProduct
 			result[j][0] = (short) (j + 1);
 		} // Scalar section of product result finished early
 		
-		for (short j = 1; j < eddingtonBasis.getBladeCount(); j++) // row
-		{
-			for (short k = 1; k < eddingtonBasis.getBladeCount(); k++) // column
-				fillResult(j, k); // counter for column element in product
-		}
-	}
-
-	/**
-	 * Set the array used for establishing the geometric multiplication results
-	 * of pairs of blades (j and k) of the Basis.
-	 * 
-	 * product results are constructed by juxtaposing the generators of each
-	 * blade (all of j on the left and all of k on the right) into a single
-	 * array and then sorting them into ascending order from left to right and
-	 * removing generator pairs from the array. Each pairwise swap made in the
-	 * combined set of generators increments a counter that keeps track of the
-	 * anti-commuting multiplier. Generator pairs are removed using the
-	 * signature array to increment the anti-commuting counter if needed. After
-	 * a final sort to move all 0 (null) generators to the left the result is
-	 * keyed much like blades are in the Basis when it is constructed. Keys are
-	 * finally compared to determine the identity of the resulting blade.
-	 * 
-	 * This method should only be called once the GProduct is initialized.
-	 * Construction of the full product result array scales as
-	 * blades^2=2^(2*generators), so it could take a long time and a lot of
-	 * memory for a large basis. Efforts to streamline code and memory footprint
-	 * in this method could have a large impact.
-	 * 
-	 * @param j
-	 *            short
-	 * @param k
-	 *            short
-	 */
-	protected void fillResult(short j, short k)
-	{
-		short[] bothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
-		short m = 0;
-		short signFlip = 0;
-		short tempBubbleSpot = 0;			//yes. There is a bubble sort. Not a big one.
-		
-		// Set up row with all generators for each basis element j and k
-		for (m = 0; m < eddingtonBasis.getGradeCount() - 1; m++)
-		{
-			// Copy VectorBasis' into doubleSort to find new element
-			bothOps[m] = eddingtonBasis.getBasis(j, m);
-			bothOps[m + eddingtonBasis.getGradeCount() - 1] = eddingtonBasis.getBasis(k, m);
-		}
-		// bothOps filled but unsorted. That means the zero slots in the kth blade (if any)
-		// will be to the right of non-zero indexes in the jth blade. Basically, the first
-		// blade is in the first half of the array, the second blade in the second half.
-		// All that is needed next is to slice the 0's out of the row and then pad them back
-		// on the left.
-		// We start on the right of bothOps and look for columns that aren't zero and copy 
-		// them out.
-		
-		bothOps=settleGenerators(bothOps);
-		
-		// bothOps filled and partially sorted. That means the zero slots in both blades (if any)
-		// will be to the left of all of non-zero indexes in the both blades.
-		// All that is needed next is to sort the non-zero's on the right of bothOps.
-		
-		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
-		{
-			if (bothOps[m] == 0) continue;
-			
-			for (short n = 0; n < 2 * eddingtonBasis.getGradeCount() - 3; n++)
-			{
-				if (bothOps[n] <= bothOps[n + 1]) continue;
-				
-				tempBubbleSpot = bothOps[n];
-				bothOps[n] = bothOps[n + 1];
-				bothOps[n + 1] = tempBubbleSpot;
-				signFlip += 1;
-			}
-		} 
-		// bothOps filled and sorted, but index pairs are still possible.
-
-		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
-		
-		//**************************************************************************
-
-		// Now we need to remove generator pairs and track signs.
-		for (m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m >= 1; m--)
-		{
-			//if (bothOps[m] == 0) continue;
-			if (bothOps[m] == bothOps[m - 1] && bothOps[m] != 0)
-			{
-				signFlip += nSignature[bothOps[m] - 1];
-				bothOps[m] = 0;
-				bothOps[m - 1] = 0;
-				m -= 1;
-				// flip sign again if generator has negative square.
-			}
-		}
-		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
-
-		// Now settle again.
-		bothOps=settleGenerators(bothOps);
-		
-		//**************************************************************************
-
-		// At this point bothOps should be fully sorted and have no
-		// duplicate generators. Now we need to Key the discovered basis element
-		
-		// Base (GradeCount) representation of Eddington Number
-		// Ex: 3 generators implies Base-4 keys stuffed into Base-10 array
-		// Right-most generator is the one's digit
-		// Middle generator is the 4's digit
-		// Left-most generator is the 16's digit
-		// Ex: 8 generators implies Base-9 keys stuffed into a Base-10 array
-					
-		long bothOpsKey = 0L;
-		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
-			bothOpsKey += (long) bothOps[m]*Math.pow(eddingtonBasis.getGradeCount(),
-													2*(eddingtonBasis.getGradeCount()) -3-m);
-		
-		// Compare bothOpsKey against vKey to find match
-		result[j][k] = 0;
-		long[] pKey = eddingtonBasis.getBasisKey();
-		for (m = 0; m < eddingtonBasis.getBladeCount(); m++)
-		{
-			if (bothOpsKey == pKey[m])
-			{
-				result[j][k] = (short) ((m + 1) * Math.pow(-1.0, signFlip));
-				break; // Good enough. Done identifying resulting blade & its sign
-			}
-		}
-		assert(result[j][k]!=0);	// if result entry is not zero, fill is complete.
-		// This assertion prevents us from using light-like generators
+		for (short j = 1; j < eddingtonBasis.getBladeCount(); j++) 
+			for (short k = 1; k < eddingtonBasis.getBladeCount(); k++) 
+				fillResult(j, k);	
 	}
 
 	/**
@@ -323,8 +241,8 @@ public final class GProduct
 	{
 		if (result[pj][pk] == result[pk][pj])
 			return 1;
-		else
-			return 0;
+		
+		return 0;
 	}
 
 	/**
@@ -425,32 +343,6 @@ public final class GProduct
 	}
 
 	/**
-	 * This is a private method used to settle generators to the end during
-	 * the fillResult method.
-	 * 
-	 * @param sortArray
-	 * @return
-	 */
-	private short[] settleGenerators(short[] sortArray)
-	{
-		short[] tempBothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
-		short q = (short) (2 * eddingtonBasis.getGradeCount() - 3);
-		
-		for (short m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m>-1; m--) 
-		// generator (column) counter GradeCount-2 through 0 [decreasing]
-		// Only one pass is needed
-		{
-			if (sortArray[m] != 0) // Found one to copy.
-			{
-				tempBothOps[q] = sortArray[m];
-				q--; // Slide left in vBasis for next possible entry.
-			}
-		}
-		return tempBothOps;
-		
-	}
-	
-	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
 	 * 
@@ -479,6 +371,156 @@ public final class GProduct
 	}
 
 	/**
+	 * Set the array used for establishing the geometric multiplication results
+	 * of pairs of blades (j and k) of the Basis.
+	 * 
+	 * product results are constructed by juxtaposing the generators of each
+	 * blade (all of j on the left and all of k on the right) into a single
+	 * array and then sorting them into ascending order from left to right and
+	 * removing generator pairs from the array. Each pairwise swap made in the
+	 * combined set of generators increments a counter that keeps track of the
+	 * anti-commuting multiplier. Generator pairs are removed using the
+	 * signature array to increment the anti-commuting counter if needed. After
+	 * a final sort to move all 0 (null) generators to the left the result is
+	 * keyed much like blades are in the Basis when it is constructed. Keys are
+	 * finally compared to determine the identity of the resulting blade.
+	 * 
+	 * This method should only be called once the GProduct is initialized.
+	 * Construction of the full product result array scales as
+	 * blades^2=2^(2*generators), so it could take a long time and a lot of
+	 * memory for a large basis. Efforts to streamline code and memory footprint
+	 * in this method could have a large impact.
+	 * 
+	 * @param j
+	 *            short
+	 * @param k
+	 *            short
+	 */
+	private void fillResult(short j, short k)
+	{
+		short[] bothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
+		short m = 0;
+		short signFlip = 0;
+		short tempBubbleSpot = 0;			//yes. There is a bubble sort. Not a big one.
+		
+		// Set up row with all generators for each basis element j and k
+		for (m = 0; m < eddingtonBasis.getGradeCount() - 1; m++)
+		{
+			// Copy VectorBasis' into doubleSort to find new element
+			bothOps[m] = eddingtonBasis.getBasis(j, m);
+			bothOps[m + eddingtonBasis.getGradeCount() - 1] = eddingtonBasis.getBasis(k, m);
+		}
+		// bothOps filled but unsorted. That means the zero slots in the kth blade (if any)
+		// will be to the right of non-zero indexes in the jth blade. Basically, the first
+		// blade is in the first half of the array, the second blade in the second half.
+		// All that is needed next is to slice the 0's out of the row and then pad them back
+		// on the left.
+		// We start on the right of bothOps and look for columns that aren't zero and copy 
+		// them out.
+		
+		bothOps=settleGenerators(bothOps);
+		
+		// bothOps filled and partially sorted. That means the zero slots in both blades (if any)
+		// will be to the left of all of non-zero indexes in the both blades.
+		// All that is needed next is to sort the non-zero's on the right of bothOps.
+		
+		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
+		{
+			if (bothOps[m] == 0) continue;
+			
+			for (short n = 0; n < 2 * eddingtonBasis.getGradeCount() - 3; n++)
+			{
+				if (bothOps[n] <= bothOps[n + 1]) continue;
+				
+				tempBubbleSpot = bothOps[n];
+				bothOps[n] = bothOps[n + 1];
+				bothOps[n + 1] = tempBubbleSpot;
+				signFlip += 1;
+			}
+		} 
+		// bothOps filled and sorted, but index pairs are still possible.
+
+		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
+		
+		//**************************************************************************
+
+		// Now we need to remove generator pairs and track signs.
+		for (m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m >= 1; m--)
+		{
+			//if (bothOps[m] == 0) continue;
+			if (bothOps[m] == bothOps[m - 1] && bothOps[m] != 0)
+			{
+				signFlip += nSignature[bothOps[m] - 1];
+				bothOps[m] = 0;
+				bothOps[m - 1] = 0;
+				m -= 1;
+				// flip sign again if generator has negative square.
+			}
+		}
+		signFlip = (short) (signFlip % 2); // commutation sign tracking is being done.
+
+		// Now settle again.
+		bothOps=settleGenerators(bothOps);
+		
+		//**************************************************************************
+
+		// At this point bothOps should be fully sorted and have no
+		// duplicate generators. Now we need to Key the discovered basis element
+		
+		// Base (GradeCount) representation of Eddington Number
+		// Ex: 3 generators implies Base-4 keys stuffed into Base-10 array
+		// Right-most generator is the one's digit
+		// Middle generator is the 4's digit
+		// Left-most generator is the 16's digit
+		// Ex: 8 generators implies Base-9 keys stuffed into a Base-10 array
+					
+		long bothOpsKey = 0L;
+		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
+			bothOpsKey += (long) bothOps[m]*Math.pow(eddingtonBasis.getGradeCount(),
+													2*(eddingtonBasis.getGradeCount()) -3-m);
+		
+		// Compare bothOpsKey against vKey to find match
+		result[j][k] = 0;
+		long[] pKey = eddingtonBasis.getBasisKey();
+		for (m = 0; m < eddingtonBasis.getBladeCount(); m++)
+		{
+			if (bothOpsKey == pKey[m])
+			{
+				result[j][k] = (short) ((m + 1) * Math.pow(-1.0, signFlip));
+				break; // Good enough. Done identifying resulting blade & its sign
+			}
+		}
+		assert(result[j][k]!=0);	// if result entry is not zero, fill is complete.
+		// This assertion prevents us from using light-like generators
+	}
+	
+	/**
+	 * This is a private method used to settle generators to the end during
+	 * the fillResult method.
+	 * 
+	 * @param sortArray
+	 * @return
+	 */
+	private short[] settleGenerators(short[] sortArray)
+	{
+		short[] tempBothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
+		short q = (short) (2 * eddingtonBasis.getGradeCount() - 3);
+		
+		for (short m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m>-1; m--) 
+		// generator (column) counter GradeCount-2 through 0 [decreasing]
+		// Only one pass is needed
+		{
+			if (sortArray[m] != 0) // Found one to copy.
+			{
+				tempBothOps[q] = sortArray[m];
+				q--; // Slide left in vBasis for next possible entry.
+			}
+		}
+		return tempBothOps;
+		
+	}
+
+	/**
 	 * Return a measure of the validity of the Signature string. A string with
 	 * +'s and -'s will pass. No other one does.
 	 * 
@@ -491,37 +533,20 @@ public final class GProduct
 	 */
 	protected boolean validateSignature(String pSg)
 	{
+		
 		if (pSg == null)
 			return false;
-		
 		if (pSg.length() == 0)
-		{
-			nSignature = new short[1];
-			nSignature[0]=0;
-			signature=pSg;
 			return true;
-		}
 		
-		nSignature = new short[pSg.length()];
 		for (short j = 0; j < pSg.length(); j++)
 		{
 			if (pSg.substring(j, j + 1).equals("+"))
-			{
-				nSignature[j] = 0;
 				continue;
-			}
-				
 			if (pSg.substring(j, j + 1).equals("-"))
-			{
-				nSignature[j] = 1;
 				continue;
-			}
-				
-			nSignature=null;
 			return false;
-			// Yes... it is possible nSignature was partially constructed
 		}
-		signature = pSg;
 		return true;	
 	}
 }

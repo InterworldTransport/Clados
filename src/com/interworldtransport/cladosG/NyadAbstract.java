@@ -63,7 +63,7 @@ public abstract class NyadAbstract
 	 * @param pF
 	 * 			This parameter sets the foot of the nyad.
 	 */
-	public void setFootPoint(Foot pF)
+	protected void setFootPoint(Foot pF)
 	{
 		footPoint = pF;
 	}

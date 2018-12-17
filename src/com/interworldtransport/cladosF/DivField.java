@@ -25,17 +25,21 @@
 package com.interworldtransport.cladosF;
 
 /**
- * This class implements the concept of a Division Field from mathematics. Field
+ * This class supports the concept of a Division Field from mathematics. Field
  * objects within the clados packages are used as 'numbers' in the definition of
- * an algebra. All CladosObjects use DivFields as a result.
+ * an algebra. All Clados objects use DivField descendants as a result.
  * <p>
- * FivFields are not named. They do not have any geometric properties. Treat
- * them like you would any other number you could plug into a simple calculator.
+ * DivField's capture only a reference frame type, so they appear to be named.
+ * However, they are named with DivFieldType objects so their names can be shared
+ * as references, thus survive reference frame match tests.
  * <p>
  * The number to be plugged in, though, doesn't appear until later in a child
- * of this class. This matters because the number of reals involved varies.
- * Besides... this class is abstract.
+ * of this class. This matters because the number of reals involved in the field
+ * varies. Complex numbers require two. Quaternions would require four.
  * <p>
+ * The only reason this class isn't an interface is the presence of the 
+ * DivFieldType data member.
+ * 
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
@@ -51,7 +55,7 @@ public abstract class DivField
 	 *            DivField
 	 * @return boolean
 	 */
-	public static boolean isTypeMatch(DivField pE, DivField pF)
+	public static final boolean isTypeMatch(DivField pE, DivField pF)
 	{
 		if(pE.FieldType==null && pF.FieldType==null)
 			return true;
@@ -97,16 +101,6 @@ public abstract class DivField
 		FieldType = pType;
 	}
 
-	/**
-	 * Return a string representation of the real value
-	 * @return String
-	 */
-	public abstract String toString();
 
-	/**
-	 * Return a string representation of the field element. 
-	 * @return String
-	 */
-	public abstract String toXMLString();
 
 }

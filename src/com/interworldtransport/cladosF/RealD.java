@@ -37,9 +37,9 @@ import com.interworldtransport.cladosFExceptions.*;
  * without having to maintain many different types of monads and nyads. If Java
  * came with primitive types for complex and quaternion fields, and other
  * primitives implemented a 'Field' interface, I wouldn't bother writing this
- * object or any of the other decendents of DivFieldD.
+ * object or any of the other descendants of DivFieldD.
  * <p>
- * Applications requiring speed should use the monads and nyads that impliment
+ * Applications requiring speed should use the monads and nyads that implement
  * numbers as primitives. Those classes are marked as such within the library.
  * <p>
  * Ideally, this would extend java.lang.Double and implement an interface called
@@ -48,7 +48,7 @@ import com.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class RealD extends DivFieldD
+public class RealD extends DivField implements DivisableD
 {
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
@@ -85,20 +85,6 @@ public class RealD extends DivFieldD
 	}
 	
 	/**
-	 * Static method that creates a new RealD with a copy of the parameter. This
-	 * copy reuses the field type reference to ensure it will pass a type match
-	 * test.
-	 * 
-	 * @param pF
-	 *            RealD
-	 * @return RealD
-	 */
-	public static RealD copy(RealD pF)
-	{
-		return new RealD(pF);
-	}
-
-	/**
 	 * Static method that creates a new RealD with a copy of the field type but
 	 * not the value. Since this copy reuses the field type reference it will
 	 * pass a type match test with pF but not the isEqual test.
@@ -107,11 +93,117 @@ public class RealD extends DivFieldD
 	 *            RealD
 	 * @return RealD
 	 */
-	public static RealD copyzero(RealD pF)
+	//public static RealD copyAsZero(RealD pF)
+	//{
+	//	return new RealD(pF.getFieldType());
+	//}
+
+	/**
+	 * This static method takes a list of RealD objects and returns one RealD
+	 * that has a value that is equal to the square root of the sum of the
+	 * SQModulus of each entry on the list. Because these are real numbers,
+	 * though, we get away with simply summing the moduli instead. It does not
+	 * perform a field type safety check and will throw the exception if that
+	 * test fails.
+	 * 
+	 * @param pL
+	 * 		RealD[]
+	 * 
+	 * @throws FieldBinaryException
+	 * 	This exception is thrown when sqMagnitude fails with the RealF array
+	 * @return RealD
+	 */
+	public static RealD copyFromModuliSum(RealD[] pL) throws FieldBinaryException
 	{
-		return new RealD(pF.getFieldType());
+		RealD tR = RealD.copyONE(pL[0]).scale(pL[0].getModulus());
+		for (int j = 1; j < pL.length; j++)
+			if (isTypeMatch(pL[j], tR))
+				tR.add(RealD.copyONE(pL[j].scale(pL[j].getModulus())));
+			else
+				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+		return tR;
 	}
 	
+	/**
+	 * This static method takes a list of RealD objects and returns one RealD
+	 * that has a value that is equal to the sum of the SQModulus of each entry
+	 * on the list. It does not perform a field type safety check and will throw
+	 * the exception if that test fails.
+	 * 
+	 * @param pL
+	 * 		RealD[]
+	 * 
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when there is a field mismatch. It should never happen
+	 * 	but the implementation uses multiplication, thus it is technically possible.
+	 * 
+	 * @return RealD
+	 */
+	public static RealD copyFromSQModuliSum(RealD[] pL) throws FieldBinaryException
+	{
+		RealD tR = RealD.copyONE(pL[0]).scale(pL[0].getSQModulus());
+		
+		for (int j = 1; j < pL.length; j++)
+			if (isTypeMatch(pL[j], tR))
+				tR.add(RealD.copyONE(pL[j].scale(pL[j].getSQModulus())));
+			else
+				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+		
+		return tR;
+	}
+	
+	/**
+	 * Static method that creates a new RealD with a copy of the parameter. This
+	 * copy reuses the field type reference to ensure it will pass a type match
+	 * test.
+	 * 
+	 * @param pF
+	 *            RealD
+	 * @return RealD
+	 */
+	public static RealD copyOf(RealD pF)
+	{
+		return new RealD(pF);
+	}
+	
+	/**
+	 * Static zero construction method with copied field type
+	 * 
+	 * @param pR
+	 * 		RealD
+	 * 
+	 * @return RealD
+	 */
+	public static RealD copyONE(RealD pR)
+	{
+		return new RealD(pR.getFieldType(), 1.0D);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Static zero construction method with copied field type
+	 * 
+	 * @param pR
+	 * 		RealD
+	 * 
+	 * @return RealD
+	 */
+	public static RealD copyZERO(RealD pR)
+	{
+		return new RealD(pR.getFieldType(), 0.0D);
+	}
+
 	/**
 	 * Static method that creates a new RealD with a copy of the parameter. This
 	 * copy does not reuse a field type reference so it is likely to fail type
@@ -127,6 +219,18 @@ public class RealD extends DivFieldD
 	{
 		return new RealD(pR);
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Static divide method that creates a new RealD with the product pF1 / pF2.
@@ -176,18 +280,6 @@ public class RealD extends DivFieldD
 		
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * This method checks to see if the value is infinite.
 	 * @param pF
@@ -198,7 +290,10 @@ public class RealD extends DivFieldD
 	{
 		return Double.isInfinite(pF.getReal());
 	}
-
+	
+	
+	
+	
 	/**
 	 * This method checks to see if the value is not a number at all. NAN
 	 * @param pF
@@ -210,19 +305,6 @@ public class RealD extends DivFieldD
 		return Double.isNaN(pF.getReal());
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * This method checks to see if the number is exactly zero.
 	 * 
@@ -235,31 +317,6 @@ public class RealD extends DivFieldD
 		return (pF.getReal() == 0.0D);
 	}
 	
-	/**
-	 * This static method takes a list of RealD objects and returns one RealD
-	 * that has a value that is equal to the square root of the sum of the
-	 * SQModulus of each entry on the list. Because these are real numbers,
-	 * though, we get away with simply summing the moduli instead. It does not
-	 * perform a field type safety check and will throw the exception if that
-	 * test fails.
-	 * 
-	 * @param pL
-	 * 		RealD[]
-	 * 
-	 * @throws FieldBinaryException
-	 * 	This exception is thrown when sqMagnitude fails with the RealF array
-	 * @return RealD
-	 */
-	public static RealD ModulusList(RealD[] pL) throws FieldBinaryException
-	{
-		RealD tR = new RealD(pL[0].getFieldType(), pL[0].getModulus());
-
-		for (int j = 1; j < pL.length; j++)
-			tR.add(new RealD(pL[j].getFieldType(), pL[j].getModulus()));
-		
-		return tR;
-	}
-
 	/**
 	 * Static multiply method that creates a new RealD with the product pF1 *
 	 * pF2. product.
@@ -281,23 +338,6 @@ public class RealD extends DivFieldD
 		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
 	
-	
-	
-	
-	
-	/**
-	 * Static zero construction method with copied field type
-	 * 
-	 * @param pR
-	 * 		RealD
-	 * 
-	 * @return RealD
-	 */
-	public static RealD ONE(RealD pR)
-	{
-		return new RealD(pR.getFieldType(), 1.0D);
-	}
-
 	/**
 	 * Static one construction method
 	 * 
@@ -306,34 +346,22 @@ public class RealD extends DivFieldD
 	 * 
 	 * @return RealD
 	 */
-	public static RealD ONE(String pS)
+	public static RealD newONE(String pS)
 	{
 		return new RealD(new DivFieldType(pS), 1.0D);
 	}
 	
 	/**
-	 * This static method takes a list of RealD objects and returns one RealD
-	 * that has a value that is equal to the sum of the SQModulus of each entry
-	 * on the list. It does not perform a field type safety check and will throw
-	 * the exception if that test fails.
+	 * Static zero construction method
 	 * 
-	 * @param pL
-	 * 		RealD[]
-	 * 
-	 * @throws FieldBinaryException
-	 * 	This exception occurs when there is a field mismatch. It should never happen
-	 * 	but the implementation uses multiplication, thus it is technically possible.
+	 * @param pS
+	 * 		String
 	 * 
 	 * @return RealD
 	 */
-	public static RealD SQModulusList(RealD[] pL) throws FieldBinaryException
+	public static RealD newZERO(String pS)
 	{
-		RealD tR = new RealD(pL[0].getFieldType(), pL[0].getSQModulus());
-
-		for (int j = 1; j < pL.length; j++)
-			tR.add(new RealD(pL[j].getFieldType(), pL[j].getSQModulus()));
-		
-		return tR;
+		return new RealD(new DivFieldType(pS), 0.0D);
 	}
 	
 	/**
@@ -356,31 +384,7 @@ public class RealD extends DivFieldD
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
 	
-	/**
-	 * Static zero construction method with copied field type
-	 * 
-	 * @param pR
-	 * 		RealD
-	 * 
-	 * @return RealD
-	 */
-	public static RealD ZERO(RealD pR)
-	{
-		return new RealD(pR.getFieldType(), 0.0D);
-	}
-	
-	/**
-	 * Static zero construction method
-	 * 
-	 * @param pS
-	 * 		String
-	 * 
-	 * @return RealD
-	 */
-	public static RealD ZERO(String pS)
-	{
-		return new RealD(new DivFieldType(pS), 0.0D);
-	}
+	protected double[]	vals;
 	
 	/**
 	 * Basic Constructor with no values to initialize.
@@ -443,6 +447,22 @@ public class RealD extends DivFieldD
 	
 	
 	/**
+	 * Basic Constructor with only the number to initialize.
+	 * 
+	 * @param pR
+	 * 		double
+	 * 
+	 * 
+	 */
+	public RealD(double pR)
+	{
+		vals = new double[1];
+		setFieldType(new DivFieldType("Real"));
+		setReal(pR);
+		
+	}
+	
+	/**
 	 * Copy Constructor that reuses the field type reference.
 	 * @param pR
 	 * 			RealD
@@ -472,22 +492,6 @@ public class RealD extends DivFieldD
 		setReal(pD);
 		
 	}
-	
-	/**
-	 * Basic Constructor with only the number to initialize.
-	 * 
-	 * @param pR
-	 * 		double
-	 * 
-	 * 
-	 */
-	public RealD(double pR)
-	{
-		vals = new double[1];
-		setFieldType(new DivFieldType("Real"));
-		setReal(pR);
-		
-	}
 
 	/**
 	 * This method adds real numbers together and changes this object to be the
@@ -498,18 +502,18 @@ public class RealD extends DivFieldD
 	 * 
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when there is a field mismatch.
-	 * @see com.interworldtransport.cladosF.DivFieldD#add(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#add(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD add(DivFieldD pF) throws FieldBinaryException
+	public RealD add(DivisableD pF) throws FieldBinaryException
 	{
-		if (!RealD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Addition failed type match test", pF));
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
+				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Addition failed type match test", (DivField) pF));
 		
 		setReal(getReal() + ((RealD) pF).getReal());
-		
 		return this;
 	}
 
@@ -519,6 +523,7 @@ public class RealD extends DivFieldD
 	 * 
 	 * @return RealD
 	 */
+	@Override
 	public RealD conjugate()
 	{
 		
@@ -532,19 +537,19 @@ public class RealD extends DivFieldD
 	 * @param pF
 	 * 		DivFieldD
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#divide(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#divide(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD divide(DivFieldD pF) throws FieldBinaryException
+	public RealD divide(DivisableD pF) throws FieldBinaryException
 	{
-		if (!RealD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Divide failed type match test", pF));
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
+				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Divide failed type match test", (DivField) pF));
 		
 		if (RealD.isZero((RealD) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", pF));
-		
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (DivField) pF));
 		
 		
 		
@@ -623,6 +628,7 @@ public class RealD extends DivFieldD
 	 * 
 	 * @return RealD
 	 */
+	@Override
 	public RealD invert() throws FieldException
 	{
 		if (RealD.isZero(this))
@@ -642,16 +648,16 @@ public class RealD extends DivFieldD
 	 * @param pF
 	 * 		DivFieldD
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#multiply(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#multiply(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD multiply(DivFieldD pF) throws FieldBinaryException
+	public RealD multiply(DivisableD pF) throws FieldBinaryException
 	{
-		if (!RealD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match test", pF));
-		
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
+				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Multiply failed type match test", (DivField) pF));
 		
 		
 		setReal(getReal() * ((RealD) pF).getReal());
@@ -666,6 +672,7 @@ public class RealD extends DivFieldD
 	 * 
 	 * @return RealD
 	 */
+	@Override
 	public RealD scale(double pS)
 	{
 		setReal(pS * getReal());
@@ -682,14 +689,6 @@ public class RealD extends DivFieldD
 		return this;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -711,7 +710,7 @@ public class RealD extends DivFieldD
 	 * @param pF
 	 *            DivFieldD
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#subtract(com.interworldtransport.cladosF.DivFieldD)
+	 * @see com.interworldtransport.cladosF.DivisableD#subtract(com.interworldtransport.cladosF.DivisableD)
 	 * 
 	 * @throws FieldBinaryException
 	 * 	This exception occurs when there is a field mismatch.
@@ -719,11 +718,11 @@ public class RealD extends DivFieldD
 	 * @return RealD
 	 */
 	@Override
-	public RealD subtract(DivFieldD pF) throws FieldBinaryException
+	public RealD subtract(DivisableD pF) throws FieldBinaryException
 	{
-		if (!RealD.isTypeMatch(this, pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match test", pF));
-		
+		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
+				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Subtraction failed type match test", (DivField) pF));
 		
 		
 		setReal(getReal() - ((RealD) pF).getReal());
@@ -733,7 +732,7 @@ public class RealD extends DivFieldD
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#toString()
+	 * @see com.interworldtransport.cladosF.DivisableD#toString()
 	 * 
 	 * @return String
 	 */
@@ -746,7 +745,7 @@ public class RealD extends DivFieldD
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivFieldD#toXMLString()
+	 * @see com.interworldtransport.cladosF.DivisableD#toXMLString()
 	 * 
 	 * @return String
 	 */

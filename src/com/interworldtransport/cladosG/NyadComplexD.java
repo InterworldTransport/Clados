@@ -443,7 +443,7 @@ public class NyadComplexD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		protoOne = ComplexD.ZERO(getFootPoint().getFootName() + "-ComplexD");
+		protoOne = ComplexD.newZERO(getFootPoint().getFootName() + "-ComplexD");
 		if (pN.getMonadList() == null)
 			monadList = null;
 		else

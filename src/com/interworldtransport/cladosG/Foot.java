@@ -50,19 +50,32 @@ import com.interworldtransport.cladosF.DivFieldType;
 public final class Foot
 {
 	/**
+	 * This factory build method produces a new Foot using the offered number type.
+	 * It is intend to name an otherwise opaque constructor that creates a new Foot
+	 * but re-uses a DivFieldType.
+	 * 
+	 * @param pFootName String name for the new Foot
+	 * @param pAsNumberType DivFieldType to re-use for this new Foot
+	 * @return Foot Factory method builds a new Foot re-using a DivFieldType object.
+	 */
+	public static final Foot buildAsType(String pFootName, DivFieldType pAsNumberType)
+	{
+		return new Foot(pFootName, pAsNumberType);
+	}
+	/**
 	 * This String is the name the footPoint of the Reference Frame of the Monad
 	 */
-	protected String			footName;
+	private String				footName;
 	/**
 	 * This object defines the type of numbers used by all objects that share
 	 * this footPoint.
 	 */
-	protected DivFieldType		numType;
+	private DivFieldType		numType;
 	/**
 	 * This is the list of known reference frames defined elsewhere against this
 	 * footPoint.
 	 */
-	protected ArrayList<String>	rFrames;
+	private ArrayList<String>	rFrames;
 
 	/**
 	 * Build the footPoint object from scratch.
@@ -120,7 +133,7 @@ public final class Foot
 	 * @param pRF
 	 *            String Reference Frame name to remove
 	 */
-	public void appendRFrame(String pRF)
+	protected void appendRFrame(String pRF)
 	{
 		rFrames.ensureCapacity(rFrames.size() + 1);
 		rFrames.add(pRF);

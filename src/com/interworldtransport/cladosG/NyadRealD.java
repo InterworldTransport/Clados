@@ -443,7 +443,7 @@ public class NyadRealD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		protoOne = RealD.ZERO(getFootPoint().getFootName() + "-RealD");
+		protoOne = RealD.newZERO(getFootPoint().getFootName() + "-RealD");
 		if (pN.getMonadList() == null)
 			monadList = null;
 		else

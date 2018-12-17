@@ -24,8 +24,6 @@
  */
 package com.interworldtransport.cladosG;
 
-import com.interworldtransport.cladosF.*;
-
 /**
  * The algebra object holds all geometric details that support the definition of
  * a multivector over a division field {Cl(p,q) x DivField} except the actual 
@@ -60,15 +58,6 @@ public abstract class AlgebraAbstract
 	 * reference frames associated with the same tangent point Foot.
 	 */
 	protected String	name;
-	
-	/**
-	 * When an algebra's number system is examined at this level, the only thing
-	 * the algebra knows about it is what is present in the DivField class. That 
-	 * means the DivFieldType can be accessed as an object or as the string within.
-	 * 
-	 * That's all.
-	 */
-	protected DivField	protoNumber;
 	
 	/**
 	 * This method returns the Algebra's name.
@@ -131,7 +120,7 @@ public abstract class AlgebraAbstract
 	 * 
 	 * @param footPoint
 	 */
-	public void setFoot(Foot footPoint)
+	protected void setFoot(Foot footPoint)
 	{
 		foot = footPoint;
 	}
@@ -149,7 +138,7 @@ public abstract class AlgebraAbstract
 	 * @param pGP
 	 *            GProduct
 	 */
-	public void setGProduct(GProduct pGP)
+	protected void setGProduct(GProduct pGP)
 	{
 		gProduct = pGP;
 		gBasis = pGP.getBasis();
