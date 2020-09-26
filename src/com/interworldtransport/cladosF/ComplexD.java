@@ -145,7 +145,7 @@ public class ComplexD extends DivField implements DivisableD
 
 		for (int j = 1; j < pL.length; j++)
 			if (isTypeMatch(pL[j], tR))
-				tR.add(ComplexD.copyONE(pL[j]).scale(pL[j].getSQModulus()));
+				tR.add((ComplexD.copyONE(pL[j])).scale(pL[j].getSQModulus()));
 			else
 				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
 		
@@ -675,9 +675,8 @@ public class ComplexD extends DivField implements DivisableD
 	@Override
 	public ComplexD scale(double pS)
 	{
-		double tempS = Math.sqrt(Math.abs(pS));
-		setReal(Math.signum(pS) * tempS * getReal());
-		setImg(Math.signum(pS) * tempS * getImg());
+		setReal(pS * getReal());
+		setImg(pS * getImg());
 		return this;
 	}
 

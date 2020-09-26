@@ -115,10 +115,10 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF copyFromModuliSum(RealF[] pL) throws FieldBinaryException
 	{
-		RealF tR = RealF.copyONE(pL[0]).scale(pL[0].getModulus());
+		RealF tR = (RealF.copyONE(pL[0])).scale(pL[0].getModulus());
 		for (int j = 1; j < pL.length; j++)
 			if (isTypeMatch(pL[j], tR))
-				tR.add(RealF.copyONE(pL[j].scale(pL[j].getModulus())));
+				tR.add((RealF.copyONE(pL[j]).scale(pL[j].getModulus())));
 			else
 				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
 		return tR;
@@ -141,11 +141,11 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF copyFromSQModuliSum(RealF[] pL) throws FieldBinaryException
 	{
-		RealF tR = RealF.copyONE(pL[0]).scale(pL[0].getSQModulus());
+		RealF tR = (RealF.copyONE(pL[0])).scale(pL[0].getSQModulus());
 		
 		for (int j = 1; j < pL.length; j++)
 			if (isTypeMatch(pL[j], tR))
-				tR.add(RealF.copyONE(pL[j].scale(pL[j].getSQModulus())));
+				tR.add((RealF.copyONE(pL[j]).scale(pL[j].getSQModulus())));
 			else
 				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
 		

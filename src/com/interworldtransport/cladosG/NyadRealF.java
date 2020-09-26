@@ -473,7 +473,7 @@ public class NyadRealF extends NyadAbstract
 	 * when constructing other parts of the NyadRealF to ensure field type
 	 * safety.
 	 */
-	public RealF					protoOne;
+	protected RealF					protoOne;
 
 	/**
 	 * Simple copy constructor of a NyadRealF. The passed NyadRealF will be
@@ -755,7 +755,14 @@ public class NyadRealF extends NyadAbstract
 	{
 		return monadList.size();
 	}
-
+	/**
+	 * This returns a reference to the protonumber
+	 * @return RealF
+	 */
+	public RealF getProto()
+	{
+		return protoOne;
+	}
 	/**
 	 * This method takes the Monad at the k'th position in the list and swaps it
 	 * for the one in the k-1 position if there is one there. If the the key

@@ -11,7 +11,6 @@ import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
 
-import static com.interworldtransport.cladosF.ComplexF.*;
 import static org.junit.Assert.*;
 import static com.interworldtransport.cladosG.MonadComplexF.*;
 
@@ -86,20 +85,26 @@ public class MonadComplexFTest
 	}
 
 	@Test
-	public void testUniMathOps() throws FieldBinaryException,
+	public void testUniMathOps() throws FieldBinaryException, FieldException,
 					CladosMonadException
 	{
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(ComplexF.ZERO(tM5.getCoeff((short) 0)))));
+		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 		
 		tM6.normalize();
-		//System.out.println(toXMLString(tM6));
-		//System.out.println(tM6.magnitude().toXMLString());
-		//System.out.println(ComplexF.ONE(tM7.getCoeff(0)).toXMLString());
-		assertTrue(isEqual(tM6.magnitude(), ComplexF.ONE(tM7.getCoeff((short) 0))));
+		if(ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff((short) 0))))
+		{
+			assertTrue(ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff((short) 0))));
+		}
+		else
+		{
+			ComplexF tSpot = tM6.magnitude();
+			assertTrue(tSpot.getImg() == 0.0f);
+			assertTrue(Math.abs(tSpot.getReal() - 1.0f)  <= 0.000001f);
+		}
 		
 		assertTrue(hasGrade(tM6, 2));
 		assertTrue(hasGrade(tM7, 0));

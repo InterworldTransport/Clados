@@ -46,6 +46,10 @@ package com.interworldtransport.cladosF;
  */
 public abstract class DivField
 {
+	public static final String COMPLEXD="ComplexD";
+	public static final String COMPLEXF="ComplexF";
+	public static final String REALD="RealD";
+	public static final String REALF="RealF";
 	/**
 	 * Check to see if the two argument are of the same field type.
 	 * 

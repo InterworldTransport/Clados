@@ -90,15 +90,21 @@ public class MonadComplexDTest
 	{
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(ComplexD.ZERO(tM5.getCoeff((short) 0)))));
+		assertTrue(isGZero(tM5.scale(ComplexD.copyZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 		
-//		tM6.normalize();
-//		System.out.println(toXMLString(tM6));
-//		System.out.println(tM6.magnitude().toXMLString());
-//		System.out.println(ComplexD.ONE(tM7.getCoeff(0)).toXMLString());
-//		assertTrue(isEqual(tM6.magnitude(), ComplexD.ONE(tM7.getCoeff(0))));
+		tM6.normalize();
+		if(ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0))))
+		{
+			assertTrue(ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0))));
+		}
+		else
+		{
+			ComplexD tSpot = tM6.magnitude();
+			assertTrue(tSpot.getImg() == 0.0f);
+			assertTrue(Math.abs(tSpot.getReal() - 1.0f)  <= 0.000001f);
+		}
 		
 		assertTrue(hasGrade(tM6, 2));
 		assertTrue(hasGrade(tM7, 0));

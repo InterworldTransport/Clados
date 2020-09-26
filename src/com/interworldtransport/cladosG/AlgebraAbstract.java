@@ -120,7 +120,7 @@ public abstract class AlgebraAbstract
 	 * 
 	 * @param footPoint
 	 */
-	protected void setFoot(Foot footPoint)
+	public void setFoot(Foot footPoint)
 	{
 		foot = footPoint;
 	}

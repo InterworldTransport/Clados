@@ -91,11 +91,10 @@ public class MonadRealDTest
 	{
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(RealD.ZERO(tM5.getCoeff((short) 0)))));
+		assertTrue(isGZero(tM5.scale(RealD.copyZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
-		assertTrue(isEqual(tM6.normalize().magnitude(),
-						RealD.ONE(tM7.getCoeff((short) 0))));
+		assertTrue(isEqual(tM6.normalize().magnitude(), RealD.copyONE(tM7.getCoeff((short) 0))));
 		assertTrue(hasGrade(tM6, 2));
 		assertFalse(hasGrade(tM7, 0));
 	}

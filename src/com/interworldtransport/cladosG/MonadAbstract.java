@@ -233,7 +233,7 @@ public abstract class MonadAbstract
 	 */
 	protected abstract void setFrameName(String pFrameName);
 
-	protected abstract void setGradeKey();
+	public abstract void setGradeKey();
 
 	public void setName(String pName)
 	{

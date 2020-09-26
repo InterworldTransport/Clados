@@ -827,7 +827,7 @@ public class MonadRealF extends MonadAbstract
 	{
 		try
 		{
-			return copyFromModuliSum(cM);
+			return RealF.copyFromModuliSum(cM);
 		}
 		catch (FieldBinaryException e)
 		{
@@ -1293,7 +1293,7 @@ public class MonadRealF extends MonadAbstract
 	 * Always recalculate it after any of the unary or binary operations.
 	 */
 	@Override
-	protected void setGradeKey()
+	public void setGradeKey()
 	{
 		gradeKey = 0;
 		for (short j = 0; j < getAlgebra().getGProduct().getGradeCount(); j++)

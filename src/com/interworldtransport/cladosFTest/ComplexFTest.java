@@ -28,8 +28,8 @@ public class ComplexFTest // extends TestCase
 	@Before
 	public void setUp()
 	{
-		tReal0 = ZERO("Test:ComplexF");
-		tReal1 = ONE("Test:ComplexF");
+		tReal0 = ComplexF.newZERO("Test:ComplexF");
+		tReal1 = ComplexF.newONE("Test:ComplexF");
 		tReal1n = new ComplexF(tReal1.getFieldType(), -1.0f);
 		tReal1i = new ComplexF(tReal1.getFieldType(), 0.0f, 1.0f);
 		tReal2 = new ComplexF(tReal1.getFieldType(), Float.MAX_VALUE);
@@ -143,7 +143,7 @@ public class ComplexFTest // extends TestCase
 	@Test
 	public void testConjugate()
 	{
-		assertTrue(isEqual(tReal0.conjugate(), ZERO(tReal0)));
+		assertTrue(isEqual(tReal0.conjugate(), ComplexF.copyZERO(tReal0)));
 		assertFalse(isEqual(tReal1.conjugate(), tReal1n));
 		ComplexF tR = conjugate(tReal0);
 		assertTrue(isEqual(tR, tReal0));
@@ -198,14 +198,14 @@ public class ComplexFTest // extends TestCase
 	}
 
 	@Test(expected = FieldBinaryException.class)
-	public void testSQModulusList() throws FieldBinaryException
+	public void testCopyFromSQModuliSum() throws FieldBinaryException
 	{
-		assertTrue(isNaN(SQModulusList(tReals)));
+		assertTrue(ComplexF.isNaN(ComplexF.copyFromSQModuliSum(tReals)));
 	}
 
 	@Test(expected = FieldBinaryException.class)
-	public void testModulusList() throws FieldBinaryException
+	public void testCopyFromModuliSum() throws FieldBinaryException
 	{
-		assertTrue(isNaN(ModulusList(tReals)));
+		assertTrue(ComplexF.isNaN(ComplexF.copyFromModuliSum(tReals)));
 	}
 }

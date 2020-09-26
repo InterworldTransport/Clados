@@ -115,10 +115,10 @@ public class RealD extends DivField implements DivisableD
 	 */
 	public static RealD copyFromModuliSum(RealD[] pL) throws FieldBinaryException
 	{
-		RealD tR = RealD.copyONE(pL[0]).scale(pL[0].getModulus());
+		RealD tR = (RealD.copyONE(pL[0])).scale(pL[0].getModulus());
 		for (int j = 1; j < pL.length; j++)
 			if (isTypeMatch(pL[j], tR))
-				tR.add(RealD.copyONE(pL[j].scale(pL[j].getModulus())));
+				tR.add((RealD.copyONE(pL[j]).scale(pL[j].getModulus())));
 			else
 				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
 		return tR;

@@ -10,7 +10,6 @@ import com.interworldtransport.cladosFExceptions.FieldException;
 
 public class RealDTest // extends TestCase
 {
-
 	public RealD	tReal0;
 	public RealD	tReal1;
 	public RealD	tReal1n;
@@ -27,8 +26,8 @@ public class RealDTest // extends TestCase
 	@Before
 	public void setUp()
 	{
-		tReal0 = ZERO("Test:RealD");
-		tReal1 = ONE("Test:RealD");
+		tReal0 = RealD.newZERO("Test:RealD");
+		tReal1 = RealD.newONE("Test:RealD");
 		tReal1n = new RealD(tReal1.getFieldType(), -1d);
 		tReal2 = new RealD(tReal1.getFieldType(), Double.MAX_VALUE);
 		tReal3 = new RealD(tReal1.getFieldType(), Double.MAX_EXPONENT);
@@ -129,7 +128,7 @@ public class RealDTest // extends TestCase
 	@Test
 	public void testConjugate()
 	{
-		assertTrue(isEqual(tReal0.conjugate(), ZERO(tReal0)));
+		assertTrue(isEqual(tReal0.conjugate(), RealD.copyZERO(tReal0)));
 		assertFalse(isEqual(tReal1.conjugate(), tReal1n));
 		RealD tR = conjugate(tReal0);
 		assertTrue(isEqual(tR, tReal0));
@@ -184,14 +183,14 @@ public class RealDTest // extends TestCase
 	}
 
 	@Test(expected = FieldBinaryException.class)
-	public void testSQModulusList() throws FieldBinaryException
+	public void testCopyFromSQModuliSum() throws FieldBinaryException
 	{
-		assertTrue(isNaN(SQModulusList(tReals)));
+		assertTrue(RealD.isNaN(RealD.copyFromSQModuliSum(tReals)));
 	}
 
 	@Test(expected = FieldBinaryException.class)
-	public void testModulusList() throws FieldBinaryException
+	public void testCopyFromModuliSum() throws FieldBinaryException
 	{
-		assertTrue(isNaN(ModulusList(tReals)));
+		assertTrue(RealD.isNaN(RealD.copyFromModuliSum(tReals)));
 	}
 }

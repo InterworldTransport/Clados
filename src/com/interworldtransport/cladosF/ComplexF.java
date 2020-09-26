@@ -115,12 +115,15 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF copyFromModuliSum(ComplexF[] pL) throws FieldBinaryException
 	{
-		ComplexF tR = ComplexF.copyFromSQModuliSum(pL);
-		// now figure out how to do the SQRT of this complex object.
-		float tM = (float) Math.sqrt(tR.getModulus());
-		float tA = tR.getArgument() / 2;
-		tR.setReal((float) (tM * Math.cos(tA)));
-		tR.setImg((float) (tM * Math.sin(tA)));
+		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getModulus());
+		
+		for (int j = 1; j < pL.length; j++)
+			if (isTypeMatch(pL[j], tR))
+			{
+				tR.add((ComplexF.copyONE(pL[j]).scale(pL[j].getModulus())));
+			}
+			else
+				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
 		return tR;
 	}
 
@@ -141,11 +144,11 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF copyFromSQModuliSum(ComplexF[] pL) throws FieldBinaryException
 	{
-		ComplexF tR = ComplexF.copyONE(pL[0]).scale(pL[0].getSQModulus());
+		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getSQModulus());
 
 		for (int j = 1; j < pL.length; j++)
 			if (isTypeMatch(pL[j], tR))
-				tR.add(ComplexF.copyONE(pL[j]).scale(pL[j].getSQModulus()));
+				tR.add((ComplexF.copyONE(pL[j])).scale(pL[j].getSQModulus()));
 			else
 				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
 		
@@ -675,9 +678,11 @@ public class ComplexF extends DivField implements DivisableF
 	@Override
 	public ComplexF scale(float pS)
 	{
-		float tempS = (float) Math.sqrt(Math.abs(pS));
-		setReal(Math.signum(pS) * tempS * getReal());
-		setImg(Math.signum(pS) * tempS * getImg());
+		//float tempS = Math.abs(pS);
+		setReal(pS * getReal());
+		setImg(pS * getImg());
+		//setReal(Math.signum(pS) * tempS * getReal());
+		//setImg(Math.signum(pS) * tempS * getImg());
 		return this;
 	}
 
