@@ -111,7 +111,11 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * @param pFoot			This is the foot being offered for reference
 	 * @param pSig			This is the signature of the GProduct
 	 * @throws BadSignatureException
+	 * This constructor creates a new GProduct which requires a signature for the generators.
+	 * This signature string must be parse-able or this exception is thrown.
 	 * @throws CladosMonadException
+	 * This constructor results in a new Algebra. Many generic things can go wrong.
+	 * This exception catches them.
 	 */
 	public AlgebraComplexF(	String pS, 
 							Foot pFoot, 
@@ -142,7 +146,11 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * @param pSig			This is the signature of the GProduct
 	 * @param pF			This is the number type to use expressed as a ComplexF
 	 * @throws BadSignatureException
+	 * This constructor creates a new GProduct which requires a signature for the generators.
+	 * This signature string must be parse-able or this exception is thrown.
 	 * @throws CladosMonadException
+	 * This constructor results in a new Algebra. Many generic things can go wrong.
+	 * This exception catches them.
 	 */
 	public AlgebraComplexF(	String pS, 
 							String pFootName, 

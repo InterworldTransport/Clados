@@ -144,7 +144,9 @@ public interface DivisableF
 	public abstract String toString();
 
 	/**
-	 * Return a string representation of the field element. * @return String
+	 * Return a string representation of the field element. 
+	 * @return String
+	 * Flat string representation of this Divisible float(s) field
 	 */
 	public abstract String toXMLString();
 }

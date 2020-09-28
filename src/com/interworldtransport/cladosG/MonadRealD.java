@@ -229,7 +229,7 @@ public class MonadRealD extends MonadAbstract
 	 * 
 	 * @return String
 	 */
-	public static String toXMLFullString(MonadRealF pM)
+	public static String toXMLFullString(MonadRealD pM)
 	{
 		StringBuffer rB = new StringBuffer("<Monad name=\"" + pM.getName()
 						+ "\" ");
@@ -239,7 +239,7 @@ public class MonadRealD extends MonadAbstract
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
 
-		rB.append(AlgebraRealF.toXMLString(pM.getAlgebra()));
+		rB.append(AlgebraRealD.toXMLString(pM.getAlgebra()));
 
 		rB.append("<Coefficients number=\"" + pM.getCoeff().length
 						+ "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
@@ -1251,6 +1251,8 @@ public class MonadRealD extends MonadAbstract
 		
 		for (int k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
 			cM[k] = new RealD(ppC[k]);
+		
+		setGradeKey();
 	}
 
 	/**

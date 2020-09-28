@@ -92,7 +92,10 @@ public final class GProduct
 	 * the GProduct object.
 	 * 
 	 * @param pGP
-	 *            GProduct
+	 *           A GProduct to imitate
+	 * @throws BadSignatureException
+	 * This constructor creates a new GProduct which requires a signature for the generators.
+	 * This signature string must be parse-able or this exception is thrown.
 	 */
 	public GProduct(GProduct pGP) throws BadSignatureException
 	{

@@ -73,6 +73,8 @@ public final class Basis
 	 * @param numberOfGenerators Short representing unique algebraic directions
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
 	 * @throws CladosMonadException
+	 * This constructor results in a new Basis. Many generic things can go wrong.
+	 * This exception catches them.
 	 */
 	public static final Basis using(short numberOfGenerators)
 			throws CladosMonadException

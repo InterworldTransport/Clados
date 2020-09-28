@@ -103,6 +103,7 @@ public abstract class AlgebraAbstract
 	 * Once it is set by the constructor, it will probably remain.
 	 * 
 	 * @param pName
+	 * String for the Algebra's name.
 	 */
 	public void setAlgebraName(String pName)
 	{
@@ -119,6 +120,7 @@ public abstract class AlgebraAbstract
 	 * algebra to point at a different foot after construction.
 	 * 
 	 * @param footPoint
+	 * Foot object for the Algebra to use as its 'tangent' contact point.
 	 */
 	public void setFoot(Foot footPoint)
 	{
@@ -137,6 +139,8 @@ public abstract class AlgebraAbstract
 	 * 
 	 * @param pGP
 	 *            GProduct
+	 * GProduct object for the Algebra to use as its geometric product operation
+	 * on the canonical basis.
 	 */
 	protected void setGProduct(GProduct pGP)
 	{

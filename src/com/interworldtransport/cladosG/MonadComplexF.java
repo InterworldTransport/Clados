@@ -229,7 +229,7 @@ public class MonadComplexF extends MonadAbstract
 	 * 
 	 * @return String
 	 */
-	public static String toXMLFullString(MonadRealF pM)
+	public static String toXMLFullString(MonadComplexF pM)
 	{
 		StringBuffer rB = new StringBuffer("<Monad name=\"" + pM.getName()
 						+ "\" ");
@@ -239,7 +239,7 @@ public class MonadComplexF extends MonadAbstract
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
 
-		rB.append(AlgebraRealF.toXMLString(pM.getAlgebra()));
+		rB.append(AlgebraComplexF.toXMLString(pM.getAlgebra()));
 
 		rB.append("<Coefficients number=\"" + pM.getCoeff().length
 						+ "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
@@ -1251,6 +1251,8 @@ public class MonadComplexF extends MonadAbstract
 		
 		for (int k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
 			cM[k] = new ComplexF(ppC[k]);
+		
+		setGradeKey();
 	}
 
 	/**

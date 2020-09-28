@@ -144,7 +144,10 @@ public interface DivisableD
 	public abstract String toString();
 
 	/**
-	 * Return a string representation of the field element. * @return String
+	 * Return a string representation of the field element. 
+	 * @return String
+	 * Flat string representation of this Divisible double(s) field
+	 * 
 	 */
 	public abstract String toXMLString();
 }
