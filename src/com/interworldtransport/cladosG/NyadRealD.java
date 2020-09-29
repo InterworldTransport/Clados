@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.NyadRealD<br>
  * -------------------------------------------------------------------- <p>
@@ -73,7 +73,7 @@ public class NyadRealD extends NyadAbstract
 	 */
 	public static int findAlgebra(NyadRealD pN, AlgebraRealD pAlg)
 	{
-		for (MonadRealD pM : pN.monadList)
+		for (MonadRealD pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
 		return -1;
 	}
@@ -126,7 +126,7 @@ public class NyadRealD extends NyadAbstract
 	 */
 	public static boolean hasAlgebra(NyadRealD pN, AlgebraRealD pAlg)
 	{
-		for (MonadRealD pM : pN.monadList)
+		for (MonadRealD pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return true;
 		return false;
 	}
@@ -183,12 +183,6 @@ public class NyadRealD extends NyadAbstract
 	 */
 	public static boolean isMEqual(NyadRealD pTs, NyadRealD pN)
 	{
-		// Checking for full reference matches first simply duplicates the work
-		// here.
-		// Each isGEqual test first tests for reference match. It is enough to
-		// do
-		// the front part of the reference match method.
-
 		// Check first to see if the Nyads are of the same order. Return false
 		// if they are not.
 		if (pTs.getNyadOrder() != pN.getNyadOrder()) return false;
@@ -197,27 +191,70 @@ public class NyadRealD extends NyadAbstract
 		if (pTs.getFootPoint() != pN.getFootPoint()) return false;
 
 		// Now check the monad lists.
-		boolean check = false;
+		boolean forwardCheck = false;
 		for (MonadRealD tSpot : pTs.getMonadList())
 		{
-			check = false;
-			AlgebraRealD tAlg1 = tSpot.getAlgebra();
+			// Start with the assumption that there is no matching algebra
+			// in the second nyad for the Monad in tSpot
+			forwardCheck = false;
+			// Get the Algebra for tSpot
+			AlgebraRealD tSpotAlg1 = tSpot.getAlgebra();
+			// Now loop through the second nyad looking for an algebra match
 			for (MonadRealD tSpot2 : pN.getMonadList())
 			{
-				if (tAlg1.equals(tSpot2.getAlgebra()))
+				if (tSpotAlg1 == tSpot2.getAlgebra())
 				{
-					check = true;
-					if (!tSpot.isGEqual(tSpot2)) return false;
+					// ah ha! Found an algebra match in tSpot2
+					forwardCheck = true;
+					// Now check of tSpot is GEqual to tSpot2
+					if (!tSpot.isGEqual(tSpot2)) 
+						return false;
+					// If we get here, tSpot is GEqual to tSpot2
+					// and there is no need to look further in the second nyad
+					// for an algebra match
 					break;
 				}
 			}
-			// if check is true a match was found
-			// if check is false, we have a dangling monad, so they can't
-			// be equal.
-			if (!check) return false;
+			// if check is true a match was found and it is time to move to next monad in first nyad
+			// if check is false, we have a dangling monad, thus nyads can't be equal.
+			if (!forwardCheck) return false;
 		}
-		// To get this far, all Monads in one list must pass the equality
-		// test for their counterparts in the other list.
+		
+		// To get this far, all Monads in first must pass equality test for counterparts in the second.
+		// So... now we we test for reflexivity by checking that the second list passes the same test
+		// against the first list.		
+
+		boolean backwardCheck = false;
+		for (MonadRealD tSpot : pN.getMonadList())
+		{
+			// Start with the assumption that there is no matching algebra
+			// in the second nyad for the Monad in tSpot
+			backwardCheck = false;
+			// Get the Algebra for tSpot
+			AlgebraRealD tSpotAlg1 = tSpot.getAlgebra();
+			// Now loop through the second nyad looking for an algebra match
+			for (MonadRealD tSpot2 : pTs.getMonadList())
+			{
+				if (tSpotAlg1 == tSpot2.getAlgebra())
+				{
+					// ah ha! Found an algebra match in tSpot2
+					backwardCheck = true;
+					// Now check of tSpot is GEqual to tSpot2
+					if (!tSpot.isGEqual(tSpot2)) 
+						return false;
+					// If we get here, tSpot is GEqual to tSpot2
+					// and there is no need to look further in the second nyad
+					// for an algebra match
+					break;
+				}
+			}
+			// if check is true a match was found and it is time to move to next monad in first nyad
+			// if check is false, we have a dangling monad, thus nyads can't be equal.
+			if (!backwardCheck) return false;
+		}
+		
+		// To get this far, all Monads in the second must pass equality test for counterparts in the first.
+		// The other direction has already been checked, thus reflexivity is assured.
 		return true;
 	}
 
@@ -239,11 +276,11 @@ public class NyadRealD extends NyadAbstract
 			MonadRealD tM = pN.getMonadList(tSpot);
 			if (isGrade(tM, tM.getAlgebra().getGProduct().getGradeCount() - 1))
 				return true;
-			else
-				return false;
-		}
-		else
+			
 			return false;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -263,11 +300,11 @@ public class NyadRealD extends NyadAbstract
 		{
 			if (isGrade(pN.getMonadList(tSpot), 0))
 				return true;
-			else
-				return false;
-		}
-		else
+			
 			return false;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -372,7 +409,59 @@ public class NyadRealD extends NyadAbstract
 		// reference matches. pN is a weak reference match for pTs.
 		return true;
 	}
+	
+	/**
+	 * Display XML string that represents the Nyad
+	 * 
+	 * @param pN
+	 * 			NyadRealD This is the nyad to be converted to XML.
+	 * 
+	 * @return String
+	 */
+	public static String toXMLString(NyadRealD pN)
+	{
+		StringBuffer rB = new StringBuffer("<Nyad name=\"" + pN.getName()
+						+ "\" ");
+		rB.append("name=\"" + pN.getName() + "\" ");
+		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
+		rB.append("protoOne=\"" + pN.protoOne.getFieldTypeString() + "\" ");
+		rB.append(">\n");
+		rB.append(pN.getFootPoint().toXMLString());
+		rB.append(pN.protoOne.toXMLString());
+		
+		for (MonadRealD tSpot : pN.getMonadList())
+			rB.append(MonadRealD.toXMLString(tSpot));
 
+		rB.append("</Nyad>\n");
+		return rB.toString();
+	}
+
+	/**
+	 * Display XML string that represents the Nyad
+	 * 
+	 * @param pN
+	 * 			NyadRealD This is the nyad to be converted to XML.
+	 * 
+	 * @return String
+	 */
+	public static String toXMLFullString(NyadRealD pN)
+	{
+		StringBuffer rB = new StringBuffer("<Nyad name=\"" + pN.getName()
+						+ "\" ");
+		rB.append("name=\"" + pN.getName() + "\" ");
+		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
+		rB.append("protoOne=\"" + pN.protoOne.getFieldTypeString() + "\" ");
+		rB.append(">\n");
+		rB.append(pN.getFootPoint().toXMLString());
+		rB.append(pN.protoOne.toXMLString());
+		
+		for (MonadRealD tSpot : pN.getMonadList())
+			rB.append(MonadRealD.toXMLFullString(tSpot));
+
+		rB.append("</Nyad>\n");
+		return rB.toString();
+	}
+	
 	/**
 	 * This array is the list of Monads that makes up the NyadRealD. It will be
 	 * tied to the footPoint members of each Monad as keys.
@@ -394,8 +483,10 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @param pN
 	 *            NyadRealD
+	 * @throws CladosNyadException This exception is thrown when the offered Nyad
+	 * is malformed. Make no assumptions!
 	 */
-	public NyadRealD(NyadRealD pN)
+	public NyadRealD(NyadRealD pN) throws CladosNyadException
 	{
 		this(pN.getName(), pN);
 	}
@@ -409,45 +500,51 @@ public class NyadRealD extends NyadAbstract
 	 *            String
 	 * @param pM
 	 *            MonadRealD
+	 * @throws CladosNyadException This exception is thrown when the offered Nyad
+	 * is malformed. Make no assumptions!
 	 */
-	public NyadRealD(String pName, MonadRealD pM)
+	public NyadRealD(String pName, MonadRealD pM) throws CladosNyadException
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
 		protoOne = new RealD(pM.getAlgebra().protoNumber, 1.0d);
 
 		monadList = new ArrayList<MonadRealD>(1);
-		try
-		{
-			appendMonad(pM);
-		}
-		catch (CladosNyadException e)
-		{
-			// Can't actually happen with this constructor, but the appendMonad
-			// method can be called from elsewhere so it is more general.
-			e.printStackTrace();
-		}
+		appendMonad(pM);
 	}
 
 	/**
 	 * A simple copy constructor of a NyadRealD. The passed NyadRealD will be
-	 * copied without the name. This contructor is used most often to clone
+	 * copied without the name. This constructor is used most often to clone
 	 * other objects in every way except name.
 	 * 
-	 * @param pName
-	 *            String
-	 * @param pN
-	 *            NyadRealD
+	 * The Foot object is re-used.
+	 * The Algebra object is re-used.
+	 * The Nyad's proto-number object is re-used.
+	 * The Nyad's monad objects are NOT re-used. Clones are created that...
+	 * 		copy the monad name
+	 * 		re-use the monad's algebra object
+	 * 		copy the monad's frame name
+	 * 		create new RealF's that clone the monad's coefficients such that they...
+	 * 			re-use the RealF's DivFieldType object
+	 * 			merely copy the val array
+	 * 
+	 * @param pName	String
+	 * @param pN	NyadRealD
+	 * @throws CladosNyadException This exception is thrown when the offered Nyad
+	 * is malformed. Make no assumptions!
 	 */
-	public NyadRealD(String pName, NyadRealD pN)
+	public NyadRealD(String pName, NyadRealD pN) throws CladosNyadException
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		protoOne = RealD.newZERO(getFootPoint().getFootName() + "-RealD");
-		if (pN.getMonadList() == null)
-			monadList = null;
-		else
-			setMonadList(pN.getMonadList());
+		protoOne=pN.protoOne;
+		if (pN.getMonadList() != null)
+		{
+			monadList = new ArrayList<MonadRealD>(pN.getMonadList().size());
+			for (MonadRealD tSpot : pN.getMonadList())
+				appendMonad(tSpot);	
+		}
 	}
 
 	/**
@@ -582,9 +679,8 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @return NyadRealD
 	 */
-	public NyadRealD createMonad(String pName, String pAlgebra, String pFrame,
-					String pSig) throws BadSignatureException,
-					CladosMonadException, CladosNyadException
+	public NyadRealD createMonad(String pName, String pAlgebra, String pFrame, String pSig) 
+			throws BadSignatureException, CladosMonadException, CladosNyadException
 	{
 		MonadRealD tM = new MonadRealD(	pName, 
 										pAlgebra, 
@@ -721,8 +817,7 @@ public class NyadRealD extends NyadAbstract
 		}
 		catch (IndexOutOfBoundsException e)
 		{
-			throw new CladosNyadException(this,
-							"Can't find the Monad to remove.");
+			throw new CladosNyadException(this, "Can't find the Monad to remove.");
 		}
 		finally
 		{
@@ -744,10 +839,9 @@ public class NyadRealD extends NyadAbstract
 	public NyadRealD removeMonad(MonadRealD pM) throws CladosNyadException
 	{
 		int testfind = findAlgebra(this, pM.getAlgebra());
-		if (testfind >= 0)
-			removeMonad(testfind);
-		else
+		if (testfind < 0)
 			throw new CladosNyadException(this,	"Can't find the Monad to remove.");
+		removeMonad(testfind);
 		return this;
 	}
 

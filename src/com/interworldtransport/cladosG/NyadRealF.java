@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.NyadRealF<br>
  * -------------------------------------------------------------------- <p>
@@ -500,24 +500,17 @@ public class NyadRealF extends NyadAbstract
 	 *            String
 	 * @param pM
 	 *            MonadRealF
+	 * @throws CladosNyadException This exception is thrown when the offered Nyad
+	 * is malformed. Make no assumptions!
 	 */
-	public NyadRealF(String pName, MonadRealF pM)
+	public NyadRealF(String pName, MonadRealF pM) throws CladosNyadException
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
 		protoOne = new RealF(pM.getAlgebra().protoNumber, 1.0f);
 
 		monadList = new ArrayList<MonadRealF>(1);
-		try
-		{
-			appendMonad(pM);
-		}
-		catch (CladosNyadException e)
-		{
-			// Can't actually happen with this constructor, but the appendMonad
-			// method can be called from elsewhere so it is more general.
-			e.printStackTrace();
-		}
+		appendMonad(pM);
 	}
 
 	/**
@@ -686,9 +679,8 @@ public class NyadRealF extends NyadAbstract
 	 * 
 	 * @return NyadRealF
 	 */
-	public NyadRealF createMonad(String pName, String pAlgebra, String pFrame,
-					String pSig) throws BadSignatureException,
-					CladosMonadException, CladosNyadException
+	public NyadRealF createMonad(String pName, String pAlgebra, String pFrame, String pSig) 
+			throws BadSignatureException, CladosMonadException, CladosNyadException
 	{
 		MonadRealF tM = new MonadRealF(	pName, 
 										pAlgebra, 
@@ -825,8 +817,7 @@ public class NyadRealF extends NyadAbstract
 		}
 		catch (IndexOutOfBoundsException e)
 		{
-			throw new CladosNyadException(this,
-							"Can't find the Monad to remove.");
+			throw new CladosNyadException(this, "Can't find the Monad to remove.");
 		}
 		finally
 		{
@@ -848,10 +839,9 @@ public class NyadRealF extends NyadAbstract
 	public NyadRealF removeMonad(MonadRealF pM) throws CladosNyadException
 	{
 		int testfind = findAlgebra(this, pM.getAlgebra());
-		if (testfind >= 0)
-			removeMonad(testfind);
-		else
+		if (testfind < 0)
 			throw new CladosNyadException(this,	"Can't find the Monad to remove.");
+		removeMonad(testfind);
 		return this;
 	}
 
