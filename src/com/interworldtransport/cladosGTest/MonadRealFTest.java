@@ -3,7 +3,9 @@ package com.interworldtransport.cladosGTest;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosF.DivFieldType;
+import com.interworldtransport.cladosF.RealF;
+//import static com.interworldtransport.cladosF.RealF.*;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
 
@@ -30,6 +32,7 @@ public class MonadRealFTest
 	MonadRealF	tM6;
 	MonadRealF	tM7;
 	MonadRealF	tM8;
+	MonadRealF	tM9;
 
 	@Before
 	public void setUp() throws BadSignatureException, CladosMonadException
@@ -60,6 +63,7 @@ public class MonadRealFTest
 								"-+++", 
 								new RealF(new DivFieldType("Test Float 1"), 0f)
 							);
+		
 		tM2 = new MonadRealF(mName+"2", tM1);
 		tM3 = new MonadRealF(mName+"3", tM1);
 		tM4 = new MonadRealF(tM0);
@@ -73,7 +77,6 @@ public class MonadRealFTest
 								"Unit PScalar"
 							);
 		
-		
 		tM6 = new MonadRealF(	mName+"6", 
 								aName2,
 								"Foot Default Frame", 
@@ -81,8 +84,22 @@ public class MonadRealFTest
 								"-+++", 
 								cRF
 							);
+		
 		tM7 = new MonadRealF(mName+"7", tM6);
 		tM8 = new MonadRealF(mName+"8",tM6);
+		
+		tM9 = new MonadRealF(mName+"9",tM2);
+		RealF tAdj = new RealF(tM9.getAlgebra().getFoot().getNumberType(), 0.0f);
+		RealF[] tFix = new RealF[16];
+		for (int k = 0; k < 16; k++)
+			tFix[k] = RealF.copyOf(tAdj);
+		
+		tFix[1] = new RealF(tM9.getAlgebra().getFoot().getNumberType(), 1.0f);
+		tFix[4] = RealF.copyOf(tFix[1]);
+		tM9.setCoeff(tFix); // Should be e0 + e3 now
+		//System.out.println(toXMLString(tM9));
+	
+		
 	}
 
 	@Test
@@ -102,8 +119,13 @@ public class MonadRealFTest
 		assertTrue(isMultiGrade(tM6));
 		assertFalse(isIdempotent(tM5));
 		assertTrue(isIdempotent(tM4));
-		assertTrue(isIdempotentMultiple(tM4));
-		assertTrue(isNilpotent(tM2));
+		assertTrue(isScaledIdempotent(tM4));
+		
+		assertTrue(isNilpotent(tM2, 2));
+		assertTrue(isNilpotent(tM9, 2));
+		assertFalse(isNilpotent(tM9, 1));
+		assertFalse(isIdempotent(tM9));
+		
 		assertTrue(isGrade(tM6.SP(), 0));
 		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGProduct().getGradeCount() - 1));
 	}

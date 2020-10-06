@@ -109,56 +109,62 @@ public class MonadRealD extends MonadAbstract
 	 * @throws FieldException
 	 * 		This exception is thrown when the method can't copy the field used by the monad to be checked.
 	 */
-	public static boolean isIdempotentMultiple(MonadRealD pM)
+	public static boolean isScaledIdempotent(MonadRealD pM)
 					throws CladosMonadException, FieldException
 	{
 		if (isGZero(pM)) return true;
 		if (isIdempotent(pM)) return true;
-		if (isNilpotent(pM)) return false;
 
-		// What we want is to square 'this', find the first non-zero
-		// coefficient, and rescale the original 'this' to see if it
-		// would be an idempotent that way. If it is, then the original
-		// 'this' is an idempotent multiple.
+		// Find the first non-zero coefficient of pM^2, invert it, rescale pM by it and that to see if it
+		// is an idempotent that way. If it is, then pM is an idempotent multiple.
 
+		short k = 1;
 		MonadRealD check1 = new MonadRealD(pM);
-		check1.multiplyLeft(pM);
-
-		short k = 0;
-		RealD fstnzeroC = newZERO("Place Holder");
-		while (isZero(fstnzeroC)
-						& k <= pM.getAlgebra().getGProduct().getBladeCount() - 1)
-		{
-			fstnzeroC = copyOf(pM.getCoeff(k));
-			k++;
+		check1.multiplyLeft(pM);							// We now have check1 = pM ^ 2
+		if (isGZero(check1)) return false;						// pM is nilpotent at power=2
+		RealD fstnzeroC = copyOf(pM.getCoeff((short) 0));	// Grab copy of Scalar part
+				
+		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getGProduct().getBladeCount() - 1)
+		{													// Loop skipped if check1.SP() != 0
+			if(!isZero(pM.getCoeff(k)))						// If next coeff isn't zero
+			{
+				fstnzeroC = copyOf(pM.getCoeff(k));			// Grab a copy of it instead
+				break;										// Good enough. Move on.
+			}
+			k++;											// If next coeff is zero, look at next next
 		}
-
-		// check1 = new MonadRealD(this);
-		fstnzeroC.invert();
-		check1.scale(fstnzeroC); // monad scaling is done with RealD's
-
-		if (check1.isGEqual(pM)) return true;
+		check1 = (new MonadRealD(pM)).scale(fstnzeroC.invert()); // No risk of inverting a zero. Caught at top 
+		if (isIdempotent(check1)) return true;
 		return false;
 	}
 
 	/**
-	 * Return true if the Monad is nilpotent
+	 * Return true if the Monad is nilpotent at a particular integer power.
 	 * 
 	 * @return boolean
-	 * @param pM
-	 *            MonadRealD
+	 * @param pM MonadRealD
+	 * The monad to be tested
+	 * @param pPower int
+	 * The integer power to test
 	 * @throws CladosMonadException
 	 * 	This exception is thrown when the method can't create a copy of the monad to be checked.
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the method can't multiply two fields used by the monad to be checked.
 	 */
-	public static boolean isNilpotent(MonadRealD pM)
+	public static boolean isNilpotent(MonadRealD pM, int pPower)
 					throws FieldBinaryException, CladosMonadException
 	{
 		if (isGZero(pM)) return true;
+		if (pPower<2) return false;
+		
 		MonadRealD check1 = new MonadRealD(pM);
-		check1.multiplyLeft(pM);
-		if (isGZero(check1)) return true;
+		int i=2;
+		while (i<=pPower)
+		{
+			check1.multiplyLeft(pM);
+			if (isGZero(check1)) return true;
+			i++;
+		}
 		return false;
 	}
 
@@ -630,7 +636,7 @@ public class MonadRealD extends MonadAbstract
 		}
 		// tNewCoeff now has a copy of the coefficients needed for 'this', so set them.
 		setCoeffInternal(tNewCoeff);
-		setGradeKey();
+		//setGradeKey(); 	// Done in setCoeffInternal
 		return this;
 	}
 
@@ -659,7 +665,7 @@ public class MonadRealD extends MonadAbstract
 		}
 		// tNewCoeff now has a copy of the coefficients needed for 'this', so set them.
 		setCoeffInternal(tNewCoeff);
-		setGradeKey();
+		//setGradeKey(); 	// Done in setCoeffInternal
 		return this;
 	}
 
@@ -794,11 +800,8 @@ public class MonadRealD extends MonadAbstract
 	public boolean isGEqual(MonadRealD pM)
 	{
 		if (!isReferenceMatch(this, pM)) return false;
-
 		for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
-		{
 			if (!isEqual(cM[i], pM.getCoeff(i))) return false;
-		}
 		return true;
 	}
 
@@ -1266,7 +1269,9 @@ public class MonadRealD extends MonadAbstract
 	private void setCoeffInternal(RealD[] ppC)
 	{
 		for (int k = 0; k < ppC.length; k++)
-			cM[k] = new RealD(ppC[k]);		
+			cM[k] = new RealD(ppC[k]);	
+		
+		setGradeKey();
 	}
 
 	@Override
@@ -1280,18 +1285,25 @@ public class MonadRealD extends MonadAbstract
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.
+	 * 
+	 * While we are here, we ALSO set the sparseFlag. The nonZero coeff
+	 * detection loop that fills gradeKey is a grade detector, so if foundGrade
+	 * is less than or equal to half gradeCount, sparseFlag is set to true and 
+	 * false otherwise.
 	 */
 	@Override
 	public void setGradeKey()
 	{
+		short foundGrades = 0;
 		gradeKey = 0;
-		for (short j = 0; j < getAlgebra().getGProduct().getGradeCount(); j++)
+		for (short j=0; j<getAlgebra().getGProduct().getGradeCount(); j++)
 		{
 			short[] tSpot = getAlgebra().getGProduct().getGradeRange(j);
 			for (short k = tSpot[0]; k <= tSpot[1]; k++)
 			{
 				if (!isZero(cM[k]))
 				{
+					foundGrades++;
 					gradeKey += Math.pow(10, j);
 					break; 
 					// Grade j found. Don't need to look at the other k's, 
@@ -1299,7 +1311,15 @@ public class MonadRealD extends MonadAbstract
 				}
 			}
 		}
-		if (gradeKey == 0) gradeKey = 1;
+		if (gradeKey == 0) 
+		{
+			foundGrades++;
+			gradeKey++;
+		}
+		if (foundGrades < getAlgebra().getGBasis().getGradeCount() / 2)
+			sparseFlag = true;
+		else
+			sparseFlag = false;
 	}
 
 	/**

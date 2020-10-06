@@ -16,6 +16,10 @@ import static com.interworldtransport.cladosG.MonadComplexF.*;
 
 public class MonadComplexFTest
 {
+	String		fType="TestMonadComplexFs";
+	String		mName="Test MonadComplexF ";
+	String		aName="Motion Algebra";
+	String		aName2="Property Algebra";
 	ComplexF[]		cRF;
 	MonadComplexF	tM0;
 	MonadComplexF	tM1;
@@ -26,6 +30,7 @@ public class MonadComplexFTest
 	MonadComplexF	tM6;
 	MonadComplexF	tM7;
 	MonadComplexF	tM8;
+	MonadComplexF	tM9;
 
 	@Before
 	public void setUp() throws BadSignatureException, CladosMonadException
@@ -71,8 +76,8 @@ public class MonadComplexFTest
 		assertTrue(isMultiGrade(tM6));
 		assertFalse(isIdempotent(tM5));
 		assertTrue(isIdempotent(tM4));
-		assertTrue(isIdempotentMultiple(tM4));
-		assertTrue(isNilpotent(tM2));
+		assertTrue(isScaledIdempotent(tM4));
+		assertTrue(isNilpotent(tM2, 2));
 		assertTrue(isGrade(tM6.SP(), 0));
 		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGProduct().getGradeCount() - 1));
 	}

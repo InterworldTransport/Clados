@@ -240,17 +240,51 @@ public abstract class MonadAbstract
 		name = pName;
 	}
 	
-
 	/**
-	 * This method sets the sparse flag of the monad. 
-	 * It is just a settor method. It alteres the computational 
-	 * strategy used by Monads when multiplication occurs.
-	 * @param pSparse
-	 * 	boolean
+	 * This method is called every time the gradeKey is set to determine whether
+	 * the sparseFlag should be set. 
+	 * The technique involves taking the log10 of the gradeKey and truncating it. 
+	 * The first time through, one can get any integer between 1 and gradeCount inclusive. 
+	 * Before the loop iterates, that integer is used to subtract 10^logKey 
+	 * from gradeKey. That ensures the next pass through the loop will produce an 
+	 * integer between 1 and the next lower grade unless the one just found was the 
+	 * scalar grade. 
+	 * Once the scalar grade is found, logKey=0, tempGradeKey=0, and the loop breaks out.
+	 * 
+	 * If the number of found grades is less than or equal to half the grades
+	 * the sparse flag is set to true. Otherwise it is set to false.
+	 * 
+	 * This method isn't actually used by child classes because the method for 
+	 * setting the gradeKey does the same detection one coefficient at a time
+	 * breaking out when a non-zero coeff is found. Incrementing foundGrades in that
+	 * loop suffices. Still... there might be a need for this method elsewhere later.
+	 * 
+	 * @param pGrades short
+	 * The parameter is the gradeCount for the monad. It is passed into this method rather
+	 * than looked up in order to allow this method to reside in the MonadAbstract class.
+	 * If it were in one of the child monad classes, it would work just as well, but it
+	 * would have to know the child algebra class too in order to avoid DivField confusion.
+	 * Since a monad can be sparse or not independent of the DivField used, the method is
+	 * placed here in the abstract parent.
 	 */
-	protected void setSparseFlag(boolean pSparse)
+	protected void setSparseFlag(short pGrades)
 	{
-		this.sparseFlag=pSparse;
+		long tempGradeKey=gradeKey;				
+		short logKey=(short) Math.log10(tempGradeKey); 
+		short foundGrades = 0; 		// This will be the number of grades found in the key.
+		while (logKey>=0)			// There will always be one trip through the loop because 
+		{							// zero is a scalar and its logKey=1.
+			foundGrades++;		
+			if (logKey==0) break;	// logKey = 0 means we processed all grades including scalar.
+			tempGradeKey -= Math.pow(10, logKey);		
+				//We processed logKey grade. Remove it from temporary gradeKey.
+			logKey=(short) Math.log10(tempGradeKey);
+				//logKey will be the highest remaining unprocessed grade
+		}
+		if (foundGrades < pGrades / 2)
+			sparseFlag = true;
+		else
+			sparseFlag = false;
 	}
 
 	public abstract MonadAbstract SP();
