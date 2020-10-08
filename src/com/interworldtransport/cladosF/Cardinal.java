@@ -1,7 +1,7 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---com.interworldtransport.cladosF.DivFieldType<br>
+ * ---com.interworldtransport.cladosF.Cardinal<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,48 +19,51 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---com.interworldtransport.cladosF.DivFieldType<br>
+ * ---com.interworldtransport.cladosF.Cardinal<br>
  * ------------------------------------------------------------------------ <br>
  */
 package com.interworldtransport.cladosF;
 
 /**
- * This class is a simple string holder that names a division field type.
+ * This class is a simple string holder that names a division field.
  * Examples include Real, Complex, and Quaternion.
  * <p>
- * Field types are conveniences only. They are meant to provide all
- * DivFieldElements with a single object that names the field type in order to
- * speed up field type comparisons in TypeMatch methods. A class using fields
- * for calculations would declare only one of these and then share the reference
- * among all the objects.
+ * Cardinals are conveniences only. They are meant to provide all DivFields with 
+ * a single object that names them in order to speed up field comparisons in 
+ * TypeMatch methods. A class using fields for calculations would declare only 
+ * one of these and then share the reference among all the objects.
  * <p>
  * This may seem like a waste of time, but it is useful when a class must be
  * prepared to use different kinds of fields without knowing in advance which
  * one will be created. It is most important when an object exists that uses
- * field elements with an unknown pedigree.
+ * DivFields with unknown pedigrees.
  * <p>
  * One consequence of this approach is that two division fields might use
  * different objects to type them. The TypeMismatch method will state that they
  * are different, so this allows an application writer to keep two distinct
- * number system apart in their application even those the fields are internally
+ * number system apart in their application even though the fields are internally
  * identical. This is useful when objects in one algebra might be scaled
  * different than objects in another.
+ * <p>
+ * Yes. This soft typing to an OOP developer. The point is that it allows for
+ * differences between objects that can't assume 'scale' means the same thing
+ * to both of them.
  * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
 
-public final class DivFieldType
+public final class Cardinal
 {
-	public static final DivFieldType generate(String pT)
+	public static final Cardinal generate(String pT)
 	{
-		return new DivFieldType(pT);
+		return new Cardinal(pT);
 	}
 	
 	private String	type;
 
-	public DivFieldType(String pT)
+	public Cardinal(String pT)
 	{
 		type = pT;
 	}
