@@ -3,7 +3,7 @@ package com.interworldtransport.cladosGTest;
 import org.junit.*;
 
 import com.interworldtransport.cladosF.ComplexF;
-import com.interworldtransport.cladosF.DivFieldType;
+import com.interworldtransport.cladosF.Cardinal;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosFExceptions.FieldException;
 import com.interworldtransport.cladosG.MonadComplexF;
@@ -36,22 +36,22 @@ public class MonadComplexFTest
 	public void setUp() throws BadSignatureException, CladosMonadException
 	{
 		cRF = new ComplexF[16];
-		DivFieldType tSpot = new DivFieldType("TestComplexFs");
+		Cardinal tSpot = new Cardinal("TestComplexFs");
 		for (int k = 0; k < 16; k++)
 			cRF[k] = new ComplexF(tSpot, (float) k, (float) 15-k);
 
 		tM0 = new MonadComplexF("Test MonadComplexF 0", "Motion Algebra",
 						"Foot Default Frame", "Test Foot 0", "-+++",
-						new ComplexF(new DivFieldType("Test Float 1"), 0f));
+						new ComplexF(new Cardinal("Test Float 1"), 0f));
 		tM1 = new MonadComplexF("Test MonadComplexF 1", "Property Algebra",
 						"Foot Default Frame", "Test Foot 1", "-+++",
-						new ComplexF(new DivFieldType("Test Float 1"), 0f));
+						new ComplexF(new Cardinal("Test Float 1"), 0f));
 		tM2 = new MonadComplexF("Test MonadComplexF 2", tM1);
 		tM3 = new MonadComplexF("Test MonadComplexF 3", tM1);
 		tM4 = new MonadComplexF(tM0);
 		tM5 = new MonadComplexF("Test MonadComplexF 5", "Motion Algebra",
 						"Foot Default Frame", "Test Foot 5", "-+++",
-						new ComplexF(new DivFieldType("Test Float 5"), 0f),
+						new ComplexF(new Cardinal("Test Float 5"), 0f),
 						"Unit PScalar");
 		tM6 = new MonadComplexF("Test MonadComplexF 6", "Property Algebra",
 						"Foot Default Frame", "Test Foot 6", "-+++", cRF);

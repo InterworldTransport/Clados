@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosF.DivisableD<br>
  * -------------------------------------------------------------------- <p>

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.MonadRealF<br>
  * -------------------------------------------------------------------- <p>
@@ -208,7 +208,7 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public static String toXMLString(MonadRealF pM)
 	{
-		StringBuffer rB = new StringBuffer("<Monad name=\"" + pM.getName()
+		StringBuilder rB = new StringBuilder("<Monad name=\"" + pM.getName()
 						+ "\" ");
 		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
 		rB.append("frame=\"" + pM.getFrameName() + "\" ");
@@ -237,7 +237,7 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public static String toXMLFullString(MonadRealF pM)
 	{
-		StringBuffer rB = new StringBuffer("<Monad name=\"" + pM.getName()
+		StringBuilder rB = new StringBuilder("<Monad name=\"" + pM.getName()
 						+ "\" ");
 		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
 		rB.append("frame=\"" + pM.getFrameName() + "\" ");
@@ -355,7 +355,7 @@ public class MonadRealF extends MonadAbstract
 		RealF tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
-		// cM array now filled with zeros that all share the same DivFieldType
+		// cM array now filled with zeros that all share the same Cardinal
 		setGradeKey();
 	}
 
@@ -398,7 +398,7 @@ public class MonadRealF extends MonadAbstract
 		RealF tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
-		// cM array now filled with zeros that all share the same DivFieldType
+		// cM array now filled with zeros that all share the same Cardinal
 		setGradeKey();
 	}
 	

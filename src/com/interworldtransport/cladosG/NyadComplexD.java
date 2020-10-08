@@ -420,7 +420,7 @@ public class NyadComplexD extends NyadAbstract
 	 */
 	public static String toXMLString(NyadComplexD pN)
 	{
-		StringBuffer rB = new StringBuffer("<Nyad name=\"" + pN.getName()
+		StringBuilder rB = new StringBuilder("<Nyad name=\"" + pN.getName()
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
@@ -446,7 +446,7 @@ public class NyadComplexD extends NyadAbstract
 	 */
 	public static String toXMLFullString(NyadComplexD pN)
 	{
-		StringBuffer rB = new StringBuffer("<Nyad name=\"" + pN.getName()
+		StringBuilder rB = new StringBuilder("<Nyad name=\"" + pN.getName()
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
@@ -526,7 +526,7 @@ public class NyadComplexD extends NyadAbstract
 	 * 		re-use the monad's algebra object
 	 * 		copy the monad's frame name
 	 * 		create new RealF's that clone the monad's coefficients such that they...
-	 * 			re-use the RealF's DivFieldType object
+	 * 			re-use the RealF's Cardinal object
 	 * 			merely copy the val array
 	 * 
 	 * @param pName	String

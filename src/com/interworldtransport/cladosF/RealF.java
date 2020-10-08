@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosF.RealF<br>
  * -------------------------------------------------------------------- <p>
@@ -348,7 +348,7 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF newONE(String pS)
 	{
-		return new RealF(new DivFieldType(pS), 1.0f);
+		return new RealF(new Cardinal(pS), 1.0f);
 	}
 	
 	/**
@@ -361,7 +361,7 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF newZERO(String pS)
 	{
-		return new RealF(new DivFieldType(pS), 0.0f);
+		return new RealF(new Cardinal(pS), 0.0f);
 	}
 
 	/**
@@ -392,7 +392,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF()
 	{
 		vals = new float[1];
-		setFieldType(new DivFieldType("Real"));
+		setFieldType(new Cardinal("Real"));
 		setReal(0.0F);
 		
 	}
@@ -401,9 +401,9 @@ public class RealF extends DivField implements DivisableF
 	 * Basic Constructor with only the field type to initialize.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 */
-	public RealF(DivFieldType pT)
+	public RealF(Cardinal pT)
 	{
 		vals = new float[1];
 		setFieldType(pT);
@@ -415,11 +415,11 @@ public class RealF extends DivField implements DivisableF
 	 * Basic Constructor with everything to initialize.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 * @param pR
 	 * 		float
 	 */
-	public RealF(DivFieldType pT, float pR)
+	public RealF(Cardinal pT, float pR)
 	{
 		vals = new float[1];
 		setFieldType(pT);
@@ -457,7 +457,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF(float pR)
 	{
 		vals = new float[1];
-		setFieldType(new DivFieldType("Real"));
+		setFieldType(new Cardinal("Real"));
 		setReal(pR);
 		
 	}

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.Basis<br>
  * -------------------------------------------------------------------- <p>
@@ -537,7 +537,7 @@ public final class Basis
 	 */
 	public String toXMLString()
 	{
-		StringBuffer rB = new StringBuffer("<Basis>\n");
+		StringBuilder rB = new StringBuilder("<Basis>\n");
 
 		rB.append("\t<Grades count=\"" + getGradeCount() + "\">\n");
 		for (short k = 0; k <= gradeCount - 2; k++)

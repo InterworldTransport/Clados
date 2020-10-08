@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosF.ComplexF<br>
  * -------------------------------------------------------------------- <p>
@@ -351,7 +351,7 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF newONE(String pS)
 	{
-		return new ComplexF(new DivFieldType(pS), 1.0f, 0.0f);
+		return new ComplexF(new Cardinal(pS), 1.0f, 0.0f);
 	}
 
 	/**
@@ -364,7 +364,7 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF newZERO(String pS)
 	{
-		return new ComplexF(new DivFieldType(pS), 0.0f, 0.0f);
+		return new ComplexF(new Cardinal(pS), 0.0f, 0.0f);
 	}
 
 	/**
@@ -395,7 +395,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF()
 	{
 		vals	= new float[2];
-		setFieldType(new DivFieldType("Complex"));
+		setFieldType(new Cardinal("Complex"));
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -436,9 +436,9 @@ public class ComplexF extends DivField implements DivisableF
 	 * Basic Constructor with only the field type to initialize.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 */
-	public ComplexF(DivFieldType pT)
+	public ComplexF(Cardinal pT)
 	{
 		vals = new float[2];
 		setFieldType(pT);
@@ -450,11 +450,11 @@ public class ComplexF extends DivField implements DivisableF
 	 * Basic Constructor with everything to initialize but the imaginary.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 * @param pR
 	 * 		float
 	 */
-	public ComplexF(DivFieldType pT, float pR)
+	public ComplexF(Cardinal pT, float pR)
 	{
 		vals = new float[2];
 		setFieldType(pT);
@@ -466,13 +466,13 @@ public class ComplexF extends DivField implements DivisableF
 	 * Basic Constructor with everything to initialize it.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 * @param pR
 	 * 		float
 	 * @param pI
 	 * 		float
 	 */
-	public ComplexF(DivFieldType pT, float pR, float pI)
+	public ComplexF(Cardinal pT, float pR, float pI)
 	{
 		vals = new float[2];
 		setFieldType(pT);
@@ -491,7 +491,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(float pR, float pI)
 	{
 		vals = new float[2];
-		setFieldType(new DivFieldType("Complex"));
+		setFieldType(new Cardinal("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}

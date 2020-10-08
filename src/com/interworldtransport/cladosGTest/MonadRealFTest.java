@@ -3,7 +3,7 @@ package com.interworldtransport.cladosGTest;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.interworldtransport.cladosF.DivFieldType;
+import com.interworldtransport.cladosF.Cardinal;
 import com.interworldtransport.cladosF.RealF;
 //import static com.interworldtransport.cladosF.RealF.*;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
@@ -39,7 +39,7 @@ public class MonadRealFTest
 	{
 		cRF = new RealF[16];
 		
-		DivFieldType tSpot = new DivFieldType(fType);
+		Cardinal tSpot = new Cardinal(fType);
 		
 		for (int k = 0; k < 16; k++)
 		{
@@ -53,7 +53,7 @@ public class MonadRealFTest
 								"Foot Default Frame", 
 								"Test Foot 0", 
 								"-+++", 
-								new RealF(new DivFieldType("Test Float 1"), 0f)
+								new RealF(new Cardinal("Test Float 1"), 0f)
 							);
 		
 		tM1 = new MonadRealF(	mName+"1", 
@@ -61,7 +61,7 @@ public class MonadRealFTest
 								"Foot Default Frame", 
 								"Test Foot 1", 
 								"-+++", 
-								new RealF(new DivFieldType("Test Float 1"), 0f)
+								new RealF(new Cardinal("Test Float 1"), 0f)
 							);
 		
 		tM2 = new MonadRealF(mName+"2", tM1);
@@ -73,7 +73,7 @@ public class MonadRealFTest
 								"Foot Default Frame", 
 								"Test Foot 5", 
 								"-+++", 
-								new RealF(new DivFieldType("Test Float 5"), 0f),
+								new RealF(new Cardinal("Test Float 5"), 0f),
 								"Unit PScalar"
 							);
 		

@@ -3,7 +3,7 @@ package com.interworldtransport.cladosGTest;
 
 import com.interworldtransport.cladosG.Foot;
 import com.interworldtransport.cladosF.RealD;
-import com.interworldtransport.cladosF.DivFieldType;
+import com.interworldtransport.cladosF.Cardinal;
 
 import org.junit.*;
 
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class FootTest
 {
 	public String		fName	= "Test:TangentPoint";
-	public DivFieldType	fType;
+	public Cardinal	fType;
 	public RealD		rNumber;
 	public Foot			tFoot;
 	public Foot			tFoot2;
@@ -20,7 +20,7 @@ public class FootTest
 	@Before
 	public void setUp()
 	{
-		fType = new DivFieldType("Test:NumberType");
+		fType = new Cardinal("Test:NumberType");
 		rNumber = new RealD(fType,0.0);
 		tFoot = new Foot(fName, fType);
 		// A foot can be created with a raw number type of no magnitude

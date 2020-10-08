@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosFExceptions.FieldException<br>
  * -------------------------------------------------------------------- <p>
@@ -55,8 +55,8 @@ public class FieldException extends Exception
     public FieldException(DivField pSource, String pMessage)
     {
     	super();
-    	this.SourceMessage=pMessage;
-    	this.Source=pSource;
+    	SourceMessage=pMessage;
+    	Source=pSource;
     }
 
 /**
@@ -66,7 +66,7 @@ public class FieldException extends Exception
  */
     public DivField  getSource()
     {
-    	return this.Source;
+    	return Source;
     }
 
 /**

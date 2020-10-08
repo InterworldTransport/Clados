@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosF.ComplexD<br>
  * -------------------------------------------------------------------- <p>
@@ -348,7 +348,7 @@ public class ComplexD extends DivField implements DivisableD
 	 */
 	public static ComplexD newONE(String pS)
 	{
-		return new ComplexD(new DivFieldType(pS), 1.0d, 0.0d);
+		return new ComplexD(new Cardinal(pS), 1.0d, 0.0d);
 	}
 
 	/**
@@ -361,7 +361,7 @@ public class ComplexD extends DivField implements DivisableD
 	 */
 	public static ComplexD newZERO(String pS)
 	{
-		return new ComplexD(new DivFieldType(pS), 0.0D, 0.0D);
+		return new ComplexD(new Cardinal(pS), 0.0D, 0.0D);
 	}
 	
 	/**
@@ -392,7 +392,7 @@ public class ComplexD extends DivField implements DivisableD
 	public ComplexD()
 	{
 		vals	= new double[2];
-		setFieldType(new DivFieldType("Complex"));
+		setFieldType(new Cardinal("Complex"));
 		setReal(0.0D);
 		setImg(0.0D);
 	}
@@ -433,9 +433,9 @@ public class ComplexD extends DivField implements DivisableD
 	 * Basic Constructor with only the field type to initialize.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 */
-	public ComplexD(DivFieldType pT)
+	public ComplexD(Cardinal pT)
 	{
 		vals = new double[2];
 		setFieldType(pT);
@@ -447,11 +447,11 @@ public class ComplexD extends DivField implements DivisableD
 	 * Basic Constructor with everything to initialize but the imaginary.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 * @param pR
 	 * 		double
 	 */
-	public ComplexD(DivFieldType pT, double pR)
+	public ComplexD(Cardinal pT, double pR)
 	{
 		vals = new double[2];
 		setFieldType(pT);
@@ -463,13 +463,13 @@ public class ComplexD extends DivField implements DivisableD
 	 * Basic Constructor with everything to initialize it.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 * @param pR
 	 * 		double
 	 * @param pI
 	 * 		double
 	 */
-	public ComplexD(DivFieldType pT, double pR, double pI)
+	public ComplexD(Cardinal pT, double pR, double pI)
 	{
 		vals = new double[2];
 		setFieldType(pT);
@@ -488,7 +488,7 @@ public class ComplexD extends DivField implements DivisableD
 	public ComplexD(double pR, double pI)
 	{
 		vals = new double[2];
-		setFieldType(new DivFieldType("Complex"));
+		setFieldType(new Cardinal("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}

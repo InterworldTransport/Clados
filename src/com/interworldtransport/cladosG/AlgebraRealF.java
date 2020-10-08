@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.AlgebraRealF<br>
  * -------------------------------------------------------------------- <p>
@@ -44,7 +44,7 @@ public class AlgebraRealF extends AlgebraAbstract
 
 	public static String toXMLString(AlgebraRealF pA)
 	{
-		StringBuffer rB = new StringBuffer("<Algebra name=\""
+		StringBuilder rB = new StringBuilder("<Algebra name=\""
 						+ pA.getAlgebraName() + "\" ");
 		rB.append(">\n");
 		rB.append(pA.protoNumber.toXMLString()+"\n");
@@ -103,7 +103,7 @@ public class AlgebraRealF extends AlgebraAbstract
 	 * monads expressed using different signatures in their geometric products.
 	 * 
 	 * This is also the one that enables a zero or one generator algebra to be used as a 'number'
-	 * in a nyad. Because the Foot is reused, the DivFieldType will match and no field mismatches
+	 * in a nyad. Because the Foot is reused, the Cardinal will match and no field mismatches
 	 * will happen. The small algebra can be set up to imitate real or complex numbers and take
 	 * on the role of 'scale' in a nyad.
 	 * 

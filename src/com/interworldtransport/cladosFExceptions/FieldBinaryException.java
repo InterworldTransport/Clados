@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosFExceptions.FieldBinaryException<br>
  * -------------------------------------------------------------------- <p>
@@ -53,7 +53,7 @@ public class FieldBinaryException extends FieldException
     public FieldBinaryException(DivField pSource, String pMessage, DivField pSecond)
     {
     	super(pSource, pMessage);
-    	this.Second=pSecond;
+    	Second=pSecond;
     }
 
 /**
@@ -63,7 +63,7 @@ public class FieldBinaryException extends FieldException
  */
     public DivField  getSecond()
     {
-    	return this.Second;
+    	return Second;
     }
 
 }

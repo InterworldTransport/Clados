@@ -3,7 +3,7 @@ package com.interworldtransport.cladosGTest;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.interworldtransport.cladosF.DivFieldType;
+import com.interworldtransport.cladosF.Cardinal;
 import com.interworldtransport.cladosF.RealD;
 import com.interworldtransport.cladosG.MonadRealD;
 
@@ -28,7 +28,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 			
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 			
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -52,7 +52,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -75,7 +75,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -98,7 +98,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -121,7 +121,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -144,7 +144,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -167,7 +167,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -190,7 +190,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -214,7 +214,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -237,7 +237,7 @@ public class MonadRealDOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealD[bladeCount];
-			DivFieldType tSpot = new DivFieldType(fType);
+			Cardinal tSpot = new Cardinal(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealD(tSpot, (double) k);
@@ -260,7 +260,7 @@ public class MonadRealDOverheadTest
 		int bladeCount= (int) Math.pow(2, pGen);
 		
 		cRF = new RealD[bladeCount];
-		DivFieldType tSpot = new DivFieldType(fType);
+		Cardinal tSpot = new Cardinal(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
 			cRF[k] = new RealD(tSpot, (double) k);
@@ -284,7 +284,7 @@ public class MonadRealDOverheadTest
 		int bladeCount= (int) Math.pow(2, pGen);
 		
 		cRF = new RealD[bladeCount];
-		DivFieldType tSpot = new DivFieldType(fType);
+		Cardinal tSpot = new Cardinal(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
 			cRF[k] = new RealD(tSpot, (double) k);
@@ -306,7 +306,7 @@ public class MonadRealDOverheadTest
 		int bladeCount= (int) Math.pow(2, pGen);
 		
 		cRF = new RealD[bladeCount];
-		DivFieldType tSpot = new DivFieldType(fType);
+		Cardinal tSpot = new Cardinal(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
 			cRF[k] = new RealD(tSpot, (double) k);
@@ -327,7 +327,7 @@ public class MonadRealDOverheadTest
 		int bladeCount= (int) Math.pow(2, pGen);
 		
 		cRF = new RealD[bladeCount];
-		DivFieldType tSpot = new DivFieldType(fType);
+		Cardinal tSpot = new Cardinal(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
 			cRF[k] = new RealD(tSpot, (double) k);

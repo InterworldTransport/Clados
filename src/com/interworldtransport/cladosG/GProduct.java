@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.GProduct<br>
  * -------------------------------------------------------------------- <p>
@@ -353,7 +353,7 @@ public final class GProduct
 	 */
 	public String toXMLString()
 	{
-		StringBuffer rB = new StringBuffer("<GProduct signature=\"" + signature
+		StringBuilder rB = new StringBuilder("<GProduct signature=\"" + signature
 						+ "\">\n");
 		rB.append(eddingtonBasis.toXMLString());
 		rB.append("<ProductTable rows=\"" + eddingtonBasis.getBladeCount() + "\">\n");

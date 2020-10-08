@@ -17,7 +17,7 @@ public class AlgebraComplexFTest
 	protected String			aName	= "Test Algebra";
 	protected String			pSig31	= "-+++";
 	protected String			pSig13	= "+---";
-	protected DivFieldType		fType;
+	protected Cardinal		fType;
 	protected ComplexF			rNumber;
 	protected Foot				tFoot;
 	protected Foot				tFoot2;
@@ -29,7 +29,7 @@ public class AlgebraComplexFTest
 	@Before
 	public void setUp() throws CladosMonadException, BadSignatureException
 	{
-		fType = new DivFieldType("Test:NumberType");
+		fType = new Cardinal("Test:NumberType");
 		rNumber = new ComplexF(fType, 0.0f, 1.0f);
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);

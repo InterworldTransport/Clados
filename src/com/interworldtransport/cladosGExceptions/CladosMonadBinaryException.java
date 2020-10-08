@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2016 Alfred Differ. All rights reserved.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosGExceptions.CladosMonadBinaryException<br>
  * -------------------------------------------------------------------- <p>

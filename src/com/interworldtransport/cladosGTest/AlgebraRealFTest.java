@@ -17,7 +17,7 @@ public class AlgebraRealFTest
 	protected String		aName	= "Test Algebra";
 	protected String		pSig31	= "-+++";
 	protected String		pSig13	= "+---";
-	protected DivFieldType	fType;
+	protected Cardinal	fType;
 	protected RealF			rNumber;
 	protected Foot			tFoot;
 	protected Foot			tFoot2;
@@ -28,7 +28,7 @@ public class AlgebraRealFTest
 	@Before
 	public void setUp() throws CladosMonadException, BadSignatureException
 	{
-		fType = new DivFieldType("Test:NumberType");
+		fType = new Cardinal("Test:NumberType");
 		rNumber = new RealF(fType,0.0f);
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);

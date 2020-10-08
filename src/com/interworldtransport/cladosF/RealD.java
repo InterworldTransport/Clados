@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosF.RealD<br>
  * -------------------------------------------------------------------- <p>
@@ -348,7 +348,7 @@ public class RealD extends DivField implements DivisableD
 	 */
 	public static RealD newONE(String pS)
 	{
-		return new RealD(new DivFieldType(pS), 1.0D);
+		return new RealD(new Cardinal(pS), 1.0D);
 	}
 	
 	/**
@@ -361,7 +361,7 @@ public class RealD extends DivField implements DivisableD
 	 */
 	public static RealD newZERO(String pS)
 	{
-		return new RealD(new DivFieldType(pS), 0.0D);
+		return new RealD(new Cardinal(pS), 0.0D);
 	}
 	
 	/**
@@ -392,7 +392,7 @@ public class RealD extends DivField implements DivisableD
 	public RealD()
 	{
 		vals	= new double[1];
-		setFieldType(new DivFieldType("Real"));
+		setFieldType(new Cardinal("Real"));
 		setReal(0.0D);
 		
 	}
@@ -401,9 +401,9 @@ public class RealD extends DivField implements DivisableD
 	 * Basic Constructor with only the field type to initialize.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 */
-	public RealD(DivFieldType pT)
+	public RealD(Cardinal pT)
 	{
 		vals = new double[1];
 		setFieldType(pT);
@@ -415,11 +415,11 @@ public class RealD extends DivField implements DivisableD
 	 * Basic Constructor with everything to initialize.
 	 * 
 	 * @param pT
-	 * 		DivFieldType
+	 * 		Cardinal
 	 * @param pR
 	 * 		double
 	 */
-	public RealD(DivFieldType pT, double pR)
+	public RealD(Cardinal pT, double pR)
 	{
 		vals = new double[1];
 		setFieldType(pT);
@@ -457,7 +457,7 @@ public class RealD extends DivField implements DivisableD
 	public RealD(double pR)
 	{
 		vals = new double[1];
-		setFieldType(new DivFieldType("Real"));
+		setFieldType(new Cardinal("Real"));
 		setReal(pR);
 		
 	}

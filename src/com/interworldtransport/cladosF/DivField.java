@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosF.DivField<br>
  * -------------------------------------------------------------------- <p>
@@ -30,7 +30,7 @@ package com.interworldtransport.cladosF;
  * an algebra. All Clados objects use DivField descendants as a result.
  * <p>
  * DivField's capture only a reference frame type, so they appear to be named.
- * However, they are named with DivFieldType objects so their names can be shared
+ * However, they are named with Cardinal objects so their names can be shared
  * as references, thus survive reference frame match tests.
  * <p>
  * The number to be plugged in, though, doesn't appear until later in a child
@@ -38,7 +38,7 @@ package com.interworldtransport.cladosF;
  * varies. Complex numbers require two. Quaternions would require four.
  * <p>
  * The only reason this class isn't an interface is the presence of the 
- * DivFieldType data member.
+ * Cardinal data member.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -72,14 +72,14 @@ public abstract class DivField
 	 * lets us reuse the object through a reference allowing all coefficients in
 	 * the monads of a nyad to point to the same place.
 	 */
-	protected DivFieldType	FieldType;
+	protected Cardinal	FieldType;
 
 	/**
 	 * Get method for FieldType
 	 * 
-	 * @return DivFieldType (A division field type)
+	 * @return Cardinal (A division field type)
 	 */
-	public DivFieldType getFieldType()
+	public Cardinal getFieldType()
 	{
 		return FieldType;
 	}
@@ -87,7 +87,7 @@ public abstract class DivField
 	/**
 	 * Get method for FieldType
 	 * 
-	 * @return DivFieldType (A division field type)
+	 * @return Cardinal (A division field type)
 	 */
 	public String getFieldTypeString()
 	{
@@ -98,9 +98,9 @@ public abstract class DivField
 	 * Set method for FieldType
 	 * 
 	 * @param pType
-	 *            DivFieldType
+	 *            Cardinal
 	 */
-	public void setFieldType(DivFieldType pType)
+	public void setFieldType(Cardinal pType)
 	{
 		FieldType = pType;
 	}

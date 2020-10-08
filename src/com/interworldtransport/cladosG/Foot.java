@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2018 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
  * ---com.interworldtransport.cladosG.Foot<br>
  * -------------------------------------------------------------------- <p>
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 //import java.util.ListIterator;
 
 import com.interworldtransport.cladosF.DivField;
-import com.interworldtransport.cladosF.DivFieldType;
+import com.interworldtransport.cladosF.Cardinal;
 
 /**
  * Objects within the cladosG package have a number of attributes in common that
@@ -52,13 +52,13 @@ public final class Foot
 	/**
 	 * This factory build method produces a new Foot using the offered number type.
 	 * It is intend to name an otherwise opaque constructor that creates a new Foot
-	 * but re-uses a DivFieldType.
+	 * but re-uses a Cardinal.
 	 * 
 	 * @param pFootName String name for the new Foot
-	 * @param pAsNumberType DivFieldType to re-use for this new Foot
-	 * @return Foot Factory method builds a new Foot re-using a DivFieldType object.
+	 * @param pAsNumberType Cardinal to re-use for this new Foot
+	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
 	 */
-	public static final Foot buildAsType(String pFootName, DivFieldType pAsNumberType)
+	public static final Foot buildAsType(String pFootName, Cardinal pAsNumberType)
 	{
 		return new Foot(pFootName, pAsNumberType);
 	}
@@ -70,7 +70,7 @@ public final class Foot
 	 * This object defines the type of numbers used by all objects that share
 	 * this footPoint.
 	 */
-	private DivFieldType		numType;
+	private Cardinal		numType;
 	/**
 	 * This is the list of known reference frames defined elsewhere against this
 	 * footPoint.
@@ -83,10 +83,10 @@ public final class Foot
 	 * @param pName
 	 *            String This string will be the name of the foot point.
 	 * @param pFT
-	 *            DivFieldType This object defines the kind of numbers that are
+	 *            Cardinal This object defines the kind of numbers that are
 	 *            meaningful for this foot point
 	 */
-	public Foot(String pName, DivFieldType pFT)
+	public Foot(String pName, Cardinal pFT)
 	{
 		setFootName(pName);
 		setNumberType(pFT);
@@ -100,7 +100,7 @@ public final class Foot
 	 * @param pName
 	 *            String This string will be the name of the foot point.
 	 * @param pF
-	 *            DivFieldType This object defines the kind of numbers that are
+	 *            Cardinal This object defines the kind of numbers that are
 	 *            meaningful for this foot point
 	 */
 	public Foot(String pName, DivField pF)
@@ -144,7 +144,7 @@ public final class Foot
 		return footName;
 	}
 
-	public DivFieldType getNumberType()
+	public Cardinal getNumberType()
 	{
 		return numType;
 	}
@@ -186,14 +186,14 @@ public final class Foot
 		this.footName = footName;
 	}
 
-	public void setNumberType(DivFieldType fN)
+	public void setNumberType(Cardinal fN)
 	{
 		this.numType = fN;
 	}
 
 	public String toXMLString()
 	{
-		StringBuffer rB = new StringBuffer("<Foot name=\"" + getFootName()
+		StringBuilder rB = new StringBuilder("<Foot name=\"" + getFootName()
 						+ "\" type=\"" + numType.getType() + "\">\n");
 		rB.append("\t<ReferenceFrames number=\"" + rFrames.size()
 						+ "\" >\n");
