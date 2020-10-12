@@ -124,7 +124,7 @@ public class MonadComplexFTest
 		assertTrue(tM6.isGEqual(tM7));
 		tM6.subtract(tM7)
 						.subtract(tM7)
-						.scale(new ComplexF(tM7.getCoeff((short) 0).getFieldType(),
+						.scale(new ComplexF(tM7.getCoeff((short) 0).getCardinal(),
 										-1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 

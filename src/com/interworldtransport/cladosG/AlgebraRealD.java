@@ -160,7 +160,7 @@ public class AlgebraRealD extends AlgebraAbstract
 							CladosMonadException
 	{
 		setAlgebraName(pS);
-		setFoot(new Foot(pFootName, pF.getFieldType()));
+		setFoot(new Foot(pFootName, pF.getCardinal()));
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
 		protoNumber = new RealD(foot.getNumberType(), 1.0d);

@@ -124,7 +124,7 @@ public class MonadComplexDTest
 		assertTrue(tM6.isGEqual(tM7));
 		tM6.subtract(tM7)
 						.subtract(tM7)
-						.scale(new ComplexD(tM7.getCoeff((short) 0).getFieldType(),
+						.scale(new ComplexD(tM7.getCoeff((short) 0).getCardinal(),
 										-1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 

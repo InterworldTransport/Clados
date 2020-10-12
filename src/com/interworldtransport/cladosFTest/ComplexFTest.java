@@ -30,16 +30,16 @@ public class ComplexFTest // extends TestCase
 	{
 		tReal0 = ComplexF.newZERO("Test:ComplexF");
 		tReal1 = ComplexF.newONE("Test:ComplexF");
-		tReal1n = new ComplexF(tReal1.getFieldType(), -1.0f);
-		tReal1i = new ComplexF(tReal1.getFieldType(), 0.0f, 1.0f);
-		tReal2 = new ComplexF(tReal1.getFieldType(), Float.MAX_VALUE);
-		tReal3 = new ComplexF(tReal1.getFieldType(), Float.MAX_EXPONENT);
-		tReal4 = new ComplexF(tReal1.getFieldType(), Float.NaN);
-		tReal5 = new ComplexF(tReal1.getFieldType(), Float.POSITIVE_INFINITY);
-		tReal6 = new ComplexF(tReal1.getFieldType(), Float.NEGATIVE_INFINITY);
-		tReal7 = new ComplexF(tReal1.getFieldType(), Float.MIN_NORMAL);
-		tReal8 = new ComplexF(tReal1.getFieldType(), Float.MIN_VALUE);
-		tReal9 = new ComplexF(tReal1.getFieldType(), Float.MIN_EXPONENT);
+		tReal1n = new ComplexF(tReal1.getCardinal(), -1.0f);
+		tReal1i = new ComplexF(tReal1.getCardinal(), 0.0f, 1.0f);
+		tReal2 = new ComplexF(tReal1.getCardinal(), Float.MAX_VALUE);
+		tReal3 = new ComplexF(tReal1.getCardinal(), Float.MAX_EXPONENT);
+		tReal4 = new ComplexF(tReal1.getCardinal(), Float.NaN);
+		tReal5 = new ComplexF(tReal1.getCardinal(), Float.POSITIVE_INFINITY);
+		tReal6 = new ComplexF(tReal1.getCardinal(), Float.NEGATIVE_INFINITY);
+		tReal7 = new ComplexF(tReal1.getCardinal(), Float.MIN_NORMAL);
+		tReal8 = new ComplexF(tReal1.getCardinal(), Float.MIN_VALUE);
+		tReal9 = new ComplexF(tReal1.getCardinal(), Float.MIN_EXPONENT);
 		tReals = new ComplexF[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
@@ -54,17 +54,17 @@ public class ComplexFTest // extends TestCase
 	}
 
 	@Test
-	public void testGetDivFieldType()
+	public void testGetCardinal()
 	{
-		assertFalse(tReal0.getFieldType().equals(tReal1.getFieldType()));
-		assertTrue(tReal1.getFieldType().equals(tReal1n.getFieldType()));
+		assertFalse(tReal0.getCardinal().equals(tReal1.getCardinal()));
+		assertTrue(tReal1.getCardinal().equals(tReal1n.getCardinal()));
 	}
 
 	@Test
-	public void testGetDivFieldTypeType()
+	public void testGetCardinalType()
 	{
-		assertTrue(tReal0.getFieldTypeString().equals(
-						tReal1.getFieldTypeString()));
+		assertTrue(tReal0.getCardinalString().equals(
+						tReal1.getCardinalString()));
 	}
 
 	@Test

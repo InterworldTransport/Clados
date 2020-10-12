@@ -46,7 +46,7 @@ public class AlgebraRealDTest
 		//Two algebras share the foot, but use different signatures
 		//to overlay metrics on their coordinate systems.
 		
-		tFoot.setNumberType(rNumber.getFieldType());
+		tFoot.setNumberType(rNumber.getCardinal());
 		alg3= new AlgebraRealD(aName, tFoot, pSig31);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
@@ -79,7 +79,7 @@ public class AlgebraRealDTest
 	{
 		RealD result=AlgebraRealD.generateNumber(alg1, 10.0d);
 		assertTrue(result != null);
-		assertTrue(result.getFieldType() == alg1.getFoot().getNumberType());
+		assertTrue(result.getCardinal() == alg1.getFoot().getNumberType());
 		//this shows that an algebra can be used to generate numbers of the same type
 		//by using the static method built into the class. This method is picky, but 
 		//when used properly it will safely generate matches that will pass reference

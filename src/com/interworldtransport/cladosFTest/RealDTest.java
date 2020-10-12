@@ -28,15 +28,15 @@ public class RealDTest // extends TestCase
 	{
 		tReal0 = RealD.newZERO("Test:RealD");
 		tReal1 = RealD.newONE("Test:RealD");
-		tReal1n = new RealD(tReal1.getFieldType(), -1d);
-		tReal2 = new RealD(tReal1.getFieldType(), Double.MAX_VALUE);
-		tReal3 = new RealD(tReal1.getFieldType(), Double.MAX_EXPONENT);
-		tReal4 = new RealD(tReal1.getFieldType(), Double.NaN);
-		tReal5 = new RealD(tReal1.getFieldType(), Double.POSITIVE_INFINITY);
-		tReal6 = new RealD(tReal1.getFieldType(), Double.NEGATIVE_INFINITY);
-		tReal7 = new RealD(tReal1.getFieldType(), Double.MIN_NORMAL);
-		tReal8 = new RealD(tReal1.getFieldType(), Double.MIN_VALUE);
-		tReal9 = new RealD(tReal1.getFieldType(), Double.MIN_EXPONENT);
+		tReal1n = new RealD(tReal1.getCardinal(), -1d);
+		tReal2 = new RealD(tReal1.getCardinal(), Double.MAX_VALUE);
+		tReal3 = new RealD(tReal1.getCardinal(), Double.MAX_EXPONENT);
+		tReal4 = new RealD(tReal1.getCardinal(), Double.NaN);
+		tReal5 = new RealD(tReal1.getCardinal(), Double.POSITIVE_INFINITY);
+		tReal6 = new RealD(tReal1.getCardinal(), Double.NEGATIVE_INFINITY);
+		tReal7 = new RealD(tReal1.getCardinal(), Double.MIN_NORMAL);
+		tReal8 = new RealD(tReal1.getCardinal(), Double.MIN_VALUE);
+		tReal9 = new RealD(tReal1.getCardinal(), Double.MIN_EXPONENT);
 		tReals = new RealD[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
@@ -51,17 +51,17 @@ public class RealDTest // extends TestCase
 	}
 
 	@Test
-	public void testGetDivFieldType()
+	public void testGetCardinal()
 	{
-		assertFalse(tReal0.getFieldType().equals(tReal1.getFieldType()));
-		assertTrue(tReal1.getFieldType().equals(tReal1n.getFieldType()));
+		assertFalse(tReal0.getCardinal().equals(tReal1.getCardinal()));
+		assertTrue(tReal1.getCardinal().equals(tReal1n.getCardinal()));
 	}
 
 	@Test
-	public void testGetDivFieldTypeType()
+	public void testGetCardinalType()
 	{
-		assertTrue(tReal0.getFieldTypeString().equals(
-						tReal1.getFieldTypeString()));
+		assertTrue(tReal0.getCardinalString().equals(
+						tReal1.getCardinalString()));
 	}
 
 	@Test

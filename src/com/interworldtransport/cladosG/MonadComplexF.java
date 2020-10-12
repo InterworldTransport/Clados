@@ -192,8 +192,8 @@ public class MonadComplexF extends MonadAbstract
 		// types but that is unlikely if the algebras match. The problem is that
 		// someone can write new coefficients and break the consistency with the
 		// Algebra's protonumber.
-		if (!pM.getCoeff((short) 0).getFieldType()
-						.equals(pN.getCoeff((short) 0).getFieldType())) return false;
+		if (!pM.getCoeff((short) 0).getCardinal()
+						.equals(pN.getCoeff((short) 0).getCardinal())) return false;
 
 		return true;
 	}
@@ -345,7 +345,7 @@ public class MonadComplexF extends MonadAbstract
 				throws BadSignatureException, CladosMonadException
 	{
 		setAlgebra(new AlgebraComplexF(	pAlgebraName, 
-										new Foot(pFootName, pF.getFieldType()), 
+										new Foot(pFootName, pF.getCardinal()), 
 										pSig));
 
 		setName(pMonadName);
@@ -525,7 +525,7 @@ public class MonadComplexF extends MonadAbstract
 		if (pC[0] == null)
 			throw new CladosMonadException(this, "First coefficient is null.  There could be more nulls too.");
 		
-		setAlgebra(new AlgebraComplexF(pAlgebraName, new Foot(pFootName, pC[0].getFieldType()), pSig));
+		setAlgebra(new AlgebraComplexF(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig));
 		
 		if (pC.length != getAlgebra().getGProduct().getBladeCount())
 			throw new CladosMonadException(this,

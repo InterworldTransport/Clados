@@ -29,15 +29,15 @@ public class RealFTest // extends TestCase
 	{
 		tReal0 = RealF.newZERO("Test:RealF");
 		tReal1 = RealF.newONE("Test:RealF");
-		tReal1n = new RealF(tReal1.getFieldType(), -1f);
-		tReal2 = new RealF(tReal1.getFieldType(), Float.MAX_VALUE);
-		tReal3 = new RealF(tReal1.getFieldType(), Float.MAX_EXPONENT);
-		tReal4 = new RealF(tReal1.getFieldType(), Float.NaN);
-		tReal5 = new RealF(tReal1.getFieldType(), Float.POSITIVE_INFINITY);
-		tReal6 = new RealF(tReal1.getFieldType(), Float.NEGATIVE_INFINITY);
-		tReal7 = new RealF(tReal1.getFieldType(), Float.MIN_NORMAL);
-		tReal8 = new RealF(tReal1.getFieldType(), Float.MIN_VALUE);
-		tReal9 = new RealF(tReal1.getFieldType(), Float.MIN_EXPONENT);
+		tReal1n = new RealF(tReal1.getCardinal(), -1f);
+		tReal2 = new RealF(tReal1.getCardinal(), Float.MAX_VALUE);
+		tReal3 = new RealF(tReal1.getCardinal(), Float.MAX_EXPONENT);
+		tReal4 = new RealF(tReal1.getCardinal(), Float.NaN);
+		tReal5 = new RealF(tReal1.getCardinal(), Float.POSITIVE_INFINITY);
+		tReal6 = new RealF(tReal1.getCardinal(), Float.NEGATIVE_INFINITY);
+		tReal7 = new RealF(tReal1.getCardinal(), Float.MIN_NORMAL);
+		tReal8 = new RealF(tReal1.getCardinal(), Float.MIN_VALUE);
+		tReal9 = new RealF(tReal1.getCardinal(), Float.MIN_EXPONENT);
 		tReals = new RealF[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
@@ -52,17 +52,17 @@ public class RealFTest // extends TestCase
 	}
 
 	@Test
-	public void testGetDivFieldType()
+	public void testGetCardinal()
 	{
-		assertFalse(tReal0.getFieldType().equals(tReal1.getFieldType()));
-		assertTrue(tReal1.getFieldType().equals(tReal1n.getFieldType()));
+		assertFalse(tReal0.getCardinal().equals(tReal1.getCardinal()));
+		assertTrue(tReal1.getCardinal().equals(tReal1n.getCardinal()));
 	}
 
 	@Test
-	public void testGetDivFieldTypeType()
+	public void testGetCardinalType()
 	{
-		assertTrue(tReal0.getFieldTypeString().equals(
-						tReal1.getFieldTypeString()));
+		assertTrue(tReal0.getCardinalString().equals(
+						tReal1.getCardinalString()));
 	}
 
 	@Test

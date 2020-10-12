@@ -51,7 +51,7 @@ public abstract class DivField
 	public static final String REALD="RealD";
 	public static final String REALF="RealF";
 	/**
-	 * Check to see if the two argument are of the same field type.
+	 * Check to see if the two argument are of the same cardinal.
 	 * 
 	 * @param pE
 	 *            DivField
@@ -61,48 +61,47 @@ public abstract class DivField
 	 */
 	public static final boolean isTypeMatch(DivField pE, DivField pF)
 	{
-		if(pE.FieldType==null && pF.FieldType==null)
+		if(pE._card==null && pF._card==null)
 			return true;
-			
-		return pE.FieldType == pF.FieldType;
+		return pE._card == pF._card;
 	}
 
 	/**
-	 * Object for the field type. A string used to be used here, but an object
+	 * Object for the cardinal. A string used to be used here, but an object
 	 * lets us reuse the object through a reference allowing all coefficients in
 	 * the monads of a nyad to point to the same place.
 	 */
-	protected Cardinal	FieldType;
+	protected Cardinal	_card;
 
 	/**
-	 * Get method for FieldType
+	 * Get method for _card
 	 * 
-	 * @return Cardinal (A division field type)
+	 * @return Cardinal (A cardinal name for a DivField)
 	 */
-	public Cardinal getFieldType()
+	public Cardinal getCardinal()
 	{
-		return FieldType;
+		return _card;
 	}
 
 	/**
-	 * Get method for FieldType
+	 * Get method for _card
 	 * 
-	 * @return Cardinal (A division field type)
+	 * @return Cardinal (A cardinal name for a DivField)
 	 */
-	public String getFieldTypeString()
+	public String getCardinalString()
 	{
-		return FieldType.getType();
+		return _card.getType();
 	}
 
 	/**
-	 * Set method for FieldType
+	 * Set method for _card
 	 * 
 	 * @param pType
 	 *            Cardinal
 	 */
-	public void setFieldType(Cardinal pType)
+	protected void setCardinal(Cardinal pType)
 	{
-		FieldType = pType;
+		_card = pType;
 	}
 
 

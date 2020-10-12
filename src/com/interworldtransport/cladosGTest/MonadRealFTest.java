@@ -45,7 +45,7 @@ public class MonadRealFTest
 		{
 			cRF[k] = new RealF(tSpot, (float) k);
 			assertTrue(cRF[k] != null);
-			assertTrue(cRF[k].getFieldType().equals(tSpot));
+			assertTrue(cRF[k].getCardinal().equals(tSpot));
 		}
 
 		tM0 = new MonadRealF(	mName+"0", 
@@ -167,7 +167,7 @@ public class MonadRealFTest
 		assertTrue(tM6.isGEqual(tM7));
 		tM6.subtract(tM7)
 						.subtract(tM7)
-						.scale(new RealF(tM7.getCoeff((short) 0).getFieldType(), -1.0f));
+						.scale(new RealF(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 		
 	}

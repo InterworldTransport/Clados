@@ -65,7 +65,7 @@ public class ComplexF extends DivField implements DivisableF
 	{
 		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
 						&& !ComplexF.isInfinite(pF1) && !ComplexF.isInfinite(pF2))
-			return new ComplexF(pF1.getFieldType(), pF1.getReal() + pF2.getReal());
+			return new ComplexF(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
 		
 		throw (new FieldBinaryException(pF1, "Static Addition error found",	pF2));
 	}
@@ -81,28 +81,14 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF conjugate(ComplexF pF)
 	{
-		return new ComplexF(pF.getFieldType(), pF.getReal(), -1.0f * pF.getImg());
+		return new ComplexF(pF.getCardinal(), pF.getReal(), -1.0f * pF.getImg());
 	}
-
-	/**
-	 * Static method that creates a new ComplexF with a copy of the field type
-	 * but not the value. Since this copy reuses the field type reference it
-	 * will pass a type match test with pF but not the isEqual test.
-	 * 
-	 * @param pF
-	 *            ComplexF
-	 * @return ComplexF
-	 */
-	//public static ComplexF copyAsZero(ComplexF pF)
-	//{
-	//	return new ComplexF(pF.getFieldType());
-	//}
 
 	/**
 	 * This static method takes a list of ComplexF objects and returns one
 	 * ComplexF that has a real value that is equal to the square root of the
 	 * sum of the SQModulus of each entry on the list. <p>
-	 * It does not perform a field type safety check and will throw the exception 
+	 * It does not perform a cardinal safety check and will throw the exception 
 	 * if that test fails.
 	 * 
 	 * @param pL
@@ -116,21 +102,18 @@ public class ComplexF extends DivField implements DivisableF
 	public static ComplexF copyFromModuliSum(ComplexF[] pL) throws FieldBinaryException
 	{
 		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getModulus());
-		
 		for (int j = 1; j < pL.length; j++)
 			if (isTypeMatch(pL[j], tR))
-			{
 				tR.add((ComplexF.copyONE(pL[j]).scale(pL[j].getModulus())));
-			}
 			else
-				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
 		return tR;
 	}
 
 	/**
 	 * This static method takes a list of RealD objects and returns one RealD
 	 * that has a value that is equal to the sum of the SQModulus of each entry
-	 * on the list. It does not perform a field type safety check and will throw
+	 * on the list. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
 	 * 
 	 * @param pL
@@ -150,14 +133,14 @@ public class ComplexF extends DivField implements DivisableF
 			if (isTypeMatch(pL[j], tR))
 				tR.add((ComplexF.copyONE(pL[j])).scale(pL[j].getSQModulus()));
 			else
-				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+				throw new FieldBinaryException(pL[j], "cardinal mistach during addition", tR);
 		
 		return tR;
 	}
 
 	/**
 	 * Static method that creates a new ComplexF with a copy of the parameter.
-	 * This copy reuses the field type reference to ensure it will pass a type
+	 * This copy reuses the cardinal reference to ensure it will pass a type
 	 * match test.
 	 * 
 	 * @param pF
@@ -170,7 +153,7 @@ public class ComplexF extends DivField implements DivisableF
 	}
 	
 	/**
-	 * Static zero construction method with copied field type
+	 * Static zero construction method with copied cardinal
 	 * 
 	 * @param pR
 	 * 			ComplexF
@@ -179,11 +162,11 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF copyONE(ComplexF pR)
 	{
-		return new ComplexF(pR.getFieldType(), 1.0f, 0.0f);
+		return new ComplexF(pR.getCardinal(), 1.0f, 0.0f);
 	}
 
 	/**
-	 * Static zero construction method with copied field type
+	 * Static zero construction method with copied cardinal
 	 * 
 	 * @param pR
 	 * 			ComplexF
@@ -192,12 +175,12 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF copyZERO(ComplexF pR)
 	{
-		return new ComplexF(pR.getFieldType(), 0.0f, 0.0f);
+		return new ComplexF(pR.getCardinal(), 0.0f, 0.0f);
 	}
 
 	/**
 	 * Static method that creates a new ComplexF with a copy of the parameter.
-	 * This copy does not reuse a field type reference so it is likely to fail
+	 * This copy does not reuse a cardinal reference so it is likely to fail
 	 * type mismatch tests.
 	 * 
 	 * @param pR
@@ -336,7 +319,7 @@ public class ComplexF extends DivField implements DivisableF
 		{
 			float tempR = pF1.getReal() * pF2.getReal() - pF1.getImg() * pF2.getImg();
 			float tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
-			return new ComplexF(pF1.getFieldType(), tempR, tempI);
+			return new ComplexF(pF1.getCardinal(), tempR, tempI);
 		}
 		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
@@ -368,6 +351,32 @@ public class ComplexF extends DivField implements DivisableF
 	}
 
 	/**
+	 * Static one construction method
+	 * 
+	 * @param pC
+	 * 			Cardinal
+	 * 
+	 * @return ComplexF
+	 */
+	public static ComplexF newONE(Cardinal pC)
+	{
+		return new ComplexF(pC, 1.0f, 0.0f);
+	}
+
+	/**
+	 * Static zero construction method
+	 * 
+	 * @param pC
+	 * 			Cardinal
+	 * 
+	 * @return ComplexF
+	 */
+	public static ComplexF newZERO(Cardinal pC)
+	{
+		return new ComplexF(pC, 0.0f, 0.0f);
+	}
+	
+	/**
 	 * Static subtract method that creates a new ComplexF with the difference pF1-pF2.
 	 * 
 	 * @param pF1
@@ -382,7 +391,7 @@ public class ComplexF extends DivField implements DivisableF
 	{
 		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) 
 						&& !ComplexF.isInfinite(pF1) && !ComplexF.isInfinite(pF2))
-			return new ComplexF(pF1.getFieldType(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
+			return new ComplexF(pF1.getCardinal(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
 	
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
@@ -395,13 +404,13 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF()
 	{
 		vals	= new float[2];
-		setFieldType(new Cardinal("Complex"));
+		setCardinal(new Cardinal(DivField.COMPLEXF));
 		setReal(0.0f);
 		setImg(0.0f);
 	}
 	
 	/**
-	 * Copy Constructor that reuses the field type reference.
+	 * Copy Constructor that reuses the cardinal reference.
 	 * 
 	 * @param pC
 	 * 		ComplexF
@@ -409,13 +418,13 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(ComplexF pC)
 	{
 		vals	= new float[2];
-		setFieldType(pC.getFieldType());
+		setCardinal(pC.getCardinal());
 		setReal(pC.getReal());
 		setImg(pC.getImg());
 	}
 	
 	/**
-	 * Copy Constructor that reuses the field type reference while allowing the
+	 * Copy Constructor that reuses the cardinal reference while allowing the
 	 * values to be set.
 	 * @param pC
 	 * 		ComplexF
@@ -427,13 +436,13 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(ComplexF pC, float pR, float pI)
 	{
 		vals = new float[2];
-		setFieldType(pC.getFieldType());
+		setCardinal(pC.getCardinal());
 		setReal(pR);
 		setImg(pI);
 	}
 	
 	/**
-	 * Basic Constructor with only the field type to initialize.
+	 * Basic Constructor with only the cardinal to initialize.
 	 * 
 	 * @param pT
 	 * 		Cardinal
@@ -441,7 +450,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(Cardinal pT)
 	{
 		vals = new float[2];
-		setFieldType(pT);
+		setCardinal(pT);
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -457,7 +466,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(Cardinal pT, float pR)
 	{
 		vals = new float[2];
-		setFieldType(pT);
+		setCardinal(pT);
 		setReal(pR);
 		setImg(0.0f);
 	}
@@ -475,7 +484,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(Cardinal pT, float pR, float pI)
 	{
 		vals = new float[2];
-		setFieldType(pT);
+		setCardinal(pT);
 		setReal(pR);
 		setImg(pI);
 	}
@@ -491,7 +500,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(float pR, float pI)
 	{
 		vals = new float[2];
-		setFieldType(new Cardinal("Complex"));
+		setCardinal(new Cardinal("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}
@@ -757,7 +766,7 @@ public class ComplexF extends DivField implements DivisableF
 	@Override
 	public String toXMLString()
 	{
-		return ("<ComplexF type=\"" + getFieldTypeString() + "\" realvalue=\""
+		return ("<ComplexF type=\"" + getCardinalString() + "\" realvalue=\""
 						+ getReal() + "\" imgvalue=\"" + getImg() + "\"/>");
 	}
 }

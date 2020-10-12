@@ -65,7 +65,7 @@ public class RealF extends DivField implements DivisableF
 	{
 		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
 						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
-			return new RealF(pF1.getFieldType(), pF1.getReal() + pF2.getReal());
+			return new RealF(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
 		
 		throw (new FieldBinaryException(pF1, "Static Addition error found",	pF2));
 	}
@@ -84,26 +84,12 @@ public class RealF extends DivField implements DivisableF
 		return new RealF(pF);
 	}
 
-	/**
-	 * Static method that creates a new RealD with a copy of the field type but
-	 * not the value. Since this copy reuses the field type reference it will
-	 * pass a type match test with pF but not the isEqual test.
-	 * 
-	 * @param pF
-	 *            RealF
-	 * @return RealF
-	 */
-	//public static RealF copyAsZero(RealF pF)
-	//{
-	//	return new RealF(pF.getFieldType());
-	//}
-
-	/**
+		/**
 	 * This static method takes a list of RealF objects and returns one RealF
 	 * that has a value that is equal to the square root of the sum of the
 	 * SQModulus of each entry on the list. Because these are real numbers,
 	 * though, we get away with simply summing the moduli instead. It does not
-	 * perform a field type safety check and will throw the exception if that
+	 * perform a cardinal safety check and will throw the exception if that
 	 * test fails.
 	 * 
 	 * @param pL
@@ -120,14 +106,14 @@ public class RealF extends DivField implements DivisableF
 			if (isTypeMatch(pL[j], tR))
 				tR.add((RealF.copyONE(pL[j]).scale(pL[j].getModulus())));
 			else
-				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
 		return tR;
 	}
 
 	/**
 	 * This static method takes a list of RealF objects and returns one RealF
 	 * that has a value that is equal to the sum of the SQModulus of each entry
-	 * on the list. It does not perform a field type safety check and will throw
+	 * on the list. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
 	 * 
 	 * @param pL
@@ -147,14 +133,14 @@ public class RealF extends DivField implements DivisableF
 			if (isTypeMatch(pL[j], tR))
 				tR.add((RealF.copyONE(pL[j]).scale(pL[j].getSQModulus())));
 			else
-				throw new FieldBinaryException(pL[j], "Field Type mistach during addition", tR);
+				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
 		
 		return tR;
 	}
 
 	/**
 	 * Static method that creates a new RealD with a copy of the parameter. This
-	 * copy reuses the field type reference to ensure it will pass a type match
+	 * copy reuses the cardinal reference to ensure it will pass a type match
 	 * test.
 	 * 
 	 * @param pF
@@ -167,7 +153,7 @@ public class RealF extends DivField implements DivisableF
 	}
 
 	/**
-	 * Static zero construction method with copied field type
+	 * Static zero construction method with copied cardinal
 	 * 
 	 * @param pR
 	 * 		RealF
@@ -176,7 +162,7 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF copyONE(RealF pR)
 	{
-		return new RealF(pR.getFieldType(), 1.0f);
+		return new RealF(pR.getCardinal(), 1.0f);
 	}
 
 	
@@ -192,7 +178,7 @@ public class RealF extends DivField implements DivisableF
 	
 	
 	/**
-	 * Static zero construction method with copied field type
+	 * Static zero construction method with copied cardinal
 	 * 
 	 * @param pR
 	 * 		RealF
@@ -201,12 +187,12 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF copyZERO(RealF pR)
 	{
-		return new RealF(pR.getFieldType(), 0.0f);
+		return new RealF(pR.getCardinal(), 0.0f);
 	}
 
 	/**
 	 * Static method that creates a new RealD with a copy of the parameter. This
-	 * copy does not reuse a field type reference so it is likely to fail type
+	 * copy does not reuse a cardinal reference so it is likely to fail type
 	 * mismatch tests.
 	 * 
 	 * @param pR
@@ -249,7 +235,7 @@ public class RealF extends DivField implements DivisableF
 		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isZero(pF2)
 						&& !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
 						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
-			return new RealF(pF1.getFieldType(), pF1.getReal() / pF2.getReal());
+			return new RealF(pF1.getCardinal(), pF1.getReal() / pF2.getReal());
 		
 		throw (new FieldBinaryException(pF1, "Static Division error found",	pF2));
 		
@@ -333,7 +319,7 @@ public class RealF extends DivField implements DivisableF
 	{
 		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
 						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
-			return new RealF(pF1.getFieldType(), pF1.getReal() * pF2.getReal());
+			return new RealF(pF1.getCardinal(), pF1.getReal() * pF2.getReal());
 		
 		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
@@ -363,6 +349,32 @@ public class RealF extends DivField implements DivisableF
 	{
 		return new RealF(new Cardinal(pS), 0.0f);
 	}
+	
+	/**
+	 * Static one construction method
+	 * 
+	 * @param pC
+	 * 			Cardinal
+	 * 
+	 * @return RealF
+	 */
+	public static RealF newONE(Cardinal pC)
+	{
+		return new RealF(pC, 1.0f);
+	}
+	
+	/**
+	 * Static zero construction method
+	 * 
+	 * @param pC
+	 * 			Cardinal
+	 * 
+	 * @return RealF
+	 */
+	public static RealF newZERO(Cardinal pC)
+	{
+		return new RealF(pC, 0.0f);
+	}
 
 	/**
 	 * Static subtract method that creates a new RealD with the difference pF1-pF2.
@@ -379,7 +391,7 @@ public class RealF extends DivField implements DivisableF
 	{
 		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
 						&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
-			return new RealF(pF1.getFieldType(), pF1.getReal() - pF2.getReal());
+			return new RealF(pF1.getCardinal(), pF1.getReal() - pF2.getReal());
 		
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
@@ -392,13 +404,13 @@ public class RealF extends DivField implements DivisableF
 	public RealF()
 	{
 		vals = new float[1];
-		setFieldType(new Cardinal("Real"));
+		setCardinal(new Cardinal(DivField.REALF));
 		setReal(0.0F);
 		
 	}
 
 	/**
-	 * Basic Constructor with only the field type to initialize.
+	 * Basic Constructor with only the cardinal to initialize.
 	 * 
 	 * @param pT
 	 * 		Cardinal
@@ -406,7 +418,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF(Cardinal pT)
 	{
 		vals = new float[1];
-		setFieldType(pT);
+		setCardinal(pT);
 		setReal(0.0F);
 		
 	}
@@ -422,7 +434,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF(Cardinal pT, float pR)
 	{
 		vals = new float[1];
-		setFieldType(pT);
+		setCardinal(pT);
 		setReal(pR);
 		
 	}
@@ -457,26 +469,26 @@ public class RealF extends DivField implements DivisableF
 	public RealF(float pR)
 	{
 		vals = new float[1];
-		setFieldType(new Cardinal("Real"));
+		setCardinal(new Cardinal("Real"));
 		setReal(pR);
 		
 	}
 
 	/**
-	 * Copy Constructor that reuses the field type reference.
+	 * Copy Constructor that reuses the cardinal reference.
 	 * @param pR
 	 * 			RealF
 	 */
 	public RealF(RealF pR)
 	{
 		vals = new float[1];
-		setFieldType(pR.getFieldType());
+		setCardinal(pR.getCardinal());
 		setReal(pR.getReal());
 		
 	}
 	
 	/**
-	 * Copy Constructor that reuses the field type reference while allowing the
+	 * Copy Constructor that reuses the cardinal reference while allowing the
 	 * value to be set.
 	 * @param pR
 	 * 		RealF
@@ -488,7 +500,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF(RealF pR, float pF)
 	{
 		vals = new float[1];
-		setFieldType(pR.getFieldType());
+		setCardinal(pR.getCardinal());
 		setReal(pF);
 		
 	}
@@ -752,7 +764,7 @@ public class RealF extends DivField implements DivisableF
 	@Override
 	public String toXMLString()
 	{
-		return ("<RealF type=\"" + getFieldTypeString() + "\" value=\""
+		return ("<RealF type=\"" + getCardinalString() + "\" value=\""
 						+ getReal() + "\" />");
 	}
 }

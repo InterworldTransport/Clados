@@ -45,7 +45,7 @@ public class MonadRealDTest
 		{
 			cRD[k] = new RealD(tSpot, (float) k);
 			assertTrue(cRD[k] != null);
-			assertTrue(cRD[k].getFieldType().equals(tSpot));
+			assertTrue(cRD[k].getCardinal().equals(tSpot));
 		}
 		
 		tM0 = new MonadRealD(	mName+"0", 
@@ -156,7 +156,7 @@ public class MonadRealDTest
 		assertTrue(tM6.isGEqual(tM7));
 		tM6.subtract(tM7)
 						.subtract(tM7)
-						.scale(new RealD(tM7.getCoeff((short) 0).getFieldType(), -1.0f));
+						.scale(new RealD(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 		
 	}

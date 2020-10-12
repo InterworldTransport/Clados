@@ -424,7 +424,7 @@ public class NyadRealD extends NyadAbstract
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		rB.append("protoOne=\"" + pN.protoOne.getFieldTypeString() + "\" ");
+		rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
 		rB.append(">\n");
 		rB.append(pN.getFootPoint().toXMLString());
 		rB.append(pN.protoOne.toXMLString());
@@ -450,7 +450,7 @@ public class NyadRealD extends NyadAbstract
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		rB.append("protoOne=\"" + pN.protoOne.getFieldTypeString() + "\" ");
+		rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
 		rB.append(">\n");
 		rB.append(pN.getFootPoint().toXMLString());
 		rB.append(pN.protoOne.toXMLString());
@@ -470,7 +470,7 @@ public class NyadRealD extends NyadAbstract
 
 	/**
 	 * This element holds holds the field's multiplicative unity. It gets used
-	 * when constructing other parts of the NyadRealD to ensure field type
+	 * when constructing other parts of the NyadRealD to ensure cardinal
 	 * safety.
 	 */
 	protected RealD					protoOne;
@@ -580,7 +580,7 @@ public class NyadRealD extends NyadAbstract
 		catch (FieldBinaryException e)
 		{
 			throw new CladosNyadException(this,
-							"Monad Field types must match for compression.");
+							"Monad cardinals must match for compression.");
 		}
 		catch (CladosMonadBinaryException e)
 		{
@@ -939,12 +939,12 @@ public class NyadRealD extends NyadAbstract
 		catch (FieldBinaryException e)
 		{
 			throw new CladosNyadException(this,
-							"Monad Field types must match for compression.");
+							"Monad cardinals must match for compression.");
 		}
 		catch (CladosMonadBinaryException e)
 		{
 			throw new CladosNyadException(this,
-							"Monad Field types must match for compression.");
+							"Monad cardinals must match for compression.");
 		}
 
 	}

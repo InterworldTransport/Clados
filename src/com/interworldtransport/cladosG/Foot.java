@@ -106,7 +106,7 @@ public final class Foot
 	public Foot(String pName, DivField pF)
 	{
 		setFootName(pName);
-		setNumberType(pF.getFieldType());
+		setNumberType(pF.getCardinal());
 		rFrames = new ArrayList<String>(1);
 		rFrames.add(pName);
 	}
