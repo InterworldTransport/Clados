@@ -24,40 +24,98 @@
  */
 package com.interworldtransport.cladosF;
 /**
- * DivFields currently come in four varieties. {RealF, RealD, ComplexF, ComplexD}
+ * DivFields currently come in four varieties. RealF, RealD, ComplexF, ComplexD
  * To facilitate a Builder class we would give basic information and construct any 
  * of them. This would be supported by an enumeration type that can't be DivField 
  * itself because DivField is subclassed to make the four field classes.
  * 
- * The DivField builder would be a singleton that keeps track of Cardinals and builds
- * them as needed.
- * Not sure there has to be an instance tracking Cardinals, though. 
- * Could all be static methods.
- * Maybe the enum could double up as the builder, though it wouldn't be a singleton
- * except in the sense of a singleton per DivField subclass.
+ * This enum doubles up a bit as a builder. Each of its instances rely on the shared
+ * static methods and have a few instance methods of their own that 'switch' on 
+ * their identity to determine what gets built and returned.
+ * 
+ * This enumeration has non-static methods for each instance, but they don't cause
+ * a state change. CladosField HAS NO INTERNAL STATE to change unlike the Builder
+ * in the same package.
  *	
  * @version 1.0
  * @author Dr Alfred W Differ
- *
  */
 public enum CladosField 
-{
-	REALF("R|F"),
-	REALD("R|D"),
-	COMPLEXF("C|F"),
-	COMPLEXD("C|D")
-	;
+{	// All of these have implicit private constructors
+	COMPLEXD,
+	COMPLEXF,
+	REALD,
+	REALF;
 
-	public 	final String 	_symbol;
-
-	CladosField(String pSymbol) 
+	public final static DivField createONE(CladosField pField, Cardinal pCard)
 	{
-		_symbol=pSymbol;
+		switch (pField)
+		{
+			case REALF: 	return new RealF(pCard, 1f);
+			case REALD: 	return new RealD(pCard, 1d);
+			case COMPLEXF: 	return new ComplexF(pCard, 1f, 0f);
+			case COMPLEXD: 	return new ComplexD(pCard, 1d, 0d);
+			default:		return null;
+		}
 	}
 
-	@Override
-	public String toString() 
+	public final static DivField createZERO(CladosField pField, Cardinal pCard)
 	{
-		return _symbol;
+		switch (pField)
+		{
+			case REALF: 	return new RealF(pCard, 0f);
+			case REALD: 	return new RealD(pCard, 0d);
+			case COMPLEXF: 	return new ComplexF(pCard, 0f, 0f);
+			case COMPLEXD: 	return new ComplexD(pCard, 0d, 0d);
+			default:		return null;
+		}
+	}
+	
+	public final DivField createONE(Cardinal pCard)
+	{
+		switch (this)
+		{
+			case REALF: 	return new RealF(pCard, 1f);
+			case REALD: 	return new RealD(pCard, 1d);
+			case COMPLEXF: 	return new ComplexF(pCard, 1f, 0f);
+			case COMPLEXD: 	return new ComplexD(pCard, 1d, 0d);
+			default:		return null;
+		}
+	}
+	
+	public final DivField createONE(String pCard)
+	{
+		switch (this)
+		{
+			case REALF: 	return new RealF(Cardinal.generate(pCard), 1f);
+			case REALD: 	return new RealD(Cardinal.generate(pCard), 1d);
+			case COMPLEXF: 	return new ComplexF(Cardinal.generate(pCard), 1f, 0f);
+			case COMPLEXD: 	return new ComplexD(Cardinal.generate(pCard), 1d, 0d);
+			default:		return null;
+		}
+	}
+	
+	public final DivField createZERO(Cardinal pCard)
+	{
+		switch (this)
+		{
+			case REALF: 	return new RealF(pCard, 0f);
+			case REALD: 	return new RealD(pCard, 0d);
+			case COMPLEXF: 	return new ComplexF(pCard, 0f, 0f);
+			case COMPLEXD: 	return new ComplexD(pCard, 0d, 0d);
+			default:		return null;
+		}
+	}
+	
+	public final DivField createZERO(String pCard)
+	{
+		switch (this)
+		{
+			case REALF: 	return new RealF(Cardinal.generate(pCard), 0f);
+			case REALD: 	return new RealD(Cardinal.generate(pCard), 0d);
+			case COMPLEXF: 	return new ComplexF(Cardinal.generate(pCard), 0f, 0f);
+			case COMPLEXD: 	return new ComplexD(Cardinal.generate(pCard), 0d, 0d);
+			default:		return null;
+		}
 	}
 }
