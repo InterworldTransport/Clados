@@ -65,16 +65,32 @@ public class NyadComplexF extends NyadAbstract
 	 * algebra named in the parameter. Coverage is true if a monad can be found
 	 * in the nyad that belongs to the algebra.
 	 * 
-	 * @param pN
-	 * 			NyadAbstract
-	 * @param pAlg
-	 *            String
+	 * @param pN	NyadComplexF
+	 * @param pAlg	String
 	 * @return int
 	 */
 	public static int findAlgebra(NyadComplexF pN, AlgebraComplexF pAlg)
 	{
 		for (MonadComplexF pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
+		return -1;
+	}
+	
+	/**
+	 * Return an integer pointing to the part of the nyad that covers the
+	 * algebra named in the parameter. Coverage is true if a monad can be found
+	 * in the nyad that belongs to the algebra.
+	 * 
+	 * @param pN		NyadComplexF
+	 * @param pAlg		String
+	 * @param pStart	int
+	 * @return int
+	 */
+	public static int findNextAlgebra(NyadComplexF pN, AlgebraComplexF pAlg, int pStart)
+	{
+		if(pN.getMonadList().size()<pStart) return -1;
+		for (int j=pStart; j < pN.getMonadList().size(); j++)
+			if (pAlg.equals(pN.getMonadList(j).getAlgebra())) return j;
 		return -1;
 	}
 	
@@ -259,52 +275,66 @@ public class NyadComplexF extends NyadAbstract
 	}
 
 	/**
-	 * This method determines whether or not the Nyad is a pscalar in the
-	 * particular algebra in question.
+	 * This method determines whether or not the Nyad is a pscalar in the algebra in question.
+	 * It works essentially the same way as isScalarAt.
 	 * 
-	 * @param pN
-	 *            NyadComplexF
-	 * @param pAlg
-	 *            String
-	 * @return boolean
+	 * @param 	pN		NyadComplexF
+	 * @param 	pAlg	AlgebraComplexF
+	 * @return 	boolean
 	 */
 	public static boolean isPScalarAt(NyadComplexF pN, AlgebraComplexF pAlg)
 	{
-		int tSpot = findAlgebra(pN, pAlg);
-		if (tSpot > 0)
+		boolean test = false;	// Assume test fails
+		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
+		int maxGrade = pAlg.getGProduct().getGradeCount()-1; // find pAlg's max grade
+		int j=0;
+		int tSpot = 0;
+		while (j<pN.getMonadList().size())	// loop through monads
 		{
-			MonadComplexF tM = pN.getMonadList(tSpot);
-			if (isGrade(tM, tM.getAlgebra().getGProduct().getGradeCount() - 1))
-				return true;
-			
-			return false;
-		}
-		
-		return false;
+			tSpot = findNextAlgebra(pN, pAlg, j);	// find a monad using pAlg
+			if (tSpot < 0) break;					// none found?  break out of loop
+			else if (!isGrade(pN.getMonadList(tSpot), maxGrade)) return false;	//found and not pscalar? Fails.
+			else 
+			{
+				test = true;	// found and IS pscalar? test=true because one was found.
+				j=tSpot+1;		// increment loop var to where Alg match was found
+			}
+		}						// loop all done
+		return test;	// if test is true, no non-pscalar(s) found at pAlg, but pscalar WAS found.
 	}
 
 	/**
-	 * This method determines whether or not the Nyad is a scalar in the
-	 * particular algebra in question.
+	 * This method determines whether or not the Nyad is a scalar in the algebra in question.
 	 * 
-	 * @param pN
-	 *            NyadComplexF
-	 * @param pAlg
-	 *            String
-	 * @return boolean
+	 * The method looks for Algebra matches in the monad list. If none are found the test fails.
+	 * If one is found and the related monad is a scalar, the test is temporarily true, 
+	 * but the search continues until one exhausts the monad list for algebra matches.
+	 * If exhaustion occurs before another match is found with a non-scalar monad, the test is 
+	 * solidly true. If a non-scalar is found before the monad list is exhausted, the test fails.
+	 * 
+	 * @param 	pN		NyadComplexF
+	 * @param 	pAlg	AlgebraComplexF
+	 * @return 	boolean
 	 */
 	public static boolean isScalarAt(NyadComplexF pN, AlgebraComplexF pAlg)
 	{
-		int tSpot = findAlgebra(pN, pAlg);
-		if (tSpot > 0)
-		{
-			if (isGrade(pN.getMonadList(tSpot), 0))
-				return true;
-			
-			return false;
-		}
+		boolean test = false;	// Assume test fails
+		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
 		
-		return false;
+		int j=0;
+		int tSpot = 0;
+		while (j<pN.getMonadList().size())	// loop through monads
+		{
+			tSpot = findNextAlgebra(pN, pAlg, j);	// find a monad using pAlg
+			if (tSpot < 0) break;					// none found?  break out of loop
+			else if (!isGrade(pN.getMonadList(tSpot), 0)) return false;	//found and not scalar? Fails.
+			else 
+			{
+				test = true;	// found and IS scalar? test=true because one was found.
+				j=tSpot+1;		// increment loop var to where Alg match was found
+			}
+		}						// loop all done
+		return test;	// if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
 	}
 
 	/**
