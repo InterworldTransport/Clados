@@ -1,4 +1,4 @@
-Copyright © 2018 Alfred Differ.
+Copyright © 2020 Alfred Differ.
 ------------------------------------------------------------------------ 
 ---com.interworldtransport.*
 -------------------------------------------------------------------- 
@@ -33,12 +33,12 @@ Larger ones can be negotiated.
 Welcome to Clados …so what is it? 
 
 It is a set of java packages that implement multi-vectors in Clifford Algebras.
-	cladosG				- The geometry package
-	cladosF				- The number package
+	cladosG			- The geometry package
+	cladosF			- The number package
 	cladosGExceptions	- The geometry exception package
 	cladosFExceptions	- The number exception package
-	cladosGTest			- The JUnit tests that support cladosG
-	cladosFTest			- The JUnit tests that support cladosF
+	cladosGTest		- The JUnit tests that support cladosG
+	cladosFTest		- The JUnit tests that support cladosF
 
 If you don't know what a Clifford Algebra is, consider yourself encouraged to 
 read about them elsewhere.  Geometric Algebras are a variation on a theme, so 
