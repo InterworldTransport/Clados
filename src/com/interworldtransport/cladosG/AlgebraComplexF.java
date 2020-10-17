@@ -24,9 +24,9 @@
  */
 package com.interworldtransport.cladosG;
 
-import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosF.ComplexF;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
-import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
@@ -87,7 +87,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 		setFoot(pF);
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
-		protoNumber = new ComplexF(pF.getNumberType(), 1.0f, 0.0f);
+		protoNumber = new ComplexF(pF.getCardinal(), 1.0f, 0.0f);
 	}
 	
 	/**
@@ -113,21 +113,20 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * @throws BadSignatureException
 	 * This constructor creates a new GProduct which requires a signature for the generators.
 	 * This signature string must be parse-able or this exception is thrown.
-	 * @throws CladosMonadException
-	 * This constructor results in a new Algebra. Many generic things can go wrong.
-	 * This exception catches them.
+	 * @throws GeneratorRangeException
+	 * This exception catches when the supported number of generators is out of range.
 	 */
 	public AlgebraComplexF(	String pS, 
 							Foot pFoot, 
 							String pSig)
 					throws 	BadSignatureException, 
-							CladosMonadException
+							GeneratorRangeException
 	{
 		setAlgebraName(pS);
 		setFoot(pFoot);
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
-		protoNumber = new ComplexF(pFoot.getNumberType(), 1.0f, 0.0f);
+		protoNumber = new ComplexF(pFoot.getCardinal(), 1.0f, 0.0f);
 	}
 
 	/**
@@ -148,21 +147,20 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * @throws BadSignatureException
 	 * This constructor creates a new GProduct which requires a signature for the generators.
 	 * This signature string must be parse-able or this exception is thrown.
-	 * @throws CladosMonadException
-	 * This constructor results in a new Algebra. Many generic things can go wrong.
-	 * This exception catches them.
+	 * @throws GeneratorRangeException
+	 * This exception catches when the supported number of generators is out of range.
 	 */
 	public AlgebraComplexF(	String pS, 
 							String pFootName, 
 							String pSig, 
 							ComplexF pF)
 					throws 	BadSignatureException, 
-							CladosMonadException
+							GeneratorRangeException
 	{
 		setAlgebraName(pS);
 		setFoot(new Foot(pFootName, pF.getCardinal()));
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
-		protoNumber = new ComplexF(foot.getNumberType(), 1.0f, 0.0f);
+		protoNumber = new ComplexF(foot.getCardinal(), 1.0f, 0.0f);
 	}
 }

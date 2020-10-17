@@ -147,4 +147,31 @@ public abstract class AlgebraAbstract
 		gProduct = pGP;
 		gBasis = pGP.getBasis();
 	}
+	
+	/**
+	 * This is a short-hand method providing the blade count on the canonical basis.
+	 * A Frame's blade count is limited at the upper end by this blade count.
+	 * 
+	 * @return	short	
+	 * This is the size of a monad's coefficient array, but more importantly it 
+	 * is the number of dimensions in the vector space represented by the 
+	 * canonical basis.
+	 */
+	public short getBladeCount()
+	{
+		return gBasis.getBladeCount();
+	}
+	
+	/**
+	 * This is a short-hand method providing the grade count on the canonical basis.
+	 * A Frame's grade count is limited at the upper end by this grade count.
+	 * 
+	 * @return	short	
+	 * This is the size of a monad's grade key. In an algebra with N generators it 
+	 * will always be N+1.
+	 */
+	public short getGradeCount()
+	{
+		return gBasis.getGradeCount();
+	}
 }

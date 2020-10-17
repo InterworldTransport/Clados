@@ -334,7 +334,7 @@ public class ComplexD extends DivField implements DivisableD
 	 */
 	public static ComplexD newONE(String pS)
 	{
-		return new ComplexD(new Cardinal(pS), 1.0d, 0.0d);
+		return new ComplexD(Cardinal.generate(pS), 1.0d, 0.0d);
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class ComplexD extends DivField implements DivisableD
 	 */
 	public static ComplexD newZERO(String pS)
 	{
-		return new ComplexD(new Cardinal(pS), 0.0D, 0.0D);
+		return new ComplexD(Cardinal.generate(pS), 0.0D, 0.0D);
 	}
 	
 	/**
@@ -404,7 +404,7 @@ public class ComplexD extends DivField implements DivisableD
 	public ComplexD()
 	{
 		vals	= new double[2];
-		setCardinal(new Cardinal(DivField.COMPLEXD));
+		setCardinal(Cardinal.generate(DivField.COMPLEXD));
 		setReal(0.0D);
 		setImg(0.0D);
 	}
@@ -500,7 +500,7 @@ public class ComplexD extends DivField implements DivisableD
 	public ComplexD(double pR, double pI)
 	{
 		vals = new double[2];
-		setCardinal(new Cardinal("Complex"));
+		setCardinal(Cardinal.generate("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}

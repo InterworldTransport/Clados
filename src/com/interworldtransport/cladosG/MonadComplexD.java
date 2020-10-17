@@ -331,10 +331,13 @@ public class MonadComplexD extends MonadAbstract
 	 * @param pF
 	 * 			  ComplexD
 	 * @throws BadSignatureException
-	 * 	This exception is thrown if the signature string offered is rejected.
+	 * 			This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadComplexD(	String pMonadName, 
 							String pAlgebraName,
@@ -342,7 +345,7 @@ public class MonadComplexD extends MonadAbstract
 							String pFootName, 
 							String pSig,
 							ComplexD pF) 
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		setAlgebra(new AlgebraComplexD(	pAlgebraName, 
 										new Foot(pFootName, pF.getCardinal()), 
@@ -380,6 +383,9 @@ public class MonadComplexD extends MonadAbstract
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadComplexD(	String pMonadName, 
 						String pAlgebraName,
@@ -387,7 +393,7 @@ public class MonadComplexD extends MonadAbstract
 						Foot pFoot, 
 						String pSig, 
 						ComplexD pF)
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		setAlgebra(new AlgebraComplexD(pAlgebraName, pFoot, pSig));
 
@@ -425,9 +431,11 @@ public class MonadComplexD extends MonadAbstract
 	 * @throws BadSignatureException
 	 * 	This exception is thrown if the signature string offered is rejected.
 	 * @throws CladosMonadException
-	 * 	This exception is thrown if there is an issue with the coefficients offered the default constructor.
+	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
-	 * 
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * return MonadComplexD
 	 */
 	public MonadComplexD(	String pMonadName, 
@@ -437,7 +445,7 @@ public class MonadComplexD extends MonadAbstract
 							String pSig,
 							ComplexD pF, 
 							String pSpecial) 
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, GeneratorRangeException, CladosMonadException
 	{
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already.
@@ -513,6 +521,9 @@ public class MonadComplexD extends MonadAbstract
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadComplexD(	String pMonadName, 
 							String pAlgebraName,
@@ -520,7 +531,7 @@ public class MonadComplexD extends MonadAbstract
 							String pFootName, 
 							String pSig, 
 							ComplexD[] pC)
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		if (pC[0] == null)
 			throw new CladosMonadException(this, "First coefficient is null.  There could be more nulls too.");
@@ -1219,9 +1230,8 @@ public class MonadComplexD extends MonadAbstract
 	public MonadComplexD scale(ComplexD pScale) throws FieldBinaryException
 	{
 		for (int j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++)
-		{
 			cM[j].multiply(pScale);
-		}
+		
 		setGradeKey();
 		return this;
 	}

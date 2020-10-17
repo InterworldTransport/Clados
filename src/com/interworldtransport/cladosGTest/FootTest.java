@@ -20,7 +20,7 @@ public class FootTest
 	@Before
 	public void setUp()
 	{
-		fType = new Cardinal("Test:NumberType");
+		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealD(fType,0.0);
 		tFoot = new Foot(fName, fType);
 		// A foot can be created with a raw number type of no magnitude
@@ -61,7 +61,7 @@ public class FootTest
 	{
 		assertFalse(tFoot == tFoot2); 
 		// Two different feet
-		assertTrue(tFoot.getNumberType() == tFoot2.getNumberType());
+		assertTrue(tFoot.getCardinal() == tFoot2.getCardinal());
 		// using the same number type.
 		// The algebras relying on these feet would fail reference checks
 		// but they are allowed to re-use each other's numbering system.

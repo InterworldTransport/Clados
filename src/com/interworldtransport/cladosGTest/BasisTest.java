@@ -4,6 +4,7 @@ import org.junit.*;
 
 import com.interworldtransport.cladosG.Basis;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +19,7 @@ public class BasisTest
 	Basis	tBasis14;
 
 	@Before
-	public void setUp() throws CladosMonadException
+	public void setUp() throws CladosMonadException, GeneratorRangeException
 	{
 		tBasis0 = new Basis((short) 0);
 		tBasis4 = new Basis((short) 4);

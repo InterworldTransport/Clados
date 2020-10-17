@@ -40,7 +40,7 @@ import com.interworldtransport.cladosGExceptions.*;
  * a monad. In algebras with a moderate number of generators this will matter a
  * great deal.
  * <p>
- * The choice of shorts limits this class to algebras with between 1 and 14
+ * The choice of shorts limits this class to algebras with between 0 and 14
  * generators inclusive (with 16284 blades) because 2^15-1 is the max for 
  * signed shorts and 15 generators produce 2^15 blades. Switching to int's 
  * enables up to 30 generators and 1,073,741,824 blades. Switching to long's 
@@ -60,6 +60,11 @@ import com.interworldtransport.cladosGExceptions.*;
  * to about 60. On even an old machine, this will be lightning fast.
  * That means it isn't worth worrying about which sort is faster in
  * filling a basis.
+ * <p>
+ * The proper way to use this class is almost as an enumeration. Once a basis
+ * has been generated for a particular number of generators, one should not
+ * have to do it again. If not for the high overhead associated with a basis
+ * involving many generators, this would be baked into this class already.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -67,20 +72,11 @@ import com.interworldtransport.cladosGExceptions.*;
 public final class Basis
 {
 	/**
-	 * This is just a factory method to help name a particular constructor.
-	 * It is used in place of 'new Basis(short)'.
-	 * 
-	 * @param numberOfGenerators Short representing unique algebraic directions
-	 * @return Basis Factory method returns a Basis with numberOfGenerators
-	 * @throws CladosMonadException
-	 * This constructor results in a new Basis. Many generic things can go wrong.
-	 * This exception catches them.
+	 * This is the maximum number of generators (14) a basis can support for now.
+	 * This maximum is a result of the choice to represent bladeCount with 16-bit
+	 * signed shorts.
 	 */
-	public static final Basis using(short numberOfGenerators)
-			throws CladosMonadException
-	{
-		return new Basis(numberOfGenerators);	
-	}
+	public static final short MAX_GEN=14;
 	/**
 	 * This is just a factory method to help name the copy constructor for Basis.
 	 * It is used in place of 'new Basis(Basis)'.
@@ -93,22 +89,53 @@ public final class Basis
 		return new Basis(pBasis);
 	}
 	/**
-	 * This is the maximum number of generators (14) a basis can support for now.
-	 * This maximum is a result of the choice to represent bladeCount with 16-bit
-	 * signed shorts.
+	 * This is just a factory method to help name a particular constructor.
+	 * It is used in place of 'new Basis(short)'.
+	 * 
+	 * @param numberOfGenerators Short representing unique algebraic directions
+	 * @return Basis Factory method returns a Basis with numberOfGenerators
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
-	public static final short MAX_GEN=14;
-	/**
-	 * This integer is the number of grades in the algebra. It is one more than
-	 * the number of generators and is used often enough to be worth keeping.
-	 */
-	private final short	gradeCount;
+	public static final Basis using(short numberOfGenerators)
+			throws GeneratorRangeException
+	{
+		return new Basis(numberOfGenerators);	
+	}
 	/**
 	 * This integer is the number of independent blades in an algebra. It is a
 	 * count of the number of vBasis rows and is used often enough to be worth
 	 * keeping around.
 	 */
 	private final short	bladeCount;
+	/**
+	 * This integer is the number of grades in the algebra. It is one more than
+	 * the number of generators and is used often enough to be worth keeping.
+	 */
+	private final short	gradeCount;
+	/**
+	 * This array is used for keeping track of where grades start and stop in
+	 * the vBasis. The difference between GradeRange[k] and GradeRange[k+1] is
+	 * binomial(GradeCount-1, k) = (GradeCount-1)! / (k! * ((GradeCount-1)-k)!)
+	 * GradeRange[j] is the first position for a blade of grade j.
+	 * 
+	 * This array enables the CladosG library to avoid implementing a factorial
+	 * method to determine binomial coefficients. Construction of the basis
+	 * creates the information for coefficients that would get calculated in
+	 * regular methods of a monad. Efficiency demands that they be stored here
+	 * for later use.
+	 * 
+	 * The size of the gradeRange array is always generators+2.
+	 * gradeRange[0] is always 0
+	 * gradeRange[1] is always 1
+	 * gradeRange[gradeCount-1] is always bladeCount-1
+	 * The way to interpret these fixed entries is scalars are always in the
+	 * first slot of a basis, vectors always start in the second slot, and the
+	 * pscalar is always found in the last slot. All other entries in this 
+	 * array have to be calculated and clados does it using the vKey.
+	 */
+	private final short[]	gradeRange;
 	/**
 	 * This array holds the representation of the vBasis. The vBasis is a
 	 * complete list of unique blades for an algebra.
@@ -146,28 +173,22 @@ public final class Basis
 	 * similar grade sort together.
 	 */
 	private final long[]	vKey;
+
 	/**
-	 * This array is used for keeping track of where grades start and stop in
-	 * the vBasis. The difference between GradeRange[k] and GradeRange[k+1] is
-	 * binomial(GradeCount-1, k) = (GradeCount-1)! / (k! * ((GradeCount-1)-k)!)
-	 * GradeRange[j] is the first position for a blade of grade j.
+	 * This is the copy constructor. It takes a previously generated Basis and
+	 * makes another independent copy.
 	 * 
-	 * This array enables the CladosG library to avoid implementing a factorial
-	 * method to determine binomial coefficients. Construction of the basis
-	 * creates the information for coefficients that would get calculated in
-	 * regular methods of a monad. Efficiency demands that they be stored here
-	 * for later use.
-	 * 
-	 * The size of the gradeRange array is always generators+2.
-	 * gradeRange[0] is always 0
-	 * gradeRange[1] is always 1
-	 * gradeRange[gradeCount-1] is always bladeCount-1
-	 * The way to interpret these fixed entries is scalars are always in the
-	 * first slot of a basis, vectors always start in the second slot, and the
-	 * pscalar is always found in the last slot. All other entries in this 
-	 * array have to be calculated and clados does it using the vKey.
+	 * @param pB
+	 *            Basis
 	 */
-	private final short[]	gradeRange;
+	public Basis(Basis pB)
+	{
+		gradeCount = pB.getGradeCount();
+		bladeCount = pB.getBladeCount();
+		vBasis = pB.getBasis();
+		vKey = pB.getBasisKey();
+		gradeRange = pB.getGradeRange();
+	}
 
 	/**
 	 * This is the basic constructor. It takes the number of generators as it's
@@ -177,13 +198,14 @@ public final class Basis
 	 * 
 	 * @param pGens
 	 * 		short This is the number of generators that make up the basis
-	 * @throws 
-	 * 		CladosMonadException Exception thrown if not 0 to 14 generators
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Basis(short pGens) throws CladosMonadException
+	public Basis(short pGens) throws GeneratorRangeException
 	{
 		if (pGens <0 | pGens > MAX_GEN)
-			throw new CladosMonadException(null, "Supported range is 0<->14 using 16 bit integers");
+			throw new GeneratorRangeException("Supported range is 0<->14 using 16 bit integers");
 		
 		gradeCount = (short) (pGens + 1);
 		bladeCount = (short) (1 << pGens);
@@ -203,47 +225,6 @@ public final class Basis
 			fillBasis();
 			fillGradeRange();
 		}
-	}
-
-	/**
-	 * This is the copy constructor. It takes a previously generated Basis and
-	 * makes another independent copy.
-	 * 
-	 * @param pB
-	 *            Basis
-	 */
-	public Basis(Basis pB)
-	{
-		gradeCount = pB.getGradeCount();
-		bladeCount = pB.getBladeCount();
-		vBasis = pB.getBasis();
-		vKey = pB.getBasisKey();
-		gradeRange = pB.getGradeRange();
-	}
-
-	/**
-	 * Return the number of grades in the basis. Since there is no geometry in
-	 * the basis this is a measure of the number of distinct generator subset
-	 * types that can be formed where the element count determines the type.
-	 * Because the empty set includes no generators, GradeCount will always be
-	 * one more than the number of generators.
-	 * 
-	 * @return short
-	 */
-	public short getGradeCount()
-	{
-		return gradeCount;
-	}
-
-	/**
-	 * Return the number of independent blades in the basis. This is the same as
-	 * the linear dimension of an algebra that uses this basis.
-	 * 
-	 * @return short
-	 */
-	public short getBladeCount()
-	{
-		return bladeCount;
 	}
 
 	/**
@@ -307,6 +288,31 @@ public final class Basis
 	}
 
 	/**
+	 * Return the number of independent blades in the basis. This is the same as
+	 * the linear dimension of an algebra that uses this basis.
+	 * 
+	 * @return short
+	 */
+	public short getBladeCount()
+	{
+		return bladeCount;
+	}
+
+	/**
+	 * Return the number of grades in the basis. Since there is no geometry in
+	 * the basis this is a measure of the number of distinct generator subset
+	 * types that can be formed where the element count determines the type.
+	 * Because the empty set includes no generators, GradeCount will always be
+	 * one more than the number of generators.
+	 * 
+	 * @return short
+	 */
+	public short getGradeCount()
+	{
+		return gradeCount;
+	}
+
+	/**
 	 * Get the array used for keeping track of where grades start in the Basis
 	 * array.
 	 * 
@@ -328,6 +334,51 @@ public final class Basis
 	public short getGradeRange(short p1)
 	{
 		return gradeRange[p1];
+	}
+
+	/**
+	 * This method produces a printable and parseable string that represents the
+	 * Basis in a human readable form. return String
+	 * 
+	 * @return String
+	 */
+	public String toXMLString()
+	{
+		StringBuilder rB = new StringBuilder("<Basis>\n");
+
+		rB.append("\t<Grades count=\"" + getGradeCount() + "\">\n");
+		for (short k = 0; k <= gradeCount - 2; k++)
+		{
+			rB.append("\t\t<Grade number=\"" + k + "\" range=\""
+							+ getGradeRange(k) + "-"
+							+ (getGradeRange((short) (k + 1)) - 1) + "\" />\n");
+		}
+		rB.append("\t\t<Grade number=\"" + (getGradeCount() - 1)
+						+ "\" range=\""
+						+ getGradeRange((short) (gradeCount - 1)) + "-"
+						+ getGradeRange((short) (gradeCount - 1)) + "\" />\n");
+		rB.append("\t</Grades>\n");
+
+		rB.append("\t<Blades count=\"" + getBladeCount() + "\">\n");
+		for (short k = 0; k < bladeCount; k++) // Appending blades
+		{
+			rB.append("\t\t<Blade number=\"" + (k + 1) + "\" key=\""
+							+ getBasisKey(k) + "\" generators=\"");
+			for (short m = 0; m < gradeCount - 1; m++)
+			{
+				if (vBasis[k][m] > 0)
+				{
+					rB.append(getBasis(k, m));
+					rB.append(",");
+				}
+			}
+			if (k > 0) rB.deleteCharAt(rB.length() - 1);
+			rB.append("\" />\n");
+		}
+		rB.append("\t</Blades>\n");
+
+		rB.append("</Basis>\n");
+		return rB.toString();
 	}
 
 	/**
@@ -488,7 +539,7 @@ public final class Basis
 			} // All blades searched
 		} // All blades ranged as grades. Get along little dogie.
 	}
-
+	
 	/**
 	 * To heapify a subtree rooted with node i. 
 	 * @param vKey long[]
@@ -528,50 +579,5 @@ public final class Basis
 				heapifyKey(vKey, heapSize, largest); 
 			} 
 		}
-	
-	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form. return String
-	 * 
-	 * @return String
-	 */
-	public String toXMLString()
-	{
-		StringBuilder rB = new StringBuilder("<Basis>\n");
-
-		rB.append("\t<Grades count=\"" + getGradeCount() + "\">\n");
-		for (short k = 0; k <= gradeCount - 2; k++)
-		{
-			rB.append("\t\t<Grade number=\"" + k + "\" range=\""
-							+ getGradeRange(k) + "-"
-							+ (getGradeRange((short) (k + 1)) - 1) + "\" />\n");
-		}
-		rB.append("\t\t<Grade number=\"" + (getGradeCount() - 1)
-						+ "\" range=\""
-						+ getGradeRange((short) (gradeCount - 1)) + "-"
-						+ getGradeRange((short) (gradeCount - 1)) + "\" />\n");
-		rB.append("\t</Grades>\n");
-
-		rB.append("\t<Blades count=\"" + getBladeCount() + "\">\n");
-		for (short k = 0; k < bladeCount; k++) // Appending blades
-		{
-			rB.append("\t\t<Blade number=\"" + (k + 1) + "\" key=\""
-							+ getBasisKey(k) + "\" generators=\"");
-			for (short m = 0; m < gradeCount - 1; m++)
-			{
-				if (vBasis[k][m] > 0)
-				{
-					rB.append(getBasis(k, m));
-					rB.append(",");
-				}
-			}
-			if (k > 0) rB.deleteCharAt(rB.length() - 1);
-			rB.append("\" />\n");
-		}
-		rB.append("\t</Blades>\n");
-
-		rB.append("</Basis>\n");
-		return rB.toString();
-	}
 
 }

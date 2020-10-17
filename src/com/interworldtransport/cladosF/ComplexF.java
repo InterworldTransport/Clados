@@ -334,7 +334,7 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF newONE(String pS)
 	{
-		return new ComplexF(new Cardinal(pS), 1.0f, 0.0f);
+		return new ComplexF(Cardinal.generate(pS), 1.0f, 0.0f);
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class ComplexF extends DivField implements DivisableF
 	 */
 	public static ComplexF newZERO(String pS)
 	{
-		return new ComplexF(new Cardinal(pS), 0.0f, 0.0f);
+		return new ComplexF(Cardinal.generate(pS), 0.0f, 0.0f);
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF()
 	{
 		vals	= new float[2];
-		setCardinal(new Cardinal(DivField.COMPLEXF));
+		setCardinal(Cardinal.generate(DivField.COMPLEXF));
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -500,7 +500,7 @@ public class ComplexF extends DivField implements DivisableF
 	public ComplexF(float pR, float pI)
 	{
 		vals = new float[2];
-		setCardinal(new Cardinal("Complex"));
+		setCardinal(Cardinal.generate("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}

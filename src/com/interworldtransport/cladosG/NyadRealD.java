@@ -302,6 +302,7 @@ public class NyadRealD extends NyadAbstract
 		}						// loop all done
 		return test;	// if test is true, no non-pscalar(s) found at pAlg, but pscalar WAS found.
 	}
+	
 	/**
 	 * This method determines whether or not the Nyad is a scalar in the algebra in question.
 	 * 
@@ -705,11 +706,13 @@ public class NyadRealD extends NyadAbstract
 	 * @throws CladosNyadException
 	 * 		This exception is thrown when the new monad cannot be appended.
 	 * 		Perhaps there is a reference mismatch or the new monad failed construction.
-	 * 
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * @return NyadRealD
 	 */
 	public NyadRealD createMonad(String pName, String pAlgebra, String pFrame, String pSig) 
-			throws BadSignatureException, CladosMonadException, CladosNyadException
+			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException
 	{
 		MonadRealD tM = new MonadRealD(	pName, 
 										pAlgebra, 

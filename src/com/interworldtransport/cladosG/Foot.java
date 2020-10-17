@@ -89,7 +89,7 @@ public final class Foot
 	public Foot(String pName, Cardinal pFT)
 	{
 		setFootName(pName);
-		setNumberType(pFT);
+		setCardinal(pFT);
 		rFrames = new ArrayList<String>(1);
 		rFrames.add(pName);
 	}
@@ -100,13 +100,13 @@ public final class Foot
 	 * @param pName
 	 *            String This string will be the name of the foot point.
 	 * @param pF
-	 *            Cardinal This object defines the kind of numbers that are
-	 *            meaningful for this foot point
+	 *            DivField This object holds the cardinal that defines
+	 *            the kind of numbers that are meaningful for this foot point
 	 */
 	public Foot(String pName, DivField pF)
 	{
 		setFootName(pName);
-		setNumberType(pF.getCardinal());
+		setCardinal(pF.getCardinal());
 		rFrames = new ArrayList<String>(1);
 		rFrames.add(pName);
 	}
@@ -144,7 +144,7 @@ public final class Foot
 		return footName;
 	}
 
-	public Cardinal getNumberType()
+	public Cardinal getCardinal()
 	{
 		return numType;
 	}
@@ -186,7 +186,7 @@ public final class Foot
 		this.footName = footName;
 	}
 
-	public void setNumberType(Cardinal fN)
+	public void setCardinal(Cardinal fN)
 	{
 		this.numType = fN;
 	}

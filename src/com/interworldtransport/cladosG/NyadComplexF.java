@@ -706,11 +706,13 @@ public class NyadComplexF extends NyadAbstract
 	 * @throws CladosNyadException
 	 * 		This exception is thrown when the new monad cannot be appended.
 	 * 		Perhaps there is a reference mismatch or the new monad failed construction.
-	 * 
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * @return NyadComplexF
 	 */
 	public NyadComplexF createMonad(String pName, String pAlgebra, String pFrame, String pSig) 
-			throws BadSignatureException, CladosMonadException, CladosNyadException
+			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException
 	{
 		MonadComplexF tM = new MonadComplexF(	pName, 
 												pAlgebra, 

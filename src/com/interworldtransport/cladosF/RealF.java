@@ -334,7 +334,7 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF newONE(String pS)
 	{
-		return new RealF(new Cardinal(pS), 1.0f);
+		return new RealF(Cardinal.generate(pS), 1.0f);
 	}
 	
 	/**
@@ -347,7 +347,7 @@ public class RealF extends DivField implements DivisableF
 	 */
 	public static RealF newZERO(String pS)
 	{
-		return new RealF(new Cardinal(pS), 0.0f);
+		return new RealF(Cardinal.generate(pS), 0.0f);
 	}
 	
 	/**
@@ -404,7 +404,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF()
 	{
 		vals = new float[1];
-		setCardinal(new Cardinal(DivField.REALF));
+		setCardinal(Cardinal.generate(DivField.REALF));
 		setReal(0.0F);
 		
 	}
@@ -469,7 +469,7 @@ public class RealF extends DivField implements DivisableF
 	public RealF(float pR)
 	{
 		vals = new float[1];
-		setCardinal(new Cardinal("Real"));
+		setCardinal(Cardinal.generate("Real"));
 		setReal(pR);
 		
 	}

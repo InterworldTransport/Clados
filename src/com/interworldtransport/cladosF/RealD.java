@@ -334,7 +334,7 @@ public class RealD extends DivField implements DivisableD
 	 */
 	public static RealD newONE(String pS)
 	{
-		return new RealD(new Cardinal(pS), 1.0D);
+		return new RealD(Cardinal.generate(pS), 1.0D);
 	}
 	
 	/**
@@ -347,7 +347,7 @@ public class RealD extends DivField implements DivisableD
 	 */
 	public static RealD newZERO(String pS)
 	{
-		return new RealD(new Cardinal(pS), 0.0D);
+		return new RealD(Cardinal.generate(pS), 0.0D);
 	}
 	
 	/**
@@ -404,7 +404,7 @@ public class RealD extends DivField implements DivisableD
 	public RealD()
 	{
 		vals	= new double[1];
-		setCardinal(new Cardinal(DivField.REALD));
+		setCardinal(Cardinal.generate(DivField.REALD));
 		setReal(0.0D);
 		
 	}
@@ -469,7 +469,7 @@ public class RealD extends DivField implements DivisableD
 	public RealD(double pR)
 	{
 		vals = new double[1];
-		setCardinal(new Cardinal("Real"));
+		setCardinal(Cardinal.generate("Real"));
 		setReal(pR);
 		
 	}

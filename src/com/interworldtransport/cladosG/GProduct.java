@@ -52,11 +52,34 @@ import com.interworldtransport.cladosGExceptions.*;
 public final class GProduct
 {
 	/**
-	 * This basis holds a representation of all the elements that can be built
-	 * from the generators to span the algebra's vector space. It is the
-	 * Eddington Basis.
+	 * Return a measure of the validity of the Signature string. A string with
+	 * +'s and -'s will pass. No other one does.
+	 * 
+	 * This method also establishes the internal integer representation of the
+	 * signature.
+	 * 
+	 * @param pSg
+	 *            String
+	 * @return boolean This boolean states whether the GProduct signature is valid.
 	 */
-	private final Basis		eddingtonBasis;
+	public static final boolean validateSignature(String pSg)
+	{
+		if (pSg == null) 		return false;	// Nothing to test
+		if (pSg.length() == 0)	return true;	// Empty list IS allowed
+		for (short j = 0; j < pSg.length(); j++)
+		{
+			if (pSg.substring(j, j + 1).equals("+")) continue;	// good character
+			if (pSg.substring(j, j + 1).equals("-")) continue;	// good character
+			return false;										// bad character
+		}
+		return true;							// nothing bad detected
+	}
+	/**
+	 * This basis holds a representation of all the elements that can be built
+	 * from the generators to span the algebra's vector space. It is the object
+	 * that Ken Greider called the Eddington Basis.
+	 */
+	private final Basis		canonicalBasis;
 	/**
 	 * This integer array is an internal translation of the product signature.
 	 * Generators with a positive square appear as a zero (0) while those with
@@ -76,6 +99,7 @@ public final class GProduct
 	 * while the lowest rank blade is #1.
 	 */
 	private final short[][]	result;
+
 	/**
 	 * This string holds the signature information describing the squares of all
 	 * geometry generators present on the multiplication table.
@@ -92,39 +116,31 @@ public final class GProduct
 	 * the GProduct object.
 	 * 
 	 * @param pGP
-	 *           A GProduct to imitate
+	 *          A GProduct to imitate
 	 * @throws BadSignatureException
-	 * This constructor creates a new GProduct which requires a signature for the generators.
-	 * This signature string must be parse-able or this exception is thrown.
+	 * 			This exception is thrown when an null GProduct is passed in.
 	 */
 	public GProduct(GProduct pGP) throws BadSignatureException
 	{
-		signature = new String(pGP.getSignature());
-		if (!validateSignature(signature))
-			throw new BadSignatureException(this, "Valid signature expected.");
+		if (pGP == null) throw new BadSignatureException(this, "Can't extract signature from null GProduct.");
 		
-		if (signature.length() == 0)
-			nSignature = new short[1];
-		else	
-			nSignature = new short[signature.length()];
+		if (pGP.getSignature().length() == 0) 	nSignature = new short[1];
+		else 									nSignature = new short[pGP.getSignature().length()];
 		
 		int m=0;
-		for (char b : signature.toCharArray())
+		for (char b : pGP.getSignature().toCharArray())
 		{
 			switch (b)
 			{
-				case '+':
-					nSignature[m] = 0;
-					m++;
-					break;
-				case '-':
-					nSignature[m] = 1;
-					m++;
-					break;
+				case '+':	nSignature[m] = 0; 	// Zero chosen to imply no need for sign flip when pairs removed from result
+							m++;
+							break;
+				case '-':	nSignature[m] = 1;	// One chosen to imply need for sign flip when pairs removed from result 
+							m++;
 			}
 		}
-		
-		eddingtonBasis = pGP.getBasis();
+		signature = new String(pGP.getSignature());
+		canonicalBasis = pGP.getBasis();	// Brand new one not needed. Re-used like an enumeration.
 		
 		result = pGP.getResult().clone();
 	}
@@ -135,55 +151,47 @@ public final class GProduct
 	 * 
 	 * @param pSig
 	 *            String
-   	 * @throws CladosMonadException
+   	 * @throws GeneratorRangeException
 	 * 			This exception is thrown when a Basis fails to form.
 	 * @throws BadSignatureException
 	 * 			This exception is thrown when an invalid signature is found
 	 */
 	public GProduct(String pSig) 
-			throws BadSignatureException, CladosMonadException
+			throws BadSignatureException, GeneratorRangeException
 	{
-		// Validate pSig to ensure it has only the information we want. Then
-		// save it internally
-		//boolean check = validateSignature(pSig);
-		if (!validateSignature(pSig))
-			throw new BadSignatureException(this, "Valid signature expected.");
-		signature = pSig;
-		if (signature.length() == 0)
-			nSignature = new short[1];
-		else
-			nSignature = new short[signature.length()];
+		if (!validateSignature(pSig)) 		throw new BadSignatureException(this, "Valid signature required.");
+		if (pSig.length()>Basis.MAX_GEN) 	throw new GeneratorRangeException("Signature too long");
 		
+		if (pSig.length() == 0) 			nSignature = new short[1];
+		else 								nSignature = new short[pSig.length()];
+				
 		int m=0;
-		for (char b : signature.toCharArray())
+		for (char b : pSig.toCharArray())
 		{
 			switch (b)
 			{
-				case '+':
-					nSignature[m] = 0;
-					m++;
-					break;
-				case '-':
-					nSignature[m] = 1;
-					m++;
-					break;
+				case '+':	nSignature[m] = 0;	// Zero chosen to imply no need for sign flip when pairs removed from result
+							m++;
+							break;
+				case '-':	nSignature[m] = 1;	// One chosen to imply need for sign flip when pairs removed from result 
+							m++;
 			}
 		}
-		
-		eddingtonBasis = new Basis((short) pSig.length());
+		signature = pSig;
+		canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed? Implied by new Signature.
 
 		// Fill the ProductResult array with integers representing Vector
 		// Basis elements that show the product of two other such elements.
-		result = new short[eddingtonBasis.getBladeCount()][eddingtonBasis.getBladeCount()];
+		result = new short[canonicalBasis.getBladeCount()][canonicalBasis.getBladeCount()];
 		
-		for (short j = 0; j < eddingtonBasis.getBladeCount(); j++)
+		for (short j = 0; j < canonicalBasis.getBladeCount(); j++)
 		{
 			result[0][j] = (short) (j + 1);
 			result[j][0] = (short) (j + 1);
-		} // Scalar section of product result finished early
+		} // Scalar section of result done separately because no sorting is needed.
 		
-		for (short j = 1; j < eddingtonBasis.getBladeCount(); j++) 
-			for (short k = 1; k < eddingtonBasis.getBladeCount(); k++) 
+		for (short j = 1; j < canonicalBasis.getBladeCount(); j++) 
+			for (short k = 1; k < canonicalBasis.getBladeCount(); k++) 
 				fillResult(j, k);	
 	}
 
@@ -202,9 +210,7 @@ public final class GProduct
 		short left=result[pj][pk];
 		short right=result[pk][pj];
 		
-		if (left == right * -1)
-			return 1;
-		
+		if (left == right * -1)	return 1;
 		return 0;
 	}
 
@@ -216,7 +222,7 @@ public final class GProduct
 	 */
 	public Basis getBasis()
 	{
-		return eddingtonBasis;
+		return canonicalBasis;
 	}
 
 	/**
@@ -227,7 +233,7 @@ public final class GProduct
 	 */
 	public short getBladeCount()
 	{
-		return eddingtonBasis.getBladeCount();
+		return canonicalBasis.getBladeCount();
 	}
 
 	/**
@@ -242,9 +248,7 @@ public final class GProduct
 	 */
 	public short getCommuteSign(short pj, short pk)
 	{
-		if (result[pj][pk] == result[pk][pj])
-			return 1;
-		
+		if (result[pj][pk] == result[pk][pj]) return 1;
 		return 0;
 	}
 
@@ -255,7 +259,7 @@ public final class GProduct
 	 */
 	public short getGradeCount()
 	{
-		return eddingtonBasis.getGradeCount();
+		return canonicalBasis.getGradeCount();
 	}
 
 	/**
@@ -268,13 +272,9 @@ public final class GProduct
 	public short[] getGradeRange(short pGrade)
 	{
 		short[] tR = new short[2];
-		tR[0] = eddingtonBasis.getGradeRange(pGrade);
-
-		if (pGrade == eddingtonBasis.getGradeCount() - 1)
-			tR[1] = tR[0];
-		else
-			tR[1] = (short) (eddingtonBasis.getGradeRange((short) (pGrade + 1)) - 1);
-
+		tR[0] = canonicalBasis.getGradeRange(pGrade);
+		tR[1] = (	(pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+				? 	tR[0] : (short) (canonicalBasis.getGradeRange((short) (pGrade + 1)) - 1)	);
 		return tR;
 	}
 
@@ -328,9 +328,7 @@ public final class GProduct
 	 */
 	public short getSign(short pj, short pk)
 	{
-		if (result[pj][pk] < 0)
-			return -1;
-		
+		if (result[pj][pk] < 0) return -1;
 		return 1;
 	}
 
@@ -355,12 +353,12 @@ public final class GProduct
 	{
 		StringBuilder rB = new StringBuilder("<GProduct signature=\"" + signature
 						+ "\">\n");
-		rB.append(eddingtonBasis.toXMLString());
-		rB.append("<ProductTable rows=\"" + eddingtonBasis.getBladeCount() + "\">\n");
-		for (short k = 0; k < eddingtonBasis.getBladeCount(); k++) // Appending rows
+		rB.append(canonicalBasis.toXMLString());
+		rB.append("<ProductTable rows=\"" + canonicalBasis.getBladeCount() + "\">\n");
+		for (short k = 0; k < canonicalBasis.getBladeCount(); k++) // Appending rows
 		{
 			rB.append("\t<row number=\"" + k + "\" entries=\"");
-			for (short m = 0; m < eddingtonBasis.getBladeCount(); m++)
+			for (short m = 0; m < canonicalBasis.getBladeCount(); m++)
 			{
 				rB.append(getResult(k, m));
 				rB.append(",");
@@ -372,7 +370,7 @@ public final class GProduct
 		rB.append("</GProduct>\n");
 		return rB.toString();
 	}
-
+	
 	/**
 	 * Set the array used for establishing the geometric multiplication results
 	 * of pairs of blades (j and k) of the Basis.
@@ -401,17 +399,17 @@ public final class GProduct
 	 */
 	private void fillResult(short j, short k)
 	{
-		short[] bothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
+		short[] bothOps = new short[2 * canonicalBasis.getGradeCount() - 2];
 		short m = 0;
 		short signFlip = 0;
 		short tempBubbleSpot = 0;			//yes. There is a bubble sort. Not a big one.
 		
 		// Set up row with all generators for each basis element j and k
-		for (m = 0; m < eddingtonBasis.getGradeCount() - 1; m++)
+		for (m = 0; m < canonicalBasis.getGradeCount() - 1; m++)
 		{
 			// Copy VectorBasis' into doubleSort to find new element
-			bothOps[m] = eddingtonBasis.getBasis(j, m);
-			bothOps[m + eddingtonBasis.getGradeCount() - 1] = eddingtonBasis.getBasis(k, m);
+			bothOps[m] = canonicalBasis.getBasis(j, m);
+			bothOps[m + canonicalBasis.getGradeCount() - 1] = canonicalBasis.getBasis(k, m);
 		}
 		// bothOps filled but unsorted. That means the zero slots in the kth blade (if any)
 		// will be to the right of non-zero indexes in the jth blade. Basically, the first
@@ -427,11 +425,11 @@ public final class GProduct
 		// will be to the left of all of non-zero indexes in the both blades.
 		// All that is needed next is to sort the non-zero's on the right of bothOps.
 		
-		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
+		for (m = 0; m < 2 * canonicalBasis.getGradeCount() - 2; m++)
 		{
 			if (bothOps[m] == 0) continue;
 			
-			for (short n = 0; n < 2 * eddingtonBasis.getGradeCount() - 3; n++)
+			for (short n = 0; n < 2 * canonicalBasis.getGradeCount() - 3; n++)
 			{
 				if (bothOps[n] <= bothOps[n + 1]) continue;
 				
@@ -448,7 +446,7 @@ public final class GProduct
 		//**************************************************************************
 
 		// Now we need to remove generator pairs and track signs.
-		for (m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m >= 1; m--)
+		for (m = (short) (2 * canonicalBasis.getGradeCount() - 3); m >= 1; m--)
 		{
 			//if (bothOps[m] == 0) continue;
 			if (bothOps[m] == bothOps[m - 1] && bothOps[m] != 0)
@@ -478,14 +476,14 @@ public final class GProduct
 		// Ex: 8 generators implies Base-9 keys stuffed into a Base-10 array
 					
 		long bothOpsKey = 0L;
-		for (m = 0; m < 2 * eddingtonBasis.getGradeCount() - 2; m++)
-			bothOpsKey += (long) bothOps[m]*Math.pow(eddingtonBasis.getGradeCount(),
-													2*(eddingtonBasis.getGradeCount()) -3-m);
+		for (m = 0; m < 2 * canonicalBasis.getGradeCount() - 2; m++)
+			bothOpsKey += (long) bothOps[m]*Math.pow(canonicalBasis.getGradeCount(),
+													2*(canonicalBasis.getGradeCount()) -3-m);
 		
 		// Compare bothOpsKey against vKey to find match
 		result[j][k] = 0;
-		long[] pKey = eddingtonBasis.getBasisKey();
-		for (m = 0; m < eddingtonBasis.getBladeCount(); m++)
+		long[] pKey = canonicalBasis.getBasisKey();
+		for (m = 0; m < canonicalBasis.getBladeCount(); m++)
 		{
 			if (bothOpsKey == pKey[m])
 			{
@@ -496,7 +494,7 @@ public final class GProduct
 		assert(result[j][k]!=0);	// if result entry is not zero, fill is complete.
 		// This assertion prevents us from using light-like generators
 	}
-	
+
 	/**
 	 * This is a private method used to settle generators to the end during
 	 * the fillResult method.
@@ -506,10 +504,10 @@ public final class GProduct
 	 */
 	private short[] settleGenerators(short[] sortArray)
 	{
-		short[] tempBothOps = new short[2 * eddingtonBasis.getGradeCount() - 2];
-		short q = (short) (2 * eddingtonBasis.getGradeCount() - 3);
+		short[] tempBothOps = new short[2 * canonicalBasis.getGradeCount() - 2];
+		short q = (short) (2 * canonicalBasis.getGradeCount() - 3);
 		
-		for (short m = (short) (2 * eddingtonBasis.getGradeCount() - 3); m>-1; m--) 
+		for (short m = (short) (2 * canonicalBasis.getGradeCount() - 3); m>-1; m--) 
 		// generator (column) counter GradeCount-2 through 0 [decreasing]
 		// Only one pass is needed
 		{
@@ -521,35 +519,5 @@ public final class GProduct
 		}
 		return tempBothOps;
 		
-	}
-
-	/**
-	 * Return a measure of the validity of the Signature string. A string with
-	 * +'s and -'s will pass. No other one does.
-	 * 
-	 * This method also establishes the internal integer representation of the
-	 * signature.
-	 * 
-	 * @param pSg
-	 *            String
-	 * @return boolean This boolean states whether the GProduct signature is valid.
-	 */
-	protected boolean validateSignature(String pSg)
-	{
-		
-		if (pSg == null)
-			return false;
-		if (pSg.length() == 0)
-			return true;
-		
-		for (short j = 0; j < pSg.length(); j++)
-		{
-			if (pSg.substring(j, j + 1).equals("+"))
-				continue;
-			if (pSg.substring(j, j + 1).equals("-"))
-				continue;
-			return false;
-		}
-		return true;	
 	}
 }

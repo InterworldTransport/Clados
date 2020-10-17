@@ -9,6 +9,7 @@ import com.interworldtransport.cladosG.*;
 
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 public class AlgebraRealFTest 
 {
@@ -26,9 +27,9 @@ public class AlgebraRealFTest
 	protected AlgebraRealF	alg2;
 	
 	@Before
-	public void setUp() throws CladosMonadException, BadSignatureException
+	public void setUp() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
-		fType = new Cardinal("Test:NumberType");
+		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealF(fType,0.0f);
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
@@ -38,7 +39,7 @@ public class AlgebraRealFTest
 	}
 
 	@Test
-	public void testCompareCores() throws CladosMonadException, BadSignatureException
+	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		assertFalse(alg1.getGBasis() == alg2.getGBasis());
@@ -46,7 +47,7 @@ public class AlgebraRealFTest
 		//Two algebras share the foot, but use different signatures
 		//to overlay metrics on their coordinate systems.
 		
-		tFoot.setNumberType(rNumber.getCardinal());
+		tFoot.setCardinal(rNumber.getCardinal());
 		AlgebraRealF alg3= new AlgebraRealF(aName, tFoot, pSig31);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
@@ -79,7 +80,7 @@ public class AlgebraRealFTest
 		assertFalse(alg6.equals(alg1));
 		assertFalse(alg6.getFoot().equals(alg1.getFoot()));
 		assertFalse(alg6.getGProduct().equals(alg1.getGProduct()));
-		assertTrue(alg6.getFoot().getNumberType().equals(alg1.getFoot().getNumberType()));
+		assertTrue(alg6.getFoot().getCardinal().equals(alg1.getFoot().getCardinal()));
 		//Number type re-used but nothing else ensures algebra mis-match
 		
 	}
@@ -104,7 +105,7 @@ public class AlgebraRealFTest
 	{
 		RealF result=AlgebraRealF.generateNumber(alg1, 10.0f);
 		assertTrue(result != null);
-		assertTrue(result.getCardinal() == alg1.getFoot().getNumberType());
+		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal());
 		//this shows that an algebra can be used to generate numbers of the same type
 		//by using the static method built into the class. This method is picky, but 
 		//when used properly it will safely generate matches that will pass reference

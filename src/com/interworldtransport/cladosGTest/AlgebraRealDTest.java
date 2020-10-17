@@ -8,6 +8,7 @@ import com.interworldtransport.cladosG.*;
 
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 public class AlgebraRealDTest 
 {
@@ -26,9 +27,9 @@ public class AlgebraRealDTest
 	protected AlgebraRealD	alg3;
 	
 	@Before
-	public void setUp() throws CladosMonadException, BadSignatureException
+	public void setUp() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
-		fType = new Cardinal("Test:NumberType");
+		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealD(fType,0.0d);
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
@@ -38,7 +39,7 @@ public class AlgebraRealDTest
 	}
 
 	@Test
-	public void testCompareCores() throws CladosMonadException, BadSignatureException
+	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		assertFalse(alg1.getGBasis() == alg2.getGBasis());
@@ -46,7 +47,7 @@ public class AlgebraRealDTest
 		//Two algebras share the foot, but use different signatures
 		//to overlay metrics on their coordinate systems.
 		
-		tFoot.setNumberType(rNumber.getCardinal());
+		tFoot.setCardinal(rNumber.getCardinal());
 		alg3= new AlgebraRealD(aName, tFoot, pSig31);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
@@ -79,7 +80,7 @@ public class AlgebraRealDTest
 	{
 		RealD result=AlgebraRealD.generateNumber(alg1, 10.0d);
 		assertTrue(result != null);
-		assertTrue(result.getCardinal() == alg1.getFoot().getNumberType());
+		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal());
 		//this shows that an algebra can be used to generate numbers of the same type
 		//by using the static method built into the class. This method is picky, but 
 		//when used properly it will safely generate matches that will pass reference

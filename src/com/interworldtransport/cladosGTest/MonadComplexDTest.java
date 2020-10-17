@@ -10,6 +10,7 @@ import com.interworldtransport.cladosG.MonadComplexD;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 import static org.junit.Assert.*;
 import static com.interworldtransport.cladosG.MonadComplexD.*;
@@ -33,25 +34,25 @@ public class MonadComplexDTest
 	MonadComplexD	tM9;
 
 	@Before
-	public void setUp() throws BadSignatureException, CladosMonadException
+	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		cRF = new ComplexD[16];
-		Cardinal tSpot = new Cardinal("TestComplexDs");
+		Cardinal tSpot = Cardinal.generate("TestComplexDs");
 		for (int k = 0; k < 16; k++)
 			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15-k);
 
 		tM0 = new MonadComplexD("Test MonadComplexD 0", "Motion Algebra",
 						"Foot Default Frame", "Test Foot 0", "-+++",
-						new ComplexD(new Cardinal("Test Float 1"), 0d));
+						new ComplexD(Cardinal.generate("Test Float 1"), 0d));
 		tM1 = new MonadComplexD("Test MonadComplexD 1", "Property Algebra",
 						"Foot Default Frame", "Test Foot 1", "-+++",
-						new ComplexD(new Cardinal("Test Float 1"), 0d));
+						new ComplexD(Cardinal.generate("Test Float 1"), 0d));
 		tM2 = new MonadComplexD("Test MonadComplexD 2", tM1);
 		tM3 = new MonadComplexD("Test MonadComplexD 3", tM1);
 		tM4 = new MonadComplexD(tM0);
 		tM5 = new MonadComplexD("Test MonadComplexD 5", "Motion Algebra",
 						"Foot Default Frame", "Test Foot 5", "-+++",
-						new ComplexD(new Cardinal("Test Float 5"), 0d),
+						new ComplexD(Cardinal.generate("Test Float 5"), 0d),
 						"Unit PScalar");
 		tM6 = new MonadComplexD("Test MonadComplexD 6", "Property Algebra",
 						"Foot Default Frame", "Test Foot 6", "-+++", cRF);

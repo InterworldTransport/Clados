@@ -63,7 +63,7 @@ public final class Cardinal
 	
 	private String	type;
 
-	public Cardinal(String pT)
+	private Cardinal(String pT)
 	{
 		type = pT;
 	}

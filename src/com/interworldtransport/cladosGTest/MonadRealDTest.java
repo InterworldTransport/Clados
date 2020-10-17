@@ -15,6 +15,7 @@ import static com.interworldtransport.cladosG.MonadRealD.*;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 public class MonadRealDTest
 {
@@ -35,11 +36,11 @@ public class MonadRealDTest
 	MonadRealD	tM9;
 
 	@Before
-	public void setUp() throws BadSignatureException, CladosMonadException
+	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		cRD = new RealD[16];
 		
-		Cardinal tSpot = new Cardinal(fType);
+		Cardinal tSpot = Cardinal.generate(fType);
 		
 		for (int k = 0; k < 16; k++)
 		{
@@ -53,7 +54,7 @@ public class MonadRealDTest
 								"Foot Default Frame", 
 								"Test Foot 0", 
 								"-+++", 
-								new RealD( new Cardinal("Test Double 1"), 0d)
+								new RealD( Cardinal.generate("Test Double 1"), 0d)
 							);
 		
 		tM1 = new MonadRealD(	mName+"1", 
@@ -61,7 +62,7 @@ public class MonadRealDTest
 								"Foot Default Frame", 
 								"Test Foot 1", 
 								"-+++", 
-								new RealD(new Cardinal("Test Double 1"), 0d)
+								new RealD(Cardinal.generate("Test Double 1"), 0d)
 							);
 		
 		tM2 = new MonadRealD(mName+"2", tM1);
@@ -73,7 +74,7 @@ public class MonadRealDTest
 								"Foot Default Frame", 
 								"Test Foot 5", 
 								"-+++", 
-								new RealD(new Cardinal("Test Double 5"), 0d),
+								new RealD(Cardinal.generate("Test Double 5"), 0d),
 								"Unit PScalar"
 							);
 		
@@ -89,12 +90,12 @@ public class MonadRealDTest
 		tM8 = new MonadRealD(tM6);
 		
 		tM9 = new MonadRealD(mName+"9",tM2);
-		RealD tAdj = new RealD(tM9.getAlgebra().getFoot().getNumberType(), 0.0f);
+		RealD tAdj = new RealD(tM9.getAlgebra().getFoot().getCardinal(), 0.0f);
 		RealD[] tFix = new RealD[16];
 		for (int k = 0; k < 16; k++)
 			tFix[k] = RealD.copyOf(tAdj);
 		
-		tFix[1] = new RealD(tM9.getAlgebra().getFoot().getNumberType(), 1.0f);
+		tFix[1] = new RealD(tM9.getAlgebra().getFoot().getCardinal(), 1.0f);
 		tFix[4] = RealD.copyOf(tFix[1]);
 		tM9.setCoeff(tFix); // Should be e0 + e3 now
 	}

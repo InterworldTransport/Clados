@@ -335,6 +335,9 @@ public class MonadRealD extends MonadAbstract
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadRealD(	String pMonadName, 
 						String pAlgebraName,
@@ -342,7 +345,7 @@ public class MonadRealD extends MonadAbstract
 						String pFootName, 
 						String pSig, 
 						RealD pF)
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		setAlgebra(new AlgebraRealD(pAlgebraName, 
 									new Foot(pFootName,	pF.getCardinal()), 
@@ -380,6 +383,9 @@ public class MonadRealD extends MonadAbstract
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadRealD(	String pMonadName, 
 						String pAlgebraName,
@@ -387,7 +393,7 @@ public class MonadRealD extends MonadAbstract
 						Foot pFoot, 
 						String pSig, 
 						RealD pF)
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		setAlgebra(new AlgebraRealD(pAlgebraName, pFoot, pSig));
 
@@ -427,7 +433,9 @@ public class MonadRealD extends MonadAbstract
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered the default constructor.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
-	 * 
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * return MonadRealD
 	 */
 	public MonadRealD(	String pMonadName, 
@@ -437,7 +445,7 @@ public class MonadRealD extends MonadAbstract
 						String pSig, 
 						RealD pF,
 						String pSpecial) 
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already.
@@ -513,6 +521,9 @@ public class MonadRealD extends MonadAbstract
 	 * @throws CladosMonadException
 	 * 	This exception is thrown if there is an issue with the coefficients offered.
 	 * 	The issues could involve null coefficients or a coefficient array of the wrong size.
+	 * @throws GeneratorRangeException 
+	 * 			This exception is thrown when the integer number of generators
+	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadRealD(	String pMonadName, 
 						String pAlgebraName,
@@ -520,7 +531,7 @@ public class MonadRealD extends MonadAbstract
 						String pFootName, 
 						String pSig, 
 						RealD[] pC)
-				throws BadSignatureException, CladosMonadException
+				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		if (pC[0] == null)
 			throw new CladosMonadException(this, "First coefficient is null.  There could be more nulls too.");
@@ -1219,9 +1230,8 @@ public class MonadRealD extends MonadAbstract
 	public MonadRealD scale(RealD pScale) throws FieldBinaryException
 	{
 		for (int j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++)
-		{
 			cM[j].multiply(pScale);
-		}
+		
 		setGradeKey();
 		return this;
 	}

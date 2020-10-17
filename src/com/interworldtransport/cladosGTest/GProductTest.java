@@ -5,6 +5,7 @@ import org.junit.*;
 import com.interworldtransport.cladosG.GProduct;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +19,7 @@ public class GProductTest
 	String		pSig14="++-+++-+++-+++";
 
 	@Test
-	public void test00s() throws CladosMonadException, BadSignatureException
+	public void test00s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		GProduct tGP = new GProduct(pSig0);
 		assertTrue(tGP.getSignature().equals(""));
@@ -43,7 +44,7 @@ public class GProductTest
 	}
 	
 	@Test
-	public void test04s() throws CladosMonadException, BadSignatureException
+	public void test04s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		GProduct tGP = new GProduct(pSig4);
 		//System.out.println(tGP.toXMLString());
@@ -71,7 +72,7 @@ public class GProductTest
 	}
 	
 	@Test
-	public void test08s() throws CladosMonadException, BadSignatureException
+	public void test08s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		GProduct tGP = new GProduct(pSig8);
 		assertTrue(tGP.getSignature().equals("-+++-+++"));
@@ -92,7 +93,7 @@ public class GProductTest
 	}
 	
 	@Test
-	public void test10s() throws CladosMonadException, BadSignatureException
+	public void test10s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		GProduct tGP = new GProduct(pSig10);
 		assertTrue(tGP.getSignature().equals("+++-++++++"));
@@ -113,7 +114,7 @@ public class GProductTest
 	}
 	
 	@Test
-	public void test12s() throws CladosMonadException, BadSignatureException
+	public void test12s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		GProduct tGP = new GProduct(pSig12);
 		assertTrue(tGP.getSignature().equals("-+++-+++-+++"));

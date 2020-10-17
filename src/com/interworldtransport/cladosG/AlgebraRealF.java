@@ -24,9 +24,9 @@
  */
 package com.interworldtransport.cladosG;
 
-import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosF.RealF;
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
-import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
@@ -87,7 +87,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		setFoot(pF);
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
-		protoNumber = new RealF(pF.getNumberType(), 1.0f);
+		protoNumber = new RealF(pF.getCardinal(), 1.0f);
 	}
 
 	/**
@@ -113,21 +113,20 @@ public class AlgebraRealF extends AlgebraAbstract
 	 * @throws BadSignatureException
 	 * This constructor creates a new GProduct which requires a signature for the generators.
 	 * This signature string must be parse-able or this exception is thrown.
-	 * @throws CladosMonadException
-	 * This constructor results in a new Algebra. Many generic things can go wrong.
-	 * This exception catches them.
+	 * @throws GeneratorRangeException
+	 * This exception catches when the supported number of generators is out of range.
 	 */
 	public AlgebraRealF(String pS, 
 						Foot pFoot, 
 						String pSig)
 					throws 	BadSignatureException, 
-							CladosMonadException
+							GeneratorRangeException
 	{
 		setAlgebraName(pS);
 		setFoot(pFoot);
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
-		protoNumber = new RealF(pFoot.getNumberType(), 1.0f);
+		protoNumber = new RealF(pFoot.getCardinal(), 1.0f);
 	}
 
 	/**
@@ -148,21 +147,20 @@ public class AlgebraRealF extends AlgebraAbstract
 	 * @throws BadSignatureException
 	 * This constructor creates a new GProduct which requires a signature for the generators.
 	 * This signature string must be parse-able or this exception is thrown.
-	 * @throws CladosMonadException
-	 * This constructor results in a new Algebra. Many generic things can go wrong.
-	 * This exception catches them.
+	 * @throws GeneratorRangeException
+	 * This exception catches when the supported number of generators is out of range.
 	 */
 	public AlgebraRealF(String pS, 
 						String pFootName, 
 						String pSig, 
 						RealF pF)
 					throws 	BadSignatureException, 
-							CladosMonadException
+							GeneratorRangeException
 	{
 		setAlgebraName(pS);
 		setFoot(new Foot(pFootName, pF.getCardinal()));
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
-		protoNumber = new RealF(foot.getNumberType(), 1.0f);
+		protoNumber = new RealF(foot.getCardinal(), 1.0f);
 	}
 }

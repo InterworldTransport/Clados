@@ -9,6 +9,7 @@ import com.interworldtransport.cladosG.MonadRealF;
 
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
+import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 public class MonadRealFOverheadTest 
 {
@@ -21,7 +22,7 @@ public class MonadRealFOverheadTest
 	
 	
 	@Test
-	public void testGen00() throws BadSignatureException, CladosMonadException
+	public void testGen00() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10000; m++)
 		{
@@ -29,7 +30,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 			
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 			
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -45,7 +46,7 @@ public class MonadRealFOverheadTest
 		
 	}
 	@Test
-	public void testGen01() throws BadSignatureException, CladosMonadException
+	public void testGen01() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10000; m++)
 		{
@@ -53,7 +54,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 			
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 			
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -69,7 +70,7 @@ public class MonadRealFOverheadTest
 		
 	}
 	@Test
-	public void testGen02() throws BadSignatureException, CladosMonadException
+	public void testGen02() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10000; m++)
 		{
@@ -77,7 +78,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -92,7 +93,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen03() throws BadSignatureException, CladosMonadException
+	public void testGen03() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10000; m++)
 		{
@@ -100,7 +101,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -115,7 +116,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen04() throws BadSignatureException, CladosMonadException
+	public void testGen04() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10000; m++)
 		{
@@ -123,7 +124,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -138,7 +139,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen05() throws BadSignatureException, CladosMonadException
+	public void testGen05() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<1000; m++)
 		{
@@ -146,7 +147,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -161,7 +162,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen06() throws BadSignatureException, CladosMonadException
+	public void testGen06() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<1000; m++)
 		{
@@ -169,7 +170,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -184,7 +185,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen07() throws BadSignatureException, CladosMonadException
+	public void testGen07() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<100; m++)
 		{
@@ -192,7 +193,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -207,7 +208,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen08() throws BadSignatureException, CladosMonadException
+	public void testGen08() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<100; m++)
 		{
@@ -215,7 +216,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot =Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -231,7 +232,7 @@ public class MonadRealFOverheadTest
 	}
 	
 	@Test
-	public void testGen09() throws BadSignatureException, CladosMonadException
+	public void testGen09() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10; m++)
 		{
@@ -239,7 +240,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -254,7 +255,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen10() throws BadSignatureException, CladosMonadException
+	public void testGen10() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10; m++)
 		{
@@ -262,7 +263,7 @@ public class MonadRealFOverheadTest
 			int bladeCount= (int) Math.pow(2, pGen);
 		
 			cRF = new RealF[bladeCount];
-			Cardinal tSpot = new Cardinal(fType);
+			Cardinal tSpot = Cardinal.generate(fType);
 		
 			for (short k = 0; k < bladeCount; k++)
 				cRF[k] = new RealF(tSpot, (float) k);
@@ -277,7 +278,7 @@ public class MonadRealFOverheadTest
 		}
 	}
 	@Test
-	public void testGen11() throws BadSignatureException, CladosMonadException
+	public void testGen11() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10; m++)
 		{
@@ -285,7 +286,7 @@ public class MonadRealFOverheadTest
 		int bladeCount= (int) Math.pow(2, pGen);
 		
 		cRF = new RealF[bladeCount];
-		Cardinal tSpot = new Cardinal(fType);
+		Cardinal tSpot = Cardinal.generate(fType);
 		
 		for (short k = 0; k < bladeCount; k++)
 			cRF[k] = new RealF(tSpot, (float) k);
@@ -301,7 +302,7 @@ public class MonadRealFOverheadTest
 	}
 	/*
 	@Test
-	public void testGen12() throws BadSignatureException, CladosMonadException
+	public void testGen12() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		for (short m=0; m<10; m++)
 		{
@@ -325,7 +326,7 @@ public class MonadRealFOverheadTest
 	}
 
 	@Test
-	public void testGen13() throws BadSignatureException, CladosMonadException
+	public void testGen13() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		int pGen=13;
 		int bladeCount= (int) Math.pow(2, pGen);
@@ -346,7 +347,7 @@ public class MonadRealFOverheadTest
 	}
 	
 	@Test
-	public void testGen14() throws BadSignatureException, CladosMonadException
+	public void testGen14() throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
 		int pGen=14;
 		int bladeCount= (int) Math.pow(2, pGen);
