@@ -351,13 +351,13 @@ public final class GProduct
 	 */
 	public String toXMLString()
 	{
-		StringBuilder rB = new StringBuilder("<GProduct signature=\"" + signature
+		StringBuilder rB = new StringBuilder("\t\t\t\t\t<GProduct signature=\"" + signature
 						+ "\">\n");
 		rB.append(canonicalBasis.toXMLString());
-		rB.append("<ProductTable rows=\"" + canonicalBasis.getBladeCount() + "\">\n");
+		rB.append("\t\t\t\t\t\t<ProductTable rows=\"" + canonicalBasis.getBladeCount() + "\">\n");
 		for (short k = 0; k < canonicalBasis.getBladeCount(); k++) // Appending rows
 		{
-			rB.append("\t<row number=\"" + k + "\" entries=\"");
+			rB.append("\t\t\t\t\t\t\t<row number=\"" + k + "\" entries=\"");
 			for (short m = 0; m < canonicalBasis.getBladeCount(); m++)
 			{
 				rB.append(getResult(k, m));
@@ -366,8 +366,8 @@ public final class GProduct
 			rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
 		}
-		rB.append("</ProductTable>\n");
-		rB.append("</GProduct>\n");
+		rB.append("\t\t\t\t\t\t</ProductTable>\n");
+		rB.append("\t\t\t\t\t</GProduct>\n");
 		return rB.toString();
 	}
 	

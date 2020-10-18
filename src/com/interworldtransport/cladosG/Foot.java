@@ -70,7 +70,7 @@ public final class Foot
 	 * This object defines the type of numbers used by all objects that share
 	 * this footPoint.
 	 */
-	private Cardinal		numType;
+	private Cardinal			cardinal;
 	/**
 	 * This is the list of known reference frames defined elsewhere against this
 	 * footPoint.
@@ -146,7 +146,7 @@ public final class Foot
 
 	public Cardinal getCardinal()
 	{
-		return numType;
+		return cardinal;
 	}
 
 	public ArrayList<String> getReferenceFrames()
@@ -188,22 +188,18 @@ public final class Foot
 
 	public void setCardinal(Cardinal fN)
 	{
-		this.numType = fN;
+		this.cardinal = fN;
 	}
 
 	public String toXMLString()
 	{
-		StringBuilder rB = new StringBuilder("<Foot name=\"" + getFootName()
-						+ "\" type=\"" + numType.getType() + "\">\n");
-		rB.append("\t<ReferenceFrames number=\"" + rFrames.size()
-						+ "\" >\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t\t<Foot name=\"" + getFootName() + "\">\n");
+		//rB.append("\" cardinal=\"" + cardinal.getType() + "\">\n");
+		rB.append("\t\t\t\t\t\t<ReferenceFrames number=\"" + rFrames.size() + "\" >\n");
 		for (short k = 0; k < rFrames.size(); k++)
-		{
-			rB.append("\t\t<Frame number=\"" + k + "\" name=\""
-							+ rFrames.get(k) + "\" />\n");
-		}
-		rB.append("\t</ReferenceFrames>\n");
-		rB.append("</Foot>\n");
+			rB.append("\t\t\t\t\t\t\t<Frame number=\"" + k + "\" name=\""	+ rFrames.get(k) + "\" />\n");
+		rB.append("\t\t\t\t\t\t</ReferenceFrames>\n");
+		rB.append("\t\t\t\t\t</Foot>\n");
 		return rB.toString();
 	}
 

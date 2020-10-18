@@ -30,7 +30,7 @@ import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
- * a multivector over a division field {Cl(p,q) x DivField}.
+ * an algebra over a division field {Cl(p,q) x DivField}.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -44,13 +44,12 @@ public class AlgebraComplexF extends AlgebraAbstract
 
 	public static String toXMLString(AlgebraComplexF pA)
 	{
-		StringBuilder rB = new StringBuilder("<Algebra name=\""
-						+ pA.getAlgebraName() + "\" ");
-		rB.append(">\n");
-		rB.append(pA.protoNumber.toXMLString()+"\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t<Algebra name=\"" + pA.getAlgebraName() + "\" >\n");
+		//rB.append(">\n");
+		rB.append("\t\t\t\t\t"+pA.protoNumber.toXMLString()+"\n");
 		rB.append(pA.getFoot().toXMLString());
 		rB.append(pA.getGProduct().toXMLString());
-		rB.append("</Algebra>\n");
+		rB.append("\t\t\t\t</Algebra>\n");
 		return rB.toString();
 	}
 

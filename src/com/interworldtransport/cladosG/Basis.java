@@ -344,25 +344,25 @@ public final class Basis
 	 */
 	public String toXMLString()
 	{
-		StringBuilder rB = new StringBuilder("<Basis>\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t\t\t<Basis>\n");
 
-		rB.append("\t<Grades count=\"" + getGradeCount() + "\">\n");
+		rB.append("\t\t\t\t\t\t\t<Grades count=\"" + getGradeCount() + "\">\n");
 		for (short k = 0; k <= gradeCount - 2; k++)
 		{
-			rB.append("\t\t<Grade number=\"" + k + "\" range=\""
+			rB.append("\t\t\t\t\t\t\t\t<Grade number=\"" + k + "\" range=\""
 							+ getGradeRange(k) + "-"
 							+ (getGradeRange((short) (k + 1)) - 1) + "\" />\n");
 		}
-		rB.append("\t\t<Grade number=\"" + (getGradeCount() - 1)
+		rB.append("\t\t\t\t\t\t\t\t<Grade number=\"" + (getGradeCount() - 1)
 						+ "\" range=\""
 						+ getGradeRange((short) (gradeCount - 1)) + "-"
 						+ getGradeRange((short) (gradeCount - 1)) + "\" />\n");
-		rB.append("\t</Grades>\n");
+		rB.append("\t\t\t\t\t\t\t</Grades>\n");
 
-		rB.append("\t<Blades count=\"" + getBladeCount() + "\">\n");
+		rB.append("\t\t\t\t\t\t\t<Blades count=\"" + getBladeCount() + "\">\n");
 		for (short k = 0; k < bladeCount; k++) // Appending blades
 		{
-			rB.append("\t\t<Blade number=\"" + (k + 1) + "\" key=\""
+			rB.append("\t\t\t\t\t\t\t\t<Blade number=\"" + (k + 1) + "\" key=\""
 							+ getBasisKey(k) + "\" generators=\"");
 			for (short m = 0; m < gradeCount - 1; m++)
 			{
@@ -375,9 +375,9 @@ public final class Basis
 			if (k > 0) rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
 		}
-		rB.append("\t</Blades>\n");
+		rB.append("\t\t\t\t\t\t\t</Blades>\n");
 
-		rB.append("</Basis>\n");
+		rB.append("\t\t\t\t\t\t</Basis>\n");
 		return rB.toString();
 	}
 

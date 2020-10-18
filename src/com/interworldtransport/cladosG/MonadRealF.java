@@ -208,22 +208,20 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public static String toXMLString(MonadRealF pM)
 	{
-		StringBuilder rB = new StringBuilder("<Monad name=\"" + pM.getName()
-						+ "\" ");
+		StringBuilder rB = new StringBuilder("\t\t\t<Monad name=\"" + pM.getName() + "\" ");
 		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
 		rB.append("frame=\"" + pM.getFrameName() + "\" ");
 		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
 
-		rB.append("<Coefficients number=\"" + pM.getCoeff().length
+		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length
 						+ "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
-			// Appending coefficients
-			rB.append("\t" + pM.getCoeff()[k].toXMLString() + "\n");
+			rB.append("\t\t\t\t\t" + pM.getCoeff()[k].toXMLString() + "\n");
 
-		rB.append("</Coefficients>\n");
-		rB.append("</Monad>\n");
+		rB.append("\t\t\t\t</Coefficients>\n");
+		rB.append("\t\t\t</Monad>\n");
 		return rB.toString();
 	}
 	
@@ -237,8 +235,7 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public static String toXMLFullString(MonadRealF pM)
 	{
-		StringBuilder rB = new StringBuilder("<Monad name=\"" + pM.getName()
-						+ "\" ");
+		StringBuilder rB = new StringBuilder("\t\t\t<Monad name=\"" + pM.getName() + "\" ");
 		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
 		rB.append("frame=\"" + pM.getFrameName() + "\" ");
 		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
@@ -247,14 +244,13 @@ public class MonadRealF extends MonadAbstract
 
 		rB.append(AlgebraRealF.toXMLString(pM.getAlgebra()));
 
-		rB.append("<Coefficients number=\"" + pM.getCoeff().length
+		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length
 						+ "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
-			// Appending coefficients
-			rB.append("\t" + pM.getCoeff()[k].toXMLString() + "\n");
+			rB.append("\t\t\t\t\t" + pM.getCoeff()[k].toXMLString() + "\n");
 
-		rB.append("</Coefficients>\n");
-		rB.append("</Monad>\n");
+		rB.append("\t\t\t\t</Coefficients>\n");
+		rB.append("\t\t\t</Monad>\n");
 		return rB.toString();
 	}
 

@@ -44,13 +44,12 @@ public class AlgebraRealF extends AlgebraAbstract
 
 	public static String toXMLString(AlgebraRealF pA)
 	{
-		StringBuilder rB = new StringBuilder("<Algebra name=\""
-						+ pA.getAlgebraName() + "\" ");
-		rB.append(">\n");
-		rB.append(pA.protoNumber.toXMLString()+"\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t<Algebra name=\"" + pA.getAlgebraName() + "\" >\n");
+		//rB.append(">\n");
+		rB.append("\t\t\t\t\t"+pA.protoNumber.toXMLString()+"\n");
 		rB.append(pA.getFoot().toXMLString());
 		rB.append(pA.getGProduct().toXMLString());
-		rB.append("</Algebra>\n");
+		rB.append("\t\t\t\t</Algebra>\n");
 		return rB.toString();
 	}
 
