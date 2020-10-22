@@ -17,7 +17,7 @@ public class AlgebraComplexDTest
 	protected String			aName	= "Test Algebra";
 	protected String			pSig31	= "-+++";
 	protected String			pSig13	= "+---";
-	protected Cardinal		fType;
+	protected Cardinal			fType;
 	protected ComplexD			rNumber;
 	protected Foot				tFoot;
 	protected Foot				tFoot2;
@@ -34,8 +34,8 @@ public class AlgebraComplexDTest
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
 		
-		alg1= new AlgebraComplexD(aName, tFoot, pSig31);
-		alg2= new AlgebraComplexD(aName, tFoot, pSig13);
+		alg1= new AlgebraComplexD(aName, tFoot, pSig31, rNumber);
+		alg2= new AlgebraComplexD(aName, tFoot, pSig13, rNumber);
 	}
 
 	@Test
@@ -47,8 +47,8 @@ public class AlgebraComplexDTest
 		//Two algebras share the foot, but use different signatures
 		//to overlay metrics on their coordinate systems.
 		
-		tFoot.setCardinal(rNumber.getCardinal());
-		alg3= new AlgebraComplexD(aName, tFoot, pSig31);
+		tFoot.appendCardinal(rNumber.getCardinal());
+		alg3= new AlgebraComplexD(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		//because the Foot is shared between algebras, changing the number
@@ -80,7 +80,7 @@ public class AlgebraComplexDTest
 	{
 		ComplexD result=AlgebraComplexD.generateNumber(alg1, 5.0d, 10.0d);
 		assertTrue(result != null);
-		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal());
+		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
 		//this shows that an algebra can be used to generate numbers of the same type
 		//by using the static method built into the class. This method is picky, but 
 		//when used properly it will safely generate matches that will pass reference

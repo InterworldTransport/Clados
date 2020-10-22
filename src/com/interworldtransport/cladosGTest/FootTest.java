@@ -35,7 +35,7 @@ public class FootTest
 	{
 		assertFalse(tFoot.equals(null));
 		assertTrue(tFoot.getReferenceFrames().size() == 1);
-		tFoot.appendIfUniqueRFrame(fName + "-Spherical");
+		tFoot.appendFrame(fName + "-Spherical");
 		assertTrue(tFoot.getReferenceFrames().size() == 2);
 	}
 
@@ -43,7 +43,7 @@ public class FootTest
 	public void testRemoveReferenceFrame()
 	{
 		assertTrue(tFoot.getReferenceFrames().size() == 1);
-		tFoot.appendIfUniqueRFrame(fName + "-Spherical2");
+		tFoot.appendFrame(fName + "-Spherical2");
 		assertTrue(tFoot.getReferenceFrames().size() == 2);
 		tFoot.removeRFrames(fName + "-Spherical2");
 		assertTrue(tFoot.getReferenceFrames().size() == 1);
@@ -61,7 +61,7 @@ public class FootTest
 	{
 		assertFalse(tFoot == tFoot2); 
 		// Two different feet
-		assertTrue(tFoot.getCardinal() == tFoot2.getCardinal());
+		assertTrue(tFoot.getCardinal(0) == tFoot2.getCardinal(0));
 		// using the same number type.
 		// The algebras relying on these feet would fail reference checks
 		// but they are allowed to re-use each other's numbering system.

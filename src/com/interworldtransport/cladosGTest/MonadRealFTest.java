@@ -90,12 +90,12 @@ public class MonadRealFTest
 		tM8 = new MonadRealF(mName+"8",tM6);
 		
 		tM9 = new MonadRealF(mName+"9",tM2);
-		RealF tAdj = new RealF(tM9.getAlgebra().getFoot().getCardinal(), 0.0f);
+		RealF tAdj = new RealF(tM9.getAlgebra().getFoot().getCardinal(0), 0.0f);
 		RealF[] tFix = new RealF[16];
 		for (int k = 0; k < 16; k++)
 			tFix[k] = RealF.copyOf(tAdj);
 		
-		tFix[1] = new RealF(tM9.getAlgebra().getFoot().getCardinal(), 1.0f);
+		tFix[1] = new RealF(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f);
 		tFix[4] = RealF.copyOf(tFix[1]);
 		tM9.setCoeff(tFix); // Should be e0 + e3 now
 		//System.out.println(toXMLString(tM9));

@@ -77,5 +77,8 @@ public final class Cardinal
 	{
 		type = pFT;
 	}
-
+	public String toXMLString()
+	{
+		return ("<Cardinal type=\"" + type + "\" />\n");
+	}
 }

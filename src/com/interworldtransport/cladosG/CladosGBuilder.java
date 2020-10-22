@@ -49,13 +49,13 @@ public enum CladosGBuilder
 	{
 		return Foot.buildAsType(pName, pDiv.getCardinal());
 	}
-	public final static Foot copyLike(String pName, Foot pF)
+	public final static Foot copyLike(String pName, Foot pF, int pSpot)
 	{
-		return Foot.buildAsType(pName, pF.getCardinal());
+		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
 	}
-	public final static Foot copyOf(Foot pF)
+	public final static Foot copyOf(Foot pF, int pSpot)
 	{
-		return Foot.buildAsType(pF.getFootName(), pF.getCardinal());
+		return Foot.buildAsType(pF.getFootName(), pF.getCardinal(pSpot));
 	}
 	public final static Foot create(String pName, String pCardName)
 	{

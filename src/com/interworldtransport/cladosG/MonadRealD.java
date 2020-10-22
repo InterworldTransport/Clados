@@ -345,7 +345,7 @@ public class MonadRealD extends MonadAbstract
 	{
 		setAlgebra(new AlgebraRealD(pAlgebraName, 
 									new Foot(pFootName,	pF.getCardinal()), 
-									pSig));
+									pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
@@ -391,7 +391,7 @@ public class MonadRealD extends MonadAbstract
 						RealD pF)
 				throws BadSignatureException, CladosMonadException, GeneratorRangeException
 	{
-		setAlgebra(new AlgebraRealD(pAlgebraName, pFoot, pSig));
+		setAlgebra(new AlgebraRealD(pAlgebraName, pFoot, pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
@@ -532,7 +532,7 @@ public class MonadRealD extends MonadAbstract
 		if (pC[0] == null)
 			throw new CladosMonadException(this, "First coefficient is null.  There could be more nulls too.");
 		
-		setAlgebra(new AlgebraRealD(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig));
+		setAlgebra(new AlgebraRealD(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig, pC[0]));
 		
 		if (pC.length != getAlgebra().getGProduct().getBladeCount())
 			throw new CladosMonadException(this,
@@ -1285,7 +1285,7 @@ public class MonadRealD extends MonadAbstract
 	{
 		getAlgebra().getFoot().removeRFrames(frameName);
 		frameName = pRName;
-		getAlgebra().getFoot().appendIfUniqueRFrame(pRName);
+		getAlgebra().getFoot().appendFrame(pRName);
 	}
 
 	/**

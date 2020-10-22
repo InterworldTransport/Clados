@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import com.interworldtransport.cladosF.*;
 import com.interworldtransport.cladosG.*;
-//import static com.interworldtransport.cladosG.AlgebraRealF.*;
 
 import com.interworldtransport.cladosGExceptions.BadSignatureException;
 import com.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -18,11 +17,11 @@ public class AlgebraRealFTest
 	protected String		aName	= "Test Algebra";
 	protected String		pSig31	= "-+++";
 	protected String		pSig13	= "+---";
-	protected Cardinal	fType;
+	protected Cardinal		fType;
 	protected RealF			rNumber;
 	protected Foot			tFoot;
 	protected Foot			tFoot2;
-	//protected GProduct		gProduct;
+	protected GProduct		gProduct;
 	protected AlgebraRealF	alg1;
 	protected AlgebraRealF	alg2;
 	
@@ -34,8 +33,8 @@ public class AlgebraRealFTest
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
 		
-		alg1= new AlgebraRealF(aName, tFoot, pSig31);
-		alg2= new AlgebraRealF(aName, tFoot, pSig13);
+		alg1= new AlgebraRealF(aName, tFoot, pSig31, rNumber);
+		alg2= new AlgebraRealF(aName, tFoot, pSig13, rNumber);
 	}
 
 	@Test
@@ -47,8 +46,8 @@ public class AlgebraRealFTest
 		//Two algebras share the foot, but use different signatures
 		//to overlay metrics on their coordinate systems.
 		
-		tFoot.setCardinal(rNumber.getCardinal());
-		AlgebraRealF alg3= new AlgebraRealF(aName, tFoot, pSig31);
+		tFoot.appendCardinal(rNumber.getCardinal());
+		AlgebraRealF alg3= new AlgebraRealF(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		//because the Foot is shared between algebras, changing the number
@@ -59,13 +58,13 @@ public class AlgebraRealFTest
 		//Both feet are essentially the same inside, but represented as two distinct objects.
 		//That should cause this test to be false.
 		
-		AlgebraRealF alg4 = new AlgebraRealF("light weight frame", alg1.getFoot(), alg1.getGProduct());
+		AlgebraRealF alg4 = new AlgebraRealF("light weight frame", alg1.getFoot(), alg1.getFoot().getCardinal(0), alg1.getGProduct());
 		assertFalse(alg4.equals(alg1));
 		assertTrue(alg4.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg4.getGProduct().equals(alg1.getGProduct()));
 		//Foot re-used, GProduct re-used, but different names ensures algebra mis-match
 		
-		AlgebraRealF alg5 = new AlgebraRealF("medium weight frame", alg1.getFoot(), alg1.getGProduct().getSignature());
+		AlgebraRealF alg5 = new AlgebraRealF("medium weight frame", alg1.getFoot(), alg1.getFoot().getCardinal(0), alg1.getGProduct().getSignature());
 		assertFalse(alg5.equals(alg1));
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
 		assertFalse(alg5.getGProduct().equals(alg1.getGProduct()));
@@ -80,7 +79,7 @@ public class AlgebraRealFTest
 		assertFalse(alg6.equals(alg1));
 		assertFalse(alg6.getFoot().equals(alg1.getFoot()));
 		assertFalse(alg6.getGProduct().equals(alg1.getGProduct()));
-		assertTrue(alg6.getFoot().getCardinal().equals(alg1.getFoot().getCardinal()));
+		assertTrue(alg6.getFoot().getCardinal(0).equals(alg1.getFoot().getCardinal(0)));
 		//Number type re-used but nothing else ensures algebra mis-match
 		
 	}
@@ -105,7 +104,7 @@ public class AlgebraRealFTest
 	{
 		RealF result=AlgebraRealF.generateNumber(alg1, 10.0f);
 		assertTrue(result != null);
-		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal());
+		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
 		//this shows that an algebra can be used to generate numbers of the same type
 		//by using the static method built into the class. This method is picky, but 
 		//when used properly it will safely generate matches that will pass reference
