@@ -28,7 +28,8 @@ import static com.interworldtransport.cladosG.MonadRealD.*;
 
 import java.util.ArrayList;
 
-import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosF.CladosField;
+import com.interworldtransport.cladosF.RealD;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosGExceptions.*;
 
@@ -454,10 +455,10 @@ public class NyadRealD extends NyadAbstract
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
+		//rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
 		rB.append(">\n");
 		rB.append(pN.getFootPoint().toXMLString());
-		rB.append(pN.protoOne.toXMLString());
+		//rB.append(pN.protoOne.toXMLString());
 		
 		for (MonadRealD tSpot : pN.getMonadList())
 			rB.append(MonadRealD.toXMLString(tSpot));
@@ -480,10 +481,10 @@ public class NyadRealD extends NyadAbstract
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
+		//rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
 		rB.append(">\n");
 		rB.append(pN.getFootPoint().toXMLString());
-		rB.append(pN.protoOne.toXMLString());
+		//rB.append(pN.protoOne.toXMLString());
 		
 		for (MonadRealD tSpot : pN.getMonadList())
 			rB.append(MonadRealD.toXMLFullString(tSpot));
@@ -503,7 +504,7 @@ public class NyadRealD extends NyadAbstract
 	 * when constructing other parts of the NyadRealD to ensure cardinal
 	 * safety.
 	 */
-	protected RealD					protoOne;
+	//protected RealD					protoOne;
 
 	/**
 	 * Simple copy constructor of a NyadRealD. The passed NyadRealD will be
@@ -537,7 +538,7 @@ public class NyadRealD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
-		protoOne = new RealD(pM.getAlgebra().protoNumber, 1.0d);
+		//protoOne = new RealD(pM.getAlgebra().protoNumber, 1.0d);
 
 		monadList = new ArrayList<MonadRealD>(1);
 		appendMonad(pM);
@@ -568,7 +569,7 @@ public class NyadRealD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		protoOne=pN.protoOne;
+		//protoOne=pN.protoOne;
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadRealD>(pN.getMonadList().size());
@@ -690,14 +691,11 @@ public class NyadRealD extends NyadAbstract
 	 * It also creates a new frame using the offered name.
 	 * It is not a copy method.
 	 * 
-	 * @param pName
-	 * 			String
-	 * @param pAlgebra
-	 * 			String
-	 * @param pFrame
-	 * 			String
-	 * @param pSig
-	 * 			String
+	 * @param pName String
+	 * @param pAlgebra String
+	 * @param pFrame String
+	 * @param pSig String
+	 * @param pCard String
 	 * 
 	 * @throws CladosMonadException
 	 * 		This exception is thrown when the new monad constructor fails.
@@ -711,15 +709,24 @@ public class NyadRealD extends NyadAbstract
 	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * @return NyadRealD
 	 */
-	public NyadRealD createMonad(String pName, String pAlgebra, String pFrame, String pSig) 
+	public NyadRealD createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard) 
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException
 	{
-		MonadRealD tM = new MonadRealD(	pName, 
-										pAlgebra, 
-										pFrame, 
-										getFootPoint(), 
-										pSig, 
-										protoOne);
+		MonadRealD tM ;
+		if (pCard == null)
+			tM = new MonadRealD(pName, 
+								pAlgebra, 
+								pFrame, 
+								getFootPoint(), 
+								pSig, 
+								(RealD) CladosField.REALD.createZERO(getFootPoint().getCardinal(0)));			
+		else
+			tM = new MonadRealD(pName, 
+								pAlgebra, 
+								pFrame, 
+								getFootPoint(), 
+								pSig, 
+								(RealD) CladosField.REALD.createZERO(pCard));
 		appendMonad(tM);
 		return this;
 	}
@@ -779,14 +786,7 @@ public class NyadRealD extends NyadAbstract
 	{
 		return monadList.size();
 	}
-	/**
-	 * This returns a reference to the protonumber
-	 * @return RealD
-	 */
-	public RealD getProto()
-	{
-		return protoOne;
-	}
+	
 	/**
 	 * This method takes the Monad at the k'th position in the list and swaps it
 	 * for the one in the k-1 position if there is one there. If the the key

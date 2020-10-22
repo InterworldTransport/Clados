@@ -28,7 +28,8 @@ import static com.interworldtransport.cladosG.MonadComplexF.*;
 
 import java.util.ArrayList;
 
-import com.interworldtransport.cladosF.*;
+import com.interworldtransport.cladosF.CladosField;
+import com.interworldtransport.cladosF.ComplexF;
 import com.interworldtransport.cladosFExceptions.FieldBinaryException;
 import com.interworldtransport.cladosGExceptions.*;
 
@@ -454,10 +455,10 @@ public class NyadComplexF extends NyadAbstract
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
+		//rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
 		rB.append(">\n");
 		rB.append(pN.getFootPoint().toXMLString());
-		rB.append(pN.protoOne.toXMLString());
+		//rB.append(pN.protoOne.toXMLString());
 		
 		for (MonadComplexF tSpot : pN.getMonadList())
 			rB.append(MonadComplexF.toXMLString(tSpot));
@@ -480,10 +481,10 @@ public class NyadComplexF extends NyadAbstract
 						+ "\" ");
 		rB.append("name=\"" + pN.getName() + "\" ");
 		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
+		//rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
 		rB.append(">\n");
 		rB.append(pN.getFootPoint().toXMLString());
-		rB.append(pN.protoOne.toXMLString());
+		//rB.append(pN.protoOne.toXMLString());
 		
 		for (MonadComplexF tSpot : pN.getMonadList())
 			rB.append(MonadComplexF.toXMLFullString(tSpot));
@@ -503,7 +504,7 @@ public class NyadComplexF extends NyadAbstract
 	 * when constructing other parts of the NyadComplexF to ensure cardinal
 	 * safety.
 	 */
-	protected ComplexF					protoOne;
+	//protected ComplexF					protoOne;
 
 	/**
 	 * Simple copy constructor of a NyadComplexF. The passed NyadComplexF will be
@@ -537,7 +538,7 @@ public class NyadComplexF extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
-		protoOne = new ComplexF(pM.getAlgebra().protoNumber, 1.0f, 0.0f);
+		//protoOne = new ComplexF(pM.getAlgebra().protoNumber, 1.0f, 0.0f);
 
 		monadList = new ArrayList<MonadComplexF>(1);
 		appendMonad(pM);
@@ -568,7 +569,7 @@ public class NyadComplexF extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		protoOne=pN.protoOne;
+		//protoOne=pN.protoOne;
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadComplexF>(pN.getMonadList().size());
@@ -690,14 +691,11 @@ public class NyadComplexF extends NyadAbstract
 	 * It also creates a new frame using the offered name.
 	 * It is not a copy method.
 	 * 
-	 * @param pName
-	 * 		String
-	 * @param pAlgebra
-	 * 		String
-	 * @param pFrame
-	 * 		String
-	 * @param pSig
-	 * 		String
+	 * @param pName String
+	 * @param pAlgebra String
+	 * @param pFrame String
+	 * @param pSig String
+	 * @param pCard String
 	 * 
 	 * @throws CladosMonadException
 	 * 		This exception is thrown when the new monad constructor fails.
@@ -711,15 +709,24 @@ public class NyadComplexF extends NyadAbstract
 	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * @return NyadComplexF
 	 */
-	public NyadComplexF createMonad(String pName, String pAlgebra, String pFrame, String pSig) 
+	public NyadComplexF createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard) 
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException
 	{
-		MonadComplexF tM = new MonadComplexF(	pName, 
-												pAlgebra, 
-												pFrame, 
-												getFootPoint(), 
-												pSig, 
-												protoOne);
+		MonadComplexF tM;
+		if (pCard == null)
+			tM = new MonadComplexF(	pName, 
+									pAlgebra, 
+									pFrame, 
+									getFootPoint(), 
+									pSig, 
+									(ComplexF) CladosField.COMPLEXF.createZERO(getFootPoint().getCardinal(0)));
+		else
+			tM = new MonadComplexF(	pName, 
+									pAlgebra, 
+									pFrame, 
+									getFootPoint(), 
+									pSig, 
+									(ComplexF) CladosField.COMPLEXF.createZERO(pCard));
 		appendMonad(tM);
 		return this;
 	}
@@ -779,14 +786,7 @@ public class NyadComplexF extends NyadAbstract
 	{
 		return monadList.size();
 	}
-	/**
-	 * This returns a reference to the protonumber
-	 * @return ComplexF
-	 */
-	public ComplexF getProto()
-	{
-		return protoOne;
-	}
+
 	/**
 	 * This method takes the Monad at the k'th position in the list and swaps it
 	 * for the one in the k-1 position if there is one there. If the the key
