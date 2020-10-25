@@ -61,7 +61,6 @@ public class AlgebraRealF extends AlgebraAbstract
 		rB.append("\t\t\t\t</Algebra>\n");
 		return rB.toString();
 	}
-
 	/**
 	 * When an algebra's number system is examined at this level, the algebra 
 	 * knows the DivField class object, the name within that, and the fact that 
@@ -70,7 +69,6 @@ public class AlgebraRealF extends AlgebraAbstract
 	 * That's all.
 	 */
 	protected RealF	protoNumber;
-
 	/**
 	 * This is the constructor that assumes a full Algebra has already been constructed.
 	 * This new one re-uses the objects in the one offered. No independent objects are made
@@ -89,7 +87,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		setGProduct(pA.getGProduct());
 		gBasis = pA.getGBasis();
 	}
-	
+
 	/**
 	 * This is the constructor that assumes a Foot, Cardinal, and GProduct have been instantiated. 
 	 * It appends the Cardinal to the Foot and points at the offered GProduct. It takes in 
@@ -223,5 +221,15 @@ public class AlgebraRealF extends AlgebraAbstract
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
+	}
+	
+	public Cardinal shareCardinal()
+	{
+		return protoNumber.getCardinal();
+	}
+
+	public RealF shareProtoNumber()
+	{
+		return protoNumber;
 	}
 }

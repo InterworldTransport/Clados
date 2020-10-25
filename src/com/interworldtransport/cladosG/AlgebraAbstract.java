@@ -60,12 +60,64 @@ public abstract class AlgebraAbstract
 	protected String	name;
 	
 	/**
+	 * This method is present to enable sorting of lists of algebras. It isn't critical
+	 * in the geometric sense, but it might be useful in certain physical models.
+	 * <p>
+	 * @param pAnother AlgebraAbstract
+	 * 	This is the algebra to be name compared
+	 * @return int
+	 * 	-1 if the name of 'this' algebra is 'less' than that of pAnother.
+	 * 0 if the two names are the same
+	 * +1 if the name of this algebra is 'greater' than that of pAnother.
+	 */
+	public int compareTo(AlgebraAbstract pAnother)
+	{
+		if (this.name == null) 
+			if (pAnother.name == null) return 0;
+			else return +1;	// A null name is considered larger than a non-null name
+		else if (pAnother.name == null) return -1;
+		else if (this.name.equals(pAnother.name)) return 0;
+		else	// At this point neither name is null nor are they equal
+		{
+			char[] first = this.name.toCharArray();
+			char[] second = pAnother.name.toCharArray();
+			int loopLimit = (first.length >= second.length) ? first.length : second.length;
+			for (int j=0; j<loopLimit; j++)
+			{
+				if (first[j]<second[j]) return -1;
+				if (first[j]>second[j]) return +1;
+			}
+			// At this point we know this.name and pAnother.name are 
+			// the same up through all characters in the smaller one.
+			if (first.length<second.length) return -1;
+			if (first.length>second.length) return +1;
+			return 0;	// The only way to get here is if they are actually equal.
+						// Shouldn't happen since it was caught earlier, but 
+						// there is no harm catching it here too.
+		}
+	}
+	
+	/**
 	 * This method returns the Algebra's name.
 	 * @return String
 	 */
 	public String getAlgebraName()
 	{
 		return name;
+	}
+
+	/**
+	 * This is a short-hand method providing the blade count on the canonical basis.
+	 * A Frame's blade count is limited at the upper end by this blade count.
+	 * 
+	 * @return	short	
+	 * This is the size of a monad's coefficient array, but more importantly it 
+	 * is the number of dimensions in the vector space represented by the 
+	 * canonical basis.
+	 */
+	public short getBladeCount()
+	{
+		return gBasis.getBladeCount();
 	}
 
 	/**
@@ -98,6 +150,19 @@ public abstract class AlgebraAbstract
 	}
 
 	/**
+	 * This is a short-hand method providing the grade count on the canonical basis.
+	 * A Frame's grade count is limited at the upper end by this grade count.
+	 * 
+	 * @return	short	
+	 * This is the size of a monad's grade key. In an algebra with N generators it 
+	 * will always be N+1.
+	 */
+	public short getGradeCount()
+	{
+		return gBasis.getGradeCount();
+	}
+
+	/**
 	 * Resetting the algebra name is mildly useful when its purpose
 	 * in a model shifts. Otherwise, it will probably not be used.
 	 * Once it is set by the constructor, it will probably remain.
@@ -109,7 +174,7 @@ public abstract class AlgebraAbstract
 	{
 		name = pName;
 	}
-
+	
 	/**
 	 * This method is a little dangerous and should use used only
 	 * with great caution. Ideally, it would never be used because 
@@ -126,7 +191,7 @@ public abstract class AlgebraAbstract
 	{
 		foot = footPoint;
 	}
-
+	
 	/**
 	 * This method is a little dangerous and should use used only
 	 * with great caution. Ideally, it would never be used because 
@@ -146,32 +211,5 @@ public abstract class AlgebraAbstract
 	{
 		gProduct = pGP;
 		gBasis = pGP.getBasis();
-	}
-	
-	/**
-	 * This is a short-hand method providing the blade count on the canonical basis.
-	 * A Frame's blade count is limited at the upper end by this blade count.
-	 * 
-	 * @return	short	
-	 * This is the size of a monad's coefficient array, but more importantly it 
-	 * is the number of dimensions in the vector space represented by the 
-	 * canonical basis.
-	 */
-	public short getBladeCount()
-	{
-		return gBasis.getBladeCount();
-	}
-	
-	/**
-	 * This is a short-hand method providing the grade count on the canonical basis.
-	 * A Frame's grade count is limited at the upper end by this grade count.
-	 * 
-	 * @return	short	
-	 * This is the size of a monad's grade key. In an algebra with N generators it 
-	 * will always be N+1.
-	 */
-	public short getGradeCount()
-	{
-		return gBasis.getGradeCount();
 	}
 }

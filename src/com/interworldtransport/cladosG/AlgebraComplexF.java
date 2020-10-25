@@ -61,7 +61,6 @@ public class AlgebraComplexF extends AlgebraAbstract
 		rB.append("\t\t\t\t</Algebra>\n");
 		return rB.toString();
 	}
-
 	/**
 	 * When an algebra's number system is examined at this level, the algebra 
 	 * knows the DivField class object, the name within that, and the fact that 
@@ -70,7 +69,6 @@ public class AlgebraComplexF extends AlgebraAbstract
 	 * That's all.
 	 */
 	protected ComplexF	protoNumber;
-
 	/**
 	 * This is the constructor that assumes a full Algebra has already been constructed.
 	 * This new one re-uses the objects in the one offered. No independent objects are made
@@ -89,7 +87,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 		setGProduct(pA.getGProduct());
 		gBasis = pA.getGBasis();
 	}
-	
+
 	/**
 	 * This is the constructor that assumes a Foot, Cardinal, and GProduct have been instantiated. 
 	 * It appends the Cardinal to the Foot and points at the offered GProduct. It takes in 
@@ -115,7 +113,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
 	}
-	
+
 	/**
 	 * This is the constructor that assumes a Foot has been instantiated, so it takes
 	 * the ComplexF number type from there. It takes in two strings (one name and a 
@@ -192,7 +190,7 @@ public class AlgebraComplexF extends AlgebraAbstract
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
 	}
-
+	
 	/**
 	 * This is the raw constructor that assumes only the number type has been
 	 * instantiated. It takes in three strings (two names and a product signature)
@@ -223,5 +221,15 @@ public class AlgebraComplexF extends AlgebraAbstract
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
+	}
+	
+	public Cardinal shareCardinal()
+	{
+		return protoNumber.getCardinal();
+	}
+
+	public ComplexF shareProtoNumber()
+	{
+		return protoNumber;
 	}
 }
