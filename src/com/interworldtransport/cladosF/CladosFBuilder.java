@@ -161,10 +161,7 @@ public enum CladosFBuilder
 	{
 		boolean test = false;
 		for (Cardinal point : listOfCardinals)
-		{
-			if (point == pCard)
-				test = listOfCardinals.remove(point);
-		}
+			if (point == pCard) test = listOfCardinals.remove(point);
 		return test;
 	}
 	

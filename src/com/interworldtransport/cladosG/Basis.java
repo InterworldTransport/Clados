@@ -104,6 +104,18 @@ public final class Basis
 		return new Basis(numberOfGenerators);	
 	}
 	/**
+	 * This is a validator to help ensure no construction occurs outside the
+	 * currently supported range of generators.
+	 * 
+	 * @param pGens Short representing the number of unique algebraic directions
+	 * @return boolean	True if parameter in the supported range [0, 14]
+	 */
+	public static final boolean validateSize(int pGens)
+	{
+		if (pGens <0 | pGens > MAX_GEN) return false;
+		return true;
+	}
+	/**
 	 * This integer is the number of independent blades in an algebra. It is a
 	 * count of the number of vBasis rows and is used often enough to be worth
 	 * keeping around.
@@ -178,8 +190,7 @@ public final class Basis
 	 * This is the copy constructor. It takes a previously generated Basis and
 	 * makes another independent copy.
 	 * 
-	 * @param pB
-	 *            Basis
+	 * @param pB Basis
 	 */
 	public Basis(Basis pB)
 	{
@@ -204,8 +215,7 @@ public final class Basis
 	 */
 	public Basis(short pGens) throws GeneratorRangeException
 	{
-		if (pGens <0 | pGens > MAX_GEN)
-			throw new GeneratorRangeException("Supported range is 0<->14 using 16 bit integers");
+		if (!validateSize(pGens)) throw new GeneratorRangeException("Supported range is 0<->14 using 16 bit integers");
 		
 		gradeCount = (short) (pGens + 1);
 		bladeCount = (short) (1 << pGens);

@@ -58,20 +58,21 @@ public final class GProduct
 	 * This method also establishes the internal integer representation of the
 	 * signature.
 	 * 
-	 * @param pSg
-	 *            String
+	 * @param pSg String
 	 * @return boolean This boolean states whether the GProduct signature is valid.
 	 */
 	public static final boolean validateSignature(String pSg)
 	{
 		if (pSg == null) 		return false;	// Nothing to test
+		if (!Basis.validateSize(pSg.length())) return false;
 		if (pSg.length() == 0)	return true;	// Empty list IS allowed
-		for (short j = 0; j < pSg.length(); j++)
-		{
-			if (pSg.substring(j, j + 1).equals("+")) continue;	// good character
-			if (pSg.substring(j, j + 1).equals("-")) continue;	// good character
-			return false;										// bad character
-		}
+		for (char j : pSg.toCharArray())
+			switch (j)
+			{
+				case '+':	continue;
+				case '-':	continue;
+				default:	return false;
+			}
 		return true;							// nothing bad detected
 	}
 	/**
@@ -79,14 +80,14 @@ public final class GProduct
 	 * from the generators to span the algebra's vector space. It is the object
 	 * that Ken Greider called the Eddington Basis.
 	 */
-	private final Basis		canonicalBasis;
+	private final 	Basis		canonicalBasis;
 	/**
 	 * This integer array is an internal translation of the product signature.
 	 * Generators with a positive square appear as a zero (0) while those with
 	 * negative squares appear as one (1). This array is kept to increase the
 	 * speed of product calculations.
 	 */
-	private final short[]	nSignature;
+	private final	short[]		nSignature;
 	/**
 	 * This array holds the geometric multiplication table for a Clifford
 	 * algebra using the associated basis. The array contains numbers that
@@ -98,13 +99,13 @@ public final class GProduct
 	 * The +1 offsets are present because java arrays start with an index of 0,
 	 * while the lowest rank blade is #1.
 	 */
-	private final short[][]	result;
+	private final 	short[][]	result;
 
 	/**
 	 * This string holds the signature information describing the squares of all
 	 * geometry generators present on the multiplication table.
 	 */
-	private final String	signature;
+	private final 	String		signature;
 
 	/**
 	 * Copy constructor of GProduct with other GProduct passed in. This
@@ -126,23 +127,45 @@ public final class GProduct
 		
 		if (pGP.getSignature().length() == 0) 	nSignature = new short[1];
 		else 									nSignature = new short[pGP.getSignature().length()];
-		
-		int m=0;
-		for (char b : pGP.getSignature().toCharArray())
-		{
-			switch (b)
-			{
-				case '+':	nSignature[m] = 0; 	// Zero chosen to imply no need for sign flip when pairs removed from result
-							m++;
-							break;
-				case '-':	nSignature[m] = 1;	// One chosen to imply need for sign flip when pairs removed from result 
-							m++;
-			}
-		}
+		fillNumericSignature(pGP.getSignature());
 		signature = new String(pGP.getSignature());
 		canonicalBasis = pGP.getBasis();	// Brand new one not needed. Re-used like an enumeration.
 		
-		result = pGP.getResult().clone();
+		result = pGP.getResult().clone();	// No need to build it. Just copy the other one.
+	}
+	
+	/**
+	 * Shortened constructor of ProductTable with signature information passed in,
+	 * but with a Basis already constructed elsewhere to re-use. A few checks have to 
+	 * be done to make sure the Basis is compatible with the signature, but then the 
+	 * constructor proceeds as if there were no offered basis.
+	 * 
+	 * @param pB	Basis
+	 * @param pSig 	String
+   	 * @throws GeneratorRangeException
+	 * 			This exception is thrown when a Basis fails to form.
+	 * @throws BadSignatureException
+	 * 			This exception is thrown when an invalid signature is found
+	 */
+	public GProduct(Basis pB, String pSig) throws BadSignatureException, GeneratorRangeException
+	{
+		if (!validateSignature(pSig)) 					
+			throw new BadSignatureException(this, "Valid signature required.");
+		if (!Basis.validateSize(pSig.length())) 			
+			throw new GeneratorRangeException("Signature length unsupported");
+		if ((int) Math.pow(2, pSig.length()) != pB.getBladeCount())	
+			throw new BadSignatureException(this, "Signature size mis-match with offered Basis.");
+		
+		if (pSig.length() == 0) 				nSignature = new short[1];
+		else 									nSignature = new short[pSig.length()];
+		fillNumericSignature(pSig);
+		signature = pSig;
+		canonicalBasis = pB;
+		
+		// Fill the ProductResult array with integers representing Vector
+		// Basis elements that show the product of two other such elements.
+		result = new short[canonicalBasis.getBladeCount()][canonicalBasis.getBladeCount()];
+		fillResult();
 	}
 
 	/**
@@ -156,43 +179,21 @@ public final class GProduct
 	 * @throws BadSignatureException
 	 * 			This exception is thrown when an invalid signature is found
 	 */
-	public GProduct(String pSig) 
-			throws BadSignatureException, GeneratorRangeException
+	public GProduct(String pSig) throws BadSignatureException, GeneratorRangeException
 	{
-		if (!validateSignature(pSig)) 		throw new BadSignatureException(this, "Valid signature required.");
-		if (pSig.length()>Basis.MAX_GEN) 	throw new GeneratorRangeException("Signature too long");
+		if (!validateSignature(pSig)) 			throw new BadSignatureException(this, "Valid signature required.");
+		if (!Basis.validateSize(pSig.length())) throw new GeneratorRangeException("Signature length unsupported");
 		
-		if (pSig.length() == 0) 			nSignature = new short[1];
-		else 								nSignature = new short[pSig.length()];
-				
-		int m=0;
-		for (char b : pSig.toCharArray())
-		{
-			switch (b)
-			{
-				case '+':	nSignature[m] = 0;	// Zero chosen to imply no need for sign flip when pairs removed from result
-							m++;
-							break;
-				case '-':	nSignature[m] = 1;	// One chosen to imply need for sign flip when pairs removed from result 
-							m++;
-			}
-		}
+		if (pSig.length() == 0) 				nSignature = new short[1];
+		else 									nSignature = new short[pSig.length()];
+		fillNumericSignature(pSig);
 		signature = pSig;
 		canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed? Implied by new Signature.
 
 		// Fill the ProductResult array with integers representing Vector
 		// Basis elements that show the product of two other such elements.
 		result = new short[canonicalBasis.getBladeCount()][canonicalBasis.getBladeCount()];
-		
-		for (short j = 0; j < canonicalBasis.getBladeCount(); j++)
-		{
-			result[0][j] = (short) (j + 1);
-			result[j][0] = (short) (j + 1);
-		} // Scalar section of result done separately because no sorting is needed.
-		
-		for (short j = 1; j < canonicalBasis.getBladeCount(); j++) 
-			for (short k = 1; k < canonicalBasis.getBladeCount(); k++) 
-				fillResult(j, k);	
+		fillResult();
 	}
 
 	/**
@@ -370,7 +371,30 @@ public final class GProduct
 		rB.append("\t\t\t\t\t</GProduct>\n");
 		return rB.toString();
 	}
-	
+	/**
+	 * This is a method that only gets called during construction. It fills the numeric array 
+	 * similar to the string signature. '+' becomes 0 and '-' becomes 1.
+	 * 
+	 * This numeric signature is used later as a shorthand for whether to do a sign flip when
+	 * generator pairs are removed from a product.
+	 * 0 implies no need for sign flip. 1 implies a need for sign flip.
+	 * @param pSig
+	 */
+	private void fillNumericSignature(String pSig)
+	{
+		int m=0;
+		for (char b : pSig.toCharArray())
+		{
+			switch (b)
+			{
+				case '+':	nSignature[m] = 0;	
+							m++;
+							break;
+				case '-':	nSignature[m] = 1;	
+							m++;
+			}
+		}
+	}
 	/**
 	 * Set the array used for establishing the geometric multiplication results
 	 * of pairs of blades (j and k) of the Basis.
@@ -397,7 +421,7 @@ public final class GProduct
 	 * @param k
 	 *            short
 	 */
-	private void fillResult(short j, short k)
+	private void fillCell(short j, short k)
 	{
 		short[] bothOps = new short[2 * canonicalBasis.getGradeCount() - 2];
 		short m = 0;
@@ -495,6 +519,19 @@ public final class GProduct
 		// This assertion prevents us from using light-like generators
 	}
 
+	private void fillResult()
+	{
+		for (short j = 0; j < canonicalBasis.getBladeCount(); j++)
+		{
+			result[0][j] = (short) (j + 1);
+			result[j][0] = (short) (j + 1);
+		} // Scalar section of result done separately because no sorting is needed.
+		
+		for (short j = 1; j < canonicalBasis.getBladeCount(); j++) 
+			for (short k = 1; k < canonicalBasis.getBladeCount(); k++) 
+				fillCell(j, k);	
+	}
+	
 	/**
 	 * This is a private method used to settle generators to the end during
 	 * the fillResult method.
