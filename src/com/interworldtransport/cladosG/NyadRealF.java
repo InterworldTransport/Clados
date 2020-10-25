@@ -600,9 +600,8 @@ public class NyadRealF extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
-		//protoOne = new RealF(pM.getAlgebra().protoNumber, 1.0f);
-
 		monadList = new ArrayList<MonadRealF>(1);
+		algebraList = new ArrayList<AlgebraRealF>(1);
 		appendMonadCopy(pM);
 	}
 
@@ -631,10 +630,10 @@ public class NyadRealF extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		//protoOne=pN.protoOne;
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadRealF>(pN.getMonadList().size());
+			algebraList = new ArrayList<AlgebraRealF>(pN.getAlgebraList().size());
 			for (MonadRealF tSpot : pN.getMonadList())
 				appendMonadCopy(tSpot);	
 		}

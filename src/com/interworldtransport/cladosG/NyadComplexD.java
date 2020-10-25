@@ -600,9 +600,8 @@ public class NyadComplexD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
-		//protoOne = new ComplexD(pM.getAlgebra().protoNumber, 1.0d, 0.0d);
-
 		monadList = new ArrayList<MonadComplexD>(1);
+		algebraList = new ArrayList<AlgebraComplexD>(1);
 		appendMonadCopy(pM);
 	}
 
@@ -631,10 +630,10 @@ public class NyadComplexD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		//protoOne=pN.protoOne;
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadComplexD>(pN.getMonadList().size());
+			algebraList = new ArrayList<AlgebraComplexD>(pN.getAlgebraList().size());
 			for (MonadComplexD tSpot : pN.getMonadList())
 				appendMonadCopy(tSpot);	
 		}

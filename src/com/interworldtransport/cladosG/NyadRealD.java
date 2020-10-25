@@ -600,9 +600,8 @@ public class NyadRealD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pM.getAlgebra().getFoot());
-		//protoOne = new RealD(pM.getAlgebra().protoNumber, 1.0d);
-
 		monadList = new ArrayList<MonadRealD>(1);
+		algebraList = new ArrayList<AlgebraRealD>(1);
 		appendMonadCopy(pM);
 	}
 
@@ -631,10 +630,10 @@ public class NyadRealD extends NyadAbstract
 	{
 		setName(pName);
 		setFootPoint(pN.getFootPoint());
-		//protoOne=pN.protoOne;
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadRealD>(pN.getMonadList().size());
+			algebraList = new ArrayList<AlgebraRealD>(pN.getAlgebraList().size());
 			for (MonadRealD tSpot : pN.getMonadList())
 				appendMonadCopy(tSpot);	
 		}
