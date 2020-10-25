@@ -27,6 +27,8 @@ package com.interworldtransport.cladosG;
 import static com.interworldtransport.cladosG.MonadRealD.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.interworldtransport.cladosF.CladosField;
 import com.interworldtransport.cladosF.RealD;
@@ -62,15 +64,14 @@ import com.interworldtransport.cladosGExceptions.*;
 public class NyadRealD extends NyadAbstract
 {
 	/**
-	 * Return an integer pointing to the part of the nyad that covers the
-	 * algebra named in the parameter. Coverage is true if a monad can be found
-	 * in the nyad that belongs to the algebra.
+	 * Return an integer pointing to a monad in the nyad that uses the
+	 * algebra named in the parameter. 
 	 * 
 	 * @param pN	NyadRealD
 	 * @param pAlg	String
 	 * @return int
 	 */
-	public static int findAlgebra(NyadRealD pN, AlgebraRealD pAlg)
+	public static final int findAlgebra(NyadRealD pN, AlgebraRealD pAlg)
 	{
 		for (MonadRealD pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
@@ -78,16 +79,15 @@ public class NyadRealD extends NyadAbstract
 	}
 	
 	/**
-	 * Return an integer pointing to the part of the nyad that covers the
-	 * algebra named in the parameter. Coverage is true if a monad can be found
-	 * in the nyad that belongs to the algebra.
+	 * Return an integer larger than pStart pointing to a monad in the nyad that uses the
+	 * algebra named in the parameter. 
 	 * 
 	 * @param pN		NyadRealF
 	 * @param pAlg		String
 	 * @param pStart	int
 	 * @return int
 	 */
-	public static int findNextAlgebra(NyadRealD pN, AlgebraRealD pAlg, int pStart)
+	public static final int findNextAlgebra(NyadRealD pN, AlgebraRealD pAlg, int pStart)
 	{
 		if(pN.getMonadList().size()<pStart) return -1;
 		for (int j=pStart; j < pN.getMonadList().size(); j++)
@@ -105,7 +105,7 @@ public class NyadRealD extends NyadAbstract
 	 *            String
 	 * @return boolean
 	 */
-	public static int findFrame(NyadRealD pN, String pFrame)
+	public static final int findFrame(NyadRealD pN, String pFrame)
 	{
 		for (MonadRealD pM : pN.getMonadList())
 			if (pFrame.equals(pM.getFrameName()))
@@ -114,19 +114,34 @@ public class NyadRealD extends NyadAbstract
 	}
 	
 	/**
-	 * Return an integer pointing to the part of the nyad with the expressed
-	 * name.
+	 * Return the index for monad matching requested name within the nyad if found. 
 	 * 
 	 * @param pN
 	 * 			NyadRealD
 	 * @param pName
 	 *            String
-	 * @return boolean
+	 * @return int
 	 */
-	public static int findName(NyadRealD pN, String pName)
+	public static final int findName(NyadRealD pN, String pName)
 	{
 		for (MonadRealD pM : pN.getMonadList())
 			if (pName.equals(pM.getName())) return pN.monadList.indexOf(pM);
+		return -1;
+	}
+	
+	/**
+	 * Return the index for monad within the nyad if found. 
+	 * 
+	 * @param pN
+	 * 			NyadRealD
+	 * @param pIn   
+	 * 			MonadRealD       
+	 * @return int
+	 */
+	public static final int findMonad(NyadRealD pN, MonadRealD pIn)
+	{
+		for (MonadRealD pM : pN.getMonadList())
+			if (pIn == pM) return pN.monadList.indexOf(pM);
 		return -1;
 	}
 
@@ -141,10 +156,10 @@ public class NyadRealD extends NyadAbstract
 	 *            String
 	 * @return boolean
 	 */
-	public static boolean hasAlgebra(NyadRealD pN, AlgebraRealD pAlg)
+	public static final boolean hasAlgebra(NyadRealD pN, AlgebraRealD pAlg)
 	{
-		for (MonadRealD pM : pN.getMonadList())
-			if (pAlg.equals(pM.getAlgebra())) return true;
+		for (AlgebraRealD pM : pN.getAlgebraList())
+			if (pAlg.equals(pM)) return true;
 		return false;
 	}
 	
@@ -158,11 +173,35 @@ public class NyadRealD extends NyadAbstract
 	 *            String
 	 * @return boolean
 	 */
-	public static boolean hasFrame(NyadRealD pN, String pFrame)
+	public static final boolean hasFrame(NyadRealD pN, String pFrame)
 	{
 		for (MonadRealD pM : pN.getMonadList())
 			if (pFrame.equals(pM.getFrameName())) return true;
 		return false;
+	}
+	
+	/**
+	 * This method finds how often a particular algebra shows up in use by 
+	 * monads in the nyad. Results could range from zero to nyadOrder.
+	 * <p>
+	 * @param pN	NyadRealD
+	 * @param pAlg	AlgebraRealD
+	 * @return int
+	 * 	This method counts how many instances of the algebra are present in
+	 *  monads in the nyad
+	 */
+	public static final int howManyAtAlgebra(NyadRealD pN, AlgebraRealD pAlg)
+	{
+		if (pN.getNyadOrder() == 0) return 0;
+		if (pAlg == null) return 0;
+		int found=0;
+		int test=0;
+		while (test>=0)
+		{
+			test = findNextAlgebra(pN, pAlg, test);
+			if (test>=0) found++;
+		}
+		return found;
 	}
 	
 	/**
@@ -175,7 +214,7 @@ public class NyadRealD extends NyadAbstract
 	 *            String
 	 * @return boolean
 	 */
-	public static boolean hasName(NyadRealD pN, String pName)
+	public static final boolean hasName(NyadRealD pN, String pName)
 	{
 		for (MonadRealD pM : pN.getMonadList())
 			if (pName.equals(pM.getName())) return true;
@@ -198,7 +237,7 @@ public class NyadRealD extends NyadAbstract
 	 *            NyadRealD
 	 * @return boolean
 	 */
-	public static boolean isMEqual(NyadRealD pTs, NyadRealD pN)
+	public static final boolean isMEqual(NyadRealD pTs, NyadRealD pN)
 	{
 		// Check first to see if the Nyads are of the same order. Return false
 		// if they are not.
@@ -283,7 +322,7 @@ public class NyadRealD extends NyadAbstract
 	 * @param 	pAlg	AlgebraRealD
 	 * @return 	boolean
 	 */
-	public static boolean isPScalarAt(NyadRealD pN, AlgebraRealD pAlg)
+	public static final boolean isPScalarAt(NyadRealD pN, AlgebraRealD pAlg)
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
@@ -317,7 +356,7 @@ public class NyadRealD extends NyadAbstract
 	 * @param 	pAlg	AlgebraRealD
 	 * @return 	boolean
 	 */
-	public static boolean isScalarAt(NyadRealD pN, AlgebraRealD pAlg)
+	public static final boolean isScalarAt(NyadRealD pN, AlgebraRealD pAlg)
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
@@ -354,42 +393,60 @@ public class NyadRealD extends NyadAbstract
 	 *            NyadRealD
 	 * @return boolean
 	 */
-	public static boolean isStrongReferenceMatch(NyadRealD pTs, NyadRealD pN)
+	public static final boolean isStrongReferenceMatch(NyadRealD pTs, NyadRealD pN)
 	{
-		// Check first to see if the Nyads are of the same order. Return false
-		// if they are not.
+		// Return false if the Nyads are not of the same order. 
 		if (pTs.getNyadOrder() != pN.getNyadOrder()) return false;
+		// and if they are, return false if the nyad's algebra orders are not the same.
+		else if (pTs.getNyadAlgebraOrder() != pN.getNyadAlgebraOrder()) return false;
 
 		// Check to see if the foot names match
 		if (pTs.getFootPoint() != pN.getFootPoint()) return false;
 
-		// Now we start into the Monad lists. Find a monad from this and its
-		// counterpart in other. If they are a reference match, move on. If not
-		// return a false result.
-		// Because the nyads must be of the same order at this point, sifting
-		// through one of them will detect unmatched monads.
+		// Now we start into the Monad lists.
 
 		boolean check = false;
 		for (MonadRealD tSpot : pTs.getMonadList())
 		{
 			check = false;
-			AlgebraRealD tAlg1 = tSpot.getAlgebra();
 			for (MonadRealD tSpot2 : pN.getMonadList())
 			{
-				if (tAlg1.equals(tSpot2.getAlgebra()))
+				if (tSpot.getAlgebra().equals(tSpot2.getAlgebra()))
 				{
-					check = true;
+					check = true;	// this is a temporary truth. More to check
 					if (!isReferenceMatch(tSpot, tSpot2)) return false;
-					break;
+					//break; 
+					// Don't break and we catch the case for weak nyads.
 				}
 			}
-			// if check is true a match was found
-			// if check is false, we have a dangling monad, so they can't
-			// be equal.
+			// if check is true match(es) were found and passed isReferenceMatch
+			// if check is false, we have a dangling monad in pTs, thus a fail.
 			if (!check) return false;
 		}
-		// Making it this far implies that all tests have passed. pN is a
-		// strong reference match for pTs.
+		// Making it this far implies that all tests have passed in forward order. 
+		// Now for reverse order.
+		
+		check = false;
+		for (MonadRealD tSpot : pN.getMonadList())
+		{
+			check = false;
+			for (MonadRealD tSpot2 : pTs.getMonadList())
+			{
+				if (tSpot.getAlgebra().equals(tSpot2.getAlgebra()))
+				{
+					check = true;	// this is a temporary truth. More to check
+					if (!isReferenceMatch(tSpot, tSpot2)) return false;
+					//break; 
+					// Don't break and we catch the case for weak nyads.
+				}
+			}
+			// if check is true match(es) were found and passed isReferenceMatch
+			// if check is false, we have a dangling monad in pTs, thus a fail.
+			if (!check) return false;
+		}
+		// Making it this far implies that all tests have passed in reverse order. 
+		// SINCE they have also passed in the forward order...
+		// pN is a strong reference match for pTs.
 		return true;
 	}
 
@@ -411,7 +468,7 @@ public class NyadRealD extends NyadAbstract
 	 *            NyadRealD
 	 * @return boolean
 	 */
-	public static boolean isWeakReferenceMatch(NyadRealD pTs, NyadRealD pN)
+	public static final boolean isWeakReferenceMatch(NyadRealD pTs, NyadRealD pN)
 	{
 		// Check to see if the foot objects match
 		if (pTs.getFootPoint() != pN.getFootPoint()) return false;
@@ -497,7 +554,12 @@ public class NyadRealD extends NyadAbstract
 	 * This array is the list of Monads that makes up the NyadRealD. It will be
 	 * tied to the footPoint members of each Monad as keys.
 	 */
-	protected ArrayList<MonadRealD>	monadList;
+	protected ArrayList<MonadRealD>		monadList;
+	
+	/**
+	 * This array is the list of algebras used in the NyadReald. 
+	 */
+	protected ArrayList<AlgebraRealD>	algebraList;
 
 	/**
 	 * This element holds holds the field's multiplicative unity. It gets used
@@ -541,7 +603,7 @@ public class NyadRealD extends NyadAbstract
 		//protoOne = new RealD(pM.getAlgebra().protoNumber, 1.0d);
 
 		monadList = new ArrayList<MonadRealD>(1);
-		appendMonad(pM);
+		appendMonadCopy(pM);
 	}
 
 	/**
@@ -574,7 +636,7 @@ public class NyadRealD extends NyadAbstract
 		{
 			monadList = new ArrayList<MonadRealD>(pN.getMonadList().size());
 			for (MonadRealD tSpot : pN.getMonadList())
-				appendMonad(tSpot);	
+				appendMonadCopy(tSpot);	
 		}
 	}
 
@@ -650,12 +712,10 @@ public class NyadRealD extends NyadAbstract
 	}
 
 	/**
-	 * Add another Monad to the list of monads in this nyad. This method creates
-	 * a new copy of the Monad offered as a parameter, so the NyadRealD does not
-	 * wind up referencing the passed Monad.
+	 * Add another Monad to the list of monads in this nyad. This method re-uses
+	 * the Monad offered as a parameter, so the NyadRealF DOES reference it.
 	 * 
-	 * @param pM
-	 *            MonadRealD
+	 * @param pM	MonadRealD
 	 * 
 	 * @throws CladosNyadException
 	 * 		This exception is thrown if the foot of the new monad fails to match
@@ -665,21 +725,39 @@ public class NyadRealD extends NyadAbstract
 	public NyadRealD appendMonad(MonadRealD pM) throws CladosNyadException
 	{
 		// This method works if the foot of pM matches the foot of this nyad
-		// but the algebra of pM is not already used in the monadList.
-		
-		// A check should be made to ensure pM is OK to append.
+		if (!pM.getAlgebra().getFoot().equals(getFootPoint()))
+			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
+
+		// Add Monad to the ArrayList
+		monadList.ensureCapacity(monadList.size() + 1);
+		monadList.add(pM);
+		resetAlgebraList();
+		return this;
+	}
+	
+	/**
+	 * Add another Monad to the list of monads in this nyad. This method creates
+	 * a new copy of the Monad offered as a parameter, so the NyadRealD does not
+	 * wind up referencing the passed Monad.
+	 * 
+	 * @param pM	MonadRealD
+	 * 
+	 * @throws CladosNyadException
+	 * 		This exception is thrown if the foot of the new monad fails to match
+	 * 
+	 * @return NyadRealD
+	 */
+	public NyadRealD appendMonadCopy(MonadRealD pM) throws CladosNyadException
+	{
+		// This method works if the foot of pM matches the foot of this nyad
 		// The footPoint objects must match.
 		if (!pM.getAlgebra().getFoot().equals(getFootPoint()))
 			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
-		
-		// Now that the feet are guaranteed the same, it is time to 
-		// avoid duplication of algebra names in the monad list
-		if (hasAlgebra(this, pM.getAlgebra()))
-			throw new CladosNyadException(this,	"Monads in a nyad should have unique Algebras");
-				
+
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
 		monadList.add(new MonadRealD(pM));
+		resetAlgebraList();
 		return this;
 	}
 
@@ -754,6 +832,28 @@ public class NyadRealD extends NyadAbstract
 			tSpot.dualRight();
 		return this;
 	}
+	
+	/**
+	 * Return the array of Algebras
+	 * 
+	 * @return ArrayList (of Algebras)
+	 */
+	public ArrayList<AlgebraRealD> getAlgebraList()
+	{
+		return algebraList;
+	}
+	
+	/**
+	 * Return the element of the array of Algebras at the jth index.
+	 * 
+	 * @param pj
+	 *            int
+	 * @return AlgebraRealD
+	 */
+	public AlgebraRealD getAlgebraList(int pj)
+	{
+		return algebraList.get(pj);
+	}
 
 	/**
 	 * Return the array of Monads
@@ -785,6 +885,16 @@ public class NyadRealD extends NyadAbstract
 	public int getNyadOrder()
 	{
 		return monadList.size();
+	}
+	
+	/**
+	 * Return the algebra order of this Nyad
+	 * 
+	 * @return short
+	 */
+	public int getNyadAlgebraOrder()
+	{
+		return algebraList.size();
 	}
 	
 	/**
@@ -853,7 +963,11 @@ public class NyadRealD extends NyadAbstract
 		}
 		finally
 		{
-			if (test != null) monadList.trimToSize();
+			if (test != null) 
+			{
+				monadList.trimToSize();
+				resetAlgebraList();
+			}
 		}
 
 		return this;
@@ -870,7 +984,7 @@ public class NyadRealD extends NyadAbstract
 	 */
 	public NyadRealD removeMonad(MonadRealD pM) throws CladosNyadException
 	{
-		int testfind = findAlgebra(this, pM.getAlgebra());
+		int testfind = findMonad(this, pM);
 		if (testfind < 0)
 			throw new CladosNyadException(this,	"Can't find the Monad to remove.");
 		removeMonad(testfind);
@@ -981,6 +1095,41 @@ public class NyadRealD extends NyadAbstract
 
 	}
 
+	private void resetAlgebraList()
+	{
+		algebraList.clear();
+		algebraList.ensureCapacity(monadList.size());
+		for (MonadRealD point : monadList)
+			if (!algebraList.contains(point.getAlgebra())) algebraList.add(point.getAlgebra());
+		// 1 <= algebraList.size() <= monadList.size()
+		// AlgebraList is reset to show which algebras are used by monads in this nyad
+		Comparator<AlgebraRealD> comp = (AlgebraRealD a, AlgebraRealD b) -> {return b.compareTo(a);};
+		Collections.sort(algebraList, comp);	// and now that list is sorted by name
+
+		if (monadList.size()==1) 
+		{
+			_strongFlag = true;
+			_oneAlgebra = true;
+			return;
+		}
+		// We know monadList.size()>1 at this point
+		if (algebraList.size()==1)
+		{
+			_strongFlag = false;
+			_oneAlgebra = true;
+			return;
+		}
+		else if (monadList.size() == algebraList.size())
+		{
+			_strongFlag = true;
+			_oneAlgebra = false;
+			return;
+		}
+		// We know monadList.size()>algebraList.size()>1 at this point
+		_strongFlag = false;
+		_oneAlgebra = false;		
+	}
+	
 	/**
 	 * Dyad symmetric compression: 1/2 (left right + right left) Monads are
 	 * placed in the same algebra and symmetrically multiplied to each other. A
