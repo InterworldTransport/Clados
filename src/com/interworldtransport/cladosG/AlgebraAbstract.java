@@ -81,7 +81,7 @@ public abstract class AlgebraAbstract
 		{
 			char[] first = this.name.toCharArray();
 			char[] second = pAnother.name.toCharArray();
-			int loopLimit = (first.length >= second.length) ? first.length : second.length;
+			int loopLimit = (first.length <= second.length) ? first.length : second.length;
 			for (int j=0; j<loopLimit; j++)
 			{
 				if (first[j]<second[j]) return -1;
