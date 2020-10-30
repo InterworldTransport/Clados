@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---com.interworldtransport.cladosF.DivisableF<br>
+ * ---com.interworldtransport.cladosF.Divisable<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---com.interworldtransport.cladosF.DivisableF<br>
+ * ---com.interworldtransport.cladosF.Divisable<br>
  * ------------------------------------------------------------------------ <br>
  */
 package com.interworldtransport.cladosF;
@@ -31,7 +31,7 @@ import com.interworldtransport.cladosFExceptions.*;
  * objects within the clados packages are used as 'numbers' in the definition of
  * an algebra. All CladosObjects use DivField's as a result.
  * <p>
- * DivisableF's are not named. They do not have any geometric properties. Treat
+ * Divisable's are not named. They do not have any geometric properties. Treat
  * them as the behaviors you would expect of a simple calculator.
  * <p>
  * The number array to be plugged in appears elsewhere.
@@ -40,27 +40,27 @@ import com.interworldtransport.cladosFExceptions.*;
  * @author Dr Alfred W Differ
  * 
  */
-public interface DivisableF 
+public interface Divisable 
 {
 	/**
 	 * This is the self-altering add method. The incoming variable is added to
 	 * this object and this object changes.
 	 * 
 	 * @param pF
-	 *            DivisableF
+	 *            Divisable
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the fields fail a match test.
-	 * @return DivisableF
+	 * @return Divisable
 	 */
-	public abstract DivisableF add(DivisableF pF) throws FieldBinaryException;
+	public abstract Divisable add(Divisable pF) throws FieldBinaryException;
 	
 	/**
 	 * This is the self-altering conjugate method. This object changes when all
 	 * of its imaginary members are set to their additive inverses.
 	 * 
-	 * @return DivisableF
+	 * @return Divisable
 	 */
-	public DivisableF conjugate();
+	public abstract Divisable conjugate();
 
 	/**
 	 * This is the self-altering divide method. The incoming variable is divided
@@ -68,29 +68,12 @@ public interface DivisableF
 	 * changes.
 	 * 
 	 * @param pF
-	 *            DivisableF
+	 *            Divisable
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the fields fail a match test.
-	 * @return DivisableF
+	 * @return Divisable
 	 */
-	public abstract DivisableF divide(DivisableF pF) throws FieldBinaryException;
-
-	/**
-	 * This is the square root of the SQ Modulus. It is smarter to calculate
-	 * SQModulus first.
-	 * 
-	 * @return float
-	 */
-	public abstract float getModulus();
-
-	/**
-	 * This function delivers the sum of the squares of the numeric values. Many
-	 * times it is the modulus squared that is actually needed so it makes sense
-	 * to calculate this before the modulus itself.
-	 * 
-	 * @return float
-	 */
-	public abstract float getSQModulus();
+	public abstract Divisable divide(Divisable pF) throws FieldBinaryException;
 	
 	/**
 	 * This method returns multiplicative inverses.
@@ -98,45 +81,33 @@ public interface DivisableF
 	 * @throws FieldException
 	 * 	This exception is thrown if someone tries to invert a ZERO.
 	 * 
-	 * @return DivisableF
+	 * @return Divisable
 	 */
-	public DivisableF invert() throws FieldException;
+	public abstract Divisable invert() throws FieldException;
 
 	/**
 	 * This is the self-altering multiply method. The incoming variable is
 	 * multiplied against this object and this object changes.
 	 * 
 	 * @param pF
-	 *            DivisableF
+	 *            Divisable
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the fields fail a match test.
-	 * @return DivisableF
+	 * @return Divisable
 	 */
-	public abstract DivisableF multiply(DivisableF pF)
-					throws FieldBinaryException;
-	
-	/**
-	 * Scale method multiplies the modulus by the scale
-	 * 
-	 * @param pS
-	 * 		float
-	 * 
-	 * @return DivisableF
-	 */
-	public DivisableF scale(float pS);
+	public abstract Divisable multiply(Divisable pF) throws FieldBinaryException;
 
 	/**
 	 * This is the self-altering subtract method. The incoming variable is
 	 * subtracted from this object and this object changes.
 	 * 
 	 * @param pF
-	 *            DivisableF
+	 *            Divisable
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the fields fail a match test.
-	 * @return DivisableF
+	 * @return Divisable
 	 */
-	public abstract DivisableF subtract(DivisableF pF)
-					throws FieldBinaryException;
+	public abstract Divisable subtract(Divisable pF) throws FieldBinaryException;
 
 	/**
 	 * Return a string representation of the real value

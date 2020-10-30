@@ -48,7 +48,7 @@ import com.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class ComplexF extends DivField implements DivisableF
+public class ComplexF extends DivField implements Divisable, NormalizableF, ScalableF
 {
 	/**
 	 * Static add method that creates a new ComplexF with the sum pF1 + pF2.
@@ -509,17 +509,14 @@ public class ComplexF extends DivField implements DivisableF
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
 	 *
-	 * @param pF
-	 * 		DivFieldF
-	 * 
+	 * @param pF Divisible
 	 * @throws FieldBinaryException
 	 * 	This exception occurs when a field mismatch happens
-	 * @see com.interworldtransport.cladosF.DivisableF#add(com.interworldtransport.cladosF.DivisableF)
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF add(DivisableF pF) throws FieldBinaryException
+	public ComplexF add(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -546,15 +543,14 @@ public class ComplexF extends DivField implements DivisableF
 	 * This method divides real numbers and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 * 		DivFieldF
-	 * 
-	 * @see com.interworldtransport.cladosF.DivisableF#divide(com.interworldtransport.cladosF.DivisableF)
+	 * @param pF Divisible
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when field mismatches or division by zero happens
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF divide(DivisableF pF) throws FieldBinaryException
+	public ComplexF divide(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -657,15 +653,14 @@ public class ComplexF extends DivField implements DivisableF
 	 * This method multiplies real numbers and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 * 		DivFieldF
-	 * 
-	 * @see com.interworldtransport.cladosF.DivisableF#multiply(com.interworldtransport.cladosF.DivisableF)
+	 * @param pF Divisible
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when field mismatches happen
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF multiply(DivisableF pF) throws FieldBinaryException
+	public ComplexF multiply(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -687,11 +682,8 @@ public class ComplexF extends DivField implements DivisableF
 	@Override
 	public ComplexF scale(float pS)
 	{
-		//float tempS = Math.abs(pS);
 		setReal(pS * getReal());
 		setImg(pS * getImg());
-		//setReal(Math.signum(pS) * tempS * getReal());
-		//setImg(Math.signum(pS) * tempS * getImg());
 		return this;
 	}
 
@@ -721,18 +713,14 @@ public class ComplexF extends DivField implements DivisableF
 	 * This method subtracts real numbers and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 *            DivFieldF
-	 *            
-	 * @see com.interworldtransport.cladosF.DivisableF#subtract(com.interworldtransport.cladosF.DivisableF)
-	 *            
+	 * @param pF Divisible
 	 * @throws FieldBinaryException
-	 * 	This exception occurs when there is a field mismatch.
+	 * 	This exception occurs when field mismatches happen
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF subtract(DivisableF pF) throws FieldBinaryException
+	public ComplexF subtract(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -746,8 +734,6 @@ public class ComplexF extends DivField implements DivisableF
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivisableF#toString()
-	 * 
 	 * @return String
 	 */
 	@Override
@@ -759,14 +745,12 @@ public class ComplexF extends DivField implements DivisableF
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivisableF#toXMLString()
-	 * 
 	 * @return String
 	 */
 	@Override
 	public String toXMLString()
 	{
-		return ("<ComplexF type=\"" + getCardinalString() + "\" realvalue=\""
+		return ("<ComplexF cardinal=\"" + getCardinalString() + "\" realvalue=\""
 						+ getReal() + "\" imgvalue=\"" + getImg() + "\"/>");
 	}
 }

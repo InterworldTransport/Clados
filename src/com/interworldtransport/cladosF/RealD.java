@@ -48,7 +48,7 @@ import com.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class RealD extends DivField implements DivisableD
+public class RealD extends DivField implements Divisable, NormalizableD, ScalableD
 {
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
@@ -509,17 +509,14 @@ public class RealD extends DivField implements DivisableD
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 * 		DivFieldD
-	 * 
+	 * @param pF Divisible
 	 * @throws FieldBinaryException
-	 * 	This exception is thrown when there is a field mismatch.
-	 * @see com.interworldtransport.cladosF.DivisableD#add(com.interworldtransport.cladosF.DivisableD)
+	 * 	This exception occurs when a field mismatch happens
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD add(DivisableD pF) throws FieldBinaryException
+	public RealD add(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
 				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
@@ -546,15 +543,14 @@ public class RealD extends DivField implements DivisableD
 	 * This method divides real numbers and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 * 		DivFieldD
-	 * 
-	 * @see com.interworldtransport.cladosF.DivisableD#divide(com.interworldtransport.cladosF.DivisableD)
+	 * @param pF Divisible
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when field mismatches or division by zero happens
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD divide(DivisableD pF) throws FieldBinaryException
+	public RealD divide(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
 				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
@@ -657,15 +653,14 @@ public class RealD extends DivField implements DivisableD
 	 * This method multiplies real numbers and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 * 		DivFieldD
-	 * 
-	 * @see com.interworldtransport.cladosF.DivisableD#multiply(com.interworldtransport.cladosF.DivisableD)
+	 * @param pF Divisible
+	 * @throws FieldBinaryException
+	 * 	This exception occurs when field mismatches happen
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD multiply(DivisableD pF) throws FieldBinaryException
+	public RealD multiply(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
 				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
@@ -689,18 +684,17 @@ public class RealD extends DivField implements DivisableD
 	{
 		setReal(pS * getReal());
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		return this;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -719,18 +713,14 @@ public class RealD extends DivField implements DivisableD
 	 * This method subtracts real numbers and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF
-	 *            DivFieldD
-	 * 
-	 * @see com.interworldtransport.cladosF.DivisableD#subtract(com.interworldtransport.cladosF.DivisableD)
-	 * 
+	 * @param pF Divisible
 	 * @throws FieldBinaryException
-	 * 	This exception occurs when there is a field mismatch.
+	 * 	This exception occurs when field mismatches happen
 	 * 
 	 * @return RealD
 	 */
 	@Override
-	public RealD subtract(DivisableD pF) throws FieldBinaryException
+	public RealD subtract(Divisable pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF) 
 				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
@@ -744,8 +734,6 @@ public class RealD extends DivField implements DivisableD
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivisableD#toString()
-	 * 
 	 * @return String
 	 */
 	@Override
@@ -757,14 +745,12 @@ public class RealD extends DivField implements DivisableD
 	/**
 	 * Return a string representation of the real value.
 	 * 
-	 * @see com.interworldtransport.cladosF.DivisableD#toXMLString()
-	 * 
 	 * @return String
 	 */
 	@Override
 	public String toXMLString()
 	{
-		return ("<RealD type=\"" + getCardinalString() + "\" value=\""
+		return ("<RealD cardinal=\"" + getCardinalString() + "\" value=\""
 						+ getReal() + "\" />");
 	}
 }
