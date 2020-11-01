@@ -98,8 +98,11 @@ public abstract class NyadAbstract
 	 * All objects of this class have a name independent of all other features.
 	 */
 	protected String					Name;
-
-	public Foot getFootPoint()
+	/**
+	 * Simple getter for the Foot for which the nyad relies
+	 * @return Foot
+	 */
+	public Foot getFoot()
 	{
 		return footPoint;
 	}
@@ -121,14 +124,12 @@ public abstract class NyadAbstract
 	}
 
 	/**
-	 * Set the Foot for the nyad using this method. It is called a  FootPoint 
-	 * because that was the old name, but one should not confuse the use of 
-	 * 'point' here with any geometric meaning. A Foot merely labels where 
+	 * Set the Foot for the nyad using this method. A Foot merely labels where 
 	 * an algebra is expected to be tangent to an underlying manifold.
 	 * <p>
 	 * @param pF	Foot to set for the nyad.
 	 */
-	protected void setFootPoint(Foot pF)
+	protected void setFoot(Foot pF)
 	{
 		footPoint = pF;
 	}

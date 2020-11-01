@@ -250,17 +250,17 @@ public final class Foot
 
 	public String toXMLString()
 	{
-		StringBuilder rB = new StringBuilder("\t\t\t\t\t<Foot name=\"" + getFootName() + "\">\n");
-		//rB.append("\" cardinal=\"" + cardinal.getType() + "\">\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t\t<Foot>\n");
+		rB.append("\t\t\t\t\t\t<Name>\"" + getFootName() + "\"</Name>\n");
 		rB.append("\t\t\t\t\t\t<Cardinals number=\"" + cardinalList.size() + "\" >\n");
 		for (short k = 0; k < cardinalList.size(); k++)
 			rB.append("\t\t\t\t\t\t\t" + cardinalList.get(k).toXMLString() );
 		rB.append("\t\t\t\t\t\t</Cardinals>\n");
 		
-		rB.append("\t\t\t\t\t\t<ReferenceFrames number=\"" + rFrames.size() + "\" >\n");
+		rB.append("\t\t\t\t\t\t<Frames number=\"" + rFrames.size() + "\" >\n");
 		for (short k = 0; k < rFrames.size(); k++)
 			rB.append("\t\t\t\t\t\t\t<Frame number=\"" + k + "\" name=\""	+ rFrames.get(k) + "\" />\n");
-		rB.append("\t\t\t\t\t\t</ReferenceFrames>\n");
+		rB.append("\t\t\t\t\t\t</Frames>\n");
 		rB.append("\t\t\t\t\t</Foot>\n");
 		return rB.toString();
 	}

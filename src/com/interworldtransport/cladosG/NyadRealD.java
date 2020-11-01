@@ -244,7 +244,7 @@ public class NyadRealD extends NyadAbstract
 		if (pTs.getNyadOrder() != pN.getNyadOrder()) return false;
 
 		// Check to see if the foot names match
-		if (pTs.getFootPoint() != pN.getFootPoint()) return false;
+		if (pTs.getFoot() != pN.getFoot()) return false;
 
 		// Now check the monad lists.
 		boolean forwardCheck = false;
@@ -401,7 +401,7 @@ public class NyadRealD extends NyadAbstract
 		else if (pTs.getNyadAlgebraOrder() != pN.getNyadAlgebraOrder()) return false;
 
 		// Check to see if the foot names match
-		if (pTs.getFootPoint() != pN.getFootPoint()) return false;
+		if (pTs.getFoot() != pN.getFoot()) return false;
 
 		// Now we start into the Monad lists.
 
@@ -471,7 +471,7 @@ public class NyadRealD extends NyadAbstract
 	public static final boolean isWeakReferenceMatch(NyadRealD pTs, NyadRealD pN)
 	{
 		// Check to see if the foot objects match
-		if (pTs.getFootPoint() != pN.getFootPoint()) return false;
+		if (pTs.getFoot() != pN.getFoot()) return false;
 
 		// Now we start into the Monad lists. Find a monad from pTs and its
 		// counterpart in other. If they are a reference match, move on. If
@@ -501,25 +501,22 @@ public class NyadRealD extends NyadAbstract
 	/**
 	 * Display XML string that represents the Nyad
 	 * 
-	 * @param pN
-	 * 			NyadRealD This is the nyad to be converted to XML.
+	 * @param pN NyadRealD This is the nyad to be converted to XML.
 	 * 
 	 * @return String
 	 */
 	public static String toXMLString(NyadRealD pN)
 	{
-		StringBuilder rB = new StringBuilder("<Nyad name=\"" + pN.getName()
-						+ "\" ");
-		rB.append("name=\"" + pN.getName() + "\" ");
-		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		//rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
+		StringBuilder rB = new StringBuilder("<Nyad ");
+		rB.append("order=\"" + pN.getNyadOrder() + "\" ");
+		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" ");
 		rB.append(">\n");
-		rB.append(pN.getFootPoint().toXMLString());
-		//rB.append(pN.protoOne.toXMLString());
-		
+		rB.append("\t<Name>\"" + pN.getName() + "\"</Name>\n");
+		rB.append(pN.getFoot().toXMLString());
+		rB.append("\t<MonadList>\n");
 		for (MonadRealD tSpot : pN.getMonadList())
 			rB.append(MonadRealD.toXMLString(tSpot));
-
+		rB.append("\t</MonadList>\n");
 		rB.append("</Nyad>\n");
 		return rB.toString();
 	}
@@ -527,25 +524,26 @@ public class NyadRealD extends NyadAbstract
 	/**
 	 * Display XML string that represents the Nyad
 	 * 
-	 * @param pN
-	 * 			NyadRealD This is the nyad to be converted to XML.
+	 * @param pN NyadRealD This is the nyad to be converted to XML.
 	 * 
 	 * @return String
 	 */
 	public static String toXMLFullString(NyadRealD pN)
 	{
-		StringBuilder rB = new StringBuilder("<Nyad name=\"" + pN.getName()
-						+ "\" ");
-		rB.append("name=\"" + pN.getName() + "\" ");
-		rB.append("foot=\"" + pN.getFootPoint().getFootName() + "\" ");
-		//rB.append("protoOne=\"" + pN.protoOne.getCardinalString() + "\" ");
+		StringBuilder rB = new StringBuilder("<Nyad ");
+		rB.append("order=\"" + pN.getNyadOrder() + "\" ");
+		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" ");
 		rB.append(">\n");
-		rB.append(pN.getFootPoint().toXMLString());
-		//rB.append(pN.protoOne.toXMLString());
-		
+		rB.append("\t<Name>\"" + pN.getName() + "\"</Name>\n");
+		rB.append("\t"+pN.getFoot().toXMLString());
+		rB.append("\t<AlgebraList>\n");
+		for (AlgebraRealD point : pN.getAlgebraList())
+			rB.append("\t\t<Algebra>\n"+"\t\t\t<Name>\""+point.getAlgebraName()+"\t\t\t</Name>\n"+"\t\t</Algebra>\n");
+		rB.append("\t</AlgebraList>\n");
+		rB.append("\t<MonadList>\n");
 		for (MonadRealD tSpot : pN.getMonadList())
-			rB.append(MonadRealD.toXMLFullString(tSpot));
-
+			rB.append("\t\t"+MonadRealD.toXMLFullString(tSpot));
+		rB.append("\t</MonadList>\n");
 		rB.append("</Nyad>\n");
 		return rB.toString();
 	}
@@ -599,7 +597,7 @@ public class NyadRealD extends NyadAbstract
 	public NyadRealD(String pName, MonadRealD pM) throws CladosNyadException
 	{
 		setName(pName);
-		setFootPoint(pM.getAlgebra().getFoot());
+		setFoot(pM.getAlgebra().getFoot());
 		monadList = new ArrayList<MonadRealD>(1);
 		algebraList = new ArrayList<AlgebraRealD>(1);
 		appendMonadCopy(pM);
@@ -629,7 +627,7 @@ public class NyadRealD extends NyadAbstract
 	public NyadRealD(String pName, NyadRealD pN) throws CladosNyadException
 	{
 		setName(pName);
-		setFootPoint(pN.getFootPoint());
+		setFoot(pN.getFoot());
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadRealD>(pN.getMonadList().size());
@@ -724,7 +722,7 @@ public class NyadRealD extends NyadAbstract
 	public NyadRealD appendMonad(MonadRealD pM) throws CladosNyadException
 	{
 		// This method works if the foot of pM matches the foot of this nyad
-		if (!pM.getAlgebra().getFoot().equals(getFootPoint()))
+		if (!pM.getAlgebra().getFoot().equals(getFoot()))
 			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
 
 		// Add Monad to the ArrayList
@@ -750,7 +748,7 @@ public class NyadRealD extends NyadAbstract
 	{
 		// This method works if the foot of pM matches the foot of this nyad
 		// The footPoint objects must match.
-		if (!pM.getAlgebra().getFoot().equals(getFootPoint()))
+		if (!pM.getAlgebra().getFoot().equals(getFoot()))
 			throw new CladosNyadException(this,	"Monads is a nyad should share a Foot");
 
 		// Add Monad to the ArrayList
@@ -794,14 +792,14 @@ public class NyadRealD extends NyadAbstract
 			tM = new MonadRealD(pName, 
 								pAlgebra, 
 								pFrame, 
-								getFootPoint(), 
+								getFoot(), 
 								pSig, 
-								(RealD) CladosField.REALD.createZERO(getFootPoint().getCardinal(0)));			
+								(RealD) CladosField.REALD.createZERO(getFoot().getCardinal(0)));			
 		else
 			tM = new MonadRealD(pName, 
 								pAlgebra, 
 								pFrame, 
-								getFootPoint(), 
+								getFoot(), 
 								pSig, 
 								(RealD) CladosField.REALD.createZERO(pCard));
 		appendMonad(tM);

@@ -83,6 +83,18 @@ public enum CladosField
 		}
 	}
 	
+	public final DivField createONE(DivField pDiv)
+	{
+		switch (this)
+		{
+			case REALF: 	return new RealF(pDiv.getCardinal(), 1f);
+			case REALD: 	return new RealD(pDiv.getCardinal(), 1d);
+			case COMPLEXF: 	return new ComplexF(pDiv.getCardinal(), 1f, 0f);
+			case COMPLEXD: 	return new ComplexD(pDiv.getCardinal(), 1d, 0d);
+			default:		return null;
+		}
+	}
+	
 	public final DivField createONE(String pCard)
 	{
 		switch (this)
@@ -103,6 +115,18 @@ public enum CladosField
 			case REALD: 	return new RealD(pCard, 0d);
 			case COMPLEXF: 	return new ComplexF(pCard, 0f, 0f);
 			case COMPLEXD: 	return new ComplexD(pCard, 0d, 0d);
+			default:		return null;
+		}
+	}
+	
+	public final DivField createZERO(DivField pDiv)
+	{
+		switch (this)
+		{
+			case REALF: 	return new RealF(pDiv.getCardinal(), 0f);
+			case REALD: 	return new RealD(pDiv.getCardinal(), 0d);
+			case COMPLEXF: 	return new ComplexF(pDiv.getCardinal(), 0f, 0f);
+			case COMPLEXD: 	return new ComplexD(pDiv.getCardinal(), 0d, 0d);
 			default:		return null;
 		}
 	}

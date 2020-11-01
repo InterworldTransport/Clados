@@ -53,8 +53,8 @@ public class AlgebraRealD extends AlgebraAbstract
 	}
 	public static String toXMLString(AlgebraRealD pA)
 	{
-		StringBuilder rB = new StringBuilder("\t\t\t\t<Algebra name=\"" + pA.getAlgebraName() + "\" >\n");
-		//rB.append(">\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t<Algebra>\n");
+		rB.append("\t\t\t\t\t<Name>\"" + pA.getAlgebraName() + "\"</Name>\n");
 		rB.append("\t\t\t\t\t"+pA.protoNumber.toXMLString()+"\n");
 		rB.append(pA.getFoot().toXMLString());
 		rB.append(pA.getGProduct().toXMLString());

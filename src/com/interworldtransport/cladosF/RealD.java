@@ -750,7 +750,7 @@ public class RealD extends DivField implements Divisable, NormalizableD, Scalabl
 	@Override
 	public String toXMLString()
 	{
-		return ("<RealD cardinal=\"" + getCardinalString() + "\" value=\""
+		return ("<RealD cardinal=\"" + getCardinalString() + "\" realvalue=\""
 						+ getReal() + "\" />");
 	}
 }

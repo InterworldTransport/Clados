@@ -79,6 +79,6 @@ public final class Cardinal
 	}
 	public String toXMLString()
 	{
-		return ("<Cardinal type=\"" + type + "\" />\n");
+		return ("<Cardinal unit=\"" + type + "\" />\n");
 	}
 }

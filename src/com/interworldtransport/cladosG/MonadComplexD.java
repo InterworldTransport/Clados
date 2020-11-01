@@ -208,15 +208,15 @@ public class MonadComplexD extends MonadAbstract
 	 */
 	public static String toXMLString(MonadComplexD pM)
 	{
-		StringBuilder rB = new StringBuilder("\t\t\t<Monad name=\"" + pM.getName() + "\" ");
+		StringBuilder rB = new StringBuilder("\t\t\t<Monad ");
 		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
 		rB.append("frame=\"" + pM.getFrameName() + "\" ");
-		rB.append("gradekey=\"" + pM.getGradeKey() + "\" ");
+		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
-
-		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length
-						+ "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
+		
+		rB.append("\t\t\t\t<Name>\"" + pM.getName() + "\"</Name>\n");
+		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
 			rB.append("\t\t\t\t\t" + pM.getCoeff()[k].toXMLString() + "\n");
 
@@ -235,15 +235,15 @@ public class MonadComplexD extends MonadAbstract
 	 */
 	public static String toXMLFullString(MonadComplexD pM)
 	{
-		StringBuilder rB = new StringBuilder("\t\t\t<Monad name=\"" + pM.getName() + "\" ");
-		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
-		rB.append("frame=\"" + pM.getFrameName() + "\" ");
+		StringBuilder rB = new StringBuilder("\t\t\t<Monad ");
+		//rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
+		//rB.append("frame=\"" + pM.getFrameName() + "\" ");
 		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
-
+		rB.append("\t\t\t\t<Name>\"" + pM.getName() + "\"</Name>\n");
 		rB.append(AlgebraComplexD.toXMLString(pM.getAlgebra()));
-
+		rB.append("\t\t\t\t<Frame>\"" + pM.getFrameName() + "\"</Frame>\n");
 		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length
 						+ "\" gradeKey=\"" + pM.getGradeKey() + "\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)

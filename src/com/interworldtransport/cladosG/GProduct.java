@@ -352,8 +352,8 @@ public final class GProduct
 	 */
 	public String toXMLString()
 	{
-		StringBuilder rB = new StringBuilder("\t\t\t\t\t<GProduct signature=\"" + signature
-						+ "\">\n");
+		StringBuilder rB = new StringBuilder("\t\t\t\t\t<GProduct>\n");
+		rB.append("\t\t\t\t\t\t<Signature>\"" + signature + "\"</Signature>\n");
 		rB.append(canonicalBasis.toXMLString());
 		rB.append("\t\t\t\t\t\t<ProductTable rows=\"" + canonicalBasis.getBladeCount() + "\">\n");
 		for (short k = 0; k < canonicalBasis.getBladeCount(); k++) // Appending rows
