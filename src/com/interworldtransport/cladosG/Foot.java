@@ -47,235 +47,147 @@ import com.interworldtransport.cladosF.Cardinal;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public final class Foot
-{
+public final class Foot {
 	/**
-	 * This factory build method produces a new Foot with an empty cardinal list.
-	 * It is intend to name an otherwise opaque constructor that creates a new Foot
-	 * but re-uses a Cardinal.
+	 * This factory build method produces a new Foot with an empty cardinal list. It
+	 * is intend to name an otherwise opaque constructor that creates a new Foot but
+	 * re-uses a Cardinal.
 	 * 
 	 * @param pFootName String name for the new Foot
 	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
 	 */
-	public static final Foot buildAsType(String pFootName)
-	{
+	public static final Foot buildAsType(String pFootName) {
 		return new Foot(pFootName);
 	}
+
 	/**
-	 * This factory build method produces a new Foot using the offered Cardinal.
-	 * It is intend to name an otherwise opaque constructor that creates a new Foot
-	 * but re-uses a Cardinal.
+	 * This factory build method produces a new Foot using the offered Cardinal. It
+	 * is intend to name an otherwise opaque constructor that creates a new Foot but
+	 * re-uses a Cardinal.
 	 * 
-	 * @param pFootName String name for the new Foot
+	 * @param pFootName    String name for the new Foot
 	 * @param pNewCardinal Cardinal to re-use for this new Foot
 	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
 	 */
-	public static final Foot buildAsType(String pFootName, Cardinal pNewCardinal)
-	{
+	public static final Foot buildAsType(String pFootName, Cardinal pNewCardinal) {
 		return new Foot(pFootName, pNewCardinal);
 	}
+
 	/**
-	 * This object defines the type of numbers used by all objects that share
-	 * this footPoint.
+	 * This object defines the type of numbers used by all objects that share this
+	 * footPoint.
 	 */
-	private ArrayList<Cardinal>	cardinalList;
+	private ArrayList<Cardinal> cardinalList;
 	/**
 	 * This String is the name the footPoint of the Reference Frame of the Monad
 	 */
-	private String				footName;
-	/**
-	 * This is the list of known reference frames defined elsewhere against this
-	 * footPoint.
-	 */
-	private ArrayList<String>	rFrames;
+	private String footName;
 
 	/**
 	 * Build the footPoint object from scratch.
 	 * 
-	 * @param pName
-	 *            String This string will be the name of the foot point.
+	 * @param pName String This string will be the name of the foot point.
 	 */
-	public Foot(String pName)
-	{
+	public Foot(String pName) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
 		cardinalList.add(Cardinal.generate(pName));
-		rFrames = new ArrayList<String>(1);
-		rFrames.add(pName);
 	}
-	
+
 	/**
 	 * Build the footPoint object from scratch.
 	 * 
-	 * @param pName
-	 *            String This string will be the name of the foot point.
-	 * @param pFT
-	 *            Cardinal This object defines the kind of numbers that are
-	 *            meaningful for this foot point
+	 * @param pName String This string will be the name of the foot point.
+	 * @param pFT   Cardinal This object defines the kind of numbers that are
+	 *              meaningful for this foot point
 	 */
-	public Foot(String pName, Cardinal pFT)
-	{
+	public Foot(String pName, Cardinal pFT) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
 		cardinalList.add(pFT);
-		rFrames = new ArrayList<String>(1);
-		rFrames.add(pName);
 	}
-	
+
 	/**
 	 * Build the footPoint object from scratch.
 	 * 
-	 * @param pName
-	 *            String This string will be the name of the foot point.
-	 * @param pF
-	 *            DivField This object holds the cardinal that defines
-	 *            the kind of numbers that are meaningful for this foot point
+	 * @param pName String This string will be the name of the foot point.
+	 * @param pF    DivField This object holds the cardinal that defines the kind of
+	 *              numbers that are meaningful for this foot point
 	 */
-	public Foot(String pName, DivField pF)
-	{
+	public Foot(String pName, DivField pF) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
 		cardinalList.add(pF.getCardinal());
-		rFrames = new ArrayList<String>(1);
-		rFrames.add(pName);
 	}
+
 	/**
-	 * This method appends a Cardinal to the list of known cardinals for this
-	 * foot. It will silently terminate IF the cardinal is already in the list.
+	 * This method appends a Cardinal to the list of known cardinals for this foot.
+	 * It will silently terminate IF the cardinal is already in the list.
 	 * 
-	 * The uniqueness test is done BY OBJECT and not by the cardinal's string
-	 * name. That means visual inspection of the cardinal list could reveal 
-	 * entries that appear to be the same. They aren't, though. The cardinalList
-	 * references objects and NOT their string names.
+	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
+	 * That means visual inspection of the cardinal list could reveal entries that
+	 * appear to be the same. They aren't, though. The cardinalList references
+	 * objects and NOT their string names.
 	 * 
-	 * @param fN Cardinal
-	 * 		This is a reference to the Cardinal to append to this Foot 
+	 * @param fN Cardinal This is a reference to the Cardinal to append to this Foot
 	 */
-	public void appendCardinal(Cardinal fN)
-	{
-		for (Cardinal tC : cardinalList)
-			if (tC.equals(fN)) return;
+	public void appendCardinal(Cardinal fN) {
+		if (cardinalList.contains(fN))
+			return;
 		cardinalList.ensureCapacity(cardinalList.size() + 1);
 		cardinalList.add(fN);
 	}
 
 	/**
-	 * This method appends a frame name to the list of known frames for this
-	 * foot. It will silently terminate IF the frame is already in the list.
+	 * This method looks for the requested cardinal object in the Foot's tracking
+	 * list.
 	 * 
-	 * @param pRF
-	 *            String Reference Frame name to append
+	 * @param pIn Cardinal This is a reference to the Cardinal to be found in the
+	 *            Foot's cardinal list.
+	 * @return int This method looks for the requested Cardinal in the Foot's list
+	 *         and returns the index if it is found. If not, it returns -1.
 	 */
-	public void appendFrame(String pRF)
-	{
-		for (String tS : rFrames)
-			if (tS.equals(pRF)) return;
-		rFrames.ensureCapacity(rFrames.size() + 1);
-		rFrames.add(pRF);
-	}
-	
-	/**
-	 * This method looks for the requested cardinal object in the Foot's tracking list.
-	 * 
-	 * @param pIn Cardinal
-	 * 	This is a reference to the Cardinal to be found in the Foot's cardinal list.
-	 * @return int
-	 * 	This method looks for the requested Cardinal in the Foot's list and returns
-	 * 	the index if it is found. If not, it returns -1.
-	 */
-	public int findCardinal(Cardinal pIn)
-	{
-		if (cardinalList == null) return -1;
-		for (int j=0; j< cardinalList.size(); j++) 
-			if (cardinalList.get(j).equals(pIn)) return j;
+	public int findCardinal(Cardinal pIn) {
+		if (cardinalList == null)
+			return -1;
+		if (cardinalList.contains(pIn))
+			return cardinalList.indexOf(pIn);
 		return -1;
 	}
 
-	public Cardinal getCardinal(int pIn)
-	{
+	public Cardinal getCardinal(int pIn) {
 		return cardinalList.get(pIn);
 	}
 
-	public ArrayList<Cardinal> getCardinals()
-	{
+	public ArrayList<Cardinal> getCardinals() {
 		return cardinalList;
 	}
-	
-	public String getFootName()
-	{
+
+	public String getFootName() {
 		return footName;
 	}
-	
-	public ArrayList<String> getReferenceFrames()
-	{
-		return rFrames;
-	}
-	
-	public void removeCardinal(Cardinal pCard)
-	{
+
+	public void removeCardinal(Cardinal pCard) {
 		cardinalList.remove(pCard);
 	}
-	
-	/**
-	 * This method removes a frame name from the list of known frames for this
-	 * foot. If the frame is not found in the list, no action is taken. This
-	 * silent failure is intentional.
-	 * 
-	 * @param pRF
-	 *            String Reference Frame name to remove
-	 */
-	public void removeRFrames(String pRF)
-	{
-		//for (String tS : rFrames)
-		//{
-		//	if (tS.equals(pRF))
-				rFrames.remove(pRF);
-		//}
-		//ListIterator<String> li = rFrames.listIterator();
-		//do
-		//{
-		//	if (li.next().equals(pRF))
-		//	{
-		//		li.remove();
-		//		break;
-		//	}
-		//}
-		//while (li.hasNext());
-	}
 
-	public void setFootName(String footName)
-	{
+	public void setFootName(String footName) {
 		this.footName = footName;
 	}
 
-	public String toXMLString()
-	{
-		StringBuilder rB = new StringBuilder("\t\t\t\t\t<Foot>\n");
-		rB.append("\t\t\t\t\t\t<Name>\"" + getFootName() + "\"</Name>\n");
-		rB.append("\t\t\t\t\t\t<Cardinals number=\"" + cardinalList.size() + "\" >\n");
-		for (short k = 0; k < cardinalList.size(); k++)
-			rB.append("\t\t\t\t\t\t\t" + cardinalList.get(k).toXMLString() );
-		rB.append("\t\t\t\t\t\t</Cardinals>\n");
-		
-		rB.append("\t\t\t\t\t\t<Frames number=\"" + rFrames.size() + "\" >\n");
-		for (short k = 0; k < rFrames.size(); k++)
-			rB.append("\t\t\t\t\t\t\t<Frame number=\"" + k + "\" name=\""	+ rFrames.get(k) + "\" />\n");
-		rB.append("\t\t\t\t\t\t</Frames>\n");
-		rB.append("\t\t\t\t\t</Foot>\n");
+	public String toXMLString(String pind) {
+		String indent = "\t\t";
+		if (pind == null)
+			pind = "";
+		StringBuilder rB = new StringBuilder(indent + pind + "<Foot>\n");
+		rB.append(indent + pind + "\t<Name>\"" + getFootName() + "\"</Name>\n");
+		// -----------------------------------------------------------------------
+		rB.append(indent + pind + "\t<Cardinals number=\"" + cardinalList.size() + "\" >\n");
+		for (Cardinal point : cardinalList)
+			rB.append(indent + pind + "\t\t" + point.toXMLString());
+		rB.append(indent + pind + "\t</Cardinals>\n");
+		// -----------------------------------------------------------------------
+		rB.append(indent + pind + "</Foot>\n");
 		return rB.toString();
 	}
-
-	/**
-	 * This method appends a frame name from the list of known frames for this
-	 * foot.
-	 * 
-	 * @param pRF
-	 *            String Reference Frame name to remove
-	 */
-	protected void appendRFrame(String pRF)
-	{
-		rFrames.ensureCapacity(rFrames.size() + 1);
-		rFrames.add(pRF);
-	}
-
 }
