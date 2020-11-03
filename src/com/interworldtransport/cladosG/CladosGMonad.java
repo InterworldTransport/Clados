@@ -60,8 +60,8 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * 
 	 * @param pA The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 */
 	public final MonadAbstract copyOf(MonadAbstract pA) throws BadSignatureException, CladosMonadException {
 		switch (this) {
@@ -96,8 +96,8 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pA    The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new monad's name.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 */
 	public final MonadAbstract copyRename(MonadAbstract pA, String pName)
 			throws BadSignatureException, CladosMonadException {
@@ -137,9 +137,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pFoot   A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final MonadAbstract createOnlyCoeffs(DivField[] pNumber, String pName, String pAName, String pFrame,
 			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -180,9 +180,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pSig     A String for the new algebra's signature.
 	 * @param pSpecial A String for special handling constructor. ex: "Zero", "One"
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final MonadAbstract createSpecial(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig, String pSpecial) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -220,9 +220,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pName   A String for the new monad's name.
 	 * @param pFrame  A String for the new frame name.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final MonadAbstract createWithAlgebra(DivField[] pNumber, AlgebraAbstract pA, String pName, String pFrame)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -262,9 +262,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pFoot   A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final MonadAbstract createWithFoot(DivField pNumber, String pName, String pAName, String pFrame,
 			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -304,9 +304,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pFrame  A String for the new frame name.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final MonadAbstract createZero(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {

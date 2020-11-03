@@ -55,9 +55,9 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * 
 	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
 	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws CladosNyadException
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final NyadAbstract copyOf(NyadAbstract pN)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
@@ -94,9 +94,9 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 *              USE A CONCRETE Nyad here or nada.
 	 * @param pName A String for the new Nyad's name.
 	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws CladosNyadException
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final NyadAbstract copyRename(NyadAbstract pN, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
@@ -133,9 +133,9 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 *              USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new Nyad's name.
 	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException
-	 * @throws CladosMonadException
-	 * @throws CladosNyadException
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final NyadAbstract copyWithMonad(MonadAbstract pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {

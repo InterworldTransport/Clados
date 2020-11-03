@@ -98,8 +98,8 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pFTName A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
-	 * @throws BadSignatureException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final AlgebraAbstract create(DivField pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
@@ -137,8 +137,8 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pName A String for the new algebra's name.
 	 * @param pSig  A String for the new algebra's signature.
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
-	 * @throws BadSignatureException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final AlgebraAbstract createWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
@@ -164,8 +164,8 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pName   A String for the new algebra's name.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
-	 * @throws BadSignatureException
-	 * @throws GeneratorRangeException
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final AlgebraAbstract createWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
