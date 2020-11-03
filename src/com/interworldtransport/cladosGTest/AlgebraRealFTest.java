@@ -38,6 +38,32 @@ public class AlgebraRealFTest
 	}
 
 	@Test
+	public void testAppendReferenceFrame()
+	{
+		assertFalse(alg1.equals(null));
+		assertTrue(alg1.getReferenceFrames().size() == 1);
+		alg1.appendFrame(fName + "-Spherical");
+		assertTrue(alg1.getReferenceFrames().size() == 2);
+	}
+
+	@Test
+	public void testRemoveReferenceFrame()
+	{
+		assertTrue(alg2.getReferenceFrames().size() == 1);
+		alg2.appendFrame(fName + "-Spherical2");
+		assertTrue(alg2.getReferenceFrames().size() == 2);
+		alg2.removeFrame(fName + "-Spherical2");
+		assertTrue(alg2.getReferenceFrames().size() == 1);
+		alg2.removeFrame("Un-named frame that shouldn't be found.");
+		assertTrue(alg2.getReferenceFrames().size() == 1);
+		//Attempting to remove a frame that isn't there silently moves on.
+		//If one needs to ensure the frame was there and confirm it's 
+		//removal, one should find it first.
+		assertTrue(alg2.getReferenceFrames()
+				.indexOf("Un-named frame that shouldn't be found.") == -1);
+	}
+	
+	@Test
 	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException
 	{
 		assertTrue(alg1.getFoot() == alg2.getFoot());
@@ -81,7 +107,6 @@ public class AlgebraRealFTest
 		assertFalse(alg6.getGProduct().equals(alg1.getGProduct()));
 		assertTrue(alg6.getFoot().getCardinal(0).equals(alg1.getFoot().getCardinal(0)));
 		//Number type re-used but nothing else ensures algebra mis-match
-		
 	}
 
 	@Test
@@ -117,5 +142,4 @@ public class AlgebraRealFTest
 		String test = AlgebraRealF.toXMLString(alg1);
 		assertTrue(test != null);
 	}
-
 }

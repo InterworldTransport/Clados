@@ -507,17 +507,15 @@ public class NyadRealF extends NyadAbstract
 	 */
 	public static String toXMLString(NyadRealF pN)
 	{
-		StringBuilder rB = new StringBuilder("<Nyad ");
-		rB.append("order=\"" + pN.getNyadOrder() + "\" ");
-		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" ");
-		rB.append(">\n");
-		rB.append("\t<Name>\"" + pN.getName() + "\"</Name>\n");
-		rB.append(pN.getFoot().toXMLString());
-		rB.append("\t<MonadList>\n");
+		StringBuilder rB = new StringBuilder("\t<Nyad order=\"" + pN.getNyadOrder() + "\" ");
+		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
+		rB.append("\t\t<Name>\"" + pN.getName() + "\"</Name>\n");
+		rB.append(pN.getFoot().toXMLString(""));
+		rB.append("\t\t<MonadList>\n");
 		for (MonadRealF tSpot : pN.getMonadList())
 			rB.append(MonadRealF.toXMLString(tSpot));
-		rB.append("\t</MonadList>\n");
-		rB.append("</Nyad>\n");
+		rB.append("\t\t</MonadList>\n");
+		rB.append("\t</Nyad>\n");
 		return rB.toString();
 	}
 	
@@ -530,21 +528,19 @@ public class NyadRealF extends NyadAbstract
 	 */
 	public static String toXMLFullString(NyadRealF pN)
 	{
-		StringBuilder rB = new StringBuilder("<Nyad ");
-		rB.append("order=\"" + pN.getNyadOrder() + "\" ");
-		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" ");
-		rB.append(">\n");
-		rB.append("\t<Name>\"" + pN.getName() + "\"</Name>\n");
-		rB.append("\t"+pN.getFoot().toXMLString());
-		rB.append("\t<AlgebraList>\n");
+		StringBuilder rB = new StringBuilder("\t<Nyad order=\"" + pN.getNyadOrder() + "\" ");
+		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
+		rB.append("\t\t<Name>\"" + pN.getName() + "\"</Name>\n");
+		rB.append(pN.getFoot().toXMLString(""));
+		rB.append("\t\t<AlgebraList>\n");
 		for (AlgebraRealF point : pN.getAlgebraList())
-			rB.append("\t\t<Algebra>\n"+"\t\t\t<Name>\""+point.getAlgebraName()+"\t\t\t</Name>\n"+"\t\t</Algebra>\n");
-		rB.append("\t</AlgebraList>\n");
-		rB.append("\t<MonadList>\n");
+			rB.append("\t\t\t<Algebra>\n"+"\t\t\t\t<Name>\""+point.getAlgebraName()+"\"</Name>\n"+"\t\t\t</Algebra>\n");
+		rB.append("\t\t</AlgebraList>\n");
+		rB.append("\t\t<MonadList>\n");
 		for (MonadRealF tSpot : pN.getMonadList())
-			rB.append("\t\t"+MonadRealF.toXMLFullString(tSpot));
-		rB.append("\t</MonadList>\n");
-		rB.append("</Nyad>\n");
+			rB.append(MonadRealF.toXMLFullString(tSpot));
+		rB.append("\t\t</MonadList>\n");
+		rB.append("\t</Nyad>\n");
 		return rB.toString();
 	}
 
@@ -602,7 +598,7 @@ public class NyadRealF extends NyadAbstract
 		algebraList = new ArrayList<AlgebraRealF>(1);
 		appendMonadCopy(pM);
 	}
-
+	// TODO Write similar constructor that doesn't copy the monad. re-use instead.
 	/**
 	 * A simple copy constructor of a NyadRealF. The passed NyadRealF will be
 	 * copied without the name. This constructor is used most often to clone
@@ -636,7 +632,7 @@ public class NyadRealF extends NyadAbstract
 				appendMonadCopy(tSpot);	
 		}
 	}
-
+	// TODO Write similar constructor that doesn't copy the nyad. re-use instead.
 	/**
 	 * Dyadic antisymmetric compression: 1/2 (left right - right left) Monads
 	 * are placed in the same algebra and antisymmetrically multiplied to each
@@ -653,7 +649,7 @@ public class NyadRealF extends NyadAbstract
 	 * 
 	 * @return NyadRealF
 	 */
-	public NyadRealF antisymmCompress(AlgebraRealF pInto, AlgebraRealF pFrom)
+	/*public NyadRealF antisymmCompress(AlgebraRealF pInto, AlgebraRealF pFrom)
 					throws CladosNyadException
 	{
 		// The strings refer to particular algebras. Find them in the AlgebraKey
@@ -669,16 +665,14 @@ public class NyadRealF extends NyadAbstract
 		}
 		catch (FieldBinaryException e)
 		{
-			throw new CladosNyadException(this,
-							"Monad cardinals must match for compression.");
+			throw new CladosNyadException(this, "Monad cardinals must match for compression.");
 		}
 		catch (CladosMonadBinaryException e)
 		{
-			throw new CladosNyadException(this,
-							"Monad mutliplication failed for compression.");
+			throw new CladosNyadException(this, "Monad mutliplication failed for compression.");
 		}
 	}
-
+	*/
 	/**
 	 * Dyad anymmetric compression: 1/2 (left right - right left) Monads are
 	 * placed in the same algebra and antisymmetrically multiplied to eachother.
@@ -695,7 +689,7 @@ public class NyadRealF extends NyadAbstract
 	 * @throws CladosMonadBinaryException
 	 * 	This exception is thrown when the monads to be compressed fail a reference match test
 	 */
-	private void antisymmCompress(int pInto, int pFrom)
+	public void antisymmCompress(int pInto, int pFrom)
 					throws FieldBinaryException, CladosMonadBinaryException
 	{
 		MonadRealF tempLeft = monadList.get(pInto);
@@ -981,9 +975,8 @@ public class NyadRealF extends NyadAbstract
 	 */
 	public NyadRealF removeMonad(MonadRealF pM) throws CladosNyadException
 	{
-		int testfind = findMonad(this, pM);
-		if (testfind < 0)
-			throw new CladosNyadException(this,	"Can't find the Monad to remove.");
+		int testfind = monadList.indexOf(pM);
+		if (testfind < 0) throw new CladosNyadException(this, "Can't find the Monad to remove.");
 		removeMonad(testfind);
 		return this;
 	}
@@ -1004,13 +997,12 @@ public class NyadRealF extends NyadAbstract
 	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
 	 * @return NyadRealF
 	 */
-	public NyadRealF scale(AlgebraRealF pk, RealF pMag)
-					throws FieldBinaryException
-	{
-		int tF = findAlgebra(this, pk);
-		if (tF >= 0 && tF <= monadList.size()) monadList.get(tF).scale(pMag);
-		return this;
-	}
+	//public NyadRealF scale(AlgebraRealF pk, RealF pMag) throws FieldBinaryException
+	//{
+	//	int tF = algebraList.indexOf(pk);
+	//	if (tF >= 0 && tF <= monadList.size()) monadList.get(tF).scale(pMag);
+	//	return this;
+	//}
 
 	/**
 	 * NyadRealF Scaling: Pick a monad and scale it by the magnitude provided.
@@ -1065,7 +1057,7 @@ public class NyadRealF extends NyadAbstract
 	 * 		reference match test used in multiplication.
 	 * @return NyadRealF
 	 */
-	public NyadRealF symmCompress(AlgebraRealF pInto, AlgebraRealF pFrom)
+	/*public NyadRealF symmCompress(AlgebraRealF pInto, AlgebraRealF pFrom)
 					throws CladosNyadException
 	{
 		// The strings refer to particular algebras. Find them in the AlgebraKey
@@ -1081,17 +1073,14 @@ public class NyadRealF extends NyadAbstract
 		}
 		catch (FieldBinaryException e)
 		{
-			throw new CladosNyadException(this,
-							"Monad cardinals must match for compression.");
+			throw new CladosNyadException(this, "Monad cardinals must match for compression.");
 		}
 		catch (CladosMonadBinaryException e)
 		{
-			throw new CladosNyadException(this,
-							"Monad cardinals must match for compression.");
+			throw new CladosNyadException(this, "Monad cardinals must match for compression.");
 		}
-
 	}
-
+	*/
 	private void resetAlgebraList()
 	{
 		algebraList.clear();
@@ -1143,7 +1132,7 @@ public class NyadRealF extends NyadAbstract
 	 * @throws FieldBinaryException
 	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
 	 */
-	private void symmCompress(int pInto, int pFrom)
+	public void symmCompress(int pInto, int pFrom)
 					throws FieldBinaryException, CladosMonadBinaryException
 	{
 		MonadRealF tempLeft = monadList.get(pInto);

@@ -1283,9 +1283,9 @@ public class MonadRealF extends MonadAbstract
 	@Override
 	public void setFrameName(String pRName)
 	{
-		getAlgebra().getFoot().removeRFrames(frameName);
+		getAlgebra().removeFrame(frameName);
 		frameName = pRName;
-		getAlgebra().getFoot().appendFrame(pRName);
+		getAlgebra().appendFrame(pRName);
 	}
 
 	/**

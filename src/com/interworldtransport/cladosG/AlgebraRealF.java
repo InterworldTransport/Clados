@@ -24,6 +24,8 @@
  */
 package com.interworldtransport.cladosG;
 
+import java.util.ArrayList;
+
 import com.interworldtransport.cladosF.Cardinal;
 import com.interworldtransport.cladosF.CladosField;
 import com.interworldtransport.cladosF.RealF;
@@ -51,14 +53,21 @@ public class AlgebraRealF extends AlgebraAbstract
 	{
 		return pA.protoNumber;
 	}
-	public static String toXMLString(AlgebraRealF pA)
+	public final static String toXMLString(AlgebraRealF pA)
 	{
-		StringBuilder rB = new StringBuilder("\t\t\t\t<Algebra>\n");
-		rB.append("\t\t\t\t\t<Name>\"" + pA.getAlgebraName() + "\"</Name>\n");
-		rB.append("\t\t\t\t\t"+pA.protoNumber.toXMLString()+"\n");
-		rB.append(pA.getFoot().toXMLString());
+		String indent = "\t\t\t\t";
+		StringBuilder rB = new StringBuilder(indent+"<Algebra>\n");
+		rB.append(indent+"\t<Name>\"" + pA.getAlgebraName() + "\"</Name>\n");
+		rB.append(indent+"\t"+pA.protoNumber.toXMLString()+"\n");
+		//-----------------------------------------------------------------------
+		rB.append(indent+"\t<Frames number=\"" + pA.rFrames.size() + "\" >\n");
+		for (String tip : pA.rFrames) 
+			rB.append(indent+"\t\t<Frame number=\"" + pA.rFrames.indexOf(tip) + "\" name=\""	+ tip + "\" />\n");
+		rB.append(indent+"\t</Frames>\n");
+		//-----------------------------------------------------------------------
+		rB.append(pA.getFoot().toXMLString("\t\t\t"));
 		rB.append(pA.getGProduct().toXMLString());
-		rB.append("\t\t\t\t</Algebra>\n");
+		rB.append(indent+"</Algebra>\n");
 		return rB.toString();
 	}
 	/**
@@ -86,6 +95,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		setFoot(pA.getFoot());	//No Cardinal to append since we re-use it.
 		setGProduct(pA.getGProduct());
 		gBasis = pA.getGBasis();
+		rFrames = getFrames();
 	}
 
 	/**
@@ -112,6 +122,8 @@ public class AlgebraRealF extends AlgebraAbstract
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
+		rFrames = new ArrayList<String>(1);
+		rFrames.add("canonical");
 	}
 
 	/**
@@ -150,6 +162,8 @@ public class AlgebraRealF extends AlgebraAbstract
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
+		rFrames = new ArrayList<String>(1);
+		rFrames.add("canonical");
 	}
 	
 	/**
@@ -189,6 +203,8 @@ public class AlgebraRealF extends AlgebraAbstract
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
+		rFrames = new ArrayList<String>(1);
+		rFrames.add("canonical");
 	}
 
 	/**
@@ -221,6 +237,8 @@ public class AlgebraRealF extends AlgebraAbstract
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(new GProduct(pSig));
 		gBasis = gProduct.getBasis();
+		rFrames = new ArrayList<String>(1);
+		rFrames.add("canonical");
 	}
 	
 	public Cardinal shareCardinal()

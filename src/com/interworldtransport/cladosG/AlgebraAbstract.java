@@ -24,6 +24,8 @@
  */
 package com.interworldtransport.cladosG;
 
+import java.util.ArrayList;
+
 /**
  * The algebra object holds all geometric details that support the definition of
  * a multivector over a division field {Cl(p,q) x DivField} except the actual 
@@ -58,6 +60,24 @@ public abstract class AlgebraAbstract
 	 * reference frames associated with the same tangent point Foot.
 	 */
 	protected String	name;
+	/**
+	 * This is the list of known frames defined against this Algebra.
+	 */
+	protected ArrayList<String>	rFrames;
+	
+	/**
+	 * This method appends a frame name to the list of known frames for this
+	 * foot. It will silently terminate IF the frame is already in the list.
+	 * 
+	 * @param pRF
+	 *            String Reference Frame name to append
+	 */
+	public void appendFrame(String pRF)
+	{
+		if (rFrames.contains(pRF)) return;
+		rFrames.ensureCapacity(rFrames.size() + 1);
+		rFrames.add(pRF);
+	}
 	
 	/**
 	 * This method is present to enable sorting of lists of algebras. It isn't critical
@@ -138,6 +158,11 @@ public abstract class AlgebraAbstract
 	{
 		return gBasis;
 	}
+	
+	public ArrayList<String> getFrames()
+	{
+		return rFrames;
+	}
 
 	/**
 	 * Return the entire product definition object.
@@ -160,6 +185,24 @@ public abstract class AlgebraAbstract
 	public short getGradeCount()
 	{
 		return gBasis.getGradeCount();
+	}
+	
+	public ArrayList<String> getReferenceFrames()
+	{
+		return rFrames;
+	}
+	
+	/**
+	 * This method removes a frame name from the list of known frames for this
+	 * foot. If the frame is not found in the list, no action is taken. This
+	 * silent failure is intentional.
+	 * 
+	 * @param pRF
+	 *            String Reference Frame name to remove
+	 */
+	public void removeFrame(String pRF)
+	{
+		rFrames.remove(pRF);
 	}
 
 	/**
