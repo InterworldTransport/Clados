@@ -623,8 +623,8 @@ public class ComplexF extends DivField implements Divisable, NormalizableF, Scal
 	public float getSQModulus()
 	{
 		float tR = 0f;
-		for (int k = 0; k < vals.length; k++)
-			tR += vals[k] * vals[k];
+		for (float point : vals)
+			tR += point*point;
 		return tR;
 	}
 
@@ -639,8 +639,7 @@ public class ComplexF extends DivField implements Divisable, NormalizableF, Scal
 	@Override
 	public ComplexF invert() throws FieldException
 	{
-		if (ComplexF.isZero(this))
-			throw new FieldException(this, "Can't invert a zero ComplexF");
+		if (ComplexF.isZero(this)) throw new FieldException(this, "Can't invert a zero ComplexF");
 		
 		float tM = 1.0f / getModulus();
 		float tA = -1.0f * getArgument();

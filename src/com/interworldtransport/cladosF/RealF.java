@@ -24,6 +24,8 @@
  */
 package com.interworldtransport.cladosF;
 
+import java.util.stream.Stream;
+
 import com.interworldtransport.cladosFExceptions.*;
 
 /**
@@ -623,8 +625,8 @@ public class RealF extends DivField implements Divisable, NormalizableF, Scalabl
 	public float getSQModulus()
 	{
 		float tR = 0f;
-		for (int k = 0; k < vals.length; k++)
-			tR += vals[k] * vals[k];
+		for (float point : vals)
+			tR += point*point;
 		return tR;
 	}
 
@@ -639,8 +641,7 @@ public class RealF extends DivField implements Divisable, NormalizableF, Scalabl
 	@Override
 	public RealF invert() throws FieldException
 	{
-		if (RealF.isZero(this))
-			throw new FieldException(this, "Can't invert a zero RealF");
+		if (RealF.isZero(this)) throw new FieldException(this, "Can't invert a zero RealF");
 		
 		
 		

@@ -623,8 +623,8 @@ public class RealD extends DivField implements Divisable, NormalizableD, Scalabl
 	public double getSQModulus()
 	{
 		double tR = 0d;
-		for (int k = 0; k < vals.length; k++)
-			tR += vals[k] * vals[k];
+		for (double point : vals)
+			tR += point*point;
 		return tR;
 	}
 
@@ -639,8 +639,7 @@ public class RealD extends DivField implements Divisable, NormalizableD, Scalabl
 	@Override
 	public RealD invert() throws FieldException
 	{
-		if (RealD.isZero(this))
-			throw new FieldException(this, "Can't invert a zero RealD");
+		if (RealD.isZero(this)) throw new FieldException(this, "Can't invert a zero RealD");
 		
 		
 		

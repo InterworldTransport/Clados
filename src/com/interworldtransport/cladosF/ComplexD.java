@@ -623,8 +623,8 @@ public class ComplexD extends DivField implements Divisable, NormalizableD, Scal
 	public double getSQModulus()
 	{
 		double tR = 0d;
-		for (int k = 0; k < vals.length; k++)
-			tR += vals[k] * vals[k];
+		for (double point : vals)
+			tR += point*point;
 		return tR;
 	}
 
@@ -639,8 +639,7 @@ public class ComplexD extends DivField implements Divisable, NormalizableD, Scal
 	@Override
 	public ComplexD invert() throws FieldException
 	{
-		if (ComplexD.isZero(this))
-			throw new FieldException(this, "Can't invert a zero ComplexD");
+		if (ComplexD.isZero(this)) throw new FieldException(this, "Can't invert a zero ComplexD");
 		
 		double tM = 1.0 / getModulus();
 		double tA = -1.0 * getArgument();
