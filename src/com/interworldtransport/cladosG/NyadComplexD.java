@@ -326,7 +326,7 @@ public class NyadComplexD extends NyadAbstract
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
-		int maxGrade = pAlg.getGProduct().getGradeCount()-1; // find pAlg's max grade
+		int maxGrade = pAlg.getGradeCount()-1; // find pAlg's max grade
 		int j=0;
 		int tSpot = 0;
 		while (j<pN.getMonadList().size())	// loop through monads
@@ -575,28 +575,29 @@ public class NyadComplexD extends NyadAbstract
 	 */
 	public NyadComplexD(NyadComplexD pN) throws CladosNyadException
 	{
-		this(pN.getName(), pN);
+		this(pN.getName(), pN, true);
 	}
 
 	/**
-	 * A basic constructor of a NyadComplexD that starts with a Monad. The Monad
-	 * will be copied and placed at the top of the list. The footPoint, however,
-	 * will be used exactly as is.
+	 * A basic constructor of a NyadRealF that starts with a Monad. The Monad
+	 * will be copied and placed at the top of the list OR reused based on pCopy
+	 * The Foot, however, will be used exactly as is either way.
 	 * 
-	 * @param pName
-	 *            String
-	 * @param pM
-	 *            MonadComplexD
+	 * @param pName String
+	 * @param pM	MonadComplexD
+	 * @param pCopy	boolean		True - Copy monads first
+	 * 							False - Re-use monads from Nyad
 	 * @throws CladosNyadException This exception is thrown when the offered Nyad
 	 * is malformed. Make no assumptions!
 	 */
-	public NyadComplexD(String pName, MonadComplexD pM) throws CladosNyadException
+	public NyadComplexD(String pName, MonadComplexD pM, boolean pCopy) throws CladosNyadException
 	{
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		monadList = new ArrayList<MonadComplexD>(1);
 		algebraList = new ArrayList<AlgebraComplexD>(1);
-		appendMonadCopy(pM);
+		if (pCopy) appendMonadCopy(pM);
+		else appendMonad(pM);
 	}
 
 	/**
@@ -607,20 +608,21 @@ public class NyadComplexD extends NyadAbstract
 	 * The Foot object is re-used.
 	 * The Algebra object is re-used.
 	 * The Nyad's proto-number object is re-used.
-	 * The Nyad's monad objects are NOT re-used. Clones are created that...
-	 * 		copy the monad name
-	 * 		re-use the monad's algebra object
-	 * 		copy the monad's frame name
-	 * 		create new RealF's that clone the monad's coefficients such that they...
-	 * 			re-use the RealF's Cardinal object
-	 * 			merely copy the val array
+	 * The Nyad's monad objects are copyied OR re-used depending on pCopy.
+	 * 	but...	re-use the monad's algebra object
+	 * 			copy the monad's frame name
+	 * 			create new RealF's that clone the monad's coefficients such that they...
+	 * 				re-use the RealF's Cardinal object
+	 * 				merely copy the val array
 	 * 
 	 * @param pName	String
 	 * @param pN	NyadComplexD
+	 * @param pCopy	boolean		True - Copy monads first
+	 * 							False - Re-use monads from Nyad
 	 * @throws CladosNyadException This exception is thrown when the offered Nyad
 	 * is malformed. Make no assumptions!
 	 */
-	public NyadComplexD(String pName, NyadComplexD pN) throws CladosNyadException
+	public NyadComplexD(String pName, NyadComplexD pN, boolean pCopy) throws CladosNyadException
 	{
 		setName(pName);
 		setFoot(pN.getFoot());
@@ -628,8 +630,10 @@ public class NyadComplexD extends NyadAbstract
 		{
 			monadList = new ArrayList<MonadComplexD>(pN.getMonadList().size());
 			algebraList = new ArrayList<AlgebraComplexD>(pN.getAlgebraList().size());
-			for (MonadComplexD tSpot : pN.getMonadList())
-				appendMonadCopy(tSpot);	
+			if (pCopy)
+				for (MonadComplexD tSpot : pN.getMonadList()) appendMonadCopy(tSpot);
+			else
+				for (MonadComplexD tSpot : pN.getMonadList()) appendMonad(tSpot);
 		}
 	}
 

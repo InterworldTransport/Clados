@@ -492,7 +492,7 @@ public final class GProduct {
 		if (signFlip == 0) signFlip=1;	// NOW 1 = no flip, -1 = flip [To avoid Math.pow(-1, arg]
 		for (m = 0; m < getBladeCount(); m++) {
 			if (bothOpsKey == pKey[m]) {
-				result[j][k] = (short) ((m + 1) * signFlip); //Math.pow avoided
+				result[j][k] = (short) ((m + 1) * signFlip);
 				break; // Good enough. Done identifying resulting blade & its sign
 			}
 		}

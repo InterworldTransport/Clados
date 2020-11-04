@@ -128,7 +128,7 @@ public class MonadRealFTest
 		assertFalse(isIdempotent(tM9));
 		
 		assertTrue(isGrade(tM6.SP(), 0));
-		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGProduct().getGradeCount() - 1));
+		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGradeCount() - 1));
 	}
 
 	@Test

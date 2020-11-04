@@ -319,8 +319,8 @@ public final class Basis {
 	}
 
 	/**
-	 * Get the array used for keeping track of where grades start in the Basis
-	 * array.
+	 * Get the array index used for keeping track of where a grades starts in 
+	 * the Basis.
 	 * 
 	 * @param p1 short This is for choosing which grade index range to return.
 	 * @return short

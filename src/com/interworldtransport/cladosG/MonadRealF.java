@@ -124,7 +124,7 @@ public class MonadRealF extends MonadAbstract
 		if (isGZero(check1)) return false;						// pM is nilpotent at power=2
 		RealF fstnzeroC = copyOf(pM.getCoeff((short) 0));	// Grab copy of Scalar part
 		
-		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getGProduct().getBladeCount() - 1)
+		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1)
 		{													// Loop skipped if check1.SP() != 0
 			if(!isZero(pM.getCoeff(k)))						// If next coeff isn't zero
 			{
@@ -277,7 +277,7 @@ public class MonadRealF extends MonadAbstract
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName()); 
 
-		cM = new RealF[getAlgebra().getGProduct().getBladeCount()]; 
+		cM = new RealF[getAlgebra().getBladeCount()]; 
 		setCoeffInternal(pM.getCoeff());
 		setGradeKey();
 	}
@@ -305,7 +305,7 @@ public class MonadRealF extends MonadAbstract
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
 
-		cM = new RealF[getAlgebra().getGProduct().getBladeCount()];
+		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pM.getCoeff());
 		setGradeKey();
 	}
@@ -350,7 +350,7 @@ public class MonadRealF extends MonadAbstract
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = new RealF[getAlgebra().getGProduct().getBladeCount()];
+		cM = new RealF[getAlgebra().getBladeCount()];
 		RealF tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
@@ -396,7 +396,7 @@ public class MonadRealF extends MonadAbstract
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = new RealF[getAlgebra().getGProduct().getBladeCount()];
+		cM = new RealF[getAlgebra().getBladeCount()];
 		RealF tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
@@ -469,24 +469,24 @@ public class MonadRealF extends MonadAbstract
 			break; 	// Already done by default
 		
 		case 1:		// Unit Scalar case
-			tSpot = getAlgebra().getGProduct().getGradeRange((short) 0);
+			tSpot = getAlgebra().getGradeRange((short) 0);
 			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			break;
 		
 		case 2:		// Unit -Scalar case
-			tSpot = getAlgebra().getGProduct().getGradeRange((short) 0);
+			tSpot = getAlgebra().getGradeRange((short) 0);
 			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			break;
 			
 		case 3:		// Unit PScalar case
-			tSpot = getAlgebra().getGProduct().getGradeRange(
-							(short) (getAlgebra().getGProduct().getGradeCount() - 1));
+			tSpot = getAlgebra().getGradeRange(
+							(short) (getAlgebra().getGradeCount() - 1));
 			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			break;
 			
 		case 4:		// Unit -PScalar case
-			tSpot = getAlgebra().getGProduct().getGradeRange(
-							(short) (getAlgebra().getGProduct().getGradeCount() - 1));
+			tSpot = getAlgebra().getGradeRange(
+							(short) (getAlgebra().getGradeCount() - 1));
 			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
 			cM[tSpot[0]].scale(-1.0f);
 			break;
@@ -534,14 +534,14 @@ public class MonadRealF extends MonadAbstract
 		
 		setAlgebra(new AlgebraRealF(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig, pC[0]));
 		
-		if (pC.length != getAlgebra().getGProduct().getBladeCount())
+		if (pC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array size does not match bladecount for Signature.");
 		
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = new RealF[getAlgebra().getGProduct().getBladeCount()];
+		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pC);
 		setGradeKey();
 	}
@@ -568,7 +568,7 @@ public class MonadRealF extends MonadAbstract
 						RealF[] pC)
 				throws CladosMonadException
 	{
-		if (pC.length != pAlgebra.getGProduct().getBladeCount())
+		if (pC.length != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array size does not match bladecount from offered Algebra.");
 		
@@ -576,7 +576,7 @@ public class MonadRealF extends MonadAbstract
 		setName(pMonadName);
 		setFrameName(pFrameName);
 		
-		cM = new RealF[getAlgebra().getGProduct().getBladeCount()]; 
+		cM = new RealF[getAlgebra().getBladeCount()]; 
 		setCoeff(pC);
 		setGradeKey();
 	}
@@ -599,7 +599,7 @@ public class MonadRealF extends MonadAbstract
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Can't add when frames don't match.", pM);
 	
-		for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
+		for (short i = 0; i < getAlgebra().getBladeCount(); i++)
 			cM[i].add(pM.getCoeff()[i]);
 		
 		setGradeKey();
@@ -627,11 +627,11 @@ public class MonadRealF extends MonadAbstract
 	{
 		//tSpot points at the PScalar blade
 		short[] tSpot = getAlgebra().getGProduct()
-						.getGradeRange((short) (getAlgebra().getGProduct().getGradeCount() - 1));
+						.getGradeRange((short) (getAlgebra().getGradeCount() - 1));
 		//initialize a new coefficient array to hold the results
-		RealF[] tNewCoeff = new RealF[getAlgebra().getGProduct().getBladeCount()]; 
+		RealF[] tNewCoeff = new RealF[getAlgebra().getBladeCount()]; 
 
-		for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+		for (short j = 0; j < getAlgebra().getBladeCount(); j++) 
 		{
 			// resulting blade of left-product because tSpot[0] points at PScalar
 			short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(tSpot[0], j)) - 1);
@@ -656,11 +656,11 @@ public class MonadRealF extends MonadAbstract
 	{
 		//tSpot points at the PScalar blade
 		short[] tSpot = getAlgebra().getGProduct()
-						.getGradeRange((short) (getAlgebra().getGProduct().getGradeCount() - 1));
+						.getGradeRange((short) (getAlgebra().getGradeCount() - 1));
 		//initialize a new coefficient array to hold the results
-		RealF[] tNewCoeff = new RealF[getAlgebra().getGProduct().getBladeCount()]; 
+		RealF[] tNewCoeff = new RealF[getAlgebra().getBladeCount()]; 
 
-		for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++)
+		for (short j = 0; j < getAlgebra().getBladeCount(); j++)
 		{
 			// resulting blade of left-product because tSpot[0] points at PScalar
 			short drp = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot[0])) - 1);
@@ -708,7 +708,7 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public RealF getCoeff(short pB)
 	{
-		if (pB >= 0 & pB < getAlgebra().getGProduct().getBladeCount())
+		if (pB >= 0 & pB < getAlgebra().getBladeCount())
 			return cM[pB];
 		
 		return null;
@@ -728,18 +728,18 @@ public class MonadRealF extends MonadAbstract
 	@Override
 	public MonadRealF gradePart(short pGrade)
 	{
-		if (pGrade < 0 | pGrade >= getAlgebra().getGProduct().getGradeCount())
+		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		
 		short j = 0;
-		while (j <= getAlgebra().getGProduct().getGradeCount() - 1)
+		while (j <= getAlgebra().getGradeCount() - 1)
 		{
 			if (j == pGrade) 
 			{
 				j++;
 				continue;
 			}
-			short[] tSpot = getAlgebra().getGProduct().getGradeRange(j);
+			short[] tSpot = getAlgebra().getGradeRange(j);
 			for (short l = tSpot[0]; l <= tSpot[1]; l++)
 				cM[l].scale(0.0f);
 			j++;
@@ -762,10 +762,10 @@ public class MonadRealF extends MonadAbstract
 	@Override
 	public MonadRealF gradeSuppress(short pGrade)
 	{
-		if (pGrade < 0 | pGrade >= getAlgebra().getGProduct().getGradeCount())
+		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		
-		short[] tSpot = getAlgebra().getGProduct().getGradeRange((short) pGrade);
+		short[] tSpot = getAlgebra().getGradeRange((short) pGrade);
 		for (short l = tSpot[0]; l <= tSpot[1]; l++)
 			cM[l].scale(0.0f);
 		
@@ -783,9 +783,9 @@ public class MonadRealF extends MonadAbstract
 	public MonadRealF invert()
 	{
 		short[] tSpot;
-		for (short j = 1; j < getAlgebra().getGProduct().getGradeCount(); j += 2)
+		for (short j = 1; j < getAlgebra().getGradeCount(); j += 2)
 		{
-			tSpot = getAlgebra().getGProduct().getGradeRange(j);
+			tSpot = getAlgebra().getGradeRange(j);
 			for (short l = tSpot[0]; l <= tSpot[1]; l++)
 				cM[l].scale(-1.0f);
 		}
@@ -807,7 +807,7 @@ public class MonadRealF extends MonadAbstract
 	public boolean isGEqual(MonadRealF pM)
 	{
 		if (!isReferenceMatch(this, pM)) return false;
-		for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
+		for (short i = 0; i < getAlgebra().getBladeCount(); i++)
 			if (!isEqual(cM[i], pM.getCoeff(i))) return false;
 		return true;
 	}
@@ -890,9 +890,9 @@ public class MonadRealF extends MonadAbstract
 		if (isGZero(this)) return this;//obviously
 		if (isGZero(pM)) return pM;//equally obvious
 		
-		RealF[] tNewCoeff = new RealF[getAlgebra().getGProduct().getBladeCount()]; 
+		RealF[] tNewCoeff = new RealF[getAlgebra().getBladeCount()]; 
 		// new coeff array built to hold result
-		for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
+		for (short k = 0; k < getAlgebra().getBladeCount(); k++)
 			tNewCoeff[k] = copyZERO(cM[0]);
 		// new coeff array populated with ZEROES from the field.
 			
@@ -918,13 +918,13 @@ public class MonadRealF extends MonadAbstract
 			//tSpot will point at the blades of that grade
 			while (logKey>=0)
 			{
-				tSpot = getAlgebra().getGProduct().getGradeRange(logKey);
+				tSpot = getAlgebra().getGradeRange(logKey);
 				for (short i = tSpot[0]; i <= tSpot[1]; i++)
 				{
 					// Looping through row blades in product array for grade logKey
 					if (isZero(pM.getCoeff(i))) continue;
 					// This is a weak form of the sparse flag kept here.
-					for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+					for (short j = 0; j < getAlgebra().getBladeCount(); j++) 
 					// Looping through column blades in product array
 					{
 						if (isZero(cM[j])) continue;
@@ -958,14 +958,14 @@ public class MonadRealF extends MonadAbstract
 		}
 		else //loop through the blades in 'this' individually.
 		{
-			for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
+			for (short i = 0; i < getAlgebra().getBladeCount(); i++)
 			// Looping through row blades in product array
 			{
 				if (isZero(pM.getCoeff(i))) continue;
 				// This is a weak form of the sparse flag that notes a zero coefficient
 				// in pM need not be processed because it won't contribute to any sums.
 				
-				for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+				for (short j = 0; j < getAlgebra().getBladeCount(); j++) 
 				// Looping through column blades in product array
 				{
 					// multiply the coefficients first
@@ -1010,9 +1010,9 @@ public class MonadRealF extends MonadAbstract
 		if (isGZero(this)) return this;//obviously
 		if (isGZero(pM)) return pM;//equally obvious
 			
-		RealF[] tNewCoeff = new RealF[getAlgebra().getGProduct().getBladeCount()]; 
+		RealF[] tNewCoeff = new RealF[getAlgebra().getBladeCount()]; 
 		// new coeff array
-		for (short k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
+		for (short k = 0; k < getAlgebra().getBladeCount(); k++)
 			tNewCoeff[k] = copyZERO(cM[0]);
 		// new coeff array built to hold result
 			
@@ -1038,13 +1038,13 @@ public class MonadRealF extends MonadAbstract
 			//tSpot will point at the blades of that grade
 			while (logKey>=0.0D)
 			{
-				tSpot = getAlgebra().getGProduct().getGradeRange(logKey);
+				tSpot = getAlgebra().getGradeRange(logKey);
 				for (short i = tSpot[0]; i <= tSpot[1]; i++)
 				{
 					// Looping through row blades in product array for grade logKey
 					if (isZero(pM.getCoeff(i))) continue;
 					// This is a weak form of the sparse flag kept here.
-					for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+					for (short j = 0; j < getAlgebra().getBladeCount(); j++) 
 					// Looping through column blades in product array
 					{
 						if (isZero(cM[j])) continue;
@@ -1077,14 +1077,14 @@ public class MonadRealF extends MonadAbstract
 		}
 		else //loop through the blades in 'this' individually.
 		{
-			for (short i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++) 
+			for (short i = 0; i < getAlgebra().getBladeCount(); i++) 
 			// Looping through row blades in product array
 			{
 				if (isZero(pM.getCoeff(i))) continue;
 				// This is a weak form of the sparse flag that notes a zero coefficient
 				// in pM need not be processed because it won't contribute to any sums.
 					
-				for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++) 
+				for (short j = 0; j < getAlgebra().getBladeCount(); j++) 
 				// Looping through column blades in product array
 				{
 					// multiply the coefficients first
@@ -1176,7 +1176,7 @@ public class MonadRealF extends MonadAbstract
 	@Override
 	public MonadRealF PSP()
 	{
-		gradePart(getAlgebra().getGProduct().getGradeCount());
+		gradePart(getAlgebra().getGradeCount());
 		return this;
 	}
 	
@@ -1188,7 +1188,7 @@ public class MonadRealF extends MonadAbstract
 	@Override
 	public RealF PSPc()
 	{
-		return cM[getAlgebra().getGProduct().getGradeCount()];
+		return cM[getAlgebra().getGradeCount()];
 	}
 
 	/**
@@ -1202,11 +1202,11 @@ public class MonadRealF extends MonadAbstract
 	{
 		short[] tSpot;
 		short k = 0;
-		for (short j = 0; j <= getAlgebra().getGProduct().getGradeCount() - 1; j++)
+		for (short j = 0; j <= getAlgebra().getGradeCount() - 1; j++)
 		{
 			k = (short) (j % 4);
 			if (k < 2) continue; // This ensures the remainder must be 2 or 3
-			tSpot = getAlgebra().getGProduct().getGradeRange(j);
+			tSpot = getAlgebra().getGradeRange(j);
 			for (short l = tSpot[0]; l <= tSpot[1]; l++)
 				cM[l].scale(-1.0f);
 		}
@@ -1225,7 +1225,7 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public MonadRealF scale(RealF pScale) throws FieldBinaryException
 	{
-		for (short j = 0; j < getAlgebra().getGProduct().getBladeCount(); j++)
+		for (short j = 0; j < getAlgebra().getBladeCount(); j++)
 			cM[j].multiply(pScale);
 		
 		setGradeKey();
@@ -1254,11 +1254,11 @@ public class MonadRealF extends MonadAbstract
 	 */
 	public void setCoeff(RealF[] ppC) throws CladosMonadException
 	{
-		if (ppC.length != getAlgebra().getGProduct().getBladeCount())
+		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array passed in for coefficient copy is the wrong length");
 		
-		for (int k = 0; k < getAlgebra().getGProduct().getBladeCount(); k++)
+		for (int k = 0; k < getAlgebra().getBladeCount(); k++)
 			cM[k] = new RealF(ppC[k]);	
 		
 		setGradeKey();
@@ -1302,9 +1302,9 @@ public class MonadRealF extends MonadAbstract
 	{
 		short foundGrades = 0;
 		gradeKey = 0;
-		for (short j=0; j<getAlgebra().getGProduct().getGradeCount(); j++)
+		for (short j=0; j<getAlgebra().getGradeCount(); j++)
 		{
-			short[] tSpot = getAlgebra().getGProduct().getGradeRange(j);
+			short[] tSpot = getAlgebra().getGradeRange(j);
 			for (short k = tSpot[0]; k <= tSpot[1]; k++)
 			{
 				if (!isZero(cM[k]))
@@ -1396,7 +1396,7 @@ public class MonadRealF extends MonadAbstract
 			throw new CladosMonadBinaryException(this,
 					"Can't subtract without a reference match.", pM);
 		
-		for (int i = 0; i < getAlgebra().getGProduct().getBladeCount(); i++)
+		for (int i = 0; i < getAlgebra().getBladeCount(); i++)
 			cM[i].subtract(pM.getCoeff()[i]);
 		
 		setGradeKey();

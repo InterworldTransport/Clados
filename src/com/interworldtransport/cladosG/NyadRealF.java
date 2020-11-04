@@ -326,7 +326,7 @@ public class NyadRealF extends NyadAbstract
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
-		int maxGrade = pAlg.getGProduct().getGradeCount()-1; // find pAlg's max grade
+		int maxGrade = pAlg.getGradeCount()-1; // find pAlg's max grade
 		int j=0;
 		int tSpot = 0;
 		while (j<pN.getMonadList().size())	// loop through monads
@@ -575,30 +575,31 @@ public class NyadRealF extends NyadAbstract
 	 */
 	public NyadRealF(NyadRealF pN) throws CladosNyadException
 	{
-		this(pN.getName(), pN);
+		this(pN.getName(), pN, true);
 	}
 
 	/**
 	 * A basic constructor of a NyadRealF that starts with a Monad. The Monad
-	 * will be copied and placed at the top of the list. The footPoint, however,
-	 * will be used exactly as is.
+	 * will be copied and placed at the top of the list OR reused based on pCopy
+	 * The Foot, however, will be used exactly as is either way.
 	 * 
-	 * @param pName
-	 *            String
-	 * @param pM
-	 *            MonadRealF
+	 * @param pName String
+	 * @param pM 	MonadRealF
+	 * @param pCopy	boolean		True - Copy monads first
+	 * 							False - Re-use monads from Nyad
 	 * @throws CladosNyadException This exception is thrown when the offered Nyad
 	 * is malformed. Make no assumptions!
 	 */
-	public NyadRealF(String pName, MonadRealF pM) throws CladosNyadException
+	public NyadRealF(String pName, MonadRealF pM, boolean pCopy) throws CladosNyadException
 	{
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		monadList = new ArrayList<MonadRealF>(1);
 		algebraList = new ArrayList<AlgebraRealF>(1);
-		appendMonadCopy(pM);
+		if (pCopy) appendMonadCopy(pM);
+		else appendMonad(pM);
 	}
-	// TODO Write similar constructor that doesn't copy the monad. re-use instead.
+	
 	/**
 	 * A simple copy constructor of a NyadRealF. The passed NyadRealF will be
 	 * copied without the name. This constructor is used most often to clone
@@ -607,20 +608,21 @@ public class NyadRealF extends NyadAbstract
 	 * The Foot object is re-used.
 	 * The Algebra object is re-used.
 	 * The Nyad's proto-number object is re-used.
-	 * The Nyad's monad objects are NOT re-used. Clones are created that...
-	 * 		copy the monad name
-	 * 		re-use the monad's algebra object
-	 * 		copy the monad's frame name
-	 * 		create new RealF's that clone the monad's coefficients such that they...
-	 * 			re-use the RealF's Cardinal object
-	 * 			merely copy the val array
+	 * The Nyad's monad objects are copyied OR re-used depending on pCopy.
+	 * 	but...	re-use the monad's algebra object
+	 * 			copy the monad's frame name
+	 * 			create new RealF's that clone the monad's coefficients such that they...
+	 * 				re-use the RealF's Cardinal object
+	 * 				merely copy the val array
 	 * 
 	 * @param pName	String
 	 * @param pN	NyadRealF
+	 * @param pCopy	boolean		True - Copy monads first
+	 * 							False - Re-use monads from Nyad
 	 * @throws CladosNyadException This exception is thrown when the offered Nyad
 	 * is malformed. Make no assumptions!
 	 */
-	public NyadRealF(String pName, NyadRealF pN) throws CladosNyadException
+	public NyadRealF(String pName, NyadRealF pN, boolean pCopy) throws CladosNyadException
 	{
 		setName(pName);
 		setFoot(pN.getFoot());
@@ -628,11 +630,13 @@ public class NyadRealF extends NyadAbstract
 		{
 			monadList = new ArrayList<MonadRealF>(pN.getMonadList().size());
 			algebraList = new ArrayList<AlgebraRealF>(pN.getAlgebraList().size());
-			for (MonadRealF tSpot : pN.getMonadList())
-				appendMonadCopy(tSpot);	
+			if (pCopy)
+				for (MonadRealF tSpot : pN.getMonadList()) appendMonadCopy(tSpot);
+			else
+				for (MonadRealF tSpot : pN.getMonadList()) appendMonad(tSpot);
 		}
 	}
-	// TODO Write similar constructor that doesn't copy the nyad. re-use instead.
+
 	/**
 	 * Dyadic antisymmetric compression: 1/2 (left right - right left) Monads
 	 * are placed in the same algebra and antisymmetrically multiplied to each

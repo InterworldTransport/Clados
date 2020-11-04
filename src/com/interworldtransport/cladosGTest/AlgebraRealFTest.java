@@ -119,8 +119,8 @@ public class AlgebraRealFTest
 	@Test
 	public void testCompareCounts()
 	{
-		assertTrue(alg1.getGProduct().getGradeCount() == alg2.getGProduct().getGradeCount());
-		assertTrue(alg1.getGProduct().getBladeCount() == alg2.getGProduct().getBladeCount());
+		assertTrue(alg1.getGradeCount() == alg2.getGradeCount());
+		assertTrue(alg1.getBladeCount() == alg2.getBladeCount());
 		//Different signatures does not lead to different grade and blade counts.
 	}
 	

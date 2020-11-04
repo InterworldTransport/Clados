@@ -80,7 +80,7 @@ public class MonadComplexFTest
 		assertTrue(isScaledIdempotent(tM4));
 		assertTrue(isNilpotent(tM2, 2));
 		assertTrue(isGrade(tM6.SP(), 0));
-		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGProduct().getGradeCount() - 1));
+		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGradeCount() - 1));
 	}
 
 	@Test
