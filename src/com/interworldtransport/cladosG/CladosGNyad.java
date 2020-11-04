@@ -103,22 +103,22 @@ public enum CladosGNyad { // All of these have implicit private constructors
 		switch (this) {
 		case REALF:
 			if (pN instanceof NyadRealF)
-				return new NyadRealF(pName, (NyadRealF) pN);
+				return new NyadRealF(pName, (NyadRealF) pN, true);
 			else
 				return null;
 		case REALD:
 			if (pN instanceof NyadRealD)
-				return new NyadRealD(pName, (NyadRealD) pN);
+				return new NyadRealD(pName, (NyadRealD) pN, true);
 			else
 				return null;
 		case COMPLEXF:
 			if (pN instanceof NyadComplexF)
-				return new NyadComplexF(pName, (NyadComplexF) pN);
+				return new NyadComplexF(pName, (NyadComplexF) pN, true);
 			else
 				return null;
 		case COMPLEXD:
 			if (pN instanceof NyadComplexD)
-				return new NyadComplexD(pName, (NyadComplexD) pN);
+				return new NyadComplexD(pName, (NyadComplexD) pN, true);
 			else
 				return null;
 		default:
@@ -142,22 +142,22 @@ public enum CladosGNyad { // All of these have implicit private constructors
 		switch (this) {
 		case REALF:
 			if (pM instanceof MonadRealF)
-				return new NyadRealF(pName, (MonadRealF) pM);
+				return new NyadRealF(pName, (MonadRealF) pM, true);
 			else
 				return null;
 		case REALD:
 			if (pM instanceof MonadRealD)
-				return new NyadRealD(pName, (MonadRealD) pM);
+				return new NyadRealD(pName, (MonadRealD) pM, true);
 			else
 				return null;
 		case COMPLEXF:
 			if (pM instanceof MonadComplexF)
-				return new NyadComplexF(pName, (MonadComplexF) pM);
+				return new NyadComplexF(pName, (MonadComplexF) pM, true);
 			else
 				return null;
 		case COMPLEXD:
 			if (pM instanceof MonadComplexD)
-				return new NyadComplexD(pName, (MonadComplexD) pM);
+				return new NyadComplexD(pName, (MonadComplexD) pM, true);
 			else
 				return null;
 		default:
