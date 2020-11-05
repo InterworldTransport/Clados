@@ -266,7 +266,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public final MonadAbstract createWithFoot(DivField pNumber, String pName, String pAName, String pFrame,
+	public final MonadAbstract createZero(DivField pNumber, String pName, String pAName, String pFrame,
 			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
 		case REALF:
@@ -308,7 +308,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public final MonadAbstract createZero(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
+	public final MonadAbstract createWithFoot(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
 		case REALF:
