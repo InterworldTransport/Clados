@@ -32,8 +32,9 @@ Use of this code or executable objects derived from it by the Licensee
 states their willingness to accept the terms of the license.
 &lt;p&gt;
 You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see https://www.gnu.org/licenses/."/>
+along with this program.  If not, see https://www.gnu.org/licenses/." />
 
+	
  	<target 	name="init">
    	 	<!-- Create the time stamp -->
     	<tstamp/>
@@ -54,48 +55,92 @@ along with this program.  If not, see https://www.gnu.org/licenses/."/>
         		description="compile the source">
     <!-- Compile the Java code from ${src} into ${build} -->
     <javac 		includeantruntime="false" 
+				classpath="	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.launcher_1.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.suite.api_1.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.migrationsupport_5.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.commons_1.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.engine_1.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.apiguardian_1.0.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.vintage.engine_5.1.0.v20180327-1502.jar:
+							/Users/alfredwdiffer/.p2/pool/plugins/org.opentest4j_1.0.0.v20180327-1502.jar:
+					    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.engine_5.1.0.v20180327-1502.jar:
+					    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.runner_1.1.0.v20180327-1502.jar:
+					    	/Users/alfredwdiffer/.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar:
+					    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.params_5.1.0.v20180327-1502.jar" 
     			srcdir="${srcDir}" 
     			destdir="${buildDir}"> 
-  		<exclude name="com/interworldtransport/cladosGTest/**"/>
-  		<exclude name="com/interworldtransport/cladosFTest/**"/>
+  		<!--<exclude name="com/interworldtransport/cladosGTest/**"/>-->
+  		<!--<exclude name="com/interworldtransport/cladosFTest/**"/>-->
     </javac>
   </target>
+	
+	<target name="javadoc">
+		<tstamp/>
+	  	<mkdir 		dir="${docDir}/lib"/>
+	    <javadoc 	author="true" 
+	    			bottom="${copyleft}"
+	    			classpath="	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.launcher_1.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.suite.api_1.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.migrationsupport_5.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.commons_1.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.engine_1.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.apiguardian_1.0.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.junit.vintage.engine_5.1.0.v20180327-1502.jar:
+	    						/Users/alfredwdiffer/.p2/pool/plugins/org.opentest4j_1.0.0.v20180327-1502.jar:
+						    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.engine_5.1.0.v20180327-1502.jar:
+						    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.runner_1.1.0.v20180327-1502.jar:
+						    	/Users/alfredwdiffer/.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar:
+						    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.params_5.1.0.v20180327-1502.jar" 
+	    			destdir="${docDir}" 
+	    			doctitle="CladosOne" 
+	    			nodeprecated="false" 
+	    			nodeprecatedlist="false" 
+	    			noindex="false" 
+	    			nonavbar="false" 
+	    			notree="false" 
+	    			overview="${srcDir}/overview.html" 
+	    			packagenames="	com.interworldtransport.cladosFExceptions,
+	    							com.interworldtransport.cladosF,
+	    							com.interworldtransport.cladosFTest,
+	    							com.interworldtransport.cladosGExceptions,
+	    							com.interworldtransport.cladosG,
+	    							com.interworldtransport.cladosGTest"
+	    			source="10" 
+	    			sourcepath="${srcDir}" 
+	    			splitindex="true" 
+	    			use="true" 
+	    			version="true">
+	        <link href="http://hamcrest.org/JavaHamcrest/javadoc/1.3/"/>
+	        <link href="https://ota4j-team.github.io/opentest4j/docs/current/api/"/>
+	        <link href="https://apiguardian-team.github.io/apiguardian/docs/current/api/"/>
+	    	<link href="https://junit.org/junit5/docs/current/api/"/>
+	        <link href="https://junit.org/junit4/javadoc/latest/"/>
+	    </javadoc>
+	</target>
 
-  <target 		name="dist" 
-  				depends="compile"
-        		description="generate the distribution">
-    <!-- Create the distribution directory -->
-    <mkdir 		dir="${distDir}/lib"/>
+  
+	
+	<target 		name="dist" 
+	  				depends="compile"
+	        		description="generate the distribution">
+	    <!-- Create the distribution directory -->
+	    <mkdir 		dir="${distDir}/lib"/>
 
-    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar 		jarfile="${distDir}/lib/clados-${DSTAMP}.jar" 
-    			basedir="${buildDir}"/>
-  </target>
+	    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+	    <jar 		jarfile="${distDir}/lib/clados-${DSTAMP}.jar" 
+	    			basedir="${buildDir}" />
+	</target>
+	
+	<target 		name="distdoc" 
+		  			depends="javadoc"
+		        	description="generate the API documentation distribution">
 
-  <target name="javadoc">
-    <javadoc 	author="true" 
-    			bottom="${copyleft}"
-    			classpath="/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.launcher_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.suite.api_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.migrationsupport_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.commons_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.engine_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.apiguardian_1.0.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.vintage.engine_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.opentest4j_1.0.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.engine_5.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.runner_1.1.0.v20180327-1502.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar:/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.params_5.1.0.v20180327-1502.jar" 
-    			destdir="${docDir}" 
-    			doctitle="CladosOne" 
-    			nodeprecated="false" 
-    			nodeprecatedlist="false" 
-    			noindex="false" 
-    			nonavbar="false" 
-    			notree="false" 
-    			overview="/Users/alfredwdiffer/eclipse-workspace/CladosOne/src/overview.html" 
-    			packagenames="com.interworldtransport.cladosFExceptions,com.interworldtransport.cladosF,com.interworldtransport.cladosGExceptions,com.interworldtransport.cladosG" 
-    			source="10" 
-    			sourcepath="src" 
-    			splitindex="true" 
-    			use="true" 
-    			version="true">
-        <link href="http://hamcrest.org/JavaHamcrest/javadoc/1.3/"/>
-        <link href="http://ota4j-team.github.io/opentest4j/docs/current/api/"/>
-        <link href="https://apiguardian-team.github.io/apiguardian/docs/current/api/"/>
-        <link href="http://junit.org/junit5/docs/current/api/"/>
-        <link href="http://junit.org/junit4/javadoc/latest/"/>
-    </javadoc>
-  </target>
+		<jar 		jarfile="${distDir}/lib/cladosAPI-${DSTAMP}.jar" 
+		    		basedir="${docDir}" />
+	</target>
 	
 </project>
