@@ -51,6 +51,47 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	}
 
 	/**
+	 * Nyad Constructor #3 covered with this method, but with re-use. This causes
+	 * the new nyad to use EXACTLY the same monads as the one passed, so it is a
+	 * second reference to the same objects. Dangerous!
+	 * 
+	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
+	 *              USE A CONCRETE Nyad here or nada.
+	 * @param pName A String for the new Nyad's name.
+	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final NyadAbstract duplicateReference(NyadAbstract pN, String pName)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		switch (this) {
+		case REALF:
+			if (pN instanceof NyadRealF)
+				return new NyadRealF(pName, (NyadRealF) pN, false);
+			else
+				return null;
+		case REALD:
+			if (pN instanceof NyadRealD)
+				return new NyadRealD(pName, (NyadRealD) pN, false);
+			else
+				return null;
+		case COMPLEXF:
+			if (pN instanceof NyadComplexF)
+				return new NyadComplexF(pName, (NyadComplexF) pN, false);
+			else
+				return null;
+		case COMPLEXD:
+			if (pN instanceof NyadComplexD)
+				return new NyadComplexD(pName, (NyadComplexD) pN, false);
+			else
+				return null;
+		default:
+			return null;
+		}
+	}
+
+	/**
 	 * Nyad Constructor #1 covered with this method
 	 * 
 	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
@@ -137,7 +178,7 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract copyWithMonad(MonadAbstract pM, String pName)
+	public final NyadAbstract createWithMonadCopy(MonadAbstract pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (this) {
 		case REALF:
@@ -158,6 +199,45 @@ public enum CladosGNyad { // All of these have implicit private constructors
 		case COMPLEXD:
 			if (pM instanceof MonadComplexD)
 				return new NyadComplexD(pName, (MonadComplexD) pM, true);
+			else
+				return null;
+		default:
+			return null;
+		}
+	}
+
+	/**
+	 * Nyad Constructor #2 covered with this method, but with re-use
+	 * 
+	 * @param pM    The monad to be used as the first in monadList in a new nyad.
+	 *              USE A CONCRETE Monad here or nada.
+	 * @param pName A String for the new Nyad's name.
+	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final NyadAbstract createWithMonad(MonadAbstract pM, String pName)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		switch (this) {
+		case REALF:
+			if (pM instanceof MonadRealF)
+				return new NyadRealF(pName, (MonadRealF) pM, false);
+			else
+				return null;
+		case REALD:
+			if (pM instanceof MonadRealD)
+				return new NyadRealD(pName, (MonadRealD) pM, false);
+			else
+				return null;
+		case COMPLEXF:
+			if (pM instanceof MonadComplexF)
+				return new NyadComplexF(pName, (MonadComplexF) pM, false);
+			else
+				return null;
+		case COMPLEXD:
+			if (pM instanceof MonadComplexD)
+				return new NyadComplexD(pName, (MonadComplexD) pM, false);
 			else
 				return null;
 		default:
