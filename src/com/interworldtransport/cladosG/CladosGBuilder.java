@@ -153,18 +153,15 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public Basis findBasis(short pGen) throws GeneratorRangeException {
 		if (!validateSize(pGen))
 			throw new GeneratorRangeException("Unsupported number of generators in findBasis(short)");
-		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst().orElse(null); // Deliver
-																											// Basis OR
-																											// null
+		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst().orElse(null);
+		// Deliver Basis OR null
 	}
 
 	public GProduct findGProduct(String pSig) throws BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
-		return listOfGProducts.stream().filter(x -> (x.getGradeCount() - 1 == pSig.length())).findFirst().orElse(null); // Deliver
-																														// GProduct
-																														// OR
-																														// null
+		return listOfGProducts.stream().filter(x -> (x.getGradeCount() - 1 == pSig.length())).findFirst().orElse(null);
+		// Deliver GProduct OR null
 	}
 
 	public short getBasisListSize() // shouldn't ever be larger than Basis.MAX_GEN
