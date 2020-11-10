@@ -60,6 +60,12 @@ public abstract class AlgebraAbstract {
 	 */
 	protected String name;
 	/**
+	 * Unique string (hopefully) that provides a machine readable name more likely
+	 * to be unique. Used by apps that need more than the human readable name to 
+	 * avoid duplicating objects unnecessarily.
+	 */
+	protected String uuid;
+	/**
 	 * This is the list of known frames defined against this Algebra.
 	 */
 	protected ArrayList<String> rFrames;

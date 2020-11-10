@@ -25,6 +25,7 @@
 package com.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.interworldtransport.cladosF.Cardinal;
 import com.interworldtransport.cladosF.CladosField;
@@ -56,7 +57,7 @@ public class AlgebraRealF extends AlgebraAbstract
 	public final static String toXMLString(AlgebraRealF pA)
 	{
 		String indent = "\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent+"<Algebra>\n");
+		StringBuilder rB = new StringBuilder(indent+"<Algebra UUID=\""+pA.uuid+"\" >\n");
 		rB.append(indent+"\t<Name>\"" + pA.getAlgebraName() + "\"</Name>\n");
 		rB.append(indent+"\t"+pA.protoNumber.toXMLString()+"\n");
 		//-----------------------------------------------------------------------
@@ -96,6 +97,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		setGProduct(pA.getGProduct());
 		gBasis = pA.getGBasis();
 		rFrames = getFrames();
+		uuid = UUID.randomUUID().toString();
 	}
 
 	/**
@@ -124,6 +126,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		gBasis = pGP.getBasis();
 		rFrames = new ArrayList<String>(1);
 		rFrames.add("canonical");
+		uuid = UUID.randomUUID().toString();
 	}
 
 	/**
@@ -164,6 +167,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		gBasis = gProduct.getBasis();
 		rFrames = new ArrayList<String>(1);
 		rFrames.add("canonical");
+		uuid = UUID.randomUUID().toString();
 	}
 	
 	/**
@@ -205,6 +209,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		gBasis = gProduct.getBasis();
 		rFrames = new ArrayList<String>(1);
 		rFrames.add("canonical");
+		uuid = UUID.randomUUID().toString();
 	}
 
 	/**
@@ -239,6 +244,7 @@ public class AlgebraRealF extends AlgebraAbstract
 		gBasis = gProduct.getBasis();
 		rFrames = new ArrayList<String>(1);
 		rFrames.add("canonical");
+		uuid = UUID.randomUUID().toString();
 	}
 	
 	public Cardinal shareCardinal()
