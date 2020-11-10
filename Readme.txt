@@ -44,15 +44,19 @@ If you don't know what a Clifford Algebra is, consider yourself encouraged to
 read about them elsewhere.  Geometric Algebras are a variation on a theme, so 
 don't bypass content describing them. In a nutshell, they offer a mathematical
 formalism combining many of the disparate tools of geometry enabling one to 
-wield them in the ways we've become accustomed to from algebra. There is a 
-project related book that might help, but it doesn't have introductory material. 
-The book focuses upon package contents, what they do and why, and finishes
-with usage examples largely associated with physics simulations. 
+wield them in the ways we've become accustomed to from algebra. 
 
-Be aware the physics models described in the book are not likely to survive 
-unchanged once the physics packages are started. This library and the book are
-actually an exploration/research project regarding polycovariance and the 
-broader meaning of 'meaning' in physical models. 
+There is a project related book that might help, but it is admittedly stale 
+AND doesn't have introductory material. The book focuses upon package contents, 
+what they do and why, and finishes with usage examples largely associated with 
+physics simulations. Two parts are now stale. The first involves the API and
+the second involves how Mechanics is modeled on a multivector basis.
+
+The physics models described in the book will not survive unchanged once the this
+library finally reaches version 1.0, let alone once the physics packages are 
+started. This library and the book are actually an exploration/research project 
+regarding polycovariance and the broader meaning of 'meaning' in physical models. 
+Maintain a healthy sense of skepticism... and try things for yourself.
 
 https://docs.google.com/open?id=0B9BesRp5Ts5FM00yNTlva0dlbEE
 
@@ -61,8 +65,8 @@ it at the Clados project site at GitHub. If you can take the time to look and
 see if it is already reported, it would be appreciated. Tell us you found it 
 either way, though, because it helps to know the number of impacted people.
 
-If you want to check up on what is going on, feel free to drop by the Face Book
-page for Interworld Transport. That is where status updates are posted.
+If you want to check up on what is going on, feel free to drop by the Twitter
+account for Interworld Transport. That is where status updates are posted lately.
 
 
 Thanks for your support!
