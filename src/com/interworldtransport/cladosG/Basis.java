@@ -24,6 +24,9 @@
  */
 package com.interworldtransport.cladosG;
 
+import java.util.ArrayList;
+import java.util.stream.IntStream;
+
 import com.interworldtransport.cladosGExceptions.*;
 
 /**
@@ -63,13 +66,14 @@ import com.interworldtransport.cladosGExceptions.*;
  * The proper way to use this class is almost as an enumeration. Once a basis
  * has been generated for a particular number of generators, one should not have
  * to do it again. If not for the high overhead associated with a basis
- * involving many generators, this would be baked into this class already. 
+ * involving many generators, this would be baked into this class already.
  * <p>
- * Instead, it is baked into the CladosGBuilder. Instantiate that object, use it 
+ * Instead, it is baked into the CladosGBuilder. Instantiate that object, use it
  * to create a new Basis, and the Basis will be tracked. If one already exists
- * with the proposed number of generators, the existing one from the list will 
+ * with the proposed number of generators, the existing one from the list will
  * be returned instead of a new one being created.
  * <p>
+ * 
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -148,7 +152,8 @@ public final class Basis {
 	 * the pscalar is always found in the last slot. All other entries in this array
 	 * have to be calculated and clados does it using the vKey.
 	 */
-	private final short[] gradeRange;
+	// private final short[] gradeRange;
+	private final ArrayList<Short> gradeStartBlade;
 	/**
 	 * This array holds the representation of the vBasis. The vBasis is a complete
 	 * list of unique blades for an algebra.
@@ -196,8 +201,9 @@ public final class Basis {
 		gradeCount = pB.getGradeCount();
 		bladeCount = pB.getBladeCount();
 		vBasis = pB.getBasis();
-		vKey = pB.getBasisKey();
-		gradeRange = pB.getGradeRange();
+		vKey = pB.getKeys();
+		// gradeRange = pB.getGradeRange();
+		gradeStartBlade = new ArrayList<Short>(pB.gradeStartBlade);
 	}
 
 	/**
@@ -219,12 +225,14 @@ public final class Basis {
 		bladeCount = (short) (1 << pGens);
 		// bladeCount = (short) Math.pow(2, pGens);
 		vKey = new long[bladeCount];
-		gradeRange = new short[gradeCount];
+		// gradeRange = new short[gradeCount];
+		gradeStartBlade = new ArrayList<Short>(gradeCount);
 		if (pGens == 0) {
 			vBasis = new short[bladeCount][gradeCount];
 			vBasis[0][0] = (short) 0;
 			vKey[0] = 0;
-			gradeRange[0] = 0;
+			// gradeRange[0] = 0;
+			gradeStartBlade.add(Short.valueOf((short) 0));
 		} else {
 			vBasis = new short[bladeCount][pGens];
 			fillBasis();
@@ -251,7 +259,7 @@ public final class Basis {
 	 * 
 	 * @return short[] This is the returned blade.
 	 */
-	public short[] getBasis(short p1) {
+	public short[] getBlade(short p1) {
 		return vBasis[p1];
 	}
 
@@ -262,7 +270,7 @@ public final class Basis {
 	 * @param p2 short This is the desired index within the p1 blade.
 	 * @return short
 	 */
-	public short getBasis(short p1, short p2) {
+	public short getBasisCell(short p1, short p2) {
 		return vBasis[p1][p2];
 	}
 
@@ -271,7 +279,7 @@ public final class Basis {
 	 * 
 	 * @return long[]
 	 */
-	public long[] getBasisKey() {
+	public long[] getKeys() {
 		return vKey;
 	}
 
@@ -281,7 +289,7 @@ public final class Basis {
 	 * @param p1 short This is the desired key at p1 .
 	 * @return long
 	 */
-	public long getBasisKey(short p1) {
+	public long getKey(short p1) {
 		return vKey[p1];
 	}
 
@@ -309,24 +317,43 @@ public final class Basis {
 	}
 
 	/**
-	 * Get the array used for keeping track of where grades start in the Basis
-	 * array.
+	 * This method simply delivers the otherwise private grade range list. Useful
+	 * for testing purposes, but should be avoided as much as possible.
 	 * 
-	 * @return short[]
+	 * @return ArrayList<Short>
 	 */
-	public short[] getGradeRange() {
-		return gradeRange;
+	public ArrayList<Short> getGrades() {
+		return gradeStartBlade;
 	}
 
 	/**
-	 * Get the array index used for keeping track of where a grades starts in 
-	 * the Basis.
+	 * Get an index to the first blade of grade specified by the parameter.
 	 * 
 	 * @param p1 short This is for choosing which grade index range to return.
 	 * @return short
 	 */
-	public short getGradeRange(short p1) {
-		return gradeRange[p1];
+	public short getGradeStart(short p1) {
+		return (short) gradeStartBlade.get(p1);
+	}
+
+	/**
+	 * Delivers an integer stream of the grades contained in the basis ranged from
+	 * scalar to pscalar. (0 to gradeCount)
+	 * 
+	 * @return IntStream
+	 */
+	public IntStream getGradeStream() {
+		return IntStream.rangeClosed(0, gradeCount);
+	}
+
+	/**
+	 * Delivers an integer stream of the blades contained in the basis ranged from
+	 * scalar to pscalar. (0 to bladeCount)
+	 * 
+	 * @return IntStream
+	 */
+	public IntStream getBladeStream() {
+		return IntStream.rangeClosed(0, bladeCount);
 	}
 
 	/**
@@ -341,21 +368,21 @@ public final class Basis {
 		// ------------------------------------------------------------------
 		rB.append(indent + "\t<Grades count=\"" + getGradeCount() + "\">\n");
 		for (short k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
-			rB.append(indent + "\t\t<Grade number=\"" + k + "\" range=\"" + getGradeRange(k) + "-"
-					+ (getGradeRange((short) (k + 1)) - 1) + "\" />\n");
+			rB.append(indent + "\t\t<Grade number=\"" + k + "\" range=\"" + getGradeStart(k) + "-"
+					+ (getGradeStart((short) (k + 1)) - 1) + "\" />\n");
 		// Handle the last one separate because there is no k+1 index for the largest
 		// grade
 		rB.append(indent + "\t\t<Grade number=\"" + (getGradeCount() - 1) + "\" range=\""
-				+ getGradeRange((short) (gradeCount - 1)) + "-" + getGradeRange((short) (gradeCount - 1)) + "\" />\n");
+				+ getGradeStart((short) (gradeCount - 1)) + "-" + getGradeStart((short) (gradeCount - 1)) + "\" />\n");
 		rB.append(indent + "\t</Grades>\n");
 		// ------------------------------------------------------------------
 		rB.append(indent + "\t<Blades count=\"" + getBladeCount() + "\">\n");
 		for (short k = 0; k < bladeCount; k++) // Appending blades
 		{
-			rB.append(indent + "\t\t<Blade number=\"" + (k + 1) + "\" key=\"" + getBasisKey(k) + "\" generators=\"");
+			rB.append(indent + "\t\t<Blade number=\"" + (k + 1) + "\" key=\"" + getKey(k) + "\" generators=\"");
 			for (short m = 0; m < gradeCount - 1; m++)
 				if (vBasis[k][m] > 0)
-					rB.append(getBasis(k, m) + ",");
+					rB.append(getBasisCell(k, m) + ",");
 			if (k > 0)
 				rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
@@ -495,26 +522,29 @@ public final class Basis {
 	 * 
 	 */
 	private void fillGradeRange() {
-		gradeRange[0] = 0; // The scalar
-		gradeRange[1] = 1; // The scalar
-		gradeRange[gradeCount - 1] = (short) (bladeCount - 1); // The pscalar
-		short m = 0;
+		gradeStartBlade.add(Short.valueOf((short) 0));
+		gradeStartBlade.add(Short.valueOf((short) 1));
 
-		for (short j = 2; j < gradeCount - 1; j++)
-		// Loop through the grades skipping scalar, vector, and pscalar
-		{
-			long test = (long) Math.pow(gradeCount, j - 1);
-			// Ceiling Key for grade j-1
+		// gradeRange[0] = 0; // The scalar
+		// gradeRange[1] = 1; // The first vector (We know there is at least one
+		// generator
+
+		short m = 0;
+		for (short j = 2; j < gradeCount - 1; j++) {
+			// Loop through the grades skipping scalar, vector, and pscalar
+			long test = (long) Math.pow(gradeCount, j - 1);// Ceiling Key for grade j-1
 
 			while (m < bladeCount) {
 				if (vKey[m] > test) {
-					gradeRange[j] = m;
-					break; // Found first key. Move to next grade.
+					gradeStartBlade.add(Short.valueOf(m));
+					// gradeRange[j] = m;
+					break; // Found first key above ceiling. Move to next grade.
 				}
-				// Otherwise move to next blade.
-				m++;
-			} // All blades searched
-		} // All blades ranged as grades. Get along little dogie.
+				m++; // Otherwise move to next blade.
+			}
+		} // All but top grade done.
+		gradeStartBlade.add(Short.valueOf((short) (bladeCount - 1)));
+		// gradeRange[gradeCount - 1] = (short) (bladeCount - 1); // The pscalar
 	}
 
 	/**

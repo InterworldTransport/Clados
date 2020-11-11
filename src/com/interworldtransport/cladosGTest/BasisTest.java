@@ -8,6 +8,8 @@ import com.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 public class BasisTest
 {
 	Basis	tBasis0;
@@ -53,24 +55,26 @@ public class BasisTest
 	@Test
 	public void testGradeRange()
 	{
-		short[] tSpot = tBasis14.getGradeRange();	
-		for (int k=1; k<0.5*(tBasis14.getGradeCount()-1); k++)
-			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[14-k+1] - tSpot[14-k]);
+		ArrayList<Short> tSpot;
 		
-		tSpot = tBasis10.getGradeRange();	
-		for (int k=1; k<0.5*(tBasis10.getGradeCount()-1); k++)
-			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[10-k+1] - tSpot[10-k]);
+		tSpot = tBasis0.getGrades();
+		assertTrue(tSpot.get(0)==0);
 		
-		tSpot = tBasis8.getGradeRange();	
-		for (int k=1; k<0.5*(tBasis8.getGradeCount()-1); k++)
-			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[8-k+1] - tSpot[8-k]);
-		
-		tSpot = tBasis4.getGradeRange();	
+		tSpot = tBasis4.getGrades();	
 		for (int k=1; k<0.5*(tBasis4.getGradeCount()-1); k++)
-			assertTrue(tSpot[k+1] - tSpot[k] == tSpot[4-k+1] - tSpot[4-k]);
+			assertTrue(tSpot.get(k+1) - tSpot.get(k) == tSpot.get(4-k+1) - tSpot.get(4-k));
 		
-		tSpot = tBasis0.getGradeRange();
-		assertTrue(tSpot[0]==0);
+		tSpot = tBasis8.getGrades();	
+		for (int k=1; k<0.5*(tBasis8.getGradeCount()-1); k++)
+			assertTrue(tSpot.get(k+1) - tSpot.get(k) == tSpot.get(8-k+1) - tSpot.get(8-k));
+		
+		tSpot = tBasis10.getGrades();	
+		for (int k=1; k<0.5*(tBasis10.getGradeCount()-1); k++)
+			assertTrue(tSpot.get(k+1) - tSpot.get(k) == tSpot.get(10-k+1) - tSpot.get(10-k));
+		
+		tSpot = tBasis14.getGrades();	
+		for (int k=1; k<0.5*(tBasis14.getGradeCount()-1); k++)
+			assertTrue(tSpot.get(k+1) - tSpot.get(k) == tSpot.get(14-k+1) - tSpot.get(14-k));
 		
 	}
 	

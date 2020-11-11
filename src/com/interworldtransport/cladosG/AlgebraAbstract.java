@@ -25,6 +25,7 @@
 package com.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 /**
  * The algebra object holds all geometric details that support the definition of
@@ -60,15 +61,15 @@ public abstract class AlgebraAbstract {
 	 */
 	protected String name;
 	/**
-	 * Unique string (hopefully) that provides a machine readable name more likely
-	 * to be unique. Used by apps that need more than the human readable name to 
-	 * avoid duplicating objects unnecessarily.
-	 */
-	protected String uuid;
-	/**
 	 * This is the list of known frames defined against this Algebra.
 	 */
 	protected ArrayList<String> rFrames;
+	/**
+	 * Unique string (hopefully) that provides a machine readable name more likely
+	 * to be unique. Used by apps that need more than the human readable name to
+	 * avoid duplicating objects unnecessarily.
+	 */
+	protected String uuid;
 
 	/**
 	 * This method appends a frame name to the list of known frames for this foot.
@@ -149,12 +150,26 @@ public abstract class AlgebraAbstract {
 	}
 
 	/**
+	 * Delivers an integer stream of the blades contained in the underlying basis
+	 * ranged from scalar to pscalar. (0 to bladeCount)
+	 * 
+	 * @return IntStream
+	 */
+	public IntStream getBladeStream() {
+		return gBasis.getBladeStream();
+	}
+
+	/**
 	 * This method returns a reference to the Foot of the algebra.
 	 * 
 	 * @return Foot
 	 */
 	public Foot getFoot() {
 		return foot;
+	}
+
+	public ArrayList<String> getFrames() {
+		return rFrames;
 	}
 
 	/**
@@ -164,10 +179,6 @@ public abstract class AlgebraAbstract {
 	 */
 	public Basis getGBasis() {
 		return gBasis;
-	}
-
-	public ArrayList<String> getFrames() {
-		return rFrames;
 	}
 
 	/**
@@ -200,6 +211,16 @@ public abstract class AlgebraAbstract {
 	 */
 	public short[] getGradeRange(short pInd) {
 		return gProduct.getGradeRange(pInd);
+	}
+
+	/**
+	 * Delivers an integer stream of the grades contained in the underlying basis
+	 * ranged from scalar to pscalar. (0 to gradeCount)
+	 * 
+	 * @return IntStream
+	 */
+	public IntStream getGradeStream() {
+		return gBasis.getGradeStream();
 	}
 
 	public ArrayList<String> getReferenceFrames() {

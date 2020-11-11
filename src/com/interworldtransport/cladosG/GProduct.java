@@ -269,10 +269,10 @@ public final class GProduct {
 	 */
 	public short[] getGradeRange(short pGrade) {
 		short[] tR = new short[2];
-		tR[0] = canonicalBasis.getGradeRange(pGrade);
+		tR[0] = canonicalBasis.getGradeStart(pGrade);
 		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
 				? tR[0]
-				: (short) (canonicalBasis.getGradeRange((short) (pGrade + 1)) - 1));
+				: (short) (canonicalBasis.getGradeStart((short) (pGrade + 1)) - 1));
 		return tR;
 	}
 
@@ -413,8 +413,8 @@ public final class GProduct {
 		// Set up row with all generators for each basis element j and k
 		for (m = 0; m < getGradeCount() - 1; m++) {
 			// Copy VectorBasis' into doubleSort to find new element
-			bothOps[m] = canonicalBasis.getBasis(j, m);
-			bothOps[m + getGradeCount() - 1] = canonicalBasis.getBasis(k, m);
+			bothOps[m] = canonicalBasis.getBasisCell(j, m);
+			bothOps[m + getGradeCount() - 1] = canonicalBasis.getBasisCell(k, m);
 		}
 		// bothOps filled but unsorted. That means the zero slots in the kth blade (if
 		// any)will be to the right of non-zero indexes in the jth blade. Basically, the
@@ -487,7 +487,7 @@ public final class GProduct {
 
 		// Compare bothOpsKey against vKey to find match
 		result[j][k] = 0;
-		long[] pKey = canonicalBasis.getBasisKey();
+		long[] pKey = canonicalBasis.getKeys();
 		signFlip *= -1;
 		if (signFlip == 0) signFlip=1;	// NOW 1 = no flip, -1 = flip [To avoid Math.pow(-1, arg]
 		for (m = 0; m < getBladeCount(); m++) {
