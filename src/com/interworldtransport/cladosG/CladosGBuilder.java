@@ -102,8 +102,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * in use while performing a useful function as a Builder. It is doing DOUBLE
 	 * DUTY.
 	 */
-	private ArrayList<Basis> listOfBases;
-	private ArrayList<GProduct> listOfGProducts;
+	private ArrayList<Basis> listOfBases = new ArrayList<Basis>(1);
+	private ArrayList<GProduct> listOfGProducts = new ArrayList<GProduct>(1);
 
 	public void appendBasis(Basis pB) {
 		if (listOfBases.contains(pB))

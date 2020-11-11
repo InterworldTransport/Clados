@@ -114,7 +114,7 @@ public enum CladosFBuilder { // This has an implicit private constructor we won'
 	 * and then used to keep track of the Cardinals in use while performing a useful
 	 * function as a Builder. It is doing DOUBLE DUTY.
 	 */
-	private ArrayList<Cardinal> listOfCardinals;
+	private ArrayList<Cardinal> listOfCardinals = new ArrayList<Cardinal>(1);
 
 	//
 	public Cardinal createCardinal(String pName) {
