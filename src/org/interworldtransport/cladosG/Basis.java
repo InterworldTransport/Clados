@@ -27,7 +27,9 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-import org.interworldtransport.cladosGExceptions.*;
+import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * All geometry objects within the cladosG package have elements that form a
@@ -223,21 +225,30 @@ public final class Basis {
 
 		gradeCount = (short) (pGens + 1);
 		bladeCount = (short) (1 << pGens);
-		// bladeCount = (short) Math.pow(2, pGens);
 		vKey = new long[bladeCount];
-		// gradeRange = new short[gradeCount];
 		gradeStartBlade = new ArrayList<Short>(gradeCount);
 		if (pGens == 0) {
 			vBasis = new short[bladeCount][gradeCount];
 			vBasis[0][0] = (short) 0;
 			vKey[0] = 0;
-			// gradeRange[0] = 0;
 			gradeStartBlade.add(Short.valueOf((short) 0));
 		} else {
 			vBasis = new short[bladeCount][pGens];
 			fillBasis();
 			fillGradeRange();
 		}
+	}
+
+	@Override
+	public boolean equals(Object b1) {
+		if (this == b1)
+			return true;
+		if (b1 == null)
+			return false;
+		if (b1 instanceof Basis)
+			return getGradeCount() == ((Basis) b1).getGradeCount();
+		else
+			return false;
 	}
 
 	/**
@@ -252,18 +263,6 @@ public final class Basis {
 	}
 
 	/**
-	 * Return the row of shorts at p1 in the array holding the basis. One row is one
-	 * blade of an algebra.
-	 * 
-	 * @param p1 short This is the desired blade number within the basis.
-	 * 
-	 * @return short[] This is the returned blade.
-	 */
-	public short[] getBlade(short p1) {
-		return vBasis[p1];
-	}
-
-	/**
 	 * Return the short at (x,y) in the array holding the basis.
 	 * 
 	 * @param p1 short This is the desired blade within the basis.
@@ -275,22 +274,27 @@ public final class Basis {
 	}
 
 	/**
-	 * Return the integer array holding the EddingtonKey's.
+	 * Return the row of shorts at p1 in the array holding the basis. One row is one
+	 * blade of an algebra.
 	 * 
-	 * @return long[]
+	 * @param p1 short This is the desired blade number within the basis.
+	 * 
+	 * @return short[] This is the returned blade.
 	 */
-	public long[] getKeys() {
-		return vKey;
+	public short[] getBlade(short p1) {
+		return vBasis[p1];
 	}
 
-	/**
-	 * Return the long at p1 in the EddingtonKey array.
-	 * 
-	 * @param p1 short This is the desired key at p1 .
-	 * @return long
-	 */
-	public long getKey(short p1) {
-		return vKey[p1];
+	public ArrayList<Short> getBladeAsList(short p1) throws BladeOutOfRangeException {
+		if (p1 < 0 | p1 > gradeCount)
+			throw new BladeOutOfRangeException(this,
+					"Blade key requested was " + p1 + " but bladeCount is " + bladeCount);
+		ArrayList<Short> returnIt = new ArrayList<>(gradeCount);
+		for (short j = 0; j < gradeCount; j++)
+			if (vBasis[p1][j] != 0)
+				returnIt.add(Short.valueOf(vBasis[p1][j]));
+
+		return returnIt;
 	}
 
 	/**
@@ -301,6 +305,16 @@ public final class Basis {
 	 */
 	public short getBladeCount() {
 		return bladeCount;
+	}
+
+	/**
+	 * Delivers an integer stream of the blades contained in the basis ranged from
+	 * scalar to pscalar. (0 to bladeCount)
+	 * 
+	 * @return IntStream
+	 */
+	public IntStream getBladeStream() {
+		return IntStream.rangeClosed(0, bladeCount);
 	}
 
 	/**
@@ -320,7 +334,7 @@ public final class Basis {
 	 * This method simply delivers the otherwise private grade range list. Useful
 	 * for testing purposes, but should be avoided as much as possible.
 	 * 
-	 * @return ArrayList<Short>
+	 * @return ArrayList of Short  A list of grades boxed as Shorts.
 	 */
 	public ArrayList<Short> getGrades() {
 		return gradeStartBlade;
@@ -330,9 +344,14 @@ public final class Basis {
 	 * Get an index to the first blade of grade specified by the parameter.
 	 * 
 	 * @param p1 short This is for choosing which grade index range to return.
-	 * @return short
+	 * @return short Index within the basis where requested grade starts.
+	 * @throws GradeOutOfRangeException This exception is thrown if the requested
+	 *                                  grade is NOT between 0 and gradeCount
+	 *                                  inclusive.
 	 */
-	public short getGradeStart(short p1) {
+	public short getGradeStart(short p1) throws GradeOutOfRangeException {
+		if (p1 < 0 | p1 > gradeCount)
+			throw new GradeOutOfRangeException(this, "Grade requested was " + p1 + " but gradeCount is " + gradeCount);
 		return (short) gradeStartBlade.get(p1);
 	}
 
@@ -347,13 +366,33 @@ public final class Basis {
 	}
 
 	/**
-	 * Delivers an integer stream of the blades contained in the basis ranged from
-	 * scalar to pscalar. (0 to bladeCount)
+	 * Return the long at p1 in the EddingtonKey array.
 	 * 
-	 * @return IntStream
+	 * @param p1 short This is the desired key at p1 .
+	 * @return long
+	 * @throws BladeOutOfRangeException This exception is thrown if the requested
+	 *                                  blade is NOT between 0 and bladeCount
+	 *                                  inclusive.
 	 */
-	public IntStream getBladeStream() {
-		return IntStream.rangeClosed(0, bladeCount);
+	public long getKey(short p1) throws BladeOutOfRangeException {
+		if (p1 < 0 | p1 > gradeCount)
+			throw new BladeOutOfRangeException(this,
+					"Blade key requested was " + p1 + " but bladeCount is " + bladeCount);
+		return vKey[p1];
+	}
+
+	/**
+	 * Return the integer array holding the EddingtonKey's.
+	 * 
+	 * @return long[]
+	 */
+	public long[] getKeys() {
+		return vKey;
+	}
+
+	@Override
+	public int hashCode() {
+		return 137 * gradeCount;
 	}
 
 	/**
@@ -363,34 +402,47 @@ public final class Basis {
 	 * @return String
 	 */
 	public String toXMLString() {
-		String indent = "\t\t\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Basis>\n");
-		// ------------------------------------------------------------------
-		rB.append(indent + "\t<Grades count=\"" + getGradeCount() + "\">\n");
-		for (short k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
-			rB.append(indent + "\t\t<Grade number=\"" + k + "\" range=\"" + getGradeStart(k) + "-"
-					+ (getGradeStart((short) (k + 1)) - 1) + "\" />\n");
-		// Handle the last one separate because there is no k+1 index for the largest
-		// grade
-		rB.append(indent + "\t\t<Grade number=\"" + (getGradeCount() - 1) + "\" range=\""
-				+ getGradeStart((short) (gradeCount - 1)) + "-" + getGradeStart((short) (gradeCount - 1)) + "\" />\n");
-		rB.append(indent + "\t</Grades>\n");
-		// ------------------------------------------------------------------
-		rB.append(indent + "\t<Blades count=\"" + getBladeCount() + "\">\n");
-		for (short k = 0; k < bladeCount; k++) // Appending blades
-		{
-			rB.append(indent + "\t\t<Blade number=\"" + (k + 1) + "\" key=\"" + getKey(k) + "\" generators=\"");
-			for (short m = 0; m < gradeCount - 1; m++)
-				if (vBasis[k][m] > 0)
-					rB.append(getBasisCell(k, m) + ",");
-			if (k > 0)
-				rB.deleteCharAt(rB.length() - 1);
-			rB.append("\" />\n");
+		try {
+			String indent = "\t\t\t\t\t\t";
+			StringBuilder rB = new StringBuilder(indent + "<Basis>\n");
+			// ------------------------------------------------------------------
+			rB.append(indent + "\t<Grades count=\"" + getGradeCount() + "\">\n");
+			for (short k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
+				rB.append(indent + "\t\t<Grade number=\"" + k + "\" range=\"" + getGradeStart(k) + "-"
+						+ (getGradeStart((short) (k + 1)) - 1) + "\" />\n");
+			// Handle the last one separate because there is no k+1 index for the largest
+			// grade
+			rB.append(indent + "\t\t<Grade number=\"" + (getGradeCount() - 1) + "\" range=\""
+					+ getGradeStart((short) (gradeCount - 1)) + "-" + getGradeStart((short) (gradeCount - 1))
+					+ "\" />\n");
+			rB.append(indent + "\t</Grades>\n");
+			// ------------------------------------------------------------------
+			rB.append(indent + "\t<Blades count=\"" + getBladeCount() + "\">\n");
+			for (short k = 0; k < bladeCount; k++) // Appending blades
+			{
+				rB.append(indent + "\t\t<Blade number=\"" + (k + 1) + "\" key=\"" + getKey(k) + "\" generators=\"");
+				for (short m = 0; m < gradeCount - 1; m++)
+					if (vBasis[k][m] > 0)
+						rB.append(getBasisCell(k, m) + ",");
+				if (k > 0)
+					rB.deleteCharAt(rB.length() - 1);
+				rB.append("\" />\n");
+			}
+			rB.append(indent + "\t</Blades>\n");
+			// ------------------------------------------------------------------
+			rB.append(indent + "</Basis>\n");
+			return rB.toString();
+		} catch (GradeOutOfRangeException e) {
+			// Nothing is going to be done here, but not out of laziness. The exception
+			// can't actually be thrown. The loop containing getGradeStart IS built using
+			// the correct grade limitations.
+			return "\t\t\t\t\t\t<Basis>Export Failed on GradeRangeException</Basis>";
+		} catch (BladeOutOfRangeException e) {
+			// Nothing is going to be done here, but not out of laziness. The exception
+			// can't actually be thrown. The loop containing getGradeStart IS built using
+			// the correct blade limitations.
+			return "\t\t\t\t\t\t<Basis>Export Failed on BladeRangeException</Basis>";
 		}
-		rB.append(indent + "\t</Blades>\n");
-		// ------------------------------------------------------------------
-		rB.append(indent + "</Basis>\n");
-		return rB.toString();
 	}
 
 	/**

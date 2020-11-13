@@ -32,6 +32,7 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * DivFields currently come in four varieties. RealF, RealD, ComplexF, ComplexD
@@ -180,12 +181,15 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pSig     A String for the new algebra's signature.
 	 * @param pSpecial A String for special handling constructor. ex: "Zero", "One"
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
-	 * @throws CladosMonadException    Thrown for a general monad constructor error
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BadSignatureException    Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException     Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException  Thrown if the pSig parameter is too long
+	 * @throws GradeOutOfRangeException Thrown on an internal error if special case
+	 *                                  handler glitches
 	 */
 	public final MonadAbstract createSpecial(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
-			String pSig, String pSpecial) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			String pSig, String pSpecial)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
 		switch (this) {
 		case REALF:
 			if (pNumber instanceof RealF)
@@ -266,8 +270,8 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public final MonadAbstract createZero(DivField pNumber, String pName, String pAName, String pFrame,
-			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public final MonadAbstract createZero(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
+			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
 		case REALF:
 			if (pNumber instanceof RealF)

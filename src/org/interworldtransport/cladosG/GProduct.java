@@ -24,7 +24,9 @@
  */
 package org.interworldtransport.cladosG;
 
-import org.interworldtransport.cladosGExceptions.*;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * This class defines a geometric product for an associated basis.
@@ -78,7 +80,7 @@ public final class GProduct {
 			}
 		return true; // nothing bad detected
 	}
-	
+
 	/**
 	 * This basis holds a representation of all the elements that can be built from
 	 * the generators to span the algebra's vector space. It is the object that Ken
@@ -264,16 +266,24 @@ public final class GProduct {
 	/**
 	 * Get start and end index from the GradeRange array for grade pGrade.
 	 * 
-	 * @param pGrade short
-	 * @return short[]
+	 * @param pGrade short primitive = grade for which the range is needed
+	 * @return short[] start and end indexes returned as a short[] array
 	 */
-	public short[] getGradeRange(short pGrade) {
+	protected short[] getGradeRange(short pGrade) {
 		short[] tR = new short[2];
-		tR[0] = canonicalBasis.getGradeStart(pGrade);
-		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
-				? tR[0]
-				: (short) (canonicalBasis.getGradeStart((short) (pGrade + 1)) - 1));
-		return tR;
+		try {
+			tR[0] = canonicalBasis.getGradeStart(pGrade);
+			tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+					? tR[0]
+					: (short) (canonicalBasis.getGradeStart((short) (pGrade + 1)) - 1));
+			return tR;
+		} catch (GradeOutOfRangeException e) {
+			// Ugly catch if there are internal errors with Grade Range retrieval.
+			// Keep away from calling getGradeRange as it is an internal method really only
+			// safe if called by other objects in the package that KNOW how to limit
+			// requested range.
+			return tR;
+		}
 	}
 
 	/**
@@ -338,7 +348,7 @@ public final class GProduct {
 	public String toXMLString() {
 		String indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
-		rB.append(indent + "\t<Signature>\"" + signature + "\"</Signature>\n");
+		rB.append(indent + "\t<Signature>" + signature + "</Signature>\n");
 		rB.append(canonicalBasis.toXMLString());
 		rB.append(indent + "\t<ProductTable rows=\"" + getBladeCount() + "\">\n");
 		for (short k = 0; k < getBladeCount(); k++) // Appending rows
@@ -369,14 +379,10 @@ public final class GProduct {
 		int m = 0;
 		for (char b : pSig.toCharArray()) {
 			switch (b) {
-			case '+':
-				nSignature[m] = 0;
-				m++;
-				break;
-			case '-':
-				nSignature[m] = 1;
-				m++;
+			case '+' -> nSignature[m] = 0;
+			case '-' -> nSignature[m] = 1;
 			}
+			m++;
 		}
 	}
 
@@ -407,7 +413,7 @@ public final class GProduct {
 	private void fillCell(short j, short k) {
 		int[] bothOps = new int[2 * getGradeCount() - 2]; // This will hold indexes for both operands
 		short m = 0;
-		short signFlip = 0;		// 0 = no flip, 1 = flip
+		short signFlip = 0; // 0 = no flip, 1 = flip
 		int tempBubbleSpot = 0; // yes. There is a bubble sort. Not a big one.
 
 		// Set up row with all generators for each basis element j and k
@@ -489,7 +495,8 @@ public final class GProduct {
 		result[j][k] = 0;
 		long[] pKey = canonicalBasis.getKeys();
 		signFlip *= -1;
-		if (signFlip == 0) signFlip=1;	// NOW 1 = no flip, -1 = flip [To avoid Math.pow(-1, arg]
+		if (signFlip == 0)
+			signFlip = 1; // NOW 1 = no flip, -1 = flip [To avoid Math.pow(-1, arg]
 		for (m = 0; m < getBladeCount(); m++) {
 			if (bothOpsKey == pKey[m]) {
 				result[j][k] = (short) ((m + 1) * signFlip);
@@ -497,7 +504,8 @@ public final class GProduct {
 			}
 		}
 		assert (result[j][k] != 0); // if result entry is not zero, fill is complete.
-		// This assertion prevents us from using light-like generators in canonical basis
+		// This assertion prevents us from using light-like generators in canonical
+		// basis
 	}
 
 	private void fillResult() {
@@ -537,5 +545,31 @@ public final class GProduct {
 			}
 		}
 		return tempBothOps;
+	}
+
+	@Override
+	public int hashCode() {
+		int pt = 0;
+		int m = 0;
+		for (char b : signature.toCharArray()) {
+			switch (b) {
+			case '+' -> pt += Math.pow(2, m);
+			case '-' -> pt += Math.pow(3, m);
+			}
+			m++;
+		}
+		return pt;
+	}
+
+	@Override
+	public boolean equals(Object gp1) {
+		if (this == gp1)
+			return true;
+		if (gp1 == null)
+			return false;
+		if (gp1 instanceof GProduct)
+			return getSignature().equals(((GProduct) gp1).getSignature());
+		else
+			return false;
 	}
 }

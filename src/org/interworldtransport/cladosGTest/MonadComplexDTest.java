@@ -14,6 +14,7 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 public class MonadComplexDTest
 {
@@ -34,7 +35,7 @@ public class MonadComplexDTest
 	MonadComplexD	tM9;
 
 	@Before
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException
+	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException
 	{
 		cRF = new ComplexD[16];
 		Cardinal tSpot = Cardinal.generate("TestComplexDs");

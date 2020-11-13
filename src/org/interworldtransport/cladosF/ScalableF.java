@@ -49,6 +49,6 @@ public interface ScalableF
 	 * 
 	 * @return DivisableD
 	 */
-	public abstract Divisable scale(float pS);
+	public abstract Divisible scale(float pS);
 	
 }

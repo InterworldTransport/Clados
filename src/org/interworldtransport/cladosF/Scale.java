@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.ScalableD<br>
+ * ---org.interworldtransport.cladosF.Scale<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,36 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.ScalableD<br>
+ * ---org.interworldtransport.cladosF.Scale<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
 
 /**
- * This interface implements the part of the concept of a Division Field from 
- * mathematics. Specifically, if is the portion that says the field supports
- * the notion of'scaling the magnitude'. 
- * <p>
- * For real numbers this is scaling the distance from a number line origin. 
- * For complex numbers, one scales the radius in a typical polar representation.
- * <p>
- * This particular interface also requires that input be delivered as a double.
- * <p>
+ * This interface does not implement anything. It is a marker interface intended
+ * to act as a pseudonym for all DivField descendants.
+ * 
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
-public interface ScalableD
+public interface Scale
 
 {
-	/**
-	 * Scale method multiplies the modulus by the scale
-	 * 
-	 * @param pS
-	 * 		double
-	 * 
-	 * @return DivisableD
-	 */
-	public abstract Divisible scale(double pS);
-	
+
 }

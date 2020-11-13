@@ -92,7 +92,7 @@ public class AlgebraRealDTest
 		AlgebraRealD alg5 = new AlgebraRealD("medium weight frame", alg1.getFoot(), alg1.getFoot().getCardinal(0), alg1.getGProduct().getSignature());
 		assertFalse(alg5.equals(alg1));
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
-		assertFalse(alg5.getGProduct().equals(alg1.getGProduct()));
+		assertFalse(alg5.getGProduct() == (alg1.getGProduct()));
 		//Foot re-used, signature re-used... ensures different GProduct thus algebra mis-match
 		assertFalse(alg5.getAlgebraName() == alg4.getAlgebraName());
 		alg5.setAlgebraName(alg4.getAlgebraName());
@@ -103,7 +103,7 @@ public class AlgebraRealDTest
 		AlgebraRealD alg6 = new AlgebraRealD(aName, fName, pSig31, rNumber);
 		assertFalse(alg6.equals(alg1));
 		assertFalse(alg6.getFoot().equals(alg1.getFoot()));
-		assertFalse(alg6.getGProduct().equals(alg1.getGProduct()));
+		assertFalse(alg6.getGProduct() == (alg1.getGProduct()));
 		assertTrue(alg6.getFoot().getCardinal(0).equals(alg1.getFoot().getCardinal(0)));
 		//Number type re-used but nothing else ensures algebra mis-match
 	}

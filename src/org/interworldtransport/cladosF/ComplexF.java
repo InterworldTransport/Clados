@@ -48,7 +48,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class ComplexF extends DivField implements Divisable, NormalizableF, ScalableF
+public class ComplexF extends DivField implements Divisible, NormalizableF, ScalableF, Scale
 {
 	/**
 	 * Static add method that creates a new ComplexF with the sum pF1 + pF2.
@@ -516,7 +516,7 @@ public class ComplexF extends DivField implements Divisable, NormalizableF, Scal
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF add(Divisable pF) throws FieldBinaryException
+	public ComplexF add(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -550,7 +550,7 @@ public class ComplexF extends DivField implements Divisable, NormalizableF, Scal
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF divide(Divisable pF) throws FieldBinaryException
+	public ComplexF divide(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -659,7 +659,7 @@ public class ComplexF extends DivField implements Divisable, NormalizableF, Scal
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF multiply(Divisable pF) throws FieldBinaryException
+	public ComplexF multiply(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
@@ -719,7 +719,7 @@ public class ComplexF extends DivField implements Divisable, NormalizableF, Scal
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF subtract(Divisable pF) throws FieldBinaryException
+	public ComplexF subtract(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))

@@ -48,7 +48,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class RealF extends DivField implements Divisable, NormalizableF, ScalableF
+public class RealF extends DivField implements Divisible, NormalizableF, ScalableF, Scale
 {
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
@@ -516,7 +516,7 @@ public class RealF extends DivField implements Divisable, NormalizableF, Scalabl
 	 * @return RealF
 	 */
 	@Override
-	public RealF add(Divisable pF) throws FieldBinaryException
+	public RealF add(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF) 
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))		
@@ -550,7 +550,7 @@ public class RealF extends DivField implements Divisable, NormalizableF, Scalabl
 	 * @return RealF
 	 */
 	@Override
-	public RealF divide(Divisable pF) throws FieldBinaryException
+	public RealF divide(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF) 
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
@@ -659,7 +659,7 @@ public class RealF extends DivField implements Divisable, NormalizableF, Scalabl
 	 * @return RealF
 	 */
 	@Override
-	public RealF multiply(Divisable pF) throws FieldBinaryException
+	public RealF multiply(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF) 
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
@@ -719,7 +719,7 @@ public class RealF extends DivField implements Divisable, NormalizableF, Scalabl
 	 * @return RealF
 	 */
 	@Override
-	public RealF subtract(Divisable pF) throws FieldBinaryException
+	public RealF subtract(Divisible pF) throws FieldBinaryException
 	{
 		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF) 
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
