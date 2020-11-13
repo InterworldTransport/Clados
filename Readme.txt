@@ -1,6 +1,6 @@
 Copyright © 2020 Alfred Differ.
 ------------------------------------------------------------------------ 
----com.interworldtransport.*
+---org.interworldtransport.*
 ------------------------------------------------------------------------
  * This code is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Affero General Public License as published
@@ -19,7 +19,7 @@ Copyright © 2020 Alfred Differ.
  * along with this program.  If not, see https://www.gnu.org/licenses/ .
  * 
 ------------------------------------------------------------------------
----com.interworldtransport.*
+---org.interworldtransport.*
 ------------------------------------------------------------------------
 Having said all that, if you want support, bug fixes, or a different license
 arrangement, let me know. I understand that some cannot stick their heads out
