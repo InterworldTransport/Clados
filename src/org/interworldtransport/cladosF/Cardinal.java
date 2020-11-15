@@ -56,21 +56,56 @@ package org.interworldtransport.cladosF;
 
 public final class Cardinal
 {
+	public static final Cardinal generate(CladosField pT)
+	{
+		return new Cardinal(pT);
+	}
+
 	public static final Cardinal generate(String pT)
 	{
 		return new Cardinal(pT);
 	}
-	
-	private String	type;
 
+	private String	type;
+	
+	private Cardinal(CladosField pT)
+	{
+		type = pT.name();
+	}
+	
 	private Cardinal(String pT)
 	{
 		type = pT;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cardinal other = (Cardinal) obj;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
+
 	public String getType()
 	{
 		return type;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
 
 	public void setType(String pFT)

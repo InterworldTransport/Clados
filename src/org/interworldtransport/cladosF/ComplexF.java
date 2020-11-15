@@ -404,7 +404,7 @@ public class ComplexF extends DivField implements Divisible, NormalizableF, Scal
 	public ComplexF()
 	{
 		vals	= new float[2];
-		setCardinal(Cardinal.generate(DivField.COMPLEXF));
+		setCardinal(Cardinal.generate(CladosField.COMPLEXF));
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -433,7 +433,7 @@ public class ComplexF extends DivField implements Divisible, NormalizableF, Scal
 	 * @param pI
 	 * 		float
 	 */
-	public ComplexF(ComplexF pC, float pR, float pI)
+	public ComplexF(DivField pC, float pR, float pI)
 	{
 		vals = new float[2];
 		setCardinal(pC.getCardinal());

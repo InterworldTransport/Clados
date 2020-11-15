@@ -240,15 +240,16 @@ public final class Basis {
 	}
 
 	@Override
-	public boolean equals(Object b1) {
-		if (this == b1)
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		if (b1 == null)
+		if (obj == null)
 			return false;
-		if (b1 instanceof Basis)
-			return getGradeCount() == ((Basis) b1).getGradeCount();
-		else
+		if (getClass() != obj.getClass())
 			return false;
+		if (getGradeCount() != ((Basis) obj).getGradeCount())
+			return false;
+		return true;
 	}
 
 	/**
@@ -334,7 +335,7 @@ public final class Basis {
 	 * This method simply delivers the otherwise private grade range list. Useful
 	 * for testing purposes, but should be avoided as much as possible.
 	 * 
-	 * @return ArrayList of Short  A list of grades boxed as Shorts.
+	 * @return ArrayList of Short A list of grades boxed as Shorts.
 	 */
 	public ArrayList<Short> getGrades() {
 		return gradeStartBlade;
@@ -519,7 +520,7 @@ public final class Basis {
 			// GradeCount-2 column and 0's in the earlier columns.
 
 			// Base (GradeCount) representation of Eddington Number
-			// Ex: 3 generators implies Base-4 keys stuffed into Base-10 array
+			// Ex: 3 generators implies Base-4 keys stuffed into Base-10 number
 			// Right-most generator is the one's digit
 			// Middle generator is the 4's digit
 			// Left-most generator is the 16's digit

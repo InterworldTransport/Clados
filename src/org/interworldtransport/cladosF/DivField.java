@@ -46,10 +46,6 @@ package org.interworldtransport.cladosF;
  */
 public abstract class DivField
 {
-	public static final String COMPLEXD="ComplexD";
-	public static final String COMPLEXF="ComplexF";
-	public static final String REALD="RealD";
-	public static final String REALF="RealF";
 	/**
 	 * Check to see if the two argument are of the same cardinal.
 	 * 
@@ -72,6 +68,24 @@ public abstract class DivField
 	 * the monads of a nyad to point to the same place.
 	 */
 	protected Cardinal	_card;
+	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DivField other = (DivField) obj;
+		if (_card == null) {
+			if (other._card != null)
+				return false;
+		} else if (!_card.equals(other._card))
+			return false;
+		return true;
+	}
 
 	/**
 	 * Get method for _card
@@ -93,6 +107,14 @@ public abstract class DivField
 		return _card.getType();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_card == null) ? 0 : _card.hashCode());
+		return result;
+	}
+
 	/**
 	 * Set method for _card
 	 * 
@@ -103,7 +125,4 @@ public abstract class DivField
 	{
 		_card = pType;
 	}
-
-
-
 }

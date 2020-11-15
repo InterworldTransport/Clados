@@ -404,7 +404,7 @@ public class RealD extends DivField implements Divisible, NormalizableD, Scalabl
 	public RealD()
 	{
 		vals	= new double[1];
-		setCardinal(Cardinal.generate(DivField.REALD));
+		setCardinal(Cardinal.generate(CladosField.REALD));
 		setReal(0.0D);
 		
 	}
@@ -497,7 +497,7 @@ public class RealD extends DivField implements Divisible, NormalizableD, Scalabl
 	 * @param pD
 	 * 		float
 	 */
-	public RealD(RealD pR, double pD)
+	public RealD(DivField pR, double pD)
 	{
 		vals = new double[1];
 		setCardinal(pR.getCardinal());

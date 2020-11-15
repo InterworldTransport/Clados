@@ -57,7 +57,8 @@ public class ComplexFTest // extends TestCase
 	@Test
 	public void testGetCardinal()
 	{
-		assertFalse(tReal0.getCardinal().equals(tReal1.getCardinal()));
+		assertTrue(tReal0.getCardinal().equals(tReal1.getCardinal()));
+		assertFalse(tReal0.getCardinal() == tReal1.getCardinal());
 		assertTrue(tReal1.getCardinal().equals(tReal1n.getCardinal()));
 	}
 

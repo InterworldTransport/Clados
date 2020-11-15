@@ -25,7 +25,12 @@
 package org.interworldtransport.cladosG;
 
 import static org.interworldtransport.cladosF.RealD.*;
+
+import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.CladosField;
+import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
 
@@ -320,14 +325,15 @@ public class MonadRealD extends MonadAbstract {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			RealD pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setAlgebra(new AlgebraRealD(pAlgebraName, new Foot(pFootName, pF.getCardinal()), pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
 		cM = new RealD[getAlgebra().getBladeCount()];
-		RealD tR = copyZERO(pF);
+		RealD tR = (RealD) CladosField.REALD.createZERO(pF);
+		//RealD tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same Cardinal
@@ -354,7 +360,7 @@ public class MonadRealD extends MonadAbstract {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, RealD pF)
+	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setAlgebra(new AlgebraRealD(pAlgebraName, pFoot, pSig, pF));
 
@@ -362,7 +368,8 @@ public class MonadRealD extends MonadAbstract {
 		setFrameName(pFrameName);
 
 		cM = new RealD[getAlgebra().getBladeCount()];
-		RealD tR = copyZERO(pF);
+		RealD tR = (RealD) CladosField.REALD.createZERO(pF);
+		//RealD tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same Cardinal
@@ -400,7 +407,7 @@ public class MonadRealD extends MonadAbstract {
 	 *                                  unsafe way.
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			RealD pF, String pSpecial)
+			DivField pF, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already.
@@ -1148,9 +1155,9 @@ public class MonadRealD extends MonadAbstract {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array passed in for coefficient copy is the wrong length");
-
-		for (int k = 0; k < getAlgebra().getBladeCount(); k++)
-			cM[k] = new RealD(ppC[k]);
+		cM = CladosFListBuilder.copyOf(ppC);
+		//for (int k = 0; k < getAlgebra().getBladeCount(); k++)
+		//	cM[k] = new RealD(ppC[k]);
 
 		setGradeKey();
 	}
@@ -1163,9 +1170,9 @@ public class MonadRealD extends MonadAbstract {
 	 * @param ppC RealD[]
 	 */
 	private void setCoeffInternal(RealD[] ppC) {
-		for (int k = 0; k < ppC.length; k++)
-			cM[k] = new RealD(ppC[k]);
-
+		cM = CladosFListBuilder.copyOf(ppC);
+		//for (int k = 0; k < ppC.length; k++)
+		//	cM[k] = new RealD(ppC[k]);
 		setGradeKey();
 	}
 

@@ -25,7 +25,12 @@
 package org.interworldtransport.cladosG;
 
 import static org.interworldtransport.cladosF.ComplexD.*;
+
+import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
 
@@ -320,14 +325,15 @@ public class MonadComplexD extends MonadAbstract {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadComplexD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			ComplexD pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setAlgebra(new AlgebraComplexD(pAlgebraName, new Foot(pFootName, pF.getCardinal()), pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
 		cM = new ComplexD[getAlgebra().getBladeCount()];
-		ComplexD tR = copyZERO(pF);
+		ComplexD tR = (ComplexD) CladosField.COMPLEXD.createZERO(pF);
+		//ComplexD tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same Cardinal
@@ -355,14 +361,15 @@ public class MonadComplexD extends MonadAbstract {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
 	public MonadComplexD(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig,
-			ComplexD pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setAlgebra(new AlgebraComplexD(pAlgebraName, pFoot, pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
 		cM = new ComplexD[getAlgebra().getBladeCount()];
-		ComplexD tR = copyZERO(pF);
+		ComplexD tR = (ComplexD) CladosField.COMPLEXD.createZERO(pF);
+		//ComplexD tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same Cardinal
@@ -400,7 +407,7 @@ public class MonadComplexD extends MonadAbstract {
 	 *                                  unsafe way.
 	 */
 	public MonadComplexD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			ComplexD pF, String pSpecial)
+			DivField pF, String pSpecial)
 			throws BadSignatureException, GeneratorRangeException, CladosMonadException, GradeOutOfRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already.
@@ -1148,9 +1155,9 @@ public class MonadComplexD extends MonadAbstract {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array passed in for coefficient copy is the wrong length");
-
-		for (int k = 0; k < getAlgebra().getBladeCount(); k++)
-			cM[k] = new ComplexD(ppC[k]);
+		cM = CladosFListBuilder.copyOf(ppC);
+		//for (int k = 0; k < getAlgebra().getBladeCount(); k++)
+		//	cM[k] = new ComplexD(ppC[k]);
 
 		setGradeKey();
 	}
@@ -1163,9 +1170,9 @@ public class MonadComplexD extends MonadAbstract {
 	 * @param ppC ComplexD[]
 	 */
 	private void setCoeffInternal(ComplexD[] ppC) {
-		for (int k = 0; k < ppC.length; k++)
-			cM[k] = new ComplexD(ppC[k]);
-
+		cM = CladosFListBuilder.copyOf(ppC);
+		//for (int k = 0; k < ppC.length; k++)
+		//	cM[k] = new ComplexD(ppC[k]);
 		setGradeKey();
 	}
 

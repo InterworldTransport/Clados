@@ -404,7 +404,7 @@ public class ComplexD extends DivField implements Divisible, NormalizableD, Scal
 	public ComplexD()
 	{
 		vals	= new double[2];
-		setCardinal(Cardinal.generate(DivField.COMPLEXD));
+		setCardinal(Cardinal.generate(CladosField.COMPLEXD));
 		setReal(0.0D);
 		setImg(0.0D);
 	}
@@ -433,7 +433,7 @@ public class ComplexD extends DivField implements Divisible, NormalizableD, Scal
 	 * @param pI
 	 * 		double
 	 */
-	public ComplexD(ComplexD pC, double pR, double pI)
+	public ComplexD(DivField pC, double pR, double pI)
 	{
 		vals = new double[2];
 		setCardinal(pC.getCardinal());
