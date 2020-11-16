@@ -30,7 +30,6 @@ import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
 
@@ -216,7 +215,7 @@ public class MonadRealD extends MonadAbstract {
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
 
-		rB.append("\t\t\t\t<Name>\"" + pM.getName() + "\"</Name>\n");
+		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
 		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()
 				+ "\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
@@ -241,7 +240,7 @@ public class MonadRealD extends MonadAbstract {
 		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
-		rB.append("\t\t\t\t<Name>\"" + pM.getName() + "\"</Name>\n");
+		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
 		rB.append(AlgebraRealD.toXMLString(pM.getAlgebra()));
 		rB.append("\t\t\t\t<Frame>\"" + pM.getFrameName() + "\"</Frame>\n");
 		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()

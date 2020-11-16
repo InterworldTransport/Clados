@@ -215,7 +215,7 @@ public class MonadRealF extends MonadAbstract {
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
 
-		rB.append("\t\t\t\t<Name>\"" + pM.getName() + "\"</Name>\n");
+		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
 		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()
 				+ "\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
@@ -240,7 +240,7 @@ public class MonadRealF extends MonadAbstract {
 		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
-		rB.append("\t\t\t\t<Name>\"" + pM.getName() + "\"</Name>\n");
+		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
 		rB.append(AlgebraRealF.toXMLString(pM.getAlgebra()));
 		rB.append("\t\t\t\t<Frame>\"" + pM.getFrameName() + "\"</Frame>\n");
 		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()

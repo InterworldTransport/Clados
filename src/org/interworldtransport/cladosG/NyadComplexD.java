@@ -509,7 +509,7 @@ public class NyadComplexD extends NyadAbstract
 	{
 		StringBuilder rB = new StringBuilder("<Nyad order=\"" + pN.getNyadOrder() + "\" ");
 		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
-		rB.append("\t<Name>\"" + pN.getName() + "\"</Name>\n");
+		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
 		rB.append(pN.getFoot().toXMLString(""));
 		rB.append("\t<MonadList>\n");
 		for (MonadComplexD tSpot : pN.getMonadList())
@@ -530,11 +530,11 @@ public class NyadComplexD extends NyadAbstract
 	{
 		StringBuilder rB = new StringBuilder("\t<Nyad order=\"" + pN.getNyadOrder() + "\" ");
 		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
-		rB.append("\t\t<Name>\"" + pN.getName() + "\"</Name>\n");
+		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
 		rB.append(pN.getFoot().toXMLString(""));
 		rB.append("\t\t<AlgebraList>\n");
 		for (AlgebraComplexD point : pN.getAlgebraList())
-			rB.append("\t\t\t<Algebra>\n"+"\t\t\t\t<Name>\""+point.getAlgebraName()+"\"</Name>\n"+"\t\t\t</Algebra>\n");
+			rB.append("\t\t\t<Algebra>\n"+"\t\t\t\t<Name>"+point.getAlgebraName()+"</Name>\n"+"\t\t\t</Algebra>\n");
 		rB.append("\t\t</AlgebraList>\n");
 		rB.append("\t\t<MonadList>\n");
 		for (MonadComplexD tSpot : pN.getMonadList())
