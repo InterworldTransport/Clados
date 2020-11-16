@@ -209,7 +209,7 @@ public abstract class AlgebraAbstract {
 	 * @param pInd short integer describing the grade to be selected from the basis.
 	 * @return short This is an integer index between 0 and bladeCount inclusive.
 	 */
-	protected short[] getGradeRange(short pInd) {
+	public short[] getGradeRange(short pInd) {
 		return gProduct.getGradeRange(pInd);
 	}
 
