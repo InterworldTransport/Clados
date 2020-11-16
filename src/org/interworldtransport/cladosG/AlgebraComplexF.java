@@ -57,7 +57,7 @@ public class AlgebraComplexF extends AlgebraAbstract {
 	public final static String toXMLString(AlgebraComplexF pA) {
 		String indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Algebra UUID=\"" + pA.uuid + "\" >\n");
-		rB.append(indent + "\t<Name>\"" + pA.getAlgebraName() + "\"</Name>\n");
+		rB.append(indent + "\t<Name>" + pA.getAlgebraName() + "</Name>\n");
 		rB.append(indent + "\t" + pA.protoNumber.toXMLString() + "\n");
 		// -----------------------------------------------------------------------
 		rB.append(indent + "\t<Frames number=\"" + pA.rFrames.size() + "\" >\n");
@@ -92,13 +92,7 @@ public class AlgebraComplexF extends AlgebraAbstract {
 	 * @param pA This is the other Algebra to copy.
 	 */
 	public AlgebraComplexF(String pS, AlgebraComplexF pA) {
-		setAlgebraName(pS);
-		protoNumber = (ComplexF) CladosField.COMPLEXF.createONE(pA.protoNumber.getCardinal());
-		setFoot(pA.getFoot()); // No Cardinal to append since we re-use it.
-		setGProduct(pA.getGProduct());
-		gBasis = pA.getGBasis();
-		rFrames = getFrames();
-		uuid = UUID.randomUUID().toString();
+		this(pS, pA.getFoot(), pA.shareCardinal(), pA.getGProduct());
 	}
 
 	/**
@@ -163,15 +157,7 @@ public class AlgebraComplexF extends AlgebraAbstract {
 	 */
 	public AlgebraComplexF(String pS, Foot pF, Cardinal pCard, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		setAlgebraName(pS);
-		protoNumber = (ComplexF) CladosField.COMPLEXF.createONE(pCard);
-		setFoot(pF);
-		foot.appendCardinal(protoNumber.getCardinal());
-		setGProduct(new GProduct(pSig));
-		gBasis = gProduct.getBasis();
-		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical");
-		uuid = UUID.randomUUID().toString();
+		this(pS, pF, pCard, CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
 
 	/**
@@ -205,15 +191,7 @@ public class AlgebraComplexF extends AlgebraAbstract {
 	 */
 	public AlgebraComplexF(String pS, Foot pF, String pSig, DivField pDiv)
 			throws BadSignatureException, GeneratorRangeException {
-		setAlgebraName(pS);
-		protoNumber = (ComplexF) CladosField.COMPLEXF.createONE(pDiv.getCardinal());
-		setFoot(pF);
-		foot.appendCardinal(protoNumber.getCardinal());
-		setGProduct(new GProduct(pSig));
-		gBasis = gProduct.getBasis();
-		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical");
-		uuid = UUID.randomUUID().toString();
+		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
 
 	/**
@@ -240,15 +218,8 @@ public class AlgebraComplexF extends AlgebraAbstract {
 	 */
 	public AlgebraComplexF(String pS, String pFootName, String pSig, DivField pF)
 			throws BadSignatureException, GeneratorRangeException {
-		setAlgebraName(pS);
-		protoNumber = (ComplexF) CladosField.COMPLEXF.createONE(pF.getCardinal());
-		setFoot(new Foot(pFootName, pF.getCardinal()));
-		foot.appendCardinal(protoNumber.getCardinal());
-		setGProduct(new GProduct(pSig));
-		gBasis = gProduct.getBasis();
-		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical");
-		uuid = UUID.randomUUID().toString();
+		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()), pF.getCardinal(),
+				CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
 
 	public Cardinal shareCardinal() {
