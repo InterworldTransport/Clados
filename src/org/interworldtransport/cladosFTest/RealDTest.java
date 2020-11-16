@@ -2,8 +2,10 @@ package org.interworldtransport.cladosFTest;
 
 import org.junit.*;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import static org.interworldtransport.cladosF.RealD.*;
-import static org.junit.Assert.*;
 
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;

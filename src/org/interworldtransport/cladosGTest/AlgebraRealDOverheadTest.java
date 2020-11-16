@@ -1,7 +1,9 @@
 package org.interworldtransport.cladosGTest;
 
 import org.junit.*;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
@@ -144,7 +146,7 @@ public class AlgebraRealDOverheadTest {
 			assertFalse(a0 == null);
 		}
 	}
-	
+/*
 	@Test
 	public void testGen13() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealD(Cardinal.generate(fType));
@@ -158,5 +160,5 @@ public class AlgebraRealDOverheadTest {
 		a0 = (AlgebraRealD) CladosGAlgebra.REALD.create(coeff, aName, ftName, "++-+++-+++-+++");
 		assertFalse(a0 == null);
 	}
-
+*/
 }

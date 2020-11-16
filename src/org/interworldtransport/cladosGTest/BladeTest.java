@@ -1,6 +1,9 @@
 package org.interworldtransport.cladosGTest;
 
-import static org.junit.Assert.*;
+import org.junit.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.interworldtransport.cladosG.Blade;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;

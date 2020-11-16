@@ -3,11 +3,13 @@ package org.interworldtransport.cladosFTest;
 import org.junit.*;
 
 import static org.interworldtransport.cladosF.ComplexF.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
+import org.junit.Test;
 
 public class ComplexFTest // extends TestCase
 {

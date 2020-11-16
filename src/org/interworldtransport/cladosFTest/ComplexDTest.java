@@ -3,7 +3,8 @@ package org.interworldtransport.cladosFTest;
 import org.junit.*;
 
 import static org.interworldtransport.cladosF.ComplexD.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
