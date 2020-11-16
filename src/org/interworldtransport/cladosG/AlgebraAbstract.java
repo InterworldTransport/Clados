@@ -27,9 +27,6 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosF.Scale;
-
 /**
  * The algebra object holds all geometric details that support the definition of
  * a multivector over a division field {Cl(p,q) x DivField} except the actual
