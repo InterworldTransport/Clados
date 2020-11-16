@@ -376,7 +376,7 @@ public final class Basis {
 	 *                                  inclusive.
 	 */
 	public long getKey(short p1) throws BladeOutOfRangeException {
-		if (p1 < 0 | p1 > gradeCount)
+		if (p1 < 0 | p1 > bladeCount)
 			throw new BladeOutOfRangeException(this,
 					"Blade key requested was " + p1 + " but bladeCount is " + bladeCount);
 		return vKey[p1];

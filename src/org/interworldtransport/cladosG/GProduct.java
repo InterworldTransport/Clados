@@ -197,7 +197,8 @@ public final class GProduct {
 			nSignature = new short[pSig.length()];
 		fillNumericSignature(pSig);
 		signature = pSig;
-		canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed? Implied by new Signature.
+		canonicalBasis = CladosGBuilder.INSTANCE.createBasis((short) pSig.length());
+		//canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed? Implied by new Signature.
 
 		// Fill the ProductResult array with integers representing Vector
 		// Basis elements that show the product of two other such elements.

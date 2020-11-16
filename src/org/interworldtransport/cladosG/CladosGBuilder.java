@@ -120,15 +120,20 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	}
 
 	public Basis createBasis(short pGen) throws GeneratorRangeException {
-		if (findBasis(pGen) == null) {
+		Basis tB = findBasis(pGen);
+		if (tB != null)
+			return tB;
+		else {
 			Basis tSpot = Basis.using(pGen);
 			listOfBases.add(tSpot);
 			return tSpot;
-		} else
-			return findBasis(pGen);
+		}
+
 	}
 
 	public GProduct createGProduct(Basis pB, String pSig) throws GeneratorRangeException, BadSignatureException {
+		if (pB == null)
+			createGProduct(pSig);
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
 		GProduct tFirst = findGProduct(pSig);
@@ -142,10 +147,16 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public GProduct createGProduct(String pSig) throws GeneratorRangeException, BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tFirst = findGProduct(pSig);
-		if (tFirst != null)
-			return tFirst; // GProduct already created, so just offer it instead of making a new one
-		GProduct tSpot = new GProduct(pSig); // Make a new GProduct and return it
+		GProduct tSpot = findGProduct(pSig);
+		if (tSpot != null)
+			return tSpot; // GProduct already created, so just offer it instead of making a new one
+		// At this point we have to create a new GProduct. HOWEVER, it may still be
+		// possible to share a Basis. So... look for it.
+		Basis tB = findBasis((short) pSig.length());
+		if (tB != null)
+			tSpot = new GProduct(tB, pSig); // Basis is found, so use re-use constructor.
+		else
+			tSpot = new GProduct(pSig); // Make a new GProduct with implied new Basis.
 		listOfGProducts.add(tSpot);
 		return tSpot;
 	}
@@ -160,7 +171,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public GProduct findGProduct(String pSig) throws BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
-		return listOfGProducts.stream().filter(x -> (x.getGradeCount() - 1 == pSig.length())).findFirst().orElse(null);
+		return listOfGProducts.stream().filter(x -> x.getSignature().equals(pSig)).findFirst().orElse(null);
 		// Deliver GProduct OR null
 	}
 
