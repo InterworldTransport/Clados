@@ -180,7 +180,7 @@ public final class Foot {
 		if (pind == null)
 			pind = "";
 		StringBuilder rB = new StringBuilder(indent + pind + "<Foot>\n");
-		rB.append(indent + pind + "\t<Name>\"" + getFootName() + "\"</Name>\n");
+		rB.append(indent + pind + "\t<Name>" + getFootName() + "</Name>\n");
 		// -----------------------------------------------------------------------
 		rB.append(indent + pind + "\t<Cardinals number=\"" + cardinalList.size() + "\" >\n");
 		for (Cardinal point : cardinalList)
