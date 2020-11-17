@@ -59,11 +59,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  *
  */
 public final class Blade {
-	private static final short FLIP = -1;
+	protected static final short FLIP = -1;
 	private ArrayList<Short> blade = new ArrayList<>(1);
 	private long key = 0L;
 	private int sign = 1;
-	private final short span; // This should be gradeCount-1 in a related basis
+	protected final short span; // This should be gradeCount-1 in a related basis
 
 	/**
 	 * This is a copy constructor that builds an identical blade with new boxed
@@ -77,9 +77,11 @@ public final class Blade {
 	public Blade(Blade pB) throws GeneratorRangeException {
 		this(pB.span);
 		blade.ensureCapacity(pB.get().size());
+		// Collections.copy(blade, pB.get()); // Can't? We need different instances?
 		for (Short pS : pB.get())
-			blade.add(pS);
-		makeKey();
+			blade.add(Short.valueOf(pS.shortValue()));
+		sign = pB.sign();
+		key = pB.key();
 	}
 
 	/**
@@ -127,6 +129,7 @@ public final class Blade {
 		this(pDim);
 		for (short tS : pDirs)
 			blade.add(tS);
+		bubbleFlipSort();
 	}
 
 	/**
@@ -135,26 +138,17 @@ public final class Blade {
 	 * When that method returns the new blade list, this one finishes by returning
 	 * it to the calling object.
 	 * 
+	 * NO SORT of generators is performed. It is assumed here that the calling
+	 * routine has knowledge that supercedes the need to sort the new generator into
+	 * this blade.
+	 * 
 	 * @param pS unboxed short integer that will be boxed immediate and passed to
 	 *           the other version of this method.
-	 * @return ArrayList of Short produced after boxing the parameter and using
-	 *         add(Short pS)
+	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See add(Short pS)
 	 */
 	public Blade add(short pS) throws GeneratorRangeException {
 		add(Short.valueOf(pS));
-		return this;
-	}
-
-	public Blade add(short[] pS) throws GeneratorRangeException {
-		for (short pt : pS)
-			add(Short.valueOf(pt));
-		return this;
-	}
-
-	public Blade add(Short[] pS) throws GeneratorRangeException {
-		for (Short pt : pS)
-			add(pt);
 		return this;
 	}
 
@@ -165,10 +159,13 @@ public final class Blade {
 	 * does, the blade's key is reset and nothing else is done. If not, the boxed
 	 * short is added from the blade's list and the key is reset.
 	 * 
+	 * NO SORT of generators is performed. It is assumed here that the calling
+	 * routine has knowledge that supercedes the need to sort the new generator into
+	 * this blade.
+	 * 
 	 * @param pS Short is a boxed short integer representing the 'direction' to add
 	 *           to the blade.
-	 * @return ArrayList of Short is the List representation of the blade's
-	 *         directions.
+	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException This occurs when a short integer not in the
 	 *                                 supported range is used to represent a
 	 *                                 'direction' to add to the blade. For example,
@@ -194,9 +191,162 @@ public final class Blade {
 
 		blade.ensureCapacity(blade.size() + 1);
 		blade.add(pS);
+		// bubbleFlipSort();
+		makeKey();
+
+		return this;
+	}
+
+	/**
+	 * An array of unboxed shorts representing 'directions' in the blade to be
+	 * added. Each is first checked to see if the unboxed short is within the
+	 * supported range. Next, the blade is checked to see if it already represents a
+	 * pscalar. If it does, the blade's key is reset and nothing else more is done.
+	 * If not, the boxed short is added from the blade's list and the key is reset.
+	 * 
+	 * NO SORT of generators is performed. It is assumed here that the calling
+	 * routine has knowledge that supercedes the need to sort the new generator into
+	 * this blade.
+	 * 
+	 * @param pS Short[] is an array of boxed short integers representing the
+	 *           'directions' to add to the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to add to the blade. For example,
+	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 exception to be thrown.
+	 */
+	public Blade add(short[] pS) throws GeneratorRangeException {
+		for (short pt : pS)
+			add(Short.valueOf(pt));
+		return this;
+	}
+
+	/**
+	 * An array of boxed shorts representing 'directions' in the blade to be added.
+	 * Each is first checked to see if the unboxed short is within the supported
+	 * range. Next, the blade is checked to see if it already represents a pscalar.
+	 * If it does, the blade's key is reset and nothing else more is done. If not,
+	 * the boxed short is added from the blade's list and the key is reset.
+	 * 
+	 * NO SORT of generators is performed. It is assumed here that the calling
+	 * routine has knowledge that supercedes the need to sort the new generator into
+	 * this blade.
+	 * 
+	 * @param pS Short[] is an array of boxed short integers representing the
+	 *           'directions' to add to the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to add to the blade. For example,
+	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 exception to be thrown.
+	 */
+	public Blade add(Short[] pS) throws GeneratorRangeException {
+		for (Short pt : pS)
+			add(pt);
+		return this;
+	}
+
+	/**
+	 * The unboxed short represents a 'direction' in the blade to be added. It is
+	 * immediately boxed and delivered to the similarly named method for handling.
+	 * When that method returns the new blade list, this one finishes by returning
+	 * it to the calling object.
+	 * 
+	 * @param pS unboxed short integer that will be boxed immediate and passed to
+	 *           the other version of this method.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException See add(Short pS)
+	 */
+	public Blade addSort(short pS) throws GeneratorRangeException {
+		addSort(Short.valueOf(pS));
+		return this;
+	}
+
+	/**
+	 * The boxed short represents a 'direction' in the blade to be added. It is
+	 * first checked to see if the unboxed short is within the supported range.
+	 * Next, the blade is checked to see if it already represents a pscalar. If it
+	 * does, the blade's key is reset and nothing else is done. If not, the boxed
+	 * short is added from the blade's list and the key is reset.
+	 * 
+	 * @param pS Short is a boxed short integer representing the 'direction' to add
+	 *           to the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to add to the blade. For example,
+	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 exception to be thrown.
+	 */
+	public Blade addSort(Short pS) throws GeneratorRangeException {
+		if (pS.shortValue() < 1 | pS.shortValue() > Basis.MAX_GEN)
+			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
+
+		if (blade.size() >= Basis.MAX_GEN)
+			throw new GeneratorRangeException("Max Generators for a blade is 14.");
+
+		// If this is a pscalar, there is no way to add. Accept that and move on.
+		if (blade.size() == span) {
+			makeKey();
+			return this;
+		}
+		// Check if the unboxed short is already in the list. If it is, just move on.
+		for (Short pt : blade)
+			if (pt.shortValue() == pS.shortValue())
+				return this;
+
+		blade.ensureCapacity(blade.size() + 1);
+		blade.add(pS);
 		bubbleFlipSort();
 		makeKey();
 
+		return this;
+	}
+
+	/**
+	 * An array of unboxed shorts representing 'directions' in the blade to be
+	 * added. Each is first checked to see if the unboxed short is within the
+	 * supported range. Next, the blade is checked to see if it already represents a
+	 * pscalar. If it does, the blade's key is reset and nothing else more is done.
+	 * If not, the boxed short is added from the blade's list and the key is reset.
+	 * 
+	 * @param pS Short[] is an array of boxed short integers representing the
+	 *           'directions' to add to the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to add to the blade. For example,
+	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 exception to be thrown.
+	 */
+	public Blade addSort(short[] pS) throws GeneratorRangeException {
+		for (short pt : pS)
+			addSort(Short.valueOf(pt));
+		return this;
+	}
+
+	/**
+	 * An array of boxed shorts representing 'directions' in the blade to be added.
+	 * Each is first checked to see if the unboxed short is within the supported
+	 * range. Next, the blade is checked to see if it already represents a pscalar.
+	 * If it does, the blade's key is reset and nothing else more is done. If not,
+	 * the boxed short is added from the blade's list and the key is reset.
+	 * 
+	 * @param pS Short[] is an array of boxed short integers representing the
+	 *           'directions' to add to the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to add to the blade. For example,
+	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 exception to be thrown.
+	 */
+	public Blade addSort(Short[] pS) throws GeneratorRangeException {
+		for (Short pt : pS)
+			addSort(pt);
 		return this;
 	}
 
@@ -243,6 +393,20 @@ public final class Blade {
 		return blade;
 	}
 
+	public boolean isEmpty() {
+		return blade.isEmpty();
+	}
+
+	public boolean isFull() {
+		if (blade.size() == 2 * span)
+			return true;
+		return false;
+	}
+
+	public int sign() {
+		return sign;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -270,8 +434,7 @@ public final class Blade {
 	 * 
 	 * @param pS unboxed short integer that will be boxed immediate and passed to
 	 *           the other version of this method.
-	 * @return ArrayList of Short produced after boxing the parameter and using
-	 *         remove(Short pS)
+	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
 	public Blade remove(short pS) throws GeneratorRangeException {
@@ -287,8 +450,7 @@ public final class Blade {
 	 * 
 	 * @param pS Short is a boxed short integer representing the 'direction' to
 	 *           remove from the blade.
-	 * @return ArrayList of Short is the List representation of the blade's
-	 *         directions.
+	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException This occurs when a short integer not in the
 	 *                                 supported range is used to represent a
 	 *                                 'direction' to remove from the blade. For
@@ -304,17 +466,103 @@ public final class Blade {
 			key = 0L;
 			return this;
 		}
-
-		for (Short pt : blade)
-			if (pt.shortValue() == pS.shortValue()) {
-				blade.remove(pt);
-				blade.trimToSize();
-				break;
-			}
-
+		blade.remove(pS);
+		blade.trimToSize();
 		// No sort needed as the blade should already be in natural order and will
 		// remain so after removal of a generator.
 		makeKey();
+
+		return this;
+	}
+
+	/**
+	 * The unboxed short array represents 'directions' in the blade to be removed.
+	 * If the blade is already a scalar, the method resets the key and returns.
+	 * After that each is checked to see if the unboxed short is within the
+	 * supported range. Next the generator is removed on the assumption that the
+	 * list removal method will do NOTHING if the element is not found. Next, the
+	 * blade is checked to see if it represents a scalar. If it does, the blade's
+	 * key is set to zero and the method returns. If not, the loop proceeds to the
+	 * next unboxed short.
+	 * 
+	 * @param pS Unboxed short integer array of directions to remove from this
+	 *           blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException See remove(Short pS)
+	 */
+	public Blade remove(short[] pS) throws GeneratorRangeException {
+		if (blade.isEmpty()) {
+			key = 0L;
+			return this;
+		}
+		for (short tS : pS) {
+			if (tS < 1 | tS > Basis.MAX_GEN)
+				throw new GeneratorRangeException("Index out of Range as a generator for blade.");
+
+			blade.remove(Short.valueOf(tS));
+
+			if (blade.size() == 0) {
+				key = 0L;
+				blade.trimToSize();
+				return this;
+			}
+		}
+		blade.trimToSize();
+		return this;
+	}
+
+	/**
+	 * The boxed short array represents 'directions' in the blade to be removed. If
+	 * the blade is already a scalar, the method resets the key and returns. After
+	 * that each is checked to see if the unboxed short is within the supported
+	 * range. Next the generator is removed on the assumption that the list removal
+	 * method will do NOTHING if the element is not found. Next, the blade is
+	 * checked to see if it represents a scalar. If it does, the blade's key is set
+	 * to zero and the method returns. If not, the loop proceeds to the next boxed
+	 * short.
+	 * 
+	 * @param pS Boxed short integer array of directions to remove from this blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException See remove(Short pS)
+	 */
+	public Blade remove(Short[] pS) throws GeneratorRangeException {
+		if (blade.isEmpty()) {
+			key = 0L;
+			return this;
+		}
+		for (Short tS : pS) {
+			if (tS.shortValue() < 1 | tS.shortValue() > Basis.MAX_GEN)
+				throw new GeneratorRangeException("Index out of Range as a generator for blade.");
+
+			blade.remove(tS);
+
+			if (blade.size() == 0) {
+				key = 0L;
+				blade.trimToSize();
+				return this;
+			}
+		}
+		blade.trimToSize();
+		return this;
+	}
+
+	/**
+	 * This method reverses the list of directions in the arrayList. Doing this
+	 * causes the sign to flip sometimes, so this must be tracked.
+	 * 
+	 * A second list is created and then the directions are read from the first in
+	 * reverse order and added to the second. Once the second list is filled, it is
+	 * assigned to the first. AFTER that the sign flip is considered.
+	 * 
+	 * @return Blade The blade itself is returned to support stream calls.
+	 */
+	public Blade reverse() {
+		blade.trimToSize(); // Deal with possible cruft
+		Collections.reverse(blade); 
+		// We get away with using Collections because we can calculate the sign flip.
+		// sign does not flip for lists of size 0, 1,       4, 5,       8, 9,         12, 13
+		// sign does     flip for lists of size       2, 3,       6, 7,       10, 11,         14
+		sign *= FLIP * ((blade.size() % 4) / 2);
 
 		return this;
 	}
@@ -323,7 +571,7 @@ public final class Blade {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<Blade sign=\""+sign+"\" span=\"" + span + "\" key=\"" + key() + "\" generators=\"");
+		rB.append(indent + "<Blade sign=\"" + sign + "\" span=\"" + span + "\" key=\"" + key() + "\" generators=\"");
 		for (short m = 0; m < blade.size(); m++)
 			if (blade.get(m) != null)
 				rB.append(blade.get(m).toString() + ",");
@@ -336,12 +584,13 @@ public final class Blade {
 	/*
 	 * This is a Bubble Sort that keeps track of the number of swaps % 2. Swaps
 	 * within the list should only occur with neighboring Shorts and only when the
-	 * unboxed shorts imply that the earlier Short is greater in value than the
+	 * unboxed shorts imply that the previous Short is greater in value than the
 	 * next.
 	 */
 	private void bubbleFlipSort() {
-		if (blade.size() == 0 | blade.size() == 1)
+		if (blade.isEmpty() | blade.size() == 1)
 			return;
+		// Collections.sort(blade); // Can't do this because swaps must be tracked.
 		for (short m = 0; m < blade.size() - 1; m++) {
 			for (short k = 0; k < blade.size() - m - 1; k++) {
 				if (blade.get(k).compareTo(blade.get(k + 1)) > 0) {

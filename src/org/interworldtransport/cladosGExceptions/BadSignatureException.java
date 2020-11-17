@@ -18,7 +18,6 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
-import org.interworldtransport.cladosG.GProduct;
 /** org.interworldtransport.cladosGExceptions.BadSignatureException  Bad signature handler for GProduct.
  * <p>
  * This class is designed to be the handler of signature definition exceptions.
@@ -34,7 +33,7 @@ public class BadSignatureException extends Exception
 /**
  * The source GProduct is the originator of the Exception.
  */
-    public GProduct  Source;
+    public Object  Source;
 /**
  * The source message is the reason given by the originating Monad for the exception.
  */
@@ -49,7 +48,7 @@ public class BadSignatureException extends Exception
  * @param pMessage
  * 			String
  */
-    public BadSignatureException(GProduct pSource, String pMessage)
+    public BadSignatureException(Object pSource, String pMessage)
     {
     	super();
     	Source=pSource;
@@ -60,7 +59,7 @@ public class BadSignatureException extends Exception
  * 
  * @return GProduct
  */
-    public GProduct  getSource()
+    public Object  getSource()
     {
     	return Source;
 	}

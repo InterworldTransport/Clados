@@ -1,7 +1,5 @@
 package org.interworldtransport.cladosGTest;
 
-import org.junit.*;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -28,17 +26,17 @@ public class BladeTest {
 		short[] m = { 1, 2, 3, 4, 5, 6, 7, 8 };
 		tB0 = new Blade((short) 0);
 		tB4 = new Blade((short) 4);
-		tB4.add(j[3]).add(j[0]).add(j[1]);
+		tB4.addSort(j[3]).addSort(j[0]).addSort(j[1]);
 		tB42 = new Blade(tB4);
 		tB43 = new Blade((short) 4);
-		tB43.add(j[3]).add(j[1]);
+		tB43.addSort(j[3]).addSort(j[1]);
 
 		tB8 = new Blade((short) 8);
-		tB8.add(m); // Should be pscalar now
+		tB8.addSort(m); // Should be pscalar now
 		tB10 = new Blade((short) 10);
-		tB10.add(k); // Should be pscalar now
+		tB10.addSort(k); // Should be pscalar now
 		tB14 = new Blade((short) 14);
-		tB14.add(j); // Should be pscalar now
+		tB14.addSort(j); // Should be pscalar now
 	}
 	
 	@Test
@@ -55,10 +53,10 @@ public class BladeTest {
 		tB14.remove((short) 12);
 		assertTrue(tB14.get().size() == 13);
 		
-		tB14.add((short) 10);	// generator already there, so silently ignore the add.
+		tB14.addSort((short) 10);	// generator already there, so silently ignore the add.
 		assertTrue(tB14.get().size() == 13);
 		
-		tB14.add(Short.valueOf((short) 12));
+		tB14.addSort(Short.valueOf((short) 12));
 		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
 		
 	}
@@ -66,13 +64,13 @@ public class BladeTest {
 	@Test
 	public void testLimitsIgnored() throws GeneratorRangeException {
 		assertTrue(tB0.remove((short) 1).equals(tB0)); //tB is a scalar. Nothing to remove. Silent acceptance expected.
-		assertTrue(tB10.add((short) 8).equals(tB10));
+		assertTrue(tB10.addSort((short) 8).equals(tB10));
 	}
 	
 	@Test(expected = GeneratorRangeException.class)
 	public void testLimits() throws GeneratorRangeException {
 		assertTrue(tB0.remove((short) 0) instanceof Blade);
-		assertTrue(tB14.add((short) 16) instanceof Blade);
+		assertTrue(tB14.addSort((short) 16) instanceof Blade);
 	}
 	
 	@Test

@@ -42,7 +42,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen01() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+");
 			assertFalse(a0 == null);
 		}
@@ -51,7 +51,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen02() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++");
 			assertFalse(a0 == null);
 		}
@@ -60,7 +60,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen03() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++");
 			assertFalse(a0 == null);
 		}
@@ -69,7 +69,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen04() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++");
 			assertFalse(a0 == null);
 		}
@@ -78,7 +78,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen05() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 1000; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++");
 			assertFalse(a0 == null);
 		}
@@ -87,7 +87,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen06() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 1000; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++");
 			assertFalse(a0 == null);
 		}
@@ -96,7 +96,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen07() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 100; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -105,7 +105,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen08() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 100; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -114,7 +114,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen09() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -123,7 +123,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen10() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -132,7 +132,7 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen11() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++-+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -141,24 +141,28 @@ public class AlgebraRealFOverheadTest {
 	@Test
 	public void testGen12() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		for (short m = 0; m < 10; m++) {
+		for (int m = 0; m < 1000000; m++) {
 			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++-+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
-/*	
+/*
 	@Test
 	public void testGen13() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++-+++-+++");
-		assertFalse(a0 == null);
+		for (int m = 0; m < 100; m++) {
+			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++-+++-+++");
+			assertFalse(a0 == null);
+		}
 	}
 
 	@Test
 	public void testGen14() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
-		a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++-+++-+++");
-		assertFalse(a0 == null);
+		for (int m = 0; m < 100; m++) {
+			a0 = (AlgebraRealF) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++-+++-+++");
+			assertFalse(a0 == null);
+		}
 	}
 */
 }

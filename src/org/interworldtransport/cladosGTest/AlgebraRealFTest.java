@@ -100,10 +100,10 @@ public class AlgebraRealFTest {
 		assertTrue(alg4.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, GProduct re-used, but different names ensures algebra mis-match
 
-		AlgebraRealF alg5 = new AlgebraRealF("medium weight frame", alg2);
+		AlgebraRealF alg5 = new AlgebraRealF("medium weight frame", alg1);
 		assertFalse(alg5 == alg1);
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
-		assertFalse(alg5.getGProduct() == (alg1.getGProduct()));
+		assertTrue(alg5.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, signature re-used... ensures different GProduct thus algebra
 		// mis-match
 

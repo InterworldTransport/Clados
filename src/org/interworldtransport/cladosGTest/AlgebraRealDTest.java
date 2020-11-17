@@ -99,14 +99,14 @@ public class AlgebraRealDTest {
 		assertTrue(alg4.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg4.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, GProduct re-used, but different names ensures algebra mis-match
-
+	
 		AlgebraRealD alg5 = new AlgebraRealD("medium weight frame", alg1);
 		assertFalse(alg5 == alg1);
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
-		assertFalse(alg5.getGProduct() == (alg1.getGProduct()));
+		assertTrue(alg5.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, signature re-used... ensures different GProduct thus algebra
 		// mis-match
-		
+
 		assertFalse(alg5.getAlgebraName() == alg4.getAlgebraName());
 		alg5.setAlgebraName(alg4.getAlgebraName());
 		assertTrue(alg5.getAlgebraName() == alg4.getAlgebraName());

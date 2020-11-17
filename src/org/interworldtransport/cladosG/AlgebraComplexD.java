@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.DivField;
@@ -43,7 +44,10 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  */
 public class AlgebraComplexD extends AlgebraAbstract {
 	public final static ComplexD generateNumber(AlgebraComplexD pA, double pF1, double pF2) {
-		return new ComplexD(pA.protoNumber, pF1, pF2);
+		ComplexD tSpot = CladosFBuilder.createComplexD(pA.shareCardinal());
+		tSpot.setReal(pF1);
+		tSpot.setImg(pF2);
+		return tSpot;
 	}
 
 	public final static Cardinal shareCardinal(AlgebraComplexD pA) {
@@ -121,7 +125,7 @@ public class AlgebraComplexD extends AlgebraAbstract {
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
 		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical");
+		rFrames.add("canonical"); // Canonical basis is ALWAYS a frame
 		uuid = UUID.randomUUID().toString();
 	}
 

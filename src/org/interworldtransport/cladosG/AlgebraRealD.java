@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
@@ -43,7 +44,9 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  */
 public class AlgebraRealD extends AlgebraAbstract {
 	public final static RealD generateNumber(AlgebraRealD pA, double pF) {
-		return new RealD(pA.protoNumber, pF);
+		RealD tSpot = CladosFBuilder.createRealD(pA.shareCardinal());
+		tSpot.setReal(pF);
+		return tSpot;
 	}
 
 	public final static Cardinal shareCardinal(AlgebraRealD pA) {
@@ -121,7 +124,7 @@ public class AlgebraRealD extends AlgebraAbstract {
 		setGProduct(pGP);
 		gBasis = pGP.getBasis();
 		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical");
+		rFrames.add("canonical"); // Canonical basis is ALWAYS a frame
 		uuid = UUID.randomUUID().toString();
 	}
 
