@@ -30,6 +30,7 @@ import org.interworldtransport.cladosG.BladeDos;
  * @author Dr Alfred W Differ
  */
 public class BladeCombinationException extends Exception {
+	private static final long serialVersionUID = -6954708621051937257L;
 	private BladeDos Pairing;
 	private Blade First;
 	private Blade Second;
@@ -38,9 +39,10 @@ public class BladeCombinationException extends Exception {
 	/**
 	 * This method is the constructor for exceptions involving two Blades.
 	 * 
-	 * @param pFirst   Blade
-	 * @param pSecond  Blade
-	 * @param pMessage String
+	 * @param pPair    BladeDos Related BladeDos throwing exception
+	 * @param pFirst   Blade Related First Blade throwing exception
+	 * @param pSecond  Blade Related Second Blade throwing exception
+	 * @param pMessage String Message explaining the exception
 	 */
 	public BladeCombinationException(BladeDos pPair, Blade pFirst, Blade pSecond, String pMessage) {
 		super();

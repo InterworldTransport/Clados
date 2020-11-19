@@ -32,38 +32,9 @@ import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 public class BladeDos {
-	/**
-	 * Return a measure of the validity of the Signature string. A string with +'s
-	 * and -'s will pass. No other one does.
-	 * 
-	 * This method also establishes the internal integer representation of the
-	 * signature.
-	 * 
-	 * @param pSg String
-	 * @return boolean This boolean states whether the GProduct signature is valid.
-	 */
-	public static final boolean validateSignature(String pSg) {
-		if (pSg == null)
-			return false; // Nothing to test
-		if (!Basis.validateSize(pSg.length()))
-			return false;
-		if (pSg.length() == 0)
-			return true; // Empty list IS allowed
-		for (char j : pSg.toCharArray())
-			switch (j) {
-			case '+':
-				continue;
-			case '-':
-				continue;
-			default:
-				return false;
-			}
-		return true; // nothing bad detected
-	}
-
-	private ArrayList<Short> bladeDuo;
+	private ArrayList<Generator> bladeDuo;
 	private int sign = 1;
-	private final short span; // This is NOT twice a blade's span. Just one.
+	private final short span; // This is NOT twice a blade's maxGrade. Just one.
 
 	/**
 	 * This is a re-use constructor that builds an this BladoDos as a juxtaposition
@@ -73,22 +44,22 @@ public class BladeDos {
 	 * @param pB1 A Blade to re-use it's boxed shorts.
 	 * @param pB2 A Blade to re-use it's boxed shorts.
 	 * @throws BladeCombinationException The way to get this exception is for the
-	 *                                   offered blades to not have the same span.
+	 *                                   offered blades to not have the same maxGrade.
 	 */
 	public BladeDos(Blade pB1, Blade pB2) throws BladeCombinationException {
-		if (pB1.span != pB2.span)
+		if (pB1.maxGrade != pB2.maxGrade)
 			throw new BladeCombinationException(null, pB1, pB2, "Declared Blade's spans don't match.");
-		span = pB1.span;
+		span = pB1.maxGrade;
 		bladeDuo = new ArrayList<>(pB1.get().size() + pB2.get().size());
 
-		for (Short pS : pB1.get())
+		for (Generator pS : pB1.get())
 			bladeDuo.add(pS);
 		sign = pB1.sign();
 
-		for (Short pT : pB2.get())
+		for (Generator pT : pB2.get())
 			bladeDuo.add(pT);
 		sign *= pB2.sign();
-		
+
 		bubbleFlipSort();
 	}
 
@@ -96,8 +67,8 @@ public class BladeDos {
 	 * This is a minimal constructor that establishes future expectations regarding
 	 * how many generators it might have to append to the blade list.
 	 * 
-	 * @param pDim short integer for the number of possible direction pairs that
-	 *             might appear in this blade.
+	 * @param pSpan short integer for the number of possible direction pairs that
+	 *              might appear in this blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
 	 *                                 than 14 directions. The current maximum is 14
@@ -110,7 +81,7 @@ public class BladeDos {
 	 */
 	public BladeDos(short pSpan) throws GeneratorRangeException {
 		super();
-		if (pSpan < 0 | pSpan > 2 * Basis.MAX_GEN)
+		if (pSpan < Blade.MIN | pSpan > 2 * Blade.MAX)
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pSpan);
 		span = pSpan;
 		bladeDuo = new ArrayList<>(1);
@@ -123,22 +94,22 @@ public class BladeDos {
 	 * @return BladeDos [supporting stream approach]
 	 * @throws BladeCombinationException There are two ways to get his exception.
 	 *                                   The first is if the offered blade doesn't
-	 *                                   have the same span as this BladeDuo
+	 *                                   have the same maxGrade as this BladeDuo
 	 *                                   expects. The second is if the offered blade
 	 *                                   is to big to fit into the list along with
 	 *                                   any blade currently in the dos list. It's
 	 *                                   too big when the combined blades would be
-	 *                                   larger than 2 * span.
+	 *                                   larger than 2 * maxGrade.
 	 */
 	public BladeDos assignFirst(Blade pB) throws BladeCombinationException {
-		if (span != pB.span)
-			throw new BladeCombinationException(this, pB, null, "Declared Blade span mis-match stored span.");
+		if (span != pB.maxGrade)
+			throw new BladeCombinationException(this, pB, null, "Declared Blade maxGrade mis-match stored maxGrade.");
 		bladeDuo.trimToSize();
 		if (bladeDuo.size() + pB.get().size() > 2 * span)
 			throw new BladeCombinationException(this, pB, null, "Offered Blade too big to fit with current one.");
 		bladeDuo.ensureCapacity(2 * span);
 
-		for (Short tS : pB.get())
+		for (Generator tS : pB.get())
 			bladeDuo.add(pB.get().indexOf(tS), tS); // This SHOULD prepend the elements of offered blade reversed.
 		sign *= pB.sign();
 
@@ -154,22 +125,22 @@ public class BladeDos {
 	 * @return BladeDos [supporting stream approach]
 	 * @throws BladeCombinationException There are two ways to get his exception.
 	 *                                   The first is if the offered blade doesn't
-	 *                                   have the same span as this BladeDuo
+	 *                                   have the same maxGrade as this BladeDuo
 	 *                                   expects. The second is if the offered blade
 	 *                                   is to big to fit into the list along with
 	 *                                   any blade currently in the dos list. It's
 	 *                                   too big when the combined blades would be
-	 *                                   larger than 2 * span.
+	 *                                   larger than 2 * maxGrade.
 	 */
 	public BladeDos assignSecond(Blade pB) throws BladeCombinationException {
-		if (span != pB.span)
-			throw new BladeCombinationException(this, null, pB, "Declared Blade span mis-match stored span.");
+		if (span != pB.maxGrade)
+			throw new BladeCombinationException(this, null, pB, "Declared Blade maxGrade mis-match stored maxGrade.");
 		bladeDuo.trimToSize();
 		if (bladeDuo.size() + pB.get().size() > 2 * span)
 			throw new BladeCombinationException(this, null, pB, "Offered Blade too big to fit with current one.");
 		bladeDuo.ensureCapacity(2 * span);
 
-		for (Short tS : pB.get())
+		for (Generator tS : pB.get())
 			bladeDuo.add(tS); // This SHOULD append the elements of offered blade in order.
 		sign *= pB.sign();
 
@@ -192,24 +163,29 @@ public class BladeDos {
 	 * 
 	 * @param pSig An array of unboxed short integers that signifies when sign flips
 	 *             occur as generator pairs are removed from the internal dual list.
-	 * @return
-	 * @throws BadSignatureException
-	 * @throws GeneratorRangeException
+	 * @return Blade [supporting stream approach]
+	 * @throws BadSignatureException   This exception is thrown when a a poor
+	 *                                 quality signature is passed in.
+	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to add to the blade. For example,
+	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 exception to be thrown.
 	 */
 	public Blade reduce(short[] pSig) throws BadSignatureException, GeneratorRangeException {
 		if (span != pSig.length)
-			throw new BadSignatureException(this, "Signature length mis-match with stored span.");
-		Blade returnIt = new Blade(span);
-		for (Short pS1 : bladeDuo) {
+			throw new BadSignatureException(this, "Signature length mis-match with stored maxGrade.");
+		Blade returnIt = new Blade(span); // Potentially throws GeneratorRangeException
+		for (Generator pS1 : bladeDuo) {
 			if (pS1 == null) { // Don't know how the null got here, but it is found. REMOVE
 				bladeDuo.remove(pS1);
 				continue;
 			}
 			if (bladeDuo.indexOf(pS1) == bladeDuo.size()) // end of List, so STOP
 				break;
-			Short pS2 = bladeDuo.get(bladeDuo.indexOf(pS1) + 1);
-			if (pS1.shortValue() == pS2.shortValue()) {
-				sign *= pSig[pS1.shortValue()];
+			Generator pS2 = bladeDuo.get(bladeDuo.indexOf(pS1) + 1);
+			if (pS1 == pS2) {
+				sign *= pSig[pS1.ord]; // DANGER! Future changes to Generator must take care here.
 				bladeDuo.remove(pS2);
 				bladeDuo.remove(pS1);
 			}
@@ -230,7 +206,7 @@ public class BladeDos {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<BladeDuo sign=\"" + sign + "\" span=\"" + span() + "\" generators=\"");
+		rB.append(indent + "<BladeDuo sign=\"" + sign + "\" maxGrade=\"" + span() + "\" generators=\"");
 		for (short m = 0; m < bladeDuo.size(); m++)
 			if (bladeDuo.get(m) != null)
 				rB.append(bladeDuo.get(m).toString() + ",");

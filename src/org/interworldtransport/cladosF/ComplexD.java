@@ -28,7 +28,7 @@ import org.interworldtransport.cladosFExceptions.*;
 
 /**
  * This class implements the concept of a Complex Field from mathematics. Field
- * objects within the cladosF package are used as 'numbers' in the definition of
+ * objects within the org.interworldtransport.cladosFmbers' in the definition of
  * an algebra. All Clados objects use DivFieldElements and ComplexD is one
  * possibility.
  * <p>

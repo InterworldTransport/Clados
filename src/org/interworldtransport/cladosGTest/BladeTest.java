@@ -1,13 +1,12 @@
 package org.interworldtransport.cladosGTest;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.interworldtransport.cladosG.Blade;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.junit.Before;
-import org.junit.Test;
+
 
 public class BladeTest {
 
@@ -19,17 +18,20 @@ public class BladeTest {
 	Blade tB10;
 	Blade tB14;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws CladosMonadException, GeneratorRangeException {
 		short[] j = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 10 };
 		short[] k = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		short[] m = { 1, 2, 3, 4, 5, 6, 7, 8 };
 		tB0 = new Blade((short) 0);
+		//System.out.println(tB0.toXMLString(""));
+				
 		tB4 = new Blade((short) 4);
-		tB4.addSort(j[3]).addSort(j[0]).addSort(j[1]);
+		tB4.addSort(j[0]).addSort(j[1]);
 		tB42 = new Blade(tB4);
+		tB42.addSort(j[3]).addSort(j[0]).addSort(j[1]);
 		tB43 = new Blade((short) 4);
-		tB43.addSort(j[3]).addSort(j[1]);
+		tB43.addSort(j[1]).addSort(j[0]);
 
 		tB8 = new Blade((short) 8);
 		tB8.addSort(m); // Should be pscalar now
@@ -40,16 +42,23 @@ public class BladeTest {
 	}
 	
 	@Test
+	public void testIndependence() {
+		assertFalse(tB4.equals(tB43)); // Same inner meaning should pass equals test
+		assertFalse(tB4 == tB43); // but they are not the same objects
+	}
+	
+	@Test
 	public void testBladeSize() throws GeneratorRangeException {
+
 		assertTrue(tB0.key() == 0L && tB0.get().size() == 0);
-		assertTrue(tB4.key() == 39L && tB4.get().size() == 3);
-		assertTrue(tB42.key() == tB4.key());
+		assertTrue(tB4.key() == 7L && tB4.get().size() == 2);
+		assertTrue(tB43.key() == tB4.key());
 		assertFalse(tB42.key() == tB43.key());
 
 		assertTrue(tB8.key() == 6053444L && tB8.get().size() == 8);
 		assertTrue(tB10.get().size() == 10);
 		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
-		
+	
 		tB14.remove((short) 12);
 		assertTrue(tB14.get().size() == 13);
 		
@@ -58,7 +67,7 @@ public class BladeTest {
 		
 		tB14.addSort(Short.valueOf((short) 12));
 		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
-		
+	
 	}
 	
 	@Test
@@ -73,10 +82,5 @@ public class BladeTest {
 		assertTrue(tB14.addSort((short) 16) instanceof Blade);
 	}
 	
-	@Test
-	public void testIndependence() {
-		assertTrue(tB4.equals(tB42)); // Same inner meaning should pass equals test
-		assertFalse(tB4 == tB42); // but they are not the same objects
-	}
-
+	
 }
