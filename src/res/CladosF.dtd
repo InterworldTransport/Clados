@@ -1,0 +1,17 @@
+<!ELEMENT	Cardinal		EMPTY>
+<!ATTLIST	Cardinal  		unit  		CDATA 	#REQUIRED>
+	
+<!ELEMENT  	RealF			EMPTY>
+<!ATTLIST	RealF			Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED>
+<!ELEMENT  	RealD			EMPTY>
+<!ATTLIST	RealD			Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED>
+<!ELEMENT  	ComplexF		EMPTY>
+<!ATTLIST	ComplexF		Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED
+							imgvalue	CDATA 	#REQUIRED>
+<!ELEMENT  	ComplexD		EMPTY>
+<!ATTLIST	ComplexD		Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED
+							imgvalue	CDATA 	#REQUIRED>

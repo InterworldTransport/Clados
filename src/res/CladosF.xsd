@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<xs:schema 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="https://www.interworldtransport.com"
+			xmlns="https://www.interworldtransport.com"
+			elementFormDefault="qualified">
+
+<xs:element name="Cardinal" type="Cardinal"/>
+<xs:complexType name="Cardinal">
+	<xs:attribute name="unit" type="xs:string"/>
+</xs:complexType>
+
+<xs:element name="RealF" type="RealF"/>
+<xs:complexType name="RealF">
+	<xs:attribute name="cardinal" type="xs:string"/>
+	<xs:attribute name="realvalue" type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element name="RealD" type="RealD"/>
+<xs:complexType name="RealD">
+	<xs:attribute name="cardinal" type="xs:string"/>
+	<xs:attribute name="realvalue" type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element name="ComplexF" type="ComplexF"/>
+<xs:complexType name="ComplexF">
+	<xs:attribute name="cardinal" type="xs:string"/>
+	<xs:attribute name="realvalue" type="xs:decimal"/>
+	<xs:attribute name="imgvalue" type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element name="ComplexD" type="ComplexD"/>
+<xs:complexType name="ComplexD">
+	<xs:attribute name="cardinal" type="xs:string"/>
+	<xs:attribute name="realvalue" type="xs:decimal"/>
+	<xs:attribute name="imgvalue" type="xs:decimal"/>
+</xs:complexType>
+
+</xs:schema>

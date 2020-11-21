@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<xs:schema 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="https://www.interworldtransport.com"
+			xmlns="https://www.interworldtransport.com"
+			elementFormDefault="qualified">
+
+<xs:element 		name="Cardinal" 	type="Cardinal"/>
+<xs:complexType 	name="Cardinal">
+	<xs:attribute 	name="unit" 		type="xs:string"/>
+</xs:complexType>
+
+<xs:group	 		name="Cardinals">
+	<xs:all>
+		<xs:element name="Cardinal"		type="Cardinal"	minOccurs="1"/>
+	</xs:all>
+</xs:group>
+<xs:complexType 	name="Cardinals">
+	<xs:attribute 	name="count" 		type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element 		name="RealF" 		type="RealF"/>
+<xs:complexType 	name="RealF">
+	<xs:attribute	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element 		name="RealD" 		type="RealD"/>
+<xs:complexType 	name="RealD">
+	<xs:attribute 	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element 		name="ComplexF" 	type="ComplexF"/>
+<xs:complexType 	name="ComplexF">
+	<xs:attribute 	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+	<xs:attribute 	name="imgvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element 		name="ComplexD" 	type="ComplexD"/>
+<xs:complexType 	name="ComplexD">
+	<xs:attribute 	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+	<xs:attribute 	name="imgvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+
+<xs:element 		name="Frame" 		type="Frame"/>
+<xs:complexType 	name="Frame">
+	<xs:attribute 	name="number" 		type="xs:positiveInteger"/>
+	<xs:attribute 	name="name" 		type="xs:string"/>
+</xs:complexType>
+
+<xs:group	 		name="Frames">
+	<xs:all>
+		<xs:element name="Frame" 	type="Frame"	minOccurs="1"/>
+	</xs:all>
+</xs:group>
+<xs:complexType 	name="Frames">
+	<xs:attribute 	name="number" 		type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element 		name="Foot" 		type="Foot"/>
+<xs:complexType 	name="Foot">
+	<xs:all>
+		<xs:element	name="Name"			type="xs:string"/>
+		<xs:element name="Cardinals" 	type="Cardinals"/>
+		<xs:element name="Frames" 		type="Frames"/>
+	</xs:all>
+</xs:complexType>
+
+
+
+
+</xs:schema>

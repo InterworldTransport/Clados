@@ -1,0 +1,71 @@
+<!ELEMENT	Cardinal		EMPTY>
+<!ATTLIST	Cardinal  		unit  		CDATA 	#REQUIRED>
+
+<!ELEMENT  	RealF			EMPTY>
+<!ATTLIST	RealF			Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED>
+<!ELEMENT  	RealD			EMPTY>
+<!ATTLIST	RealD			Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED>
+<!ELEMENT  	ComplexF		EMPTY>
+<!ATTLIST	ComplexF		Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED
+							imgvalue	CDATA 	#REQUIRED>
+<!ELEMENT  	ComplexD		EMPTY>
+<!ATTLIST	ComplexD		Cardinal	CDATA 	#REQUIRED
+							realvalue	CDATA 	#REQUIRED
+							imgvalue	CDATA 	#REQUIRED>
+							
+<!ELEMENT	Name 			(CDATA)>
+
+<!ELEMENT	Cardinals		(Cardinal+)>
+<!ELEMENT 	Frame			EMPTY>
+<!ATTLIST	Frame			number		CDATA 	#REQUIRED
+							name		CDATA 	#REQUIRED>
+<!ELEMENT	Frames			(Frame+)>
+
+<!ELEMENT	Foot			(Name,Cardinals,Frames)>
+
+<!ELEMENT 	Grade			EMPTY>
+<!ATTLIST	Grade			number		CDATA 	#REQUIRED
+							range		CDATA 	#REQUIRED>
+<!ELEMENT	Grades			(Grade+)>
+<!ATTLIST	Grades			count		CDATA 	#REQUIRED>
+<!ELEMENT 	Blade			EMPTY>
+<!ATTLIST	Blade			number		CDATA 	#REQUIRED
+							key			CDATA 	#REQUIRED
+							generators	CDATA	#REQUIRED>
+<!ELEMENT	Blades			(Blade+)>
+<!ATTLIST	Blades			count		CDATA 	#REQUIRED>
+<!ELEMENT	Basis			(Grades|Blades)>
+
+<!ELEMENT 	row 			EMPTY>
+<!ATTLIST	row 			number		CDATA 	#REQUIRED
+							cells		CDATA	#REQUIRED>
+<!ELEMENT 	ProductTable 	(row)+>
+<!ATTLIST 	ProductTable 	rows 		CDATA	#REQUIRED>
+
+<!ELEMENT 	Signature 		(CDATA)>	
+<!ELEMENT 	GProduct		(Signature,Basis,GProduct)>
+	
+<!ELEMENT 	Algebra 		(Name,(RealF|RealD|ComplexF|ComplexD)?,Foot?,GProduct?)>
+
+<!ELEMENT 	Frame 			(CDATA)>
+
+<!ELEMENT 	Coefficients 	((RealF|RealD|ComplexF|ComplexD)+)>
+<!ATTLIST 	Coefficients	number 		CDATA 	#REQUIRED
+							gradeKey	CDATA	#REQUIRED>
+
+<!ELEMENT 	Monad 			(Name,Algebra,Frame,Coefficients)>
+<!ATTLIST 	Monad 			gradeKey	CDATA	#REQUIRED
+							sparseFlag	CDATA	#REQUIRED>
+
+<!ELEMENT 	MonadList 		(Monad+)>
+<!ELEMENT	AlgebraList 	(Algebra+)>
+
+<!ELEMENT	Nyad			(Name,Foot,AlgebraList,MonadList)>
+<!ATTLIST 	Nyad 			order 		CDATA	#REQUIRED
+							algorder	CDATA	#REQUIRED>
+
+<!ELEMENT 	NyadList 		(Nyad+)>
+<!ATTLIST 	NyadList 		size		CDATA	#REQUIRED>
