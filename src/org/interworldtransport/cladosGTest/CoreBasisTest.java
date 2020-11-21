@@ -1,16 +1,14 @@
 package org.interworldtransport.cladosGTest;
 
-import org.interworldtransport.cladosG.Basis;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.junit.*;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-public class BasisTest {
+import org.interworldtransport.cladosG.Basis;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class CoreBasisTest {
 	Basis tBasis0;
 	Basis tBasis4;
 	Basis tBasis42;
@@ -19,8 +17,9 @@ public class BasisTest {
 	Basis tBasis10;
 	Basis tBasis14;
 
-	@Before
-	public void setUp() throws CladosMonadException, GeneratorRangeException {
+
+	@BeforeEach
+	void setUp() throws Exception {
 		tBasis0 = new Basis((short) 0);
 		tBasis4 = new Basis((short) 4);
 		tBasis42 = new Basis(tBasis4);
@@ -80,4 +79,5 @@ public class BasisTest {
 		assertFalse(tBasis4.getBasis().equals(tBasis43.getBasis()));
 		// Using the raw constructor results in both Basis object not sharing a vBasis.
 	}
+
 }

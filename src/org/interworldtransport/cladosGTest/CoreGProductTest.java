@@ -1,23 +1,25 @@
 package org.interworldtransport.cladosGTest;
 
-import org.junit.*;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class GProductTest
-{
+class CoreGProductTest {
 	String		pSig0="";
 	String		pSig4="-+++";
 	String		pSig8="-+++-+++";
 	String		pSig10="+++-++++++";
 	String		pSig12="-+++-+++-+++";
 	String		pSig14="++-+++-+++-+++";
+
+	@BeforeEach
+	void setUp() throws Exception {
+	}
 
 	@Test
 	public void test00s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
@@ -135,25 +137,25 @@ public class GProductTest
 		}
 	}
 	
-	//@Test
-	//public void test14s() throws CladosMonadException, BadSignatureException
-	//{
-	//	GProduct tGP = new GProduct(pSig14);
-	//	assertTrue(tGP.getSignature().equals("++-+++-+++-+++"));
-	//	assertTrue(tGP.getGradeCount() == 15);
-	//	assertTrue(tGP.getBladeCount() == Math.pow(2, 14));
-	//	
-	//	int tS=(int)Math.pow(2,14);
-	//	int tSum=tS*(tS+1)/2;
-	//	for (short k=0; k<tGP.getBladeCount(); k++)
-	//	{
-	//		short[] tSpot=tGP.getResult(k);
-	//		int tSumP=0;
-	//		for (int j=0; j<tSpot.length; j++)
-	//			tSumP += Math.abs(tSpot[j]);
-	//		
-	//		assertTrue(tSum==tSumP);
-	//	}
-	//}
-	
+	@Test
+	public void test14s() throws CladosMonadException, BadSignatureException, GeneratorRangeException
+	{
+		GProduct tGP = new GProduct(pSig14);
+		assertTrue(tGP.getSignature().equals("++-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 15);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 14));
+		
+		int tS=(int)Math.pow(2,14);
+		int tSum=tS*(tS+1)/2;
+		for (short k=0; k<tGP.getBladeCount(); k++)
+		{
+			short[] tSpot=tGP.getResult(k);
+			int tSumP=0;
+			for (int j=0; j<tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+			
+			assertTrue(tSum==tSumP);
+		}
+	}
+
 }

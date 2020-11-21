@@ -560,8 +560,8 @@ public final class Blade {
 	 *                                 this exception to be thrown.
 	 */
 	public Blade remove(Short pS) throws GeneratorRangeException {
-		if (pS.shortValue() < MIN | pS.shortValue() > MAX)
-			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
+		if (pS.shortValue() < MIN+1 | pS.shortValue() > MAX)
+			throw new GeneratorRangeException("Unsupported Generator for Blade.");
 
 		// If this is a scalar, there is nothing to remove. Accept that and move on.
 		if (blade.isEmpty()) {

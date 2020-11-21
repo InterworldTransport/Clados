@@ -1,41 +1,44 @@
 package org.interworldtransport.cladosGTest;
 
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-
-import org.interworldtransport.cladosF.*;
-import org.interworldtransport.cladosG.*;
+import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosG.AlgebraComplexF;
+import org.interworldtransport.cladosG.AlgebraRealF;
+import org.interworldtransport.cladosG.CladosGBuilder;
+import org.interworldtransport.cladosG.Foot;
+import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class AlgebraComplexDTest {
+class CoreAlgebraComplexFTest {
 	protected String fName = "Test:TangentPoint";
 	protected String aName = "Test Algebra";
 	protected String pSig31 = "-+++";
 	protected String pSig13 = "+---";
 	protected Cardinal fType;
-	protected ComplexD rNumber;
+	protected ComplexF rNumber;
 	protected Foot tFoot;
 	protected Foot tFoot2;
 	protected GProduct gProduct;
-	protected AlgebraComplexD alg1;
-	protected AlgebraComplexD alg2;
+	protected AlgebraComplexF alg1;
+	protected AlgebraComplexF alg2;
 
-	@Before
-	public void setUp() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	@BeforeEach
+	void setUp() throws Exception {
 		fType = Cardinal.generate("Test:NumberType");
-		rNumber = new ComplexD(fType, 0.0d, 1.0d);
+		rNumber = new ComplexF(fType, 0.0f, 1.0f);
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
 
-		alg1 = new AlgebraComplexD(aName, tFoot, pSig31, rNumber);
-		alg2 = new AlgebraComplexD(aName, tFoot, pSig13, rNumber);
+		alg1 = new AlgebraComplexF(aName, tFoot, pSig31, rNumber);
+		alg2 = new AlgebraComplexF(aName, tFoot, pSig13, rNumber);
 	}
-	
+
 	@Test
 	public void testSignatureLinks() throws GeneratorRangeException {
 		assertTrue(alg1.getGBasis() == alg2.getGBasis());
@@ -45,7 +48,7 @@ public class AlgebraComplexDTest {
 		assertFalse(alg1.getGProduct().getSignature().equals(alg2.getGProduct().getSignature()));
 		// because the signatures are different.
 	}
-
+	
 	@Test
 	public void testAppendReferenceFrame() {
 		assertFalse(alg1.equals(null));
@@ -95,13 +98,13 @@ public class AlgebraComplexDTest {
 	@Test
 	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
 
-		AlgebraComplexD alg4 = new AlgebraComplexD("light weight frame", alg1);
+		AlgebraComplexF alg4 = new AlgebraComplexF("light weight frame", alg1);
 		assertFalse(alg4 == alg1);
 		assertTrue(alg4.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg4.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, GProduct re-used, but different names ensures algebra mis-match
 
-		AlgebraComplexD alg5 = new AlgebraComplexD("medium weight frame", alg1);
+		AlgebraComplexF alg5 = new AlgebraComplexF("medium weight frame", alg1);
 		assertFalse(alg5 == alg1);
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg5.getGProduct() == (alg1.getGProduct()));
@@ -115,7 +118,7 @@ public class AlgebraComplexDTest {
 		// Setting names equal isn't anywhere near enough to make algebras pass
 		// reference match
 
-		AlgebraComplexD alg6 = new AlgebraComplexD(aName, fName, pSig31, rNumber);
+		AlgebraComplexF alg6 = new AlgebraComplexF(aName, fName, pSig31, rNumber);
 		assertFalse(alg6.equals(alg1));
 		assertFalse(alg6.getFoot() == alg1.getFoot());
 		assertTrue(alg6.getGProduct() == (alg1.getGProduct()));
@@ -123,7 +126,7 @@ public class AlgebraComplexDTest {
 		assertTrue(alg6.shareCardinal().getType().equals(alg1.shareCardinal().getType()));
 		// Cardinal string re-use is NOT Cardinal re-uses
 	}
-
+	
 	@Test
 	public void testCompareCounts() {
 		assertTrue(alg1.getGradeCount() == alg2.getGradeCount());
@@ -133,7 +136,7 @@ public class AlgebraComplexDTest {
 
 	@Test
 	public void testStaticOp() {
-		ComplexD result = AlgebraComplexD.generateNumber(alg1, 5.0d, 10.0d);
+		ComplexF result = AlgebraComplexF.generateNumber(alg1, 5.0f, 10.0f);
 		assertTrue(result != null);
 		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
 		// this shows that an algebra can be used to generate numbers of the same type
@@ -144,7 +147,7 @@ public class AlgebraComplexDTest {
 
 	@Test
 	public void testXMLOutput() {
-		String test = AlgebraComplexD.toXMLString(alg1);
+		String test = AlgebraComplexF.toXMLString(alg1);
 		assertTrue(test != null);
 	}
 }

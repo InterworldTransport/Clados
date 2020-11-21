@@ -1,17 +1,21 @@
 package org.interworldtransport.cladosGTest;
 
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.interworldtransport.cladosF.*;
-import org.interworldtransport.cladosG.*;
+import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosG.AlgebraRealD;
+import org.interworldtransport.cladosG.AlgebraRealF;
+import org.interworldtransport.cladosG.CladosGBuilder;
+import org.interworldtransport.cladosG.Foot;
+import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class AlgebraRealDTest {
+class CoreAlgebraRealDTest {
 	protected String fName = "Test:TangentPoint";
 	protected String aName = "Test Algebra";
 	protected String pSig31 = "-+++";
@@ -24,8 +28,8 @@ public class AlgebraRealDTest {
 	protected AlgebraRealD alg1;
 	protected AlgebraRealD alg2;
 
-	@Before
-	public void setUp() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	@BeforeEach
+	void setUp() throws Exception {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealD(fType, 0.0d);
 		tFoot = new Foot(fName, fType);
@@ -146,4 +150,5 @@ public class AlgebraRealDTest {
 		String test = AlgebraRealD.toXMLString(alg1);
 		assertTrue(test != null);
 	}
+
 }

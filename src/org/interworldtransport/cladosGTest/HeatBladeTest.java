@@ -1,135 +1,114 @@
 package org.interworldtransport.cladosGTest;
 
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-
-import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosG.Blade;
+import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/*
- * Some tests create many monads before completing. Divide by that number to get a rough estimate of creation time
- * Generator Count	Runs
- * 1				10000
- * 2				10000
- * 3				10000
- * 4				10000
- * 5				1000
- * 6				1000
- * 7				100
- * 8				100
- * 9				10
- * 10				10
- * 11				10
- * 12				10
- * 13				1
- * 14				1
- */
-public class BladeOverheadTest {
+class HeatBladeTest {
 	Blade a0;
 
-	@Before
-	public void setup() {
-
+	@BeforeEach
+	void setUp() throws Exception {
+		//Generator[] j = Arrays.copyOf(Generator.values(), 1);
 	}
-
+	
 	@Test
 	public void testGen00() throws GeneratorRangeException {
-		short[] j = {};
+		Generator[] j = (Generator[]) Generator.flow().limit(0).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen01() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 1);
+		Generator[] j = (Generator[]) Generator.flow().limit(1).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen02() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 2);
+		Generator[] j = (Generator[]) Generator.flow().limit(2).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen03() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 3);
+		Generator[] j = (Generator[]) Generator.flow().limit(3).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen04() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 4);
+		Generator[] j = (Generator[]) Generator.flow().limit(4).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen05() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 5);
+		Generator[] j = (Generator[]) Generator.flow().limit(5).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen06() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 6);
+		Generator[] j = (Generator[]) Generator.flow().limit(6).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen07() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 7);
+		Generator[] j = (Generator[]) Generator.flow().limit(7).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen08() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 8);
+		Generator[] j = (Generator[]) Generator.flow().limit(8).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen09() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 9);
+		Generator[] j = (Generator[]) Generator.flow().limit(9).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
@@ -139,18 +118,17 @@ public class BladeOverheadTest {
 
 	@Test
 	public void testGen10() throws GeneratorRangeException {
-		Generator[] j = Arrays.copyOf(Generator.values(), 10);
+		Generator[] j = (Generator[]) Generator.flow().limit(10).toArray();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
-
+	
 	@Test
 	public void testGen11() throws GeneratorRangeException {
 		Generator[] j = (Generator[]) Generator.flow().limit(11).toArray();
-		//Generator[] j = Arrays.copyOf(Generator.values(), 11);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
@@ -161,7 +139,6 @@ public class BladeOverheadTest {
 	@Test
 	public void testGen12() throws GeneratorRangeException {
 		Generator[] j = (Generator[]) Generator.flow().limit(12).toArray();
-		//Generator[] j = Arrays.copyOf(Generator.values(), 12);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);
@@ -172,7 +149,6 @@ public class BladeOverheadTest {
 	@Test
 	public void testGen13() throws GeneratorRangeException {
 		Generator[] j = (Generator[]) Generator.flow().limit(13).toArray();
-		//Generator[] j = Arrays.copyOf(Generator.values(), 13);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((short) j.length, j);

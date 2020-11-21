@@ -1,72 +1,67 @@
 package org.interworldtransport.cladosGTest;
 
-import org.junit.*;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import static org.interworldtransport.cladosG.MonadComplexD.*;
-
+import static org.interworldtransport.cladosG.MonadAbstract.hasGrade;
+import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
+import static org.interworldtransport.cladosG.MonadAbstract.isMultiGrade;
+import static org.interworldtransport.cladosG.MonadAbstract.isUniGrade;
+import static org.interworldtransport.cladosG.MonadComplexD.isGZero;
+import static org.interworldtransport.cladosG.MonadComplexD.isIdempotent;
+import static org.interworldtransport.cladosG.MonadComplexD.isNilpotent;
+import static org.interworldtransport.cladosG.MonadComplexD.isReferenceMatch;
+import static org.interworldtransport.cladosG.MonadComplexD.isScaledIdempotent;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosG.MonadComplexD;
-import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MonadComplexDTest
-{
-	String		fType="TestMonadComplexDs";
-	String		mName="Test MonadComplexD ";
-	String		aName="Motion Algebra";
-	String		aName2="Property Algebra";
-	ComplexD[]		cRF;
-	MonadComplexD	tM0;
-	MonadComplexD	tM1;
-	MonadComplexD	tM2;
-	MonadComplexD	tM3;
-	MonadComplexD	tM4;
-	MonadComplexD	tM5;
-	MonadComplexD	tM6;
-	MonadComplexD	tM7;
-	MonadComplexD	tM8;
-	MonadComplexD	tM9;
+class CoreMonadComplexDTest {
+	String fType = "TestMonadComplexDs";
+	String mName = "Test MonadComplexD ";
+	String aName = "Motion Algebra";
+	String aName2 = "Property Algebra";
+	ComplexD[] cRF;
+	MonadComplexD tM0;
+	MonadComplexD tM1;
+	MonadComplexD tM2;
+	MonadComplexD tM3;
+	MonadComplexD tM4;
+	MonadComplexD tM5;
+	MonadComplexD tM6;
+	MonadComplexD tM7;
+	MonadComplexD tM8;
+	MonadComplexD tM9;
 
-	@Before
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException
-	{
+	@BeforeEach
+	void setUp() throws Exception {
 		cRF = new ComplexD[16];
 		Cardinal tSpot = Cardinal.generate("TestComplexDs");
 		for (int k = 0; k < 16; k++)
-			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15-k);
+			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15 - k);
 
-		tM0 = new MonadComplexD("Test MonadComplexD 0", "Motion Algebra",
-						"Foot Default Frame", "Test Foot 0", "-+++",
-						new ComplexD(Cardinal.generate("Test Float 1"), 0d));
-		tM1 = new MonadComplexD("Test MonadComplexD 1", "Property Algebra",
-						"Foot Default Frame", "Test Foot 1", "-+++",
-						new ComplexD(Cardinal.generate("Test Float 1"), 0d));
+		tM0 = new MonadComplexD("Test MonadComplexD 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
+				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
+		tM1 = new MonadComplexD("Test MonadComplexD 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
+				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
 		tM2 = new MonadComplexD("Test MonadComplexD 2", tM1);
 		tM3 = new MonadComplexD("Test MonadComplexD 3", tM1);
 		tM4 = new MonadComplexD(tM0);
-		tM5 = new MonadComplexD("Test MonadComplexD 5", "Motion Algebra",
-						"Foot Default Frame", "Test Foot 5", "-+++",
-						new ComplexD(Cardinal.generate("Test Float 5"), 0d),
-						"Unit PScalar");
-		tM6 = new MonadComplexD("Test MonadComplexD 6", "Property Algebra",
-						"Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM5 = new MonadComplexD("Test MonadComplexD 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
+				new ComplexD(Cardinal.generate("Test Float 5"), 0d), "Unit PScalar");
+		tM6 = new MonadComplexD("Test MonadComplexD 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++",
+				cRF);
 		tM7 = new MonadComplexD(tM6);
 		tM8 = new MonadComplexD(tM6);
 	}
 
 	@Test
-	public void testConstructionVariants()
-	{
+	public void testConstructionVariants() {
 		assertFalse(isReferenceMatch(tM0, tM1));
 		assertTrue(isReferenceMatch(tM1, tM2));
 		assertTrue(isReferenceMatch(tM1, tM3));
@@ -74,8 +69,7 @@ public class MonadComplexDTest
 	}
 
 	@Test
-	public void testUniOpsTests() throws CladosMonadException, FieldException
-	{
+	public void testUniOpsTests() throws CladosMonadException, FieldException {
 		assertFalse(isGZero(tM5));
 		assertTrue(isUniGrade(tM5));
 		assertTrue(isMultiGrade(tM6));
@@ -88,63 +82,50 @@ public class MonadComplexDTest
 	}
 
 	@Test
-	public void testBiOpsTests()
-	{
+	public void testBiOpsTests() {
 		assertTrue(tM1.isGEqual(tM3));
 		assertTrue(tM1.isGEqual(tM2));
 	}
 
 	@Test
-	public void testUniMathOps() throws FieldBinaryException,
-					CladosMonadException
-	{
+	public void testUniMathOps() throws FieldBinaryException, CladosMonadException {
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
 		assertTrue(isGZero(tM5.scale(ComplexD.copyZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
-		
+
 		tM6.normalize();
-		if(ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0))))
-		{
+		if (ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0)))) {
 			assertTrue(ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0))));
-		}
-		else
-		{
+		} else {
 			ComplexD tSpot = tM6.magnitude();
 			assertTrue(tSpot.getImg() == 0.0f);
-			assertTrue(Math.abs(tSpot.getReal() - 1.0f)  <= 0.000001f);
+			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
 		}
-		
+
 		assertTrue(hasGrade(tM6, 2));
 		assertTrue(hasGrade(tM7, 0));
 	}
 
 	@Test
-	public void testBiMathOps1() throws FieldBinaryException,
-					CladosMonadBinaryException, CladosMonadException
-	{
+	public void testBiMathOps1() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
 		tM6.add(tM7);
 		tM7.scale(new ComplexD(tM6.getCoeff((short) 0), 2.0f, 0.0f));
 		assertTrue(tM6.isGEqual(tM7));
-		tM6.subtract(tM7)
-						.subtract(tM7)
-						.scale(new ComplexD(tM7.getCoeff((short) 0).getCardinal(),
-										-1.0f));
+		tM6.subtract(tM7).subtract(tM7).scale(new ComplexD(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 
 	}
 
 	@Test
-	public void testBiMathOps2() throws FieldBinaryException,
-					CladosMonadBinaryException, CladosMonadException
-	{
+	public void testBiMathOps2() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
 		tM8.gradePart((short) 4).normalize();
-		//System.out.println(toXMLString(tM8));
+		// System.out.println(toXMLString(tM8));
 		tM6.multiplyLeft(tM8).dualLeft();
 		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
-		//System.out.println(toXMLString(tM6));
-		//System.out.println(toXMLString(tM7));
+		// System.out.println(toXMLString(tM6));
+		// System.out.println(toXMLString(tM7));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM6.multiplyRight(tM8).dualRight();
@@ -165,4 +146,5 @@ public class MonadComplexDTest
 		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 	}
+
 }

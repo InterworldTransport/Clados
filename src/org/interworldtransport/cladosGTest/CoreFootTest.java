@@ -1,26 +1,22 @@
 package org.interworldtransport.cladosGTest;
 
-
-import org.junit.*;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosG.Foot;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FootTest
-{
+class CoreFootTest {
 	public String		fName	= "Test:TangentPoint";
 	public Cardinal	fType;
 	public RealD		rNumber;
 	public Foot			tFoot;
 	public Foot			tFoot2;
 
-	@Before
-	public void setUp()
-	{
+	@BeforeEach
+	void setUp() throws Exception {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealD(fType,0.0);
 		tFoot = new Foot(fName, fType);
@@ -31,8 +27,6 @@ public class FootTest
 		// because a Foot doesn't care about the magnitude of the number.
 	}
 
-
-	
 	@Test
 	public void testFootCompare()
 	{
@@ -43,4 +37,5 @@ public class FootTest
 		// The algebras relying on these feet would fail reference checks
 		// but they are allowed to re-use each other's numbering system.
 	}
+
 }
