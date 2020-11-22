@@ -26,6 +26,7 @@ package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
@@ -44,7 +45,8 @@ public class BladeDos {
 	 * @param pB1 A Blade to re-use it's boxed shorts.
 	 * @param pB2 A Blade to re-use it's boxed shorts.
 	 * @throws BladeCombinationException The way to get this exception is for the
-	 *                                   offered blades to not have the same maxGrade.
+	 *                                   offered blades to not have the same
+	 *                                   maxGrade.
 	 */
 	public BladeDos(Blade pB1, Blade pB2) throws BladeCombinationException {
 		if (pB1.maxGrade != pB2.maxGrade)
@@ -60,7 +62,7 @@ public class BladeDos {
 			bladeDuo.add(pT);
 		sign *= pB2.sign();
 
-		bubbleFlipSort();
+		bubbleFlipSort(pB1.get().size());
 	}
 
 	/**
@@ -109,12 +111,18 @@ public class BladeDos {
 			throw new BladeCombinationException(this, pB, null, "Offered Blade too big to fit with current one.");
 		bladeDuo.ensureCapacity(2 * span);
 
-		for (Generator tS : pB.get())
-			bladeDuo.add(pB.get().indexOf(tS), tS); // This SHOULD prepend the elements of offered blade reversed.
+		int counter = 0;
+		Iterator<Generator> cursor = pB.get().iterator();
+		while (cursor.hasNext()) { // This pre-pends the first blade into the ArrayList IN ORDER
+			bladeDuo.add(counter, cursor.next());
+			counter++;
+		}
 		sign *= pB.sign();
+		// for (Generator tS : pB.get())
+		// bladeDuo.add(pB.get().indexOf(tS), tS);
 
 		bladeDuo.trimToSize();
-		bubbleFlipSort();
+		bubbleFlipSort(pB.get().size());
 		return this;
 	}
 
@@ -139,13 +147,13 @@ public class BladeDos {
 		if (bladeDuo.size() + pB.get().size() > 2 * span)
 			throw new BladeCombinationException(this, null, pB, "Offered Blade too big to fit with current one.");
 		bladeDuo.ensureCapacity(2 * span);
-
+		int originalEnd = bladeDuo.size();
 		for (Generator tS : pB.get())
 			bladeDuo.add(tS); // This SHOULD append the elements of offered blade in order.
 		sign *= pB.sign();
 
 		bladeDuo.trimToSize();
-		bubbleFlipSort();
+		bubbleFlipSort(originalEnd);
 		return this;
 	}
 
@@ -179,18 +187,18 @@ public class BladeDos {
 		for (Generator pS1 : bladeDuo) {
 			if (pS1 == null) { // Don't know how the null got here, but it is found. REMOVE
 				bladeDuo.remove(pS1);
-				continue;
+				continue; // Nothing left to do, so move on to next entry in loop.
 			}
-			if (bladeDuo.indexOf(pS1) == bladeDuo.size()) // end of List, so STOP
-				break;
-			Generator pS2 = bladeDuo.get(bladeDuo.indexOf(pS1) + 1);
-			if (pS1 == pS2) {
-				sign *= pSig[pS1.ord]; // DANGER! Future changes to Generator must take care here.
-				bladeDuo.remove(pS2);
-				bladeDuo.remove(pS1);
+			if (bladeDuo.indexOf(pS1) != bladeDuo.size()) {
+				Generator pS2 = bladeDuo.get(bladeDuo.indexOf(pS1) + 1);
+				if (pS1 == pS2) {
+					sign *= pSig[pS1.ord]; // DANGER! Future changes to Generator must take care here.
+					bladeDuo.remove(pS2);
+					bladeDuo.remove(pS1);
+				}
 			}
 		}
-		returnIt.add((Short[]) bladeDuo.toArray()); // Should already be sorted, so DON'T addSort
+		returnIt.add((Generator[]) bladeDuo.toArray()); // Should already be sorted, so DON'T addSort
 		return returnIt;
 	}
 
@@ -219,12 +227,20 @@ public class BladeDos {
 	/*
 	 * This is a Bubble Sort that keeps track of the number of swaps % 2. Swaps
 	 * within the list should only occur with neighboring Shorts and only when the
-	 * unboxed shorts imply that the previous Short is greater in value than the
-	 * next.
+	 * generators imply that the previous is greater 'in value' than the next.
+	 * 
+	 * We do know a little before the sorting begins, though. There will be two
+	 * blocks of sorted generators. Therefore, the offered integer points to the
+	 * last generator of the first blade.
+	 * 
+	 * @param int pGuess This integer points at the last generator of the first
+	 * blade. That likely where sorting should find the first generator to swap.
 	 */
-	private void bubbleFlipSort() {
+	private void bubbleFlipSort(int pGuess) {
 		if (bladeDuo.size() == 0 | bladeDuo.size() == 1)
 			return;
+		if (pGuess <= 0 | pGuess >= bladeDuo.size())
+			pGuess = bladeDuo.size();
 		for (short m = 0; m < bladeDuo.size() - 1; m++) {
 			for (short k = 0; k < bladeDuo.size() - m - 1; k++) {
 				if (bladeDuo.get(k).compareTo(bladeDuo.get(k + 1)) > 0) {

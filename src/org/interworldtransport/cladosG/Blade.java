@@ -24,8 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Iterator;
 
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -62,7 +62,7 @@ public final class Blade {
 	protected static final short FLIP = -1;
 	protected static final short MAX = 14;
 	protected static final short MIN = 0;
-	private ArrayList<Generator> blade = new ArrayList<>(1);
+	private EnumSet<Generator> blade;
 	private long key = 0L;
 	private int sign = 1;
 	protected final short maxGrade; // This should be gradeCount-1 in a related basis
@@ -78,8 +78,7 @@ public final class Blade {
 	 */
 	public Blade(Blade pB) throws GeneratorRangeException {
 		this(pB.maxGrade);
-		// blade.ensureCapacity(maxGrade); // Done by other constructor
-		// Collections.copy(blade, pB.get()); // Can't? We need different instances?
+		blade = EnumSet.noneOf(Generator.class);
 		for (Generator pG : pB.get())
 			blade.add(pG);
 		sign = pB.sign();
@@ -106,8 +105,9 @@ public final class Blade {
 		super();
 		if (pMaxGrade < MIN | pMaxGrade > MAX)
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pMaxGrade);
+		blade = EnumSet.noneOf(Generator.class);
 		maxGrade = pMaxGrade;
-		blade.ensureCapacity(maxGrade);
+		// blade.ensureCapacity(maxGrade);
 	}
 
 	/**
@@ -131,9 +131,10 @@ public final class Blade {
 	 */
 	public Blade(short pMaxGrade, Generator[] pDirs) throws GeneratorRangeException {
 		this(pMaxGrade);
+		blade = EnumSet.noneOf(Generator.class);
 		for (Generator tG : pDirs)
 			blade.add(tG);
-		bubbleFlipSort();
+		// bubbleFlipSort();
 		makeKey();
 	}
 
@@ -158,9 +159,10 @@ public final class Blade {
 	 */
 	public Blade(short pMaxGrade, short[] pDirs) throws GeneratorRangeException {
 		this(pMaxGrade);
+		blade = EnumSet.noneOf(Generator.class);
 		for (short tS : pDirs)
 			blade.add(Generator.get(tS));
-		bubbleFlipSort();
+		// bubbleFlipSort();
 		makeKey();
 	}
 
@@ -179,25 +181,27 @@ public final class Blade {
 	public Blade add(Generator pS) {
 		if (isPScalar())
 			return this;
-		if (blade.contains(pS))
+		else if (blade.contains(pS))
 			return this;
-		if (pS.ord > maxGrade) 
+		else if (pS.ord > maxGrade)
 			return this;
-		blade.add(pS);
-		makeKey();
-		return this;
+		else {
+			blade.add(pS);
+			makeKey();
+			return this;
+		}
 	}
 
 	public Blade add(Generator[] pS) {
-		if (isPScalar())
+		if (!isPScalar()) {
+			for (Generator pT : pS) {
+				if (blade.contains(pT))
+					continue;
+				blade.add(pT);
+			}
+			makeKey();
 			return this;
-
-		for (Generator pT : pS) {
-			if (blade.contains(pT))
-				continue;
-			blade.add(pT);
 		}
-		makeKey();
 		return this;
 	}
 
@@ -244,25 +248,18 @@ public final class Blade {
 	public Blade add(Short pS) throws GeneratorRangeException {
 		if (pS.shortValue() < Generator.MIN.ord | pS.shortValue() > Generator.MAX.ord)
 			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-
-		if (blade.size() >= MAX)
+		else if (blade.size() > MAX)
 			throw new GeneratorRangeException("Max Generators for a blade is 14.");
-
-		// If this is a pscalar, there is no way to add. Accept that and move on.
-		if (isPScalar()) {
+		else if (isPScalar())
+			return this;
+		else if (blade.contains(Generator.get(pS.shortValue())))
+			// Check if the generator is already in the list. If it is, just move on.
+			return this;
+		else {
+			blade.add(Generator.get(pS.shortValue()));
 			makeKey();
 			return this;
 		}
-		// Check if the generator is already in the list. If it is, just move on.
-		for (Generator pt : blade)
-			if (pt.ord == pS.shortValue())
-				return this;
-
-		blade.add(Generator.get(pS.shortValue()));
-		// bubbleFlipSort();
-		makeKey();
-
-		return this;
 	}
 
 	/**
@@ -318,139 +315,6 @@ public final class Blade {
 	}
 
 	/**
-	 * The generator represents a 'direction' in the blade to be added. The blade is
-	 * first checked to see if it is at maximu size or whether ghe generator is
-	 * already in the list. It is then added to the blade list and sorted.
-	 * 
-	 * @param pS Generator that will be added to the list with NO SORTING.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 */
-	public Blade addSort(Generator pS) {
-		if (isPScalar())
-			return this;
-		if (blade.contains(pS))
-			return this;
-		blade.add(pS);
-		bubbleFlipSort();
-		makeKey();
-		return this;
-	}
-
-	public Blade addSort(Generator[] pS) {
-		if (isPScalar())
-			return this;
-
-		for (Generator pT : pS) {
-			if (blade.contains(pT))
-				continue;
-			blade.add(pT);
-		}
-		bubbleFlipSort();
-		makeKey();
-		return this;
-	}
-
-	/**
-	 * The unboxed short represents a 'direction' in the blade to be added. It is
-	 * immediately boxed and delivered to the similarly named method for handling.
-	 * When that method returns the new blade list, this one finishes by returning
-	 * it to the calling object.
-	 * 
-	 * @param pS unboxed short integer that will be boxed immediate and passed to
-	 *           the other version of this method.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException See add(Short pS)
-	 */
-	public Blade addSort(short pS) throws GeneratorRangeException {
-		addSort(Short.valueOf(pS));
-		return this;
-	}
-
-	/**
-	 * The boxed short represents a 'direction' in the blade to be added. It is
-	 * first checked to see if the unboxed short is within the supported range.
-	 * Next, the blade is checked to see if it already represents a pscalar. If it
-	 * does, the blade's key is reset and nothing else is done. If not, the boxed
-	 * short is added from the blade's list and the key is reset.
-	 * 
-	 * @param pS Short is a boxed short integer representing the 'direction' to add
-	 *           to the blade.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
-	 *                                 supported range is used to represent a
-	 *                                 'direction' to add to the blade. For example,
-	 *                                 trying to remove 22 or -5 will cause this
-	 *                                 exception to be thrown.
-	 */
-	public Blade addSort(Short pS) throws GeneratorRangeException {
-		if (pS.shortValue() < Generator.MIN.ord | pS.shortValue() > Generator.MAX.ord)
-			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-
-		if (blade.size() >= MAX)
-			throw new GeneratorRangeException("Max Generators for a blade is 14.");
-
-		// If this is a pscalar, there is no way to add. Accept that and move on.
-		if (isPScalar()) {
-			makeKey();
-			return this;
-		}
-		// Check if the generator is already in the list. If it is, just move on.
-		for (Generator pt : blade)
-			if (pt.ord == pS.shortValue())
-				return this;
-
-		blade.add(Generator.get(pS.shortValue()));
-		bubbleFlipSort();
-		makeKey();
-
-		return this;
-	}
-
-	/**
-	 * An array of unboxed shorts representing 'directions' in the blade to be
-	 * added. Each is first checked to see if the unboxed short is within the
-	 * supported range. Next, the blade is checked to see if it already represents a
-	 * pscalar. If it does, the blade's key is reset and nothing else more is done.
-	 * If not, the boxed short is added from the blade's list and the key is reset.
-	 * 
-	 * @param pS Short[] is an array of boxed short integers representing the
-	 *           'directions' to add to the blade.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
-	 *                                 supported range is used to represent a
-	 *                                 'direction' to add to the blade. For example,
-	 *                                 trying to remove 22 or -5 will cause this
-	 *                                 exception to be thrown.
-	 */
-	public Blade addSort(short[] pS) throws GeneratorRangeException {
-		for (short pt : pS)
-			addSort(Short.valueOf(pt));
-		return this;
-	}
-
-	/**
-	 * An array of boxed shorts representing 'directions' in the blade to be added.
-	 * Each is first checked to see if the unboxed short is within the supported
-	 * range. Next, the blade is checked to see if it already represents a pscalar.
-	 * If it does, the blade's key is reset and nothing else more is done. If not,
-	 * the boxed short is added from the blade's list and the key is reset.
-	 * 
-	 * @param pS Short[] is an array of boxed short integers representing the
-	 *           'directions' to add to the blade.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
-	 *                                 supported range is used to represent a
-	 *                                 'direction' to add to the blade. For example,
-	 *                                 trying to remove 22 or -5 will cause this
-	 *                                 exception to be thrown.
-	 */
-	public Blade addSort(Short[] pS) throws GeneratorRangeException {
-		for (Short pt : pS)
-			addSort(pt);
-		return this;
-	}
-
-	/**
 	 * The intended use for this method is with Comparators.
 	 * 
 	 * @param pIn Blade to be compared to this one
@@ -487,7 +351,7 @@ public final class Blade {
 	 * 
 	 * @return key Returns the blade's ArrayList of boxed shorts.
 	 */
-	public ArrayList<Generator> get() {
+	public EnumSet<Generator> get() {
 		return blade;
 	}
 
@@ -508,7 +372,9 @@ public final class Blade {
 	}
 
 	public boolean isPScalar() {
-		if (blade.size() == maxGrade)
+		if (blade.isEmpty())
+			return false;
+		else if (blade.size() == maxGrade)
 			return true;
 		return false;
 	}
@@ -560,7 +426,7 @@ public final class Blade {
 	 *                                 this exception to be thrown.
 	 */
 	public Blade remove(Short pS) throws GeneratorRangeException {
-		if (pS.shortValue() < MIN+1 | pS.shortValue() > MAX)
+		if (pS.shortValue() < MIN + 1 | pS.shortValue() > MAX)
 			throw new GeneratorRangeException("Unsupported Generator for Blade.");
 
 		// If this is a scalar, there is nothing to remove. Accept that and move on.
@@ -678,16 +544,15 @@ public final class Blade {
 	 * 
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
-	public Blade reverse() {
-		Collections.reverse(blade);
-		// We get away with using Collections because we can calculate the sign flip.
-		// sign does not flip for lists of size 0, 1,       4, 5,       8, 9,         12, 13
-		// sign does     flip for lists of size       2, 3,       6, 7,       10, 11,         14
-		sign *= FLIP * ((blade.size() % 4) / 2);
-		makeKey();
-
-		return this;
-	}
+	/*
+	 * public Blade reverse() { Collections.reverse(blade); // We get away with
+	 * using Collections because we can calculate the sign flip. // sign does not
+	 * flip for lists of size 0, 1, 4, 5, 8, 9, 12, 13 // sign does flip for lists
+	 * of size 2, 3, 6, 7, 10, 11, 14 sign *= FLIP * ((blade.size() % 4) / 2);
+	 * makeKey();
+	 * 
+	 * return this; }
+	 */
 
 	public int sign() {
 		return sign;
@@ -696,11 +561,16 @@ public final class Blade {
 	public String toXMLString(String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
+		Iterator<Generator> cursor = blade.iterator();
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key() + "\" generators=\"");
-		for (short m = 0; m < blade.size(); m++)
-			if (blade.get(m) != null)
-				rB.append(blade.get(m).toString() + ",");
+		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
+				+ "\" generators=\"");
+		while (cursor.hasNext())
+			rB.append(cursor.next().toString() + ",");
+
+		// for (short m = 0; m < blade.size(); m++)
+		// if (blade.get(m) != null)
+		// rB.append(blade.get(m).ord + ",");
 		if (blade.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
@@ -710,11 +580,16 @@ public final class Blade {
 	public String toXMLOrdString(String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
+		Iterator<Generator> cursor = blade.iterator();
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key() + "\" generators=\"");
-		for (short m = 0; m < blade.size(); m++)
-			if (blade.get(m) != null)
-				rB.append(blade.get(m).ord + ",");
+		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
+				+ "\" generators=\"");
+		while (cursor.hasNext())
+			rB.append(cursor.next().ord + ",");
+
+		// for (short m = 0; m < blade.size(); m++)
+		// if (blade.get(m) != null)
+		// rB.append(blade.get(m).ord + ",");
 		if (blade.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
@@ -727,19 +602,13 @@ public final class Blade {
 	 * unboxed shorts imply that the previous Short is greater in value than the
 	 * next.
 	 */
-	private void bubbleFlipSort() {
-		if (isScalar() | isOneBlade())
-			return;
-		// Collections.sort(blade); // Can't do this because swaps must be tracked.
-		for (short m = 0; m < blade.size() - 1; m++) {
-			for (short k = 0; k < blade.size() - m - 1; k++) {
-				if (blade.get(k).compareTo(blade.get(k + 1)) > 0) {
-					Collections.swap(blade, k, k + 1);
-					sign *= FLIP;
-				}
-			}
-		}
-	}
+	/*
+	 * private void bubbleFlipSort() { if (isScalar() | isOneBlade()) return; //
+	 * Collections.sort(blade); // Can't do this because swaps must be tracked. for
+	 * (short m = 0; m < blade.size() - 1; m++) { for (short k = 0; k < blade.size()
+	 * - m - 1; k++) { if (blade.get(k).compareTo(blade.get(k + 1)) > 0) {
+	 * Collections.swap(blade, k, k + 1); sign *= FLIP; } } } }
+	 */
 
 	/*
 	 * Base (maxGrade+1) representation of Eddington Number
@@ -754,7 +623,11 @@ public final class Blade {
 	 */
 	private void makeKey() {
 		key = 0L;
-		for (Generator pT : blade)
-			key += pT.ord * Math.pow(maxGrade + 1, blade.size() - 1 - blade.indexOf(pT));
+		int counter = 0;
+		Iterator<Generator> cursor = blade.iterator();
+		while (cursor.hasNext()) {
+			key += cursor.next().ord * Math.pow((maxGrade + 1), (blade.size() - 1 - counter));
+			counter++;
+		}
 	}
 }
