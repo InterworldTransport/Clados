@@ -27,8 +27,7 @@ package org.interworldtransport.cladosF;
 import java.util.ArrayList;
 
 /**
- * This interface does not implement anything. It is a marker interface intended
- * to act as a pseudonym for all DivField descendants.
+ * 
  * 
  * @version 1.0
  * @author Dr Alfred W Differ

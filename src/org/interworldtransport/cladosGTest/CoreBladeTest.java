@@ -24,16 +24,16 @@ class CoreBladeTest {
 		
 		tB0 = new Blade((short) 0);
 		tB4 = new Blade((short) 4);
-		tB4.addSort(g[0]).addSort(g[1]);
+		tB4.add(g[0]).add(g[1]);
 		tB42 = new Blade(tB4);
-		tB42.addSort(g[3]).addSort(g[0]).addSort(g[1]);
+		tB42.add(g[3]).add(g[0]).add(g[1]);
 		tB43 = new Blade((short) 4);
-		tB43.addSort(g[1]).addSort(g[0]);
+		tB43.add(g[1]).add(g[0]);
 	}
 
 	@Test
 	public void testIndependence() {
-		assertFalse(tB4.equals(tB43)); // Same inner meaning should pass equals test
+		assertTrue(tB4.equals(tB43)); // Same inner meaning should pass equals test
 		assertFalse(tB4 == tB43); // but they are not the same objects
 	}
 
@@ -46,11 +46,11 @@ class CoreBladeTest {
 		assertFalse(tB42.key() == tB43.key());
 		
 		Blade tB8 = new Blade((short) 8);
-		tB8.addSort(m); // Should be pscalar now
+		tB8.add(m); // Should be pscalar now
 		Blade tB10 = new Blade((short) 10);
-		tB10.addSort(k); // Should be pscalar now
+		tB10.add(k); // Should be pscalar now
 		Blade tB14 = new Blade((short) 14);
-		tB14.addSort(j); // Should be pscalar now
+		tB14.add(j); // Should be pscalar now
 
 		assertTrue(tB8.key() == 6053444L && tB8.get().size() == 8);
 		assertTrue(tB10.get().size() == 10);
@@ -59,10 +59,10 @@ class CoreBladeTest {
 		tB14.remove((short) 12);
 		assertTrue(tB14.get().size() == 13);
 
-		tB14.addSort((short) 10); // generator already there, so silently ignore the add.
+		tB14.add((short) 10); // generator already there, so silently ignore the add.
 		assertTrue(tB14.get().size() == 13);
 
-		tB14.addSort(Short.valueOf((short) 12));
+		tB14.add(Short.valueOf((short) 12));
 		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
 
 	}
@@ -73,9 +73,9 @@ class CoreBladeTest {
 		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there. 
 		assertTrue(newtB0.equals(tB0)); // tB is a scalar. Nothing to remove. Silent acceptance expected.
 		Blade tB10 = new Blade((short) 10);
-		tB10.addSort(k); // Should be pscalar now
+		tB10.add(k); // Should be pscalar now
 		Blade newtB10 = new Blade(tB10);
-		newtB10.addSort(Generator.E8); // Should be silently ignored since E8 is in there.
+		newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
 		assertTrue(newtB10.equals(tB10));
 	}
 

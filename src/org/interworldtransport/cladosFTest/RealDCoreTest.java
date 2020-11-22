@@ -139,10 +139,9 @@ class RealDCoreTest {
 	}
 
 	@Test
-	public void testAdditiveInvert() throws FieldException {
-		tReal1n.scale(Double.valueOf(-1d));
+	public void testMultiplyInvert() throws FieldException {
+		tReal1n.scale(Double.valueOf(0.0d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tReal1n.invert(), tReal1));
-		tReal1n.scale(Double.valueOf(-1d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tReal0.invert(), tReal5));
 	}
 

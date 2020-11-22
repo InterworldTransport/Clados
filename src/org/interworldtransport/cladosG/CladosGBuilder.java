@@ -125,22 +125,26 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			return tB;
 		else {
 			Basis tSpot = Basis.using(pGen);
-			listOfBases.add(tSpot);
+			appendBasis(tSpot);
 			return tSpot;
 		}
 
 	}
 
 	public GProduct createGProduct(Basis pB, String pSig) throws GeneratorRangeException, BadSignatureException {
-		if (pB == null)
-			createGProduct(pSig);
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tFirst = findGProduct(pSig);
-		if (tFirst != null)
-			return tFirst; // GProduct already created, so just offer it instead of making a new one
-		GProduct tSpot = new GProduct(pB, pSig);// Make a new GProduct and return it
-		listOfGProducts.add(tSpot);
+		GProduct tSpot;
+		if (pB == null)
+			tSpot = createGProduct(pSig);
+		else {
+			tSpot = findGProduct(pSig);
+			if (tSpot != null)
+				return tSpot; // GProduct already created, so just offer it instead of making a new one
+			tSpot = new GProduct(pB, pSig);// Make a new GProduct and return it
+			appendBasis(pB);
+			appendGProduct(tSpot);
+		}
 		return tSpot;
 	}
 
@@ -155,9 +159,11 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		Basis tB = findBasis((short) pSig.length());
 		if (tB != null)
 			tSpot = new GProduct(tB, pSig); // Basis is found, so use re-use constructor.
-		else
+		else {
 			tSpot = new GProduct(pSig); // Make a new GProduct with implied new Basis.
-		listOfGProducts.add(tSpot);
+			appendBasis(tSpot.getBasis());
+		}
+		appendGProduct(tSpot);
 		return tSpot;
 	}
 

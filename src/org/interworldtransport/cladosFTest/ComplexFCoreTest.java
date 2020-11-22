@@ -139,10 +139,9 @@ class ComplexFCoreTest {
 	}
 
 	@Test
-	public void testAdditiveInvert() throws FieldException {
-		tComplex1n.scale(Float.valueOf(-1f));
+	public void testMultiplyInvert() throws FieldException {
+		tComplex1n.scale(Float.valueOf(0.0f));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex1n.invert(), tComplex1));
-		tComplex1n.scale(Float.valueOf(-1f));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex0.invert(), tComplex5));
 	}
 

@@ -139,10 +139,9 @@ class ComplexDCoreTest {
 	}
 
 	@Test
-	public void testAdditiveInvert() throws FieldException {
-		tComplex1n.scale(Double.valueOf(-1d));
+	public void testMultiplyInvert() throws FieldException {
+		tComplex1n.scale(Double.valueOf(0.0d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex1n.invert(), tComplex1));
-		tComplex1n.scale(Double.valueOf(-1d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex0.invert(), tComplex5));
 	}
 

@@ -130,10 +130,7 @@ public final class GProduct {
 		if (pGP == null)
 			throw new BadSignatureException(this, "Can't extract signature from null GProduct.");
 
-		if (pGP.getSignature().length() == 0)
-			nSignature = new short[1];
-		else
-			nSignature = new short[pGP.getSignature().length()];
+		nSignature = (pGP.getSignature().length() == 0) ? new short[1] : new short[pGP.getSignature().length()];
 		fillNumericSignature(pGP.getSignature());
 		signature = new String(pGP.getSignature());
 		canonicalBasis = pGP.getBasis(); // Brand new one not needed. Re-used like an enumeration.
@@ -157,15 +154,12 @@ public final class GProduct {
 	public GProduct(Basis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
-		if (!Basis.validateSize(pSig.length()))
+		else if (!Basis.validateSize(pSig.length()))
 			throw new GeneratorRangeException("Signature length unsupported");
-		if ((int) Math.pow(2, pSig.length()) != pB.getBladeCount())
+		else if ((int) Math.pow(2, pSig.length()) != pB.getBladeCount())
 			throw new BadSignatureException(this, "Signature size mis-match with offered Basis.");
 
-		if (pSig.length() == 0)
-			nSignature = new short[1];
-		else
-			nSignature = new short[pSig.length()];
+		nSignature = (pSig.length() == 0) ? new short[1] : new short[pSig.length()];
 		fillNumericSignature(pSig);
 		signature = pSig;
 		canonicalBasis = pB;
@@ -189,13 +183,10 @@ public final class GProduct {
 	public GProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
-		if (!Basis.validateSize(pSig.length()))
+		else if (!Basis.validateSize(pSig.length()))
 			throw new GeneratorRangeException("Signature length unsupported");
 
-		if (pSig.length() == 0)
-			nSignature = new short[1];
-		else
-			nSignature = new short[pSig.length()];
+		nSignature = (pSig.length() == 0) ? new short[1] : new short[pSig.length()];
 		fillNumericSignature(pSig);
 		signature = pSig;
 		canonicalBasis = CladosGBuilder.INSTANCE.createBasis((short) pSig.length());
