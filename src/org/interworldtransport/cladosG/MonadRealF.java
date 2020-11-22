@@ -114,7 +114,7 @@ public class MonadRealF extends MonadAbstract {
 	public static boolean isScaledIdempotent(MonadRealF pM) throws CladosMonadException, FieldException {
 		if (isGZero(pM))
 			return true;
-		if (isIdempotent(pM))
+		else if (isIdempotent(pM))
 			return true;
 
 		// Find the first non-zero coefficient of pM^2, invert it, rescale pM by it and
@@ -444,7 +444,7 @@ public class MonadRealF extends MonadAbstract {
 		case 4: // Unit -PScalar case
 			tSpot = getAlgebra().getGradeRange((short) (getAlgebra().getGradeCount() - 1));
 			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
-			cM[tSpot[0]].scale(-1.0f);
+			cM[tSpot[0]].scale(Float.valueOf(-1.0f));
 			break;
 
 		default:
@@ -569,7 +569,7 @@ public class MonadRealF extends MonadAbstract {
 			// new coefficient is old coeff moved to left-dual blade.
 			tNewCoeff[prd] = copyOf(cM[j]);
 			// now account for possible sign flip from left dual
-			tNewCoeff[prd].scale(getAlgebra().getGProduct().getSign(tSpot[0], j));
+			tNewCoeff[prd].scale(Float.valueOf(getAlgebra().getGProduct().getSign(tSpot[0], j)));
 			// sign flip works because number type accepts scaling by raw shorts
 		}
 		// tNewCoeff now has a copy of the coefficients needed for 'this', so set them.
@@ -594,7 +594,7 @@ public class MonadRealF extends MonadAbstract {
 			// new coefficient is old coeff moved to left-dual blade.
 			tNewCoeff[drp] = copyOf(cM[j]);
 			// now account for possible sign flip from left dual
-			tNewCoeff[drp].scale(getAlgebra().getGProduct().getSign(j, tSpot[0]));
+			tNewCoeff[drp].scale(Float.valueOf(getAlgebra().getGProduct().getSign(j, tSpot[0])));
 			// sign flip works because number type accepts scaling by raw shorts
 		}
 		// tNewCoeff now has a copy of the coefficients needed for 'this', so set them.
@@ -661,7 +661,7 @@ public class MonadRealF extends MonadAbstract {
 			}
 			short[] tSpot = getAlgebra().getGradeRange(j);
 			for (short l = tSpot[0]; l <= tSpot[1]; l++)
-				cM[l].scale(0.0f);
+				cM[l].scale(Float.valueOf(0.0F));
 			j++;
 		}
 		setGradeKey();
@@ -685,7 +685,7 @@ public class MonadRealF extends MonadAbstract {
 
 		short[] tSpot = getAlgebra().getGradeRange((short) pGrade);
 		for (short l = tSpot[0]; l <= tSpot[1]; l++)
-			cM[l].scale(0.0f);
+			cM[l].scale(Float.valueOf(0.0F));
 
 		setGradeKey();
 		return this;
@@ -703,7 +703,7 @@ public class MonadRealF extends MonadAbstract {
 		for (short j = 1; j < getAlgebra().getGradeCount(); j += 2) {
 			tSpot = getAlgebra().getGradeRange(j);
 			for (short l = tSpot[0]; l <= tSpot[1]; l++)
-				cM[l].scale(-1.0f);
+				cM[l].scale(Float.valueOf(-1.0F));
 		}
 		return this;
 	}
@@ -849,7 +849,7 @@ public class MonadRealF extends MonadAbstract {
 						short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
 
 						// Adjust sign of contribution for product sign of blades
-						tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
+						tCtrbt.scale(Float.valueOf(getAlgebra().getGProduct().getSign(i, j)));
 
 						// Add the contribution to new coeff array
 						tNewCoeff[prd].add(tCtrbt);
@@ -887,7 +887,7 @@ public class MonadRealF extends MonadAbstract {
 					short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
 
 					// Adjust sign of contribution for product sign of blades
-					tCtrbt.scale(getAlgebra().getGProduct().getSign(i, j));
+					tCtrbt.scale(Float.valueOf(getAlgebra().getGProduct().getSign(i, j)));
 
 					// Add the contribution to new coeff array
 					tNewCoeff[prd].add(tCtrbt);
@@ -968,7 +968,7 @@ public class MonadRealF extends MonadAbstract {
 						short prd = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
 
 						// Adjust sign of contribution for product sign of blades
-						tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
+						tCtrbt.scale(Float.valueOf(getAlgebra().getGProduct().getSign(j, i)));
 
 						// Add the contribution to new coeff array
 						tNewCoeff[prd].add(tCtrbt);
@@ -1005,7 +1005,7 @@ public class MonadRealF extends MonadAbstract {
 					short drp = (short) (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
 
 					// Adjust sign of contribution for product sign of blades
-					tCtrbt.scale(getAlgebra().getGProduct().getSign(j, i));
+					tCtrbt.scale(Float.valueOf(getAlgebra().getGProduct().getSign(j, i)));
 
 					// Add the contribution to new coeff array
 					tNewCoeff[drp].add(tCtrbt);
@@ -1112,7 +1112,7 @@ public class MonadRealF extends MonadAbstract {
 				continue; // This ensures the remainder must be 2 or 3
 			tSpot = getAlgebra().getGradeRange(j);
 			for (short l = tSpot[0]; l <= tSpot[1]; l++)
-				cM[l].scale(-1.0f);
+				cM[l].scale(Float.valueOf(-1.0f));
 		}
 		return this;
 	}

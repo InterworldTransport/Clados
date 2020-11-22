@@ -30,45 +30,40 @@ package org.interworldtransport.cladosF;
  * an algebra. All Clados objects use DivField descendants as a result.
  * <p>
  * DivField's capture only a reference frame type, so they appear to be named.
- * However, they are named with Cardinal objects so their names can be shared
- * as references, thus survive reference frame match tests.
+ * However, they are named with Cardinal objects so their names can be shared as
+ * references, thus survive reference frame match tests.
  * <p>
- * The number to be plugged in, though, doesn't appear until later in a child
- * of this class. This matters because the number of reals involved in the field
+ * The number to be plugged in, though, doesn't appear until later in a child of
+ * this class. This matters because the number of reals involved in the field
  * varies. Complex numbers require two. Quaternions would require four.
  * <p>
- * The only reason this class isn't an interface is the presence of the 
- * Cardinal data member.
+ * The only reason this class isn't an interface is the presence of the Cardinal
+ * data member.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
-public abstract class DivField
-{
+public abstract class DivField {
 	/**
 	 * Check to see if the two argument are of the same cardinal.
 	 * 
-	 * @param pE
-	 *            DivField
-	 * @param pF
-	 *            DivField
+	 * @param pE DivField
+	 * @param pF DivField
 	 * @return boolean
 	 */
-	public static final boolean isTypeMatch(DivField pE, DivField pF)
-	{
-		if(pE._card==null && pF._card==null)
+	public static final boolean isTypeMatch(DivField pE, DivField pF) {
+		if (pE._card == null && pF._card == null)
 			return true;
 		return pE._card == pF._card;
 	}
 
 	/**
-	 * Object for the cardinal. A string used to be used here, but an object
-	 * lets us reuse the object through a reference allowing all coefficients in
-	 * the monads of a nyad to point to the same place.
+	 * Object for the cardinal. A string used to be used here, but an object lets us
+	 * reuse the object through a reference allowing all coefficients in the monads
+	 * of a nyad to point to the same place.
 	 */
-	protected Cardinal	_card;
-	
+	protected Cardinal _card;
 
 	@Override
 	public boolean equals(Object obj) {
@@ -92,8 +87,7 @@ public abstract class DivField
 	 * 
 	 * @return Cardinal (A cardinal name for a DivField)
 	 */
-	public Cardinal getCardinal()
-	{
+	public Cardinal getCardinal() {
 		return _card;
 	}
 
@@ -102,9 +96,8 @@ public abstract class DivField
 	 * 
 	 * @return Cardinal (A cardinal name for a DivField)
 	 */
-	public String getCardinalString()
-	{
-		return _card.getType();
+	public String getCardinalString() {
+		return _card.getUnit();
 	}
 
 	@Override
@@ -118,11 +111,16 @@ public abstract class DivField
 	/**
 	 * Set method for _card
 	 * 
-	 * @param pType
-	 *            Cardinal
+	 * @param pType Cardinal
 	 */
-	protected void setCardinal(Cardinal pType)
-	{
+	protected void setCardinal(Cardinal pType) {
 		_card = pType;
 	}
+	
+	/**
+	 * Return a string representation of the field element.
+	 * 
+	 * @return String Flat string representation of this Divisible float(s) field
+	 */
+	public abstract String toXMLString();
 }

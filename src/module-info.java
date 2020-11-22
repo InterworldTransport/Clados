@@ -6,6 +6,6 @@ module org.clados {
 	exports org.interworldtransport.cladosGExceptions;
 	exports org.interworldtransport.cladosGTest;
 	
-	requires org.junit.jupiter.api;
 	requires java.base;
+	requires org.junit.jupiter.api;
 }

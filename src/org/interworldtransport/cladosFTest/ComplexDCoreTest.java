@@ -134,15 +134,15 @@ class ComplexDCoreTest {
 
 	@Test
 	public void testScale() {
-		assertTrue(isEqual(tComplex1n.scale(-1f), tComplex1));
-		tComplex1n.scale(-1f);
+		assertTrue(isEqual(tComplex1n.scale(Double.valueOf(-1d)), tComplex1));
+		tComplex1n.scale(Double.valueOf(-1d));
 	}
 
 	@Test
 	public void testAdditiveInvert() throws FieldException {
-		tComplex1n.scale(-1f);
+		tComplex1n.scale(Double.valueOf(-1d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex1n.invert(), tComplex1));
-		tComplex1n.scale(-1f);
+		tComplex1n.scale(Double.valueOf(-1d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex0.invert(), tComplex5));
 	}
 
@@ -150,7 +150,7 @@ class ComplexDCoreTest {
 	public void testAdd() throws FieldException {
 		assertTrue(isZero(add(tComplex1, tComplex1n)));
 		assertTrue(isZero(tComplex1.add(tComplex1n)));
-		assertFalse(isEqual(tComplex1.add(tComplex1n).scale(-1f), tComplex1n));
+		assertFalse(isEqual(tComplex1.add(tComplex1n).scale(Double.valueOf(-1d)), tComplex1n));
 	}
 
 	@Test

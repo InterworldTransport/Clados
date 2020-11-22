@@ -134,15 +134,15 @@ class RealDCoreTest {
 
 	@Test
 	public void testScale() {
-		assertTrue(isEqual(tReal1n.scale(-1f), tReal1));
-		tReal1n.scale(-1f);
+		assertTrue(isEqual(tReal1n.scale(Double.valueOf(-1d)), tReal1));
+		tReal1n.scale(Double.valueOf(-1d));
 	}
 
 	@Test
 	public void testAdditiveInvert() throws FieldException {
-		tReal1n.scale(-1f);
+		tReal1n.scale(Double.valueOf(-1d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tReal1n.invert(), tReal1));
-		tReal1n.scale(-1f);
+		tReal1n.scale(Double.valueOf(-1d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tReal0.invert(), tReal5));
 	}
 
@@ -150,7 +150,7 @@ class RealDCoreTest {
 	public void testAdd() throws FieldException {
 		assertTrue(isZero(add(tReal1, tReal1n)));
 		assertTrue(isZero(tReal1.add(tReal1n)));
-		assertFalse(isEqual(tReal1.add(tReal1n).scale(-1f), tReal1n));
+		assertFalse(isEqual(tReal1.add(tReal1n).scale(Double.valueOf(-1d)), tReal1n));
 	}
 
 	@Test

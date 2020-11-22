@@ -65,19 +65,20 @@ public final class GProduct {
 	public static final boolean validateSignature(String pSg) {
 		if (pSg == null)
 			return false; // Nothing to test
-		if (!Basis.validateSize(pSg.length()))
+		else if (!Basis.validateSize(pSg.length()))
 			return false;
-		if (pSg.length() == 0)
+		else if (pSg.length() == 0)
 			return true; // Empty list IS allowed
-		for (char j : pSg.toCharArray())
-			switch (j) {
-			case '+':
-				continue;
-			case '-':
-				continue;
-			default:
-				return false;
-			}
+		else
+			for (char j : pSg.toCharArray())
+				switch (j) {
+				case '+':
+					continue;
+				case '-':
+					continue;
+				default:
+					return false;
+				}
 		return true; // nothing bad detected
 	}
 
@@ -198,7 +199,8 @@ public final class GProduct {
 		fillNumericSignature(pSig);
 		signature = pSig;
 		canonicalBasis = CladosGBuilder.INSTANCE.createBasis((short) pSig.length());
-		//canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed? Implied by new Signature.
+		// canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed?
+		// Implied by new Signature.
 
 		// Fill the ProductResult array with integers representing Vector
 		// Basis elements that show the product of two other such elements.

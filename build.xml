@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <project name="Clados" default="dist" basedir=".">
 	
 	<description>
     simple example build file
 	</description>
 	
-	<property 	name="appHome" 	value="https://github.com/InterworldTransport/CladosCalculator" />
+	<property 	name="appHome" 	value="https://github.com/InterworldTransport/Clados" />
 	<property 	name="srcDir" 	value="src"/>
 	<property 	name="docDir"	value="doc" />
 	<property 	name="buildDir" value="build"/>
@@ -55,26 +55,39 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
         		description="compile the source">
     <!-- Compile the Java code from ${src} into ${build} -->
     <javac 		includeantruntime="false" 
-				classpath="	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.launcher_1.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.suite.api_1.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.migrationsupport_5.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.commons_1.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.engine_1.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.apiguardian_1.0.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.junit.vintage.engine_5.1.0.v20180327-1502.jar:
-							/Users/alfredwdiffer/.p2/pool/plugins/org.opentest4j_1.0.0.v20180327-1502.jar:
-					    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.engine_5.1.0.v20180327-1502.jar:
-					    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.platform.runner_1.1.0.v20180327-1502.jar:
-					    	/Users/alfredwdiffer/.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar:
-					    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.params_5.1.0.v20180327-1502.jar" 
+				modulepath="/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.opentest4j*.jar:
+    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.vintage.engine*.jar:
+    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.engine*.jar:
+    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.engine*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.commons*.jar:
+    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.launcher*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.suite.api*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.migrationsupport*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.apiguardian*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.runner*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.hamcrest.core*.jar:
+					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.params*.jar"
     			srcdir="${srcDir}" 
+    			source="14"
     			destdir="${buildDir}"> 
-  		<!--<exclude name="com/interworldtransport/cladosGTest/**"/>-->
-  		<!--<exclude name="com/interworldtransport/cladosFTest/**"/>-->
+  		<!--<exclude name="org/interworldtransport/cladosGTest/**"/>-->
+  		<!--<exclude name="org/interworldtransport/cladosFTest/**"/>-->
     </javac>
   </target>
+	
+	  <target 		name="compile-notests" 
+	  				depends="init"
+	        		description="compile the source">
+	    <!-- Compile the Java code from ${src} into ${build} -->
+	    <javac 		includeantruntime="false"  
+	    			source="14"
+	    			srcdir="${srcDir}" 
+	    			destdir="${buildDir}"> 
+	  		<exclude name="org/interworldtransport/cladosGTest/*.java"/>
+	  		<exclude name="org/interworldtransport/cladosFTest/*.java"/>
+	    </javac>
+	  </target>
 	
 	<target name="javadoc">
 		<tstamp/>
@@ -103,13 +116,13 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
 	    			nonavbar="false" 
 	    			notree="false" 
 	    			overview="${srcDir}/overview.html" 
-	    			packagenames="	com.interworldtransport.cladosFExceptions,
-	    							com.interworldtransport.cladosF,
-	    							com.interworldtransport.cladosFTest,
-	    							com.interworldtransport.cladosGExceptions,
-	    							com.interworldtransport.cladosG,
-	    							com.interworldtransport.cladosGTest"
-	    			source="10" 
+	    			packagenames="	org.interworldtransport.cladosFExceptions,
+	    							org.interworldtransport.cladosF,
+	    							org.interworldtransport.cladosFTest,
+	    							org.interworldtransport.cladosGExceptions,
+	    							org.interworldtransport.cladosG,
+	    							org.interworldtransport.cladosGTest"
+	    			source="14" 
 	    			sourcepath="${srcDir}" 
 	    			splitindex="true" 
 	    			use="true" 
@@ -125,14 +138,15 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
   
 	
 	<target 		name="dist" 
-	  				depends="compile"
+	  				depends="compile-notests"
 	        		description="generate the distribution">
 	    <!-- Create the distribution directory -->
 	    <mkdir 		dir="${distDir}/lib"/>
 
 	    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
 	    <jar 		jarfile="${distDir}/lib/clados-${DSTAMP}.jar" 
-	    			basedir="${buildDir}" />
+	    			basedir="${buildDir}" 
+	    			excludes="${buildDir}/**/*Test.class"/>
 	</target>
 	
 	<target 		name="distdoc" 

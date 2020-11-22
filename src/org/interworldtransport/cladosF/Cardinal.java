@@ -25,57 +25,75 @@
 package org.interworldtransport.cladosF;
 
 /**
- * This class is a simple string holder that names a division field.
- * Examples include Real, Complex, and Quaternion.
+ * This class is a simple string holder that names a division field in a manner
+ * similar to the concept of 'units' in a physical model. Examples... "metres",
+ * "litres", "amperes". There is no requirement one use a particular standard
+ * for unit systems, though. They are free strings.
  * <p>
- * Cardinals are conveniences only. They are meant to provide all DivFields with 
- * a single object that names them in order to speed up field comparisons in 
- * TypeMatch methods. A class using fields for calculations would declare only 
- * one of these and then share the reference among all the objects.
+ * Cardinals are meant to provide all DivFields instances with a single object
+ * they may share that names them in order to speed field comparisons in
+ * TypeMatch methods. A class using fields for calculations would declare only
+ * one of these and then share the reference among all the objects that may be
+ * operated upon by the two primary opertaions of the field. ( +, * )
  * <p>
  * This may seem like a waste of time, but it is useful when a class must be
  * prepared to use different kinds of fields without knowing in advance which
  * one will be created. It is most important when an object exists that uses
- * DivFields with unknown pedigrees.
+ * DivFields with unknown pedigrees. The Cardinal can be checked to discover
+ * intended uses and avoid mixing apples and oranges.
  * <p>
  * One consequence of this approach is that two division fields might use
- * different objects to type them. The TypeMismatch method will state that they
- * are different, so this allows an application writer to keep two distinct
- * number system apart in their application even though the fields are internally
- * identical. This is useful when objects in one algebra might be scaled
- * different than objects in another.
+ * different Cardinal objects of the same name. The TypeMatch method in a
+ * DivField will state that they are different because object equality is tested
+ * instead of string content equality. This allows an application writer to keep
+ * two distinct systems of numbers apart in their application even though the
+ * fields are internally identical. This is useful when objects in one algebra
+ * might be scaled different than objects in another. If one never intends to
+ * use this feature, though, it is easy to avoid. Simply re-use a Cardinal.
  * <p>
- * Yes. This soft typing to an OOP developer. The point is that it allows for
- * differences between objects that can't assume 'scale' means the same thing
- * to both of them.
+ * Yes. This is soft typing to an OOP developer. The point is that it allows for
+ * differences between objects that can't assume 'scale' means the same thing to
+ * both of them. Since 'scale' and 'multiply' are NOT the same concepts, this
+ * distinction is needed in some scenarios.
  * <p>
+ * 
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
-
-public final class Cardinal
-{
-	public static final Cardinal generate(CladosField pT)
-	{
+public final class Cardinal {
+	/**
+	 * When one does not wish to use Cardinals much, the best bypass is to use this
+	 * factory method to create a minimal cardinal. The unit value will be set to
+	 * the name of the CladosField offered
+	 * 
+	 * @param pT CladosField Name the element of the enumeration will be re-used as
+	 *           the unit value within the Cardinal.
+	 * @return Cardinal
+	 */
+	public static final Cardinal generate(CladosField pT) {
 		return new Cardinal(pT);
 	}
 
-	public static final Cardinal generate(String pT)
-	{
+	/**
+	 * When one does wish to use Cardinals, the best approach is to use this factory
+	 * method to create a typical cardinal. The unit value is set to the string.
+	 * 
+	 * @param pT String The Cardinal's unit value will be set to this string.
+	 * @return Cardinal
+	 */
+	public static final Cardinal generate(String pT) {
 		return new Cardinal(pT);
 	}
 
-	private String	type;
-	
-	private Cardinal(CladosField pT)
-	{
-		type = pT.name();
+	private String unit;
+
+	private Cardinal(CladosField pT) {
+		unit = pT.name();
 	}
-	
-	private Cardinal(String pT)
-	{
-		type = pT;
+
+	private Cardinal(String pT) {
+		unit = pT;
 	}
 
 	@Override
@@ -87,33 +105,31 @@ public final class Cardinal
 		if (getClass() != obj.getClass())
 			return false;
 		Cardinal other = (Cardinal) obj;
-		if (type == null) {
-			if (other.type != null)
+		if (unit == null) {
+			if (other.unit != null)
 				return false;
-		} else if (!type.equals(other.type))
+		} else if (!unit.equals(other.unit))
 			return false;
 		return true;
 	}
 
-	public String getType()
-	{
-		return type;
+	public String getUnit() {
+		return unit;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((unit == null) ? 0 : unit.hashCode());
 		return result;
 	}
 
-	public void setType(String pFT)
-	{
-		type = pFT;
+	public void setUnit(String pFT) {
+		unit = pFT;
 	}
-	public String toXMLString()
-	{
-		return ("<Cardinal unit=\"" + type + "\" />\n");
+
+	public String toXMLString() {
+		return ("<Cardinal unit=\"" + unit + "\" />\n");
 	}
 }

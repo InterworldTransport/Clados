@@ -122,7 +122,7 @@ class CoreAlgebraRealFTest {
 		assertFalse(alg6.getFoot() == alg1.getFoot());
 		assertTrue(alg6.getGProduct() == (alg1.getGProduct()));
 		assertFalse(alg6.getFoot().getCardinal(0) == alg1.getFoot().getCardinal(0));
-		assertTrue(alg6.shareCardinal().getType().equals(alg1.shareCardinal().getType()));
+		assertTrue(alg6.shareCardinal().getUnit().equals(alg1.shareCardinal().getUnit()));
 		// Cardinal string re-use is NOT Cardinal re-uses
 	}
 

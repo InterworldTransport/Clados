@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosF;
 
+import java.util.ArrayList;
+
 /**
  * This interface does not implement anything. It is a marker interface intended
  * to act as a pseudonym for all DivField descendants.
@@ -32,8 +34,19 @@ package org.interworldtransport.cladosF;
  * @author Dr Alfred W Differ
  * 
  */
-public interface Scale
+public class Scale<T extends DivField & Divisible> extends ArrayList<T> {
+	private CladosField mode;
 
-{
+	public Scale(CladosField pIn) {
+		mode = pIn;
+	}
 
+	public CladosField getMode() {
+		return mode;
+	}
+	
+	public Scale<T> setMode(CladosField mode) {
+		this.mode = mode;
+		return this;
+	}
 }

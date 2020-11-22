@@ -143,7 +143,7 @@ public enum CladosFBuilder { // This has an implicit private constructor we won'
 	}
 
 	public Cardinal findCardinal(String pName) {
-		return listOfCardinals.stream().filter(x -> x.getType().equals(pName)).findFirst().orElse(null);
+		return listOfCardinals.stream().filter(x -> x.getUnit().equals(pName)).findFirst().orElse(null);
 	}
 
 	public Cardinal getCardinal(short pLoc) {

@@ -134,15 +134,15 @@ class ComplexFCoreTest {
 
 	@Test
 	public void testScale() {
-		assertTrue(isEqual(tComplex1n.scale(-1f), tComplex1));
-		tComplex1n.scale(-1f);
+		assertTrue(isEqual(tComplex1n.scale(Float.valueOf(-1f)), tComplex1));
+		tComplex1n.scale(Float.valueOf(-1f));
 	}
 
 	@Test
 	public void testAdditiveInvert() throws FieldException {
-		tComplex1n.scale(-1f);
+		tComplex1n.scale(Float.valueOf(-1f));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex1n.invert(), tComplex1));
-		tComplex1n.scale(-1f);
+		tComplex1n.scale(Float.valueOf(-1f));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tComplex0.invert(), tComplex5));
 	}
 
@@ -150,7 +150,7 @@ class ComplexFCoreTest {
 	public void testAdd() throws FieldException {
 		assertTrue(isZero(add(tComplex1, tComplex1n)));
 		assertTrue(isZero(tComplex1.add(tComplex1n)));
-		assertFalse(isEqual(tComplex1.add(tComplex1n).scale(-1f), tComplex1n));
+		assertFalse(isEqual(tComplex1.add(tComplex1n).scale(Float.valueOf(-1f)), tComplex1n));
 	}
 
 	@Test

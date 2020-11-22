@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.ScalableD<br>
+ * ---org.interworldtransport.cladosF.Normalizable<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.ScalableD<br>
+ * ---org.interworldtransport.cladosF.Normalizable<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
@@ -27,28 +27,33 @@ package org.interworldtransport.cladosF;
 /**
  * This interface implements the part of the concept of a Division Field from 
  * mathematics. Specifically, if is the portion that says the field supports
- * the notion of'scaling the magnitude'. 
+ * the notion of 'length' or 'magnitude'. 
  * <p>
- * For real numbers this is scaling the distance from a number line origin. 
- * For complex numbers, one scales the radius in a typical polar representation.
+ * For real numbers this is just the idea of distance from a number line origin. 
+ * For complex numbers, it is the radius in a typical polar representation.
  * <p>
- * This particular interface also requires that input be delivered as a double.
+ * This particular interface also requires that responses be delivered as floats.
  * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
  */
-public interface ScalableD
-
+public interface Normalizable
 {
 	/**
-	 * Scale method multiplies the modulus by the scale
+	 * This is the square root of the SQ Modulus. It is smarter to calculate
+	 * SQModulus first.
 	 * 
-	 * @param pS
-	 * 		double
-	 * 
-	 * @return DivisableD
+	 * @return Number
 	 */
-	public abstract Divisible scale(double pS);
-	
+	public abstract Number getModulus();
+
+	/**
+	 * This function delivers the sum of the squares of the numeric values. Many
+	 * times it is the modulus squared that is actually needed so it makes sense
+	 * to calculate this before the modulus itself.
+	 * 
+	 * @return Number
+	 */
+	public abstract Number getSQModulus();
 }
