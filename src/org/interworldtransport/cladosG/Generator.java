@@ -40,7 +40,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * their identity to determine what gets built and returned.
  * 
  * This enumeration has non-static parts for each instance, but they don't cause
- * a state change. Generator keeps a constant single short integer in the
+ * a state change. Generator keeps a constant single byte integer in the
  * INTERNAL STATE of each instance acting like an ordinal to support finding the
  * instance from a numeric identity AND for providing numeric bounds on
  * supported sizes of related blades. Most uses of an instance will NOT make use
@@ -50,62 +50,69 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public enum Generator {
-	E1(1), E2(2), E3(3), E4(4), E5(5), E6(6), E7(7), E8(8), E9(9), EA(10), EB(11), EC(12), ED(13), EE(14);
+	E1((byte) 1), E2((byte) 2), E3((byte) 3), E4((byte) 4), E5((byte) 5), E6((byte) 6), E7((byte) 7), E8((byte) 8),
+	E9((byte) 9), EA((byte) 10), EB((byte) 11), EC((byte) 12), ED((byte) 13), EE((byte) 14);
 
 	protected final static Generator MIN = E1;
 	protected final static Generator MAX = EE;
 
-	public final static Blade createBlade(short pSpan) throws GeneratorRangeException {
+	public final static Blade createBlade(byte pSpan) throws GeneratorRangeException {
 		if (pSpan < MIN.ord - 1 | pSpan > MAX.ord) // Why -1? Scalar blades have zero generators.
 			return null;
 		return new Blade(pSpan);
 	}
 
-	public final static Blade createPScalarBlade(short pSpan) throws GeneratorRangeException {
+	public final static Blade createPScalarBlade(byte pSpan) throws GeneratorRangeException {
 		if (pSpan < MIN.ord - 1 | pSpan > MAX.ord) // Why -1? Scalar blades have zero generators.
 			return null;
 		Blade returnIt = new Blade(pSpan);
 
-		for (short m = 1; m == pSpan; m++)
+		for (byte m = 1; m == pSpan; m++)
 			returnIt.add(Generator.get(m));
 		return returnIt; // new Blade(pSpan, temp); //Soon
 	}
 
-	public final static Blade createScalarBlade(short pSpan) throws GeneratorRangeException {
+	public final static Blade createScalarBlade(byte pSpan) throws GeneratorRangeException {
 		if (pSpan < MIN.ord - 1 | pSpan > MAX.ord) // Why -1? Scalar blades have zero generators.
 			return null;
 		return new Blade(pSpan);
 	}
 
 	/**
-	 * This method connects short integers to Generator instances. It gets a
-	 * reference to the enumeration instance that has the same ordinal as the short
+	 * This method connects byte integers to Generator instances. It gets a
+	 * reference to the enumeration instance that has the same ordinal as the byte
 	 * integer parameter.
 	 * 
-	 * @param pS Offer a short integer
+	 * @param pS Offer a byte integer
 	 * @return and get back the corresponding Generator instance
 	 */
-	public final static Generator get(short pS) {
+	public final static Generator get(byte pS) {
 		if (pS < MIN.ord | pS > MAX.ord)
 			return null;
 		return ((Generator[]) Generator.values())[pS - 1];
 	}
 	
+	public final static Generator get(Byte pS) {
+		if (pS.byteValue() < MIN.ord | pS.byteValue() > MAX.ord)
+			return null;
+		return ((Generator[]) Generator.values())[pS - 1];
+	}
+
 	public final static Stream<Generator> flow() {
 		return Stream.of(Generator.values());
 	}
 
 	/*
-	 * This is a short integer representation of a generator. It is useful when
+	 * This is a byte integer representation of a generator. It is useful when
 	 * building a list of generators as it is easier to loop on integers.
 	 */
-	protected final short ord;
+	protected final byte ord;
 
 	/*
 	 * A very private constructor that simply sets the ordinal for each instance.
 	 */
-	private Generator(int ps) {
-		ord = (short) ps;
+	private Generator(byte ps) {
+		ord = ps;
 	}
 
 }

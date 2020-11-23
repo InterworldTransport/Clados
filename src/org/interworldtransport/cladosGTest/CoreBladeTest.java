@@ -10,10 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreBladeTest {
-	private short[] j = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 10 };
-	private short[] k = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	private short[] m = { 1, 2, 3, 4, 5, 6, 7, 8 };
-	private Generator[] g = {Generator.E1, Generator.E2, Generator.E3, Generator.E4};
+	private byte[] j = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 10 };
+	private byte[] k = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	private byte[] m = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	private Generator[] g = { Generator.E1, Generator.E2, Generator.E3, Generator.E4 };
 	private Blade tB0;
 	private Blade tB4;
 	private Blade tB42;
@@ -21,13 +21,13 @@ class CoreBladeTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		
-		tB0 = new Blade((short) 0);
-		tB4 = new Blade((short) 4);
+
+		tB0 = new Blade((byte) 0);
+		tB4 = new Blade((byte) 4);
 		tB4.add(g[0]).add(g[1]);
 		tB42 = new Blade(tB4);
 		tB42.add(g[3]).add(g[0]).add(g[1]);
-		tB43 = new Blade((short) 4);
+		tB43 = new Blade((byte) 4);
 		tB43.add(g[1]).add(g[0]);
 	}
 
@@ -44,25 +44,25 @@ class CoreBladeTest {
 		assertTrue(tB4.key() == 7L && tB4.get().size() == 2);
 		assertTrue(tB43.key() == tB4.key());
 		assertFalse(tB42.key() == tB43.key());
-		
-		Blade tB8 = new Blade((short) 8);
+
+		Blade tB8 = new Blade((byte) 8);
 		tB8.add(m); // Should be pscalar now
-		Blade tB10 = new Blade((short) 10);
+		Blade tB10 = new Blade((byte) 10);
 		tB10.add(k); // Should be pscalar now
-		Blade tB14 = new Blade((short) 14);
+		Blade tB14 = new Blade((byte) 14);
 		tB14.add(j); // Should be pscalar now
 
 		assertTrue(tB8.key() == 6053444L && tB8.get().size() == 8);
 		assertTrue(tB10.get().size() == 10);
 		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
 
-		tB14.remove((short) 12);
+		tB14.remove((byte) 12);
 		assertTrue(tB14.get().size() == 13);
 
-		tB14.add((short) 10); // generator already there, so silently ignore the add.
+		tB14.add((byte) 10); // generator already there, so silently ignore the add.
 		assertTrue(tB14.get().size() == 13);
 
-		tB14.add(Short.valueOf((short) 12));
+		tB14.add(Byte.valueOf((byte) 12));
 		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
 
 	}
@@ -70,9 +70,9 @@ class CoreBladeTest {
 	@Test
 	public void testLimitsIgnored() throws GeneratorRangeException {
 		Blade newtB0 = new Blade(tB0);
-		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there. 
+		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there.
 		assertTrue(newtB0.equals(tB0)); // tB is a scalar. Nothing to remove. Silent acceptance expected.
-		Blade tB10 = new Blade((short) 10);
+		Blade tB10 = new Blade((byte) 10);
 		tB10.add(k); // Should be pscalar now
 		Blade newtB10 = new Blade(tB10);
 		newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
@@ -81,13 +81,19 @@ class CoreBladeTest {
 
 	@Test
 	public void testLowGeneratorLimit() throws GeneratorRangeException {
-		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((short) 0));
+		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 0));
 	}
-	
+
 	@Test
 	public void testHighGeneratorLimit() throws GeneratorRangeException {
-		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((short) 16));
+		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 16));
 	}
-	
-
+/*
+	@Test
+	public void testXMLOutput() throws GeneratorRangeException {
+		Blade tB14 = new Blade((byte) 14);
+		tB14.add(j); // Should be pscalar now
+		System.out.println(tB14.toXMLString(""));
+	}
+*/
 }

@@ -26,6 +26,7 @@ package org.interworldtransport.cladosG;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -33,25 +34,27 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * A Blade is essentially an outer product space built from 0 to many vectors.
  * If the vectors aren't parallel, the blade is of higher rank than a vector. At
  * this low level, though, there is no concept of an inner product, thus no
- * sense of 'parallel'. That leaves a blade as a 'list' of distinct directions
- * and a few supporting elements including an long integer key useful for
- * comparisons and short integer necessary for knowing how many possible
- * directions might be added to this blade.
+ * sense of 'parallel'. That leaves a blade as an ordered 'set' of distinct
+ * directions and a few supporting elements including a long integer key useful
+ * for comparisons and byte integer necessary for knowing how many possible
+ * directions might ever be added to this blade.
  * 
- * The directions are simply boxed short integers. They are boxed instead of
- * unboxed in order to make use of ArrayList objects which can't 'list' java
- * primitives. At present, the supported number of 'directions' is 0 to 14, so
- * the performance penalty between boxed and unboxed short integers is minor.
+ * The directions are simply Generators from an enumeration class. They are kept
+ * in an EnumSet which uses as its sense of order the same order generators are
+ * enumerated in their class. At present, the supported number of 'directions'
+ * is 0 to 14, so the enumeration class lists 14 possible generators.
  * 
- * The ArrayList keeps the Shorts in natural order associated with short
- * integers. If a new direction is added, the Blade will sort the Shorts from
- * lowest to highest immediately. This ensures later retrieval will always
- * deliver directions in the same order.
+ * The EnumSet keeps Generators in their natural order. If a new direction is
+ * added, the EnumSet will handle it 'late' in the computational sense. In other
+ * words, it doesn't matter where the new generator gets added. It matters ONLY
+ * when generators are iterated later when establishing a product table or
+ * generating a blade key. Iterators will always deliver directions in the same
+ * order.
  * 
- * For example, if a problem states there are six possible directions, a Blade
- * will contain zero to six of them represented as boxed Shorts 1 through 6. If
- * only 3 are in the Blade (making it a 3-blade) then only 3 will be in the
- * ArrayList. If the ArrayList is empty, zero directions are contained and the
+ * For example, if a sub-manifold has six possible directions, a Blade will
+ * contain zero to six of them represented as generators E1 through E6. If only
+ * 3 are in the Blade (making it a 3-blade) then only E1, E2, and E3 will be in
+ * the EnumSet. If the EnumSet is empty, zero directions are contained and the
  * blade represents a scalar.
  * 
  * @version 1.0
@@ -59,17 +62,18 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  *
  */
 public final class Blade {
-	protected static final short FLIP = -1;
-	protected static final short MAX = 14;
-	protected static final short MIN = 0;
+	protected static final byte FLIP = -1;
+	protected static final byte MAX = 14;
+	protected static final byte MIN = 0;
+	protected static final long MAX_KEY = 2234152501943159L;
 	private EnumSet<Generator> blade;
 	private long key = 0L;
-	private int sign = 1;
-	protected final short maxGrade; // This should be gradeCount-1 in a related basis
+	private byte sign = 1;
+	protected final byte maxGrade; // This should be gradeCount-1 in a related basis
 
 	/**
-	 * This is a copy constructor that builds an identical blade with new boxed
-	 * short integers containing the same short integer values.
+	 * This is a copy constructor that builds an identical blade with new boxed byte
+	 * integers containing the same byte integer values.
 	 * 
 	 * @param pB The Blade to copy
 	 * @throws GeneratorRangeException This can happen a few different ways, but
@@ -87,101 +91,85 @@ public final class Blade {
 
 	/**
 	 * This is a minimal constructor that establishes the blade's future
-	 * expectations regarding how many generators it might have to append to the
-	 * blade list.
+	 * expectations regarding how many generators it might have to add to the set.
 	 * 
-	 * @param pMaxGrade short integer for the number of possible directions that
+	 * @param pMaxGrade byte integer for the number of possible directions that
 	 *                  might appear in this blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
 	 *                                 than 14 directions. The current maximum is 14
 	 *                                 because a Basis internal array is indexed on
-	 *                                 short integers. If 15 generators were
+	 *                                 byte integers. If 15 generators were
 	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for
-	 *                                 short integers.
+	 *                                 from 0 to 2^15 which is one too many for byte
+	 *                                 integers.
 	 */
-	public Blade(short pMaxGrade) throws GeneratorRangeException {
+	public Blade(byte pMaxGrade) throws GeneratorRangeException {
 		super();
 		if (pMaxGrade < MIN | pMaxGrade > MAX)
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pMaxGrade);
 		blade = EnumSet.noneOf(Generator.class);
 		maxGrade = pMaxGrade;
-		// blade.ensureCapacity(maxGrade);
 	}
 
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGrade
-	 * expectations AND provides the short integer array of directions to load into
-	 * the ArrayList. These shorts need not be sorted since this constructor uses
-	 * the add() method which will handle sorting.
+	 * expectations AND provides an array of directions to load into the blade.
 	 * 
-	 * @param pMaxGrade short integer for the number of possible directions that
+	 * @param pMaxGrade byte integer for the number of possible directions that
 	 *                  might appear in this blade.
-	 * @param pDirs     short array containing directions to append to the blade's
-	 *                  list.
+	 * @param pDirs     Generator[] containing directions to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
 	 *                                 than 14 directions. The current maximum is 14
 	 *                                 because a Basis internal array is indexed on
-	 *                                 short integers. If 15 generators were
+	 *                                 byte integers. If 15 generators were
 	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for
-	 *                                 short integers.
+	 *                                 from 0 to 2^15 which is one too many for byte
+	 *                                 integers.
 	 */
-	public Blade(short pMaxGrade, Generator[] pDirs) throws GeneratorRangeException {
+	public Blade(byte pMaxGrade, Generator[] pDirs) throws GeneratorRangeException {
 		this(pMaxGrade);
-		blade = EnumSet.noneOf(Generator.class);
-		for (Generator tG : pDirs)
-			blade.add(tG);
-		// bubbleFlipSort();
+		Stream.of(pDirs).forEach(g -> blade.add(g));
 		makeKey();
 	}
 
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGrade
-	 * expectations AND provides the short integer array of directions to load into
-	 * the ArrayList. These shorts need not be sorted since this constructor uses
-	 * the add() method which will handle sorting.
+	 * expectations AND provides the byte integer array of directions to load into
+	 * the ArrayList. These bytes need not be sorted since this constructor uses the
+	 * add() method which will handle sorting.
 	 * 
-	 * @param pMaxGrade short integer for the number of possible directions that
+	 * @param pMaxGrade byte integer for the number of possible directions that
 	 *                  might appear in this blade.
-	 * @param pDirs     short array containing directions to append to the blade's
-	 *                  list.
+	 * @param pDirs     byte array containing directions to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
 	 *                                 than 14 directions. The current maximum is 14
 	 *                                 because a Basis internal array is indexed on
-	 *                                 short integers. If 15 generators were
+	 *                                 byte integers. If 15 generators were
 	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for
-	 *                                 short integers.
+	 *                                 from 0 to 2^15 which is one too many for byte
+	 *                                 integers.
 	 */
-	public Blade(short pMaxGrade, short[] pDirs) throws GeneratorRangeException {
+	public Blade(byte pMaxGrade, byte[] pDirs) throws GeneratorRangeException {
 		this(pMaxGrade);
-		blade = EnumSet.noneOf(Generator.class);
-		for (short tS : pDirs)
+		for (byte tS : pDirs)
 			blade.add(Generator.get(tS));
-		// bubbleFlipSort();
 		makeKey();
 	}
 
 	/**
 	 * The generator represents a 'direction' in the blade to be added. The blade is
-	 * first checked to see if it is at maximu size or whether ghe generator is
-	 * already in the list. It is then added to the blade list.
+	 * checked to see if it is at maximum size and whether the offered generator is
+	 * beyond masGrade. If either fails, the add silently returns the Blade
+	 * unchanged. If both pass, the generator is added to the set.
 	 * 
-	 * NO SORT of generators is performed. It is assumed here that the calling
-	 * routine has knowledge that supercedes the need to sort the new generator into
-	 * this blade.
-	 * 
-	 * @param pS Generator that will be added to the list with NO SORTING.
+	 * @param pS Generator that will be added to the set.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
 	public Blade add(Generator pS) {
 		if (isPScalar())
-			return this;
-		else if (blade.contains(pS))
 			return this;
 		else if (pS.ord > maxGrade)
 			return this;
@@ -192,125 +180,104 @@ public final class Blade {
 		}
 	}
 
+	/**
+	 * The generators represent 'directions' in the blade to be added. The blade is
+	 * checked to see if it is at maximum size. If it is, the add silently returns
+	 * the Blade unchanged. If it passes, the generators are added to the set if
+	 * they pass through the filter that blocks generators larger than maxGrade.
+	 * 
+	 * @param pS Generators that will be added to the set.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 */
 	public Blade add(Generator[] pS) {
-		if (!isPScalar()) {
-			for (Generator pT : pS) {
-				if (blade.contains(pT))
-					continue;
-				blade.add(pT);
-			}
+		if (isPScalar())
+			return this;
+		else {
+			Stream.of(pS).filter(g -> g.ord <= maxGrade).forEach(g -> blade.add(g));
 			makeKey();
 			return this;
 		}
-		return this;
 	}
 
 	/**
-	 * The unboxed short represents a 'direction' in the blade to be added. It is
+	 * The unboxed byte represents a 'direction' in the blade to be added. It is
 	 * immediately boxed and delivered to the similarly named method for handling.
 	 * When that method returns the new blade list, this one finishes by returning
 	 * it to the calling object.
 	 * 
-	 * NO SORT of generators is performed. It is assumed here that the calling
-	 * routine has knowledge that supercedes the need to sort the new generator into
-	 * this blade.
-	 * 
-	 * @param pS unboxed short integer that will be boxed immediate and passed to
-	 *           the other version of this method.
+	 * @param pS unboxed byte integer that will be boxed immediate and passed to the
+	 *           other version of this method.
 	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException See add(Short pS)
+	 * @throws GeneratorRangeException See add(Byte pS)
 	 */
-	public Blade add(short pS) throws GeneratorRangeException {
-		add(Short.valueOf(pS));
+	public Blade add(byte pS) throws GeneratorRangeException {
+		add(Byte.valueOf(pS));
 		return this;
 	}
 
 	/**
-	 * The boxed short represents a 'direction' in the blade to be added. It is
-	 * first checked to see if the unboxed short is within the supported range.
-	 * Next, the blade is checked to see if it already represents a pscalar. If it
-	 * does, the blade's key is reset and nothing else is done. If not, the boxed
-	 * short is added from the blade's list and the key is reset.
+	 * The boxed byte represents a 'direction' in the blade to be added. It is first
+	 * checked to see if the unboxed byte is within the supported range. Next, the
+	 * blade is checked to see if it already represents a pscalar. If it does, the
+	 * method silently returns doing nothing. If not, the boxed byte is added to the
+	 * blade's set (which de-duplicates) and the key is reset.
 	 * 
-	 * NO SORT of generators is performed. It is assumed here that the calling
-	 * routine has knowledge that supercedes the need to sort the new generator into
-	 * this blade.
-	 * 
-	 * @param pS Short is a boxed short integer representing the 'direction' to add
-	 *           to the blade.
+	 * @param pS Boxed byte representing the 'direction' to add to the blade.
 	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 * @throws GeneratorRangeException This occurs when a byte integer not in the
 	 *                                 supported range is used to represent a
 	 *                                 'direction' to add to the blade. For example,
-	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 trying to add 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade add(Short pS) throws GeneratorRangeException {
-		if (pS.shortValue() < Generator.MIN.ord | pS.shortValue() > Generator.MAX.ord)
+	public Blade add(Byte pS) throws GeneratorRangeException {
+		if (pS.byteValue() < Generator.MIN.ord | pS.byteValue() > Generator.MAX.ord)
 			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-		else if (blade.size() > MAX)
-			throw new GeneratorRangeException("Max Generators for a blade is 14.");
 		else if (isPScalar())
 			return this;
-		else if (blade.contains(Generator.get(pS.shortValue())))
-			// Check if the generator is already in the list. If it is, just move on.
-			return this;
 		else {
-			blade.add(Generator.get(pS.shortValue()));
+			blade.add(Generator.get(pS.byteValue()));
 			makeKey();
 			return this;
 		}
 	}
 
 	/**
-	 * An array of unboxed shorts representing 'directions' in the blade to be
-	 * added. Each is first checked to see if the unboxed short is within the
-	 * supported range. Next, the blade is checked to see if it already represents a
-	 * pscalar. If it does, the blade's key is reset and nothing else more is done.
-	 * If not, the boxed short is added from the blade's list and the key is reset.
+	 * An array of unboxed bytes representing 'directions' in the blade to be added.
+	 * Each is immediately boxed and passed to the similarly named method for Bytes.
 	 * 
-	 * NO SORT of generators is performed. It is assumed here that the calling
-	 * routine has knowledge that supercedes the need to sort the new generator into
-	 * this blade.
-	 * 
-	 * @param pS Short[] is an array of boxed short integers representing the
-	 *           'directions' to add to the blade.
+	 * @param pS Array of boxed byte integers representing the 'directions' to add.
 	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 * @throws GeneratorRangeException This occurs when a byte integer not in the
 	 *                                 supported range is used to represent a
 	 *                                 'direction' to add to the blade. For example,
-	 *                                 trying to remove 22 or -5 will cause this
+	 *                                 trying to add 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade add(short[] pS) throws GeneratorRangeException {
-		for (short pt : pS)
-			add(Short.valueOf(pt));
+	public Blade add(byte[] pS) throws GeneratorRangeException {
+		for (byte pt : pS)
+			add(Byte.valueOf(pt)); // Do NOT convert to Generator here. Validate first.
 		return this;
 	}
 
 	/**
-	 * An array of boxed shorts representing 'directions' in the blade to be added.
-	 * Each is first checked to see if the unboxed short is within the supported
+	 * An array of boxed bytes representing 'directions' in the blade to be added.
+	 * Each is first checked to see if the unboxed byte is within the supported
 	 * range. Next, the blade is checked to see if it already represents a pscalar.
 	 * If it does, the blade's key is reset and nothing else more is done. If not,
-	 * the boxed short is added from the blade's list and the key is reset.
+	 * the boxed byte is added from the blade's list and the key is reset.
 	 * 
-	 * NO SORT of generators is performed. It is assumed here that the calling
-	 * routine has knowledge that supercedes the need to sort the new generator into
-	 * this blade.
-	 * 
-	 * @param pS Short[] is an array of boxed short integers representing the
-	 *           'directions' to add to the blade.
+	 * @param pS Array of boxed byte integers representing the 'directions' to add.
 	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
+	 * @throws GeneratorRangeException This occurs when a byte integer not in the
 	 *                                 supported range is used to represent a
 	 *                                 'direction' to add to the blade. For example,
 	 *                                 trying to remove 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade add(Short[] pS) throws GeneratorRangeException {
-		for (Short pt : pS)
-			add(pt);
+	public Blade add(Byte[] pS) throws GeneratorRangeException {
+		for (Byte pt : pS)
+			add(pt); // Do NOT convert to Generator here. Let the other validate first.
 		return this;
 	}
 
@@ -322,13 +289,22 @@ public final class Blade {
 	 *         integer key.
 	 */
 	public int compareTo(Blade pIn) {
-		if (key() < pIn.key())
-			return -1;
-		if (key() > pIn.key())
-			return +1;
-		return 0;
+		return (key() < pIn.key()) ? -1 : (key() > pIn.key() ? 1 : 0);
 	}
 
+	/**
+	 * This method is overridden Object equality test. As long as blades are being
+	 * tested, what is needed to pass this test is for them to have the same key and
+	 * sign values.
+	 * 
+	 * NOTE that the maximum possible grade for a blade is encoded in the key, thus
+	 * it gets tested when key values are compared. The sign value could be too, but
+	 * there is an advantage when building product tables NOT to have negative keys.
+	 * 
+	 * @param obj The object to test
+	 * @return boolean True implies two blades are the same. False implies they
+	 *         aren't.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -341,15 +317,35 @@ public final class Blade {
 			return false;
 		if (sign != ((Blade) obj).sign)
 			return false;
-		// if (maxGrade != other.span) // Not needed because key encodes maxGrade
-		// return false;
+		return true;
+	}
+
+	/**
+	 * This method is very similar to the base object's equality test. The
+	 * difference is the sign of the blade is not checked. As long as blades are
+	 * being tested, all that is needed to pass this test is for them to have the
+	 * same key value.
+	 * 
+	 * @param obj The object to test
+	 * @return boolean True implies two blades are equal to within a sign while
+	 *         False implies they aren't equal even when signs are ignored.
+	 */
+	public boolean equalsAbs(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		if (key != ((Blade) obj).key)
+			return false;
 		return true;
 	}
 
 	/**
 	 * This is just a getter method named to support calls from within streams.
 	 * 
-	 * @return key Returns the blade's ArrayList of boxed shorts.
+	 * @return key Returns the blade's ArrayList of boxed bytes.
 	 */
 	public EnumSet<Generator> get() {
 		return blade;
@@ -366,27 +362,23 @@ public final class Blade {
 	}
 
 	public boolean isOneBlade() {
-		if (blade.size() == 1)
-			return true;
-		return false;
+		return (blade.size() == 1);
 	}
 
 	public boolean isPScalar() {
 		if (blade.isEmpty())
 			return false;
-		else if (blade.size() == maxGrade)
-			return true;
-		return false;
+		else
+			return (blade.size() == maxGrade);
 	}
 
 	public boolean isScalar() {
-		if (blade.isEmpty())
-			return true;
-		return false;
+		return blade.isEmpty();
 	}
 
 	/**
-	 * This is just a getter method named to support calls from within streams.
+	 * This is just a getter method named to support consumers at the end of streams
+	 * of blades. This is how one gets a stream of blade keys.
 	 * 
 	 * @return key Returns the blade's long integer key.
 	 */
@@ -395,220 +387,143 @@ public final class Blade {
 	}
 
 	/**
-	 * The unboxed short represents a 'direction' in the blade to be removed. It is
-	 * immediately boxed and delivered to the similarly named method for handling.
-	 * When that method returns the new blade list, this one finishes by returning
-	 * it to the calling object.
-	 * 
-	 * @param pS unboxed short integer that will be boxed immediate and passed to
-	 *           the other version of this method.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException See remove(Short pS)
-	 */
-	public Blade remove(short pS) throws GeneratorRangeException {
-		return remove(Short.valueOf(pS));
-	}
-
-	/**
-	 * The boxed short represents a 'direction' in the blade to be removed. It is
-	 * first checked to see if the unboxed short is within the supported range.
-	 * Next, the blade is checked to see if it already represents a scalar. If it
-	 * does, the blade's key is set to zero and nothing else is done. If not, the
-	 * boxed short is removed from the blade's list and the key is reset.
-	 * 
-	 * @param pS Short is a boxed short integer representing the 'direction' to
-	 *           remove from the blade.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 * @throws GeneratorRangeException This occurs when a short integer not in the
-	 *                                 supported range is used to represent a
-	 *                                 'direction' to remove from the blade. For
-	 *                                 example, trying to remove 22 or -5 will cause
-	 *                                 this exception to be thrown.
-	 */
-	public Blade remove(Short pS) throws GeneratorRangeException {
-		if (pS.shortValue() < MIN + 1 | pS.shortValue() > MAX)
-			throw new GeneratorRangeException("Unsupported Generator for Blade.");
-
-		// If this is a scalar, there is nothing to remove. Accept that and move on.
-		if (blade.isEmpty()) {
-			key = 0L;
-			return this;
-		}
-		blade.remove(Generator.get(pS.shortValue()));
-		// No sort needed as the blade should already be in natural order and will
-		// remain so after removal of a generator.
-		makeKey();
-
-		return this;
-	}
-
-	/**
-	 * The generator represents a 'direction' in the blade to be removed. The blade
-	 * is first checked to see if it already represents a scalar. If it does, the
-	 * blade's key is set to zero and nothing else is done. If not, the generator is
-	 * removed from the blade's list and the key is reset.
+	 * The generator represents a 'direction' in the blade to be removed. If
+	 * anything is found to be removed, the key is recomputed.
 	 * 
 	 * @param pS Generator representing the 'direction' to remove from the blade.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
 	public Blade remove(Generator pS) {
-		// If this is a scalar, there is nothing to remove. Accept that and move on.
-		if (blade.isEmpty()) {
-			key = 0L;
-			return this;
-		}
-		blade.remove(pS);
-		// No sort needed as the blade should already be in natural order and will
-		// remain so after removal of a generator.
-		makeKey();
-
+		if (blade.remove(pS))
+			makeKey();
 		return this;
 	}
 
 	/**
-	 * The unboxed short array represents 'directions' in the blade to be removed.
-	 * If the blade is already a scalar, the method resets the key and returns.
-	 * After that each is checked to see if the unboxed short is within the
-	 * supported range. Next the generator is removed on the assumption that the
-	 * list removal method will do NOTHING if the element is not found. Next, the
-	 * blade is checked to see if it represents a scalar. If it does, the blade's
-	 * key is set to zero and the method returns. If not, the loop proceeds to the
-	 * next unboxed short.
+	 * The unboxed byte represents a 'direction' in the blade to be removed. It is
+	 * immediately boxed and delivered to the similarly named method for handling.
+	 * When that method returns the new blade list, this one finishes by returning
+	 * it to the calling object.
 	 * 
-	 * @param pS Unboxed short integer array of directions to remove from this
-	 *           blade.
+	 * @param pS unboxed byte integer that will be boxed immediate and passed to the
+	 *           other version of this method.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
-	public Blade remove(short[] pS) throws GeneratorRangeException {
-		if (blade.isEmpty()) {
-			key = 0L;
-			return this;
-		}
-		for (short tS : pS) {
-			if (tS < 1 | tS > MAX)
-				throw new GeneratorRangeException("Index out of Range as a generator for blade.");
+	public Blade remove(byte pS) throws GeneratorRangeException {
+		return remove(Byte.valueOf(pS));
+	}
 
-			blade.remove(Generator.get(tS));
+	/**
+	 * The boxed byte represents a 'direction' in the blade to be removed. It is
+	 * first checked to see if the unboxed byte is within the supported range. If
+	 * anything is found to be removed, the key is recomputed.
+	 * 
+	 * @param pS Short is a boxed byte integer representing the 'direction' to
+	 *           remove from the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException This occurs when a byte integer not in the
+	 *                                 supported range is used to represent a
+	 *                                 'direction' to remove from the blade. For
+	 *                                 example, trying to remove 22 or -5 will cause
+	 *                                 this exception to be thrown.
+	 */
+	public Blade remove(Byte pS) throws GeneratorRangeException {
+		if (pS.byteValue() < MIN + 1 | pS.byteValue() > MAX)
+			throw new GeneratorRangeException("Unsupported Generator for Blade.");
 
-			if (blade.isEmpty()) {
-				key = 0L;
-				return this;
-			}
-		}
-		makeKey();
+		if (blade.remove(Generator.get(pS.byteValue())))
+			makeKey();
 		return this;
 	}
 
 	/**
-	 * The boxed short array represents 'directions' in the blade to be removed. If
+	 * The unboxed byte array represents 'directions' in the blade to be removed. If
 	 * the blade is already a scalar, the method resets the key and returns. After
-	 * that each is checked to see if the unboxed short is within the supported
+	 * that each is checked to see if the unboxed byte is within the supported
+	 * range. Next the generator is removed on the assumption that the list removal
+	 * method will do NOTHING if the element is not found. Next, the blade is
+	 * checked to see if it represents a scalar. If it does, the blade's key is set
+	 * to zero and the method returns. If not, the loop proceeds to the next unboxed
+	 * byte.
+	 * 
+	 * @param pS Unboxed byte integer array of directions to remove from this blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 * @throws GeneratorRangeException See remove(Short pS)
+	 */
+	public Blade remove(byte[] pS) throws GeneratorRangeException {
+		if (isScalar()) {
+			return this;
+		} else
+			for (byte tS : pS)
+				remove(Byte.valueOf(tS));
+		// No need to re-compute key here. It was done by the other remove method.
+		return this;
+	}
+
+	/**
+	 * The boxed byte array represents 'directions' in the blade to be removed. If
+	 * the blade is already a scalar, the method resets the key and returns. After
+	 * that each is checked to see if the unboxed byte is within the supported
 	 * range. Next the generator is removed on the assumption that the list removal
 	 * method will do NOTHING if the element is not found. Next, the blade is
 	 * checked to see if it represents a scalar. If it does, the blade's key is set
 	 * to zero and the method returns. If not, the loop proceeds to the next boxed
-	 * short.
+	 * byte.
 	 * 
-	 * @param pS Boxed short integer array of directions to remove from this blade.
+	 * @param pS Boxed byte integer array of directions to remove from this blade.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
-	public Blade remove(Short[] pS) throws GeneratorRangeException {
+	public Blade remove(Byte[] pS) throws GeneratorRangeException {
 		if (isScalar()) {
-			key = 0L;
 			return this;
-		}
-		for (Short tS : pS) {
-			if (tS.shortValue() < 1 | tS.shortValue() > Basis.MAX_GEN)
-				throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-
-			blade.remove(Generator.get(tS.shortValue()));
-
-			if (blade.isEmpty()) {
-				key = 0L;
-				return this;
-			}
-		}
-		makeKey();
+		} else
+			for (Byte tS : pS)
+				remove(tS);
+		// No need to re-compute key here. It was done by the other remove method.
 		return this;
 	}
 
-	/**
-	 * This method reverses the list of directions in the arrayList. Doing this
-	 * causes the sign to flip sometimes, so this must be tracked.
-	 * 
-	 * A second list is created and then the directions are read from the first in
-	 * reverse order and added to the second. Once the second list is filled, it is
-	 * assigned to the first. AFTER that the sign flip is considered.
-	 * 
-	 * @return Blade The blade itself is returned to support stream calls.
-	 */
-	/*
-	 * public Blade reverse() { Collections.reverse(blade); // We get away with
-	 * using Collections because we can calculate the sign flip. // sign does not
-	 * flip for lists of size 0, 1, 4, 5, 8, 9, 12, 13 // sign does flip for lists
-	 * of size 2, 3, 6, 7, 10, 11, 14 sign *= FLIP * ((blade.size() % 4) / 2);
-	 * makeKey();
-	 * 
-	 * return this; }
-	 */
-
-	public int sign() {
+	public byte sign() {
 		return sign;
-	}
-
-	public String toXMLString(String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t\t\t\t\t";
-		Iterator<Generator> cursor = blade.iterator();
-		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
-				+ "\" generators=\"");
-		while (cursor.hasNext())
-			rB.append(cursor.next().toString() + ",");
-
-		// for (short m = 0; m < blade.size(); m++)
-		// if (blade.get(m) != null)
-		// rB.append(blade.get(m).ord + ",");
-		if (blade.size() > 0)
-			rB.deleteCharAt(rB.length() - 1);
-		rB.append("\" />\n");
-		return rB.toString();
 	}
 
 	public String toXMLOrdString(String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
-		Iterator<Generator> cursor = blade.iterator();
+		//Iterator<Generator> cursor = blade.iterator();
 		StringBuilder rB = new StringBuilder();
 		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
 				+ "\" generators=\"");
-		while (cursor.hasNext())
-			rB.append(cursor.next().ord + ",");
+		
+		blade.stream().forEachOrdered(g -> rB.append(g.ord + ","));
+		//while (cursor.hasNext())
+		//	rB.append(cursor.next().ord + ",");
 
-		// for (short m = 0; m < blade.size(); m++)
-		// if (blade.get(m) != null)
-		// rB.append(blade.get(m).ord + ",");
 		if (blade.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
 		return rB.toString();
 	}
 
-	/*
-	 * This is a Bubble Sort that keeps track of the number of swaps % 2. Swaps
-	 * within the list should only occur with neighboring Shorts and only when the
-	 * unboxed shorts imply that the previous Short is greater in value than the
-	 * next.
-	 */
-	/*
-	 * private void bubbleFlipSort() { if (isScalar() | isOneBlade()) return; //
-	 * Collections.sort(blade); // Can't do this because swaps must be tracked. for
-	 * (short m = 0; m < blade.size() - 1; m++) { for (short k = 0; k < blade.size()
-	 * - m - 1; k++) { if (blade.get(k).compareTo(blade.get(k + 1)) > 0) {
-	 * Collections.swap(blade, k, k + 1); sign *= FLIP; } } } }
-	 */
+	public String toXMLString(String indent) {
+		if (indent == null)
+			indent = "\t\t\t\t\t\t\t\t";
+		//Iterator<Generator> cursor = blade.iterator();
+		StringBuilder rB = new StringBuilder();
+		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
+				+ "\" generators=\"");
+		
+		blade.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
+		//while (cursor.hasNext())
+		//	rB.append(cursor.next().toString() + ",");
+
+		if (blade.size() > 0)
+			rB.deleteCharAt(rB.length() - 1);
+		rB.append("\" />\n");
+		return rB.toString();
+	}
 
 	/*
 	 * Base (maxGrade+1) representation of Eddington Number
@@ -616,7 +531,7 @@ public final class Blade {
 	 * Ex: 3 generators implies Base-4 keys stuffed into Base-10 number.
 	 * 
 	 * Last generator in the list is the one's digit, the next to last is the 4's
-	 * digit and the one before that is the 16's digit. The actual short stored in
+	 * digit and the one before that is the 16's digit. The actual byte stored in
 	 * the list is multiplied by that power
 	 * 
 	 * Ex: 8 generators implies Base-9 keys stuffed into a Base-10 number.
@@ -629,5 +544,10 @@ public final class Blade {
 			key += cursor.next().ord * Math.pow((maxGrade + 1), (blade.size() - 1 - counter));
 			counter++;
 		}
+	}
+
+	protected Blade setSign(byte pSign) {
+		sign = pSign;
+		return this;
 	}
 }

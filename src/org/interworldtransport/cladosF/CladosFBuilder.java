@@ -121,9 +121,11 @@ public enum CladosFBuilder { // This has an implicit private constructor we won'
 		Cardinal test = findCardinal(pName);
 		if (test != null)
 			return test;
-		Cardinal tSpot = Cardinal.generate(pName);
-		listOfCardinals.add(tSpot);
-		return tSpot;
+		else {
+			test = Cardinal.generate(pName);
+			listOfCardinals.add(test);
+			return test;
+		}
 	}
 
 	public ComplexD createComplexD() {

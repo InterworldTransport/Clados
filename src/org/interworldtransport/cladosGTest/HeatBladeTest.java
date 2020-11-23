@@ -24,7 +24,7 @@ class HeatBladeTest {
 		Generator[] j = {};
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -35,7 +35,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 1);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -46,7 +46,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 2);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -57,7 +57,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 3);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -68,7 +68,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 4);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -79,7 +79,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 5);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -90,7 +90,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 6);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -101,7 +101,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 7);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -112,7 +112,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 8);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -123,7 +123,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 9);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -134,7 +134,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 10);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -145,7 +145,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 11);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -156,7 +156,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 12);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -167,7 +167,7 @@ class HeatBladeTest {
 		Generator[] j = Arrays.copyOf(Generator.values(), 13);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
@@ -177,7 +177,7 @@ class HeatBladeTest {
 		Generator[] j = Generator.values();
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
-			a0 = new Blade((short) j.length, j);
+			a0 = new Blade((byte) j.length, j);
 			assertFalse(a0 == null);
 		}
 	}
