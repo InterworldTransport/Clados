@@ -43,7 +43,7 @@ class CoreAlgebraComplexDTest {
 	public void testSignatureLinks() throws GeneratorRangeException {
 		assertTrue(alg1.getGBasis() == alg2.getGBasis());
 		// Two algebras share a Basis?
-		assertTrue(CladosGBuilder.INSTANCE.getBasisListSize() == 1);
+		//assertTrue(CladosGBuilder.INSTANCE.getBasisListSize() == 1);
 		assertFalse(alg1.getGProduct() == alg2.getGProduct()); // but not the products
 		assertFalse(alg1.getGProduct().getSignature().equals(alg2.getGProduct().getSignature()));
 		// because the signatures are different.

@@ -7,5 +7,6 @@ module org.clados {
 	exports org.interworldtransport.cladosGTest;
 	
 	requires java.base;
+
 	requires org.junit.jupiter.api;
 }

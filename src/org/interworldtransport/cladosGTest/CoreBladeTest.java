@@ -40,8 +40,8 @@ class CoreBladeTest {
 	@Test
 	public void testBladeSize() throws GeneratorRangeException {
 
-		assertTrue(tB0.key() == 0L && tB0.get().size() == 0);
-		assertTrue(tB4.key() == 7L && tB4.get().size() == 2);
+		assertTrue(tB0.getGenerators().size() == 0);
+		assertTrue(tB4.getGenerators().size() == 2);
 		assertTrue(tB43.key() == tB4.key());
 		assertFalse(tB42.key() == tB43.key());
 
@@ -49,21 +49,21 @@ class CoreBladeTest {
 		tB8.add(m); // Should be pscalar now
 		Blade tB10 = new Blade((byte) 10);
 		tB10.add(k); // Should be pscalar now
-		Blade tB14 = new Blade((byte) 14);
-		tB14.add(j); // Should be pscalar now
+		Blade tB15 = new Blade((byte) 14);
+		tB15.add(j); // Should be pscalar now
 
-		assertTrue(tB8.key() == 6053444L && tB8.get().size() == 8);
-		assertTrue(tB10.get().size() == 10);
-		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
+		assertTrue(tB8.getGenerators().size() == 8);
+		assertTrue(tB10.getGenerators().size() == 10);
+		assertTrue(tB15.getGenerators().size() == 14);
 
-		tB14.remove((byte) 12);
-		assertTrue(tB14.get().size() == 13);
+		tB15.remove((byte) 12);
+		assertTrue(tB15.getGenerators().size() == 13);
 
-		tB14.add((byte) 10); // generator already there, so silently ignore the add.
-		assertTrue(tB14.get().size() == 13);
+		tB15.add((byte) 10); // generator already there, so silently ignore the add.
+		assertTrue(tB15.getGenerators().size() == 13);
 
-		tB14.add(Byte.valueOf((byte) 12));
-		assertTrue(tB14.key() == 2234152501943159L && tB14.get().size() == 14);
+		tB15.add(Byte.valueOf((byte) 12));
+		assertTrue(tB15.getGenerators().size() == 14);
 
 	}
 
@@ -88,12 +88,12 @@ class CoreBladeTest {
 	public void testHighGeneratorLimit() throws GeneratorRangeException {
 		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 16));
 	}
-/*
+
 	@Test
 	public void testXMLOutput() throws GeneratorRangeException {
-		Blade tB14 = new Blade((byte) 14);
-		tB14.add(j); // Should be pscalar now
-		System.out.println(tB14.toXMLString(""));
+		Blade tB = new Blade((byte) 14);
+		tB.add(j); // Should be pscalar now
+		System.out.println(Blade.toXMLString(tB,""));
 	}
-*/
+
 }

@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.BladeDos<br>
+ * ---org.interworldtransport.cladosG.BladeDuet<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,13 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.BladeDos<br>
+ * ---org.interworldtransport.cladosG.BladeDuet<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -33,8 +33,26 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
-public class BladeDos {
-	private ArrayList<Generator> bladeDuo;
+public class BladeDuet {
+	public static final Blade reduce(Blade pB1, Blade pB2, byte[] sig)
+			throws BladeCombinationException, GeneratorRangeException, BadSignatureException {
+		BladeDuet tBD = new BladeDuet(pB1, pB2);
+		return tBD.reduce(sig);
+	}
+	
+	public final static boolean isNBlade(Blade blade, byte n) {
+		return blade.getGenerators().size() == n;
+	}
+
+	public final static boolean isPScalar(Blade blade) {
+		return (blade.getGenerators().size() == blade.blademax());
+	}
+
+	public final static boolean isScalar(Blade blade) {
+		return blade.getGenerators().isEmpty();
+	}
+
+	private ArrayList<Generator> bladeDuet;
 	private byte sign = 1;
 	private final byte span; // This is NOT twice a blade's maxGrade. Just one.
 
@@ -56,21 +74,19 @@ public class BladeDos {
 	 *                                   generators were expected, the basis would
 	 *                                   need a row index from 0 to 2^15 which is
 	 *                                   one too many for short integers. THEREFORE,
-	 *                                   the bladeDuo list can't be more than 28
+	 *                                   the bladeDuet list can't be more than 28
 	 *                                   elements in length.
 	 */
-	public BladeDos(Blade pB1, Blade pB2) throws BladeCombinationException, GeneratorRangeException {
-		this(pB1.maxGrade);
-		if (pB1.maxGrade != pB2.maxGrade)
+	public BladeDuet(Blade pB1, Blade pB2) throws BladeCombinationException, GeneratorRangeException {
+		this(pB1.blademax());
+		if (pB1.blademax() != pB2.blademax())
 			throw new BladeCombinationException(null, pB1, pB2, "Declared Blade's spans don't match.");
 
-		pB1.get().stream().forEachOrdered(g -> bladeDuo.add(g));
+		pB1.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
 		sign = pB1.sign();
 
-		pB2.get().stream().forEachOrdered(g -> bladeDuo.add(g));
+		pB2.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
 		sign *= pB2.sign();
-
-		bubbleFlipSort(pB1.get().size());
 	}
 
 	/**
@@ -86,21 +102,21 @@ public class BladeDos {
 	 *                                 short integers. If 15 generators were
 	 *                                 expected, the basis would need a row index
 	 *                                 from 0 to 2^15 which is one too many for
-	 *                                 short integers. THEREFORE, the bladeDuo list
+	 *                                 short integers. THEREFORE, the bladeDuet list
 	 *                                 can't be more than 28 elements in length.
 	 */
-	public BladeDos(byte pSpan) throws GeneratorRangeException {
-		if (pSpan < Blade.MIN | pSpan > 2 * Blade.MAX)
+	public BladeDuet(byte pSpan) throws GeneratorRangeException {
+		if (pSpan < CladosConstant.BLADE_SCALARGRADE | pSpan > 2 * CladosConstant.BLADE_MAXGRADE)
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pSpan);
 		span = pSpan;
-		bladeDuo = new ArrayList<>(2 * pSpan);
+		bladeDuet = new ArrayList<>(2 * span);
 	}
 
 	/**
-	 * This method accepts a Blade and tries to prepend it to the bladeDuo list.
+	 * This method accepts a Blade and tries to prepend it to the bladeDuet list.
 	 * 
 	 * @param pB Blade offered to be inserted at the head of the list
-	 * @return BladeDos [supporting stream approach]
+	 * @return BladeDuet [supporting stream approach]
 	 * @throws BladeCombinationException There are two ways to get his exception.
 	 *                                   The first is if the offered blade doesn't
 	 *                                   have the same maxGrade as this BladeDuo
@@ -110,31 +126,30 @@ public class BladeDos {
 	 *                                   too big when the combined blades would be
 	 *                                   larger than 2 * maxGrade.
 	 */
-	public BladeDos assignFirst(Blade pB) throws BladeCombinationException {
-		if (span != pB.maxGrade)
+	public BladeDuet assignFirst(Blade pB) throws BladeCombinationException {
+		if (span != pB.blademax())
 			throw new BladeCombinationException(this, pB, null, "Declared Blade maxGrade mis-match stored maxGrade.");
-		else if (bladeDuo.size() + pB.get().size() > 2 * span)
+		else if (bladeDuet.size() + pB.getGenerators().size() > 2 * span)
 			throw new BladeCombinationException(this, pB, null, "Offered Blade too big to fit with current one.");
 
-		bladeDuo.ensureCapacity(2 * span);
+		bladeDuet.ensureCapacity(2 * span);
 
 		int counter = 0;
-		for (Iterator<Generator> itr = pB.get().iterator(); itr.hasNext();) {
-			bladeDuo.add(counter, itr.next());
+		for (Iterator<Generator> itr = pB.getGenerators().iterator(); itr.hasNext();) {
+			bladeDuet.add(counter, itr.next());
 			counter++;
 		}
 
 		sign *= pB.sign();
 
-		bubbleFlipSort(pB.get().size());
 		return this;
 	}
 
 	/**
-	 * This method accepts a Blade and tries to append it to the bladeDuo list.
+	 * This method accepts a Blade and tries to append it to the bladeDuet list.
 	 * 
 	 * @param pB Blade offered to be inserted at the tail of the list
-	 * @return BladeDos [supporting stream approach]
+	 * @return BladeDuet [supporting stream approach]
 	 * @throws BladeCombinationException There are two ways to get his exception.
 	 *                                   The first is if the offered blade doesn't
 	 *                                   have the same maxGrade as this BladeDuo
@@ -144,44 +159,35 @@ public class BladeDos {
 	 *                                   too big when the combined blades would be
 	 *                                   larger than 2 * maxGrade.
 	 */
-	public BladeDos assignSecond(Blade pB) throws BladeCombinationException {
-		if (span != pB.maxGrade)
+	public BladeDuet assignSecond(Blade pB) throws BladeCombinationException {
+		if (span != pB.blademax())
 			throw new BladeCombinationException(this, null, pB, "Declared Blade maxGrade mis-match stored maxGrade.");
-		else if (bladeDuo.size() + pB.get().size() > 2 * span)
+		else if (bladeDuet.size() + pB.getGenerators().size() > 2 * span)
 			throw new BladeCombinationException(this, null, pB, "Offered Blade too big to fit with current one.");
 
-		bladeDuo.ensureCapacity(2 * span);
+		bladeDuet.ensureCapacity(2 * span);
 
-		int originalEnd = bladeDuo.size();
+		// int originalEnd = bladeDuet.size();
 
-		pB.get().stream().forEachOrdered(g -> bladeDuo.add(g));
+		pB.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
 		sign *= pB.sign();
 
-		bubbleFlipSort(originalEnd);
 		return this;
 	}
 
-	public BladeDos clear() {
-		bladeDuo.clear();
+	public BladeDuet clear() {
+		bladeDuet.clear();
 		sign = 1;
 		return this;
 	}
 
-	public ArrayList<Generator> getDuo() {
-		return bladeDuo;
-	}
-
-	public boolean isPScalar() {
-		return removeNulls().getDuo().size() == span;
-	}
-
-	public boolean isScalar() {
-		return removeNulls().getDuo().isEmpty();
+	public ArrayList<Generator> getDuet() {
+		return bladeDuet;
 	}
 
 	/**
 	 * This method reduces pairs of directions in what SHOULD already be a sorted
-	 * bladeDuo list. The offered numeric signature is used for the reduction to
+	 * bladeDuet list. The offered numeric signature is used for the reduction to
 	 * handle sign flips. Generators with a positive square appear as a one (1)
 	 * while those with negative squares appear as negative one (-1).
 	 * 
@@ -202,32 +208,29 @@ public class BladeDos {
 	 *                                 trying to remove 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade reduce(short[] pSig) throws BadSignatureException, GeneratorRangeException {
+	public Blade reduce(byte[] pSig) throws BadSignatureException, GeneratorRangeException {
 		if (span != pSig.length)
 			throw new BadSignatureException(this, "Signature length mis-match with stored maxGrade.");
 
-		removeNulls(); // Shouldn't be needed. Look into an ArrayList replacement that rejects nulls.
+		EnumSet<Generator> possibles = EnumSet.noneOf(Generator.class);
+		Generator.flow().limit(span).forEach(g -> possibles.add(g));
 
-		// Loop through once reducing generator pairs to null and flipping 'sign' by
-		// signature.
-		for (Generator pS1 : bladeDuo) {
-			if (bladeDuo.indexOf(pS1) != bladeDuo.size()) {
-				Generator pS2 = bladeDuo.get(bladeDuo.indexOf(pS1) + 1);
-				if (pS1 == pS2) {
-					sign *= pSig[pS1.ord - 1]; // DANGER! Future changes to Generator must take care here.
-					pS1 = null;
-					pS2 = null;
-					// bladeDuo.remove(pS2);
-					// bladeDuo.remove(pS1);
-				}
+		for (Generator pG : possibles) {
+			int firstFind = bladeDuet.indexOf(pG);
+			int secondFind = bladeDuet.lastIndexOf(pG);
+			if (firstFind > -1 && secondFind > -1 && secondFind - firstFind > 0) {
+				sign *= ((secondFind - firstFind) % 2 == 1) ? 1 : -1; // commuteFlip
+				sign *= pSig[pG.ord - 1]; // DANGER! Changing Generator impacts here. SigFlip
+				// Removal order IS IMPORTANT. Removing first changes index of second.
+				bladeDuet.remove(secondFind);
+				bladeDuet.remove(firstFind);
 			}
 		}
 
-		removeNulls(); // This one IS needed. Blade will complain bitterly if nulls are 'added'.
-
+		removeNulls(); // This one avoids Blade complaining bitterly if nulls are 'added'.
 		Blade returnIt = (new Blade(span)).setSign(sign);
-		; // Potentially throws GeneratorRangeException
-		bladeDuo.stream().forEach(g -> returnIt.add(g));
+		// Potentially throws GeneratorRangeException but really shouldn't
+		bladeDuet.stream().forEach(g -> returnIt.add(g));
 
 		return returnIt;
 	}
@@ -236,7 +239,7 @@ public class BladeDos {
 		return sign;
 	}
 
-	public int span() {
+	public byte span() {
 		return span;
 	}
 
@@ -245,45 +248,16 @@ public class BladeDos {
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
 		rB.append(indent + "<BladeDuo sign=\"" + sign + "\" maxGrade=\"" + span() + "\" generators=\"");
-		for (short m = 0; m < bladeDuo.size(); m++)
-			if (bladeDuo.get(m) != null)
-				rB.append(bladeDuo.get(m).toString() + ",");
-		if (bladeDuo.size() > 0)
+		bladeDuet.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
+		if (bladeDuet.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
 		return rB.toString();
 	}
 
-	/*
-	 * This is a Bubble Sort that keeps track of the number of swaps % 2. Swaps
-	 * within the list should only occur with neighboring Shorts and only when the
-	 * generators imply that the previous is greater 'in value' than the next.
-	 * 
-	 * We do know a little before the sorting begins, though. There will be two
-	 * blocks of sorted generators. Therefore, the offered integer points to the
-	 * last generator of the first blade.
-	 * 
-	 * @param int pGuess This integer points at the last generator of the first
-	 * blade. That likely where sorting should find the first generator to swap.
-	 */
-	private void bubbleFlipSort(int pGuess) {
-		if (bladeDuo.size() == 0 | bladeDuo.size() == 1)
-			return;
-		if (pGuess <= 0 | pGuess >= bladeDuo.size())
-			pGuess = bladeDuo.size();
-		for (short m = 0; m < bladeDuo.size() - 1; m++) {
-			for (short k = 0; k < bladeDuo.size() - m - 1; k++) {
-				if (bladeDuo.get(k).compareTo(bladeDuo.get(k + 1)) > 0) {
-					Collections.swap(bladeDuo, k, k + 1);
-					sign *= Blade.FLIP;
-				}
-			}
-		}
-	}
-
-	private BladeDos removeNulls() {
-		bladeDuo.removeIf(Objects::isNull);
-		bladeDuo.ensureCapacity(2 * span);
+	private BladeDuet removeNulls() {
+		bladeDuet.removeIf(Objects::isNull);
+		bladeDuet.ensureCapacity(2 * span);
 		return this;
 	}
 

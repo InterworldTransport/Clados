@@ -26,8 +26,6 @@ package org.interworldtransport.cladosG;
 
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-
 /**
  * Generators are just place holders representing 'directions' on a manifold. It
  * is best to think of them as labels for basis directions. No assumptions are
@@ -50,32 +48,17 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public enum Generator {
-	E1((byte) 1), E2((byte) 2), E3((byte) 3), E4((byte) 4), E5((byte) 5), E6((byte) 6), E7((byte) 7), E8((byte) 8),
-	E9((byte) 9), EA((byte) 10), EB((byte) 11), EC((byte) 12), ED((byte) 13), EE((byte) 14);
+	E1((byte) 1), E2((byte) 2), E3((byte) 3), E4((byte) 4), 
+	E5((byte) 5), E6((byte) 6), E7((byte) 7), E8((byte) 8),
+	E9((byte) 9), EA((byte) 10), EB((byte) 11), EC((byte) 12), 
+	ED((byte) 13), EE((byte) 14);//, EF((byte) 15), EG((byte) 16);
 
-	protected final static Generator MIN = E1;
-	protected final static Generator MAX = EE;
-
-	public final static Blade createBlade(byte pSpan) throws GeneratorRangeException {
-		if (pSpan < MIN.ord - 1 | pSpan > MAX.ord) // Why -1? Scalar blades have zero generators.
-			return null;
-		return new Blade(pSpan);
+	public final static Stream<Generator> flow() {
+		return Stream.of(Generator.values());
 	}
 
-	public final static Blade createPScalarBlade(byte pSpan) throws GeneratorRangeException {
-		if (pSpan < MIN.ord - 1 | pSpan > MAX.ord) // Why -1? Scalar blades have zero generators.
-			return null;
-		Blade returnIt = new Blade(pSpan);
-
-		for (byte m = 1; m == pSpan; m++)
-			returnIt.add(Generator.get(m));
-		return returnIt; // new Blade(pSpan, temp); //Soon
-	}
-
-	public final static Blade createScalarBlade(byte pSpan) throws GeneratorRangeException {
-		if (pSpan < MIN.ord - 1 | pSpan > MAX.ord) // Why -1? Scalar blades have zero generators.
-			return null;
-		return new Blade(pSpan);
+	public final static Stream<Generator> flow(byte pLimit) {
+		return Stream.of(Generator.values()).limit(pLimit);
 	}
 
 	/**
@@ -87,19 +70,15 @@ public enum Generator {
 	 * @return and get back the corresponding Generator instance
 	 */
 	public final static Generator get(byte pS) {
-		if (pS < MIN.ord | pS > MAX.ord)
-			return null;
-		return ((Generator[]) Generator.values())[pS - 1];
-	}
-	
-	public final static Generator get(Byte pS) {
-		if (pS.byteValue() < MIN.ord | pS.byteValue() > MAX.ord)
+		if (pS < CladosConstant.GENERATOR_MIN.ord | pS > CladosConstant.GENERATOR_MAX.ord)
 			return null;
 		return ((Generator[]) Generator.values())[pS - 1];
 	}
 
-	public final static Stream<Generator> flow() {
-		return Stream.of(Generator.values());
+	public final static Generator get(Byte pS) {
+		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
+			return null;
+		return ((Generator[]) Generator.values())[pS - 1];
 	}
 
 	/*

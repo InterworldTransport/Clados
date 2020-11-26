@@ -19,7 +19,7 @@
 package org.interworldtransport.cladosGExceptions;
 
 import org.interworldtransport.cladosG.Blade;
-import org.interworldtransport.cladosG.BladeDos;
+import org.interworldtransport.cladosG.BladeDuet;
 
 /**
  * This class captures exceptions that occur when algebra blades are combined.
@@ -31,7 +31,7 @@ import org.interworldtransport.cladosG.BladeDos;
  */
 public class BladeCombinationException extends Exception {
 	private static final long serialVersionUID = -6954708621051937257L;
-	private BladeDos Pairing;
+	private BladeDuet Pairing;
 	private Blade First;
 	private Blade Second;
 	private String SourceMessage;
@@ -39,12 +39,12 @@ public class BladeCombinationException extends Exception {
 	/**
 	 * This method is the constructor for exceptions involving two Blades.
 	 * 
-	 * @param pPair    BladeDos Related BladeDos throwing exception
+	 * @param pPair    BladeDuet Related BladeDuet throwing exception
 	 * @param pFirst   Blade Related First Blade throwing exception
 	 * @param pSecond  Blade Related Second Blade throwing exception
 	 * @param pMessage String Message explaining the exception
 	 */
-	public BladeCombinationException(BladeDos pPair, Blade pFirst, Blade pSecond, String pMessage) {
+	public BladeCombinationException(BladeDuet pPair, Blade pFirst, Blade pSecond, String pMessage) {
 		super();
 		Pairing = pPair;
 		First = pFirst;
@@ -53,11 +53,11 @@ public class BladeCombinationException extends Exception {
 	}
 
 	/**
-	 * Deliver a reference to the BladeDos involved in the exception.
+	 * Deliver a reference to the BladeDuet involved in the exception.
 	 * 
-	 * @return BladeDos
+	 * @return BladeDuet
 	 */
-	public BladeDos getBladePair() {
+	public BladeDuet getBladePair() {
 		return Pairing;
 	}
 

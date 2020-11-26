@@ -259,6 +259,7 @@ public final class Basis {
 	 * 
 	 * @return short[][]
 	 */
+	@Deprecated
 	public short[][] getBasis() {
 		return vBasis;
 	}
@@ -266,11 +267,16 @@ public final class Basis {
 	/**
 	 * Return the short at (x,y) in the array holding the basis.
 	 * 
+	 * NOTE this method will not be around for long. It only ever gets used in
+	 * forming the product table and XML string presenter, so once the product table
+	 * is modernized this method will have no purpose.
+	 * 
 	 * @param p1 short This is the desired blade within the basis.
 	 * @param p2 short This is the desired index within the p1 blade.
 	 * @return short
 	 */
-	public short getBasisCell(short p1, short p2) {
+	@Deprecated
+	protected short getBasisCell(short p1, short p2) {
 		return vBasis[p1][p2];
 	}
 
@@ -282,12 +288,14 @@ public final class Basis {
 	 * 
 	 * @return short[] This is the returned blade.
 	 */
+	@Deprecated
 	public short[] getBlade(short p1) {
 		return vBasis[p1];
 	}
 
+	@Deprecated
 	public ArrayList<Short> getBladeAsList(short p1) throws BladeOutOfRangeException {
-		if (p1 < 0 | p1 > gradeCount)
+		if (p1 < 0 | p1 > bladeCount)
 			throw new BladeOutOfRangeException(this,
 					"Blade key requested was " + p1 + " but bladeCount is " + bladeCount);
 		ArrayList<Short> returnIt = new ArrayList<>(gradeCount);
@@ -314,6 +322,7 @@ public final class Basis {
 	 * 
 	 * @return IntStream
 	 */
+	@Deprecated
 	public IntStream getBladeStream() {
 		return IntStream.rangeClosed(0, bladeCount);
 	}
@@ -362,6 +371,7 @@ public final class Basis {
 	 * 
 	 * @return IntStream
 	 */
+	@Deprecated
 	public IntStream getGradeStream() {
 		return IntStream.rangeClosed(0, gradeCount);
 	}
@@ -387,6 +397,7 @@ public final class Basis {
 	 * 
 	 * @return long[]
 	 */
+	@Deprecated
 	public long[] getKeys() {
 		return vKey;
 	}
@@ -450,6 +461,9 @@ public final class Basis {
 	 * Set the array used for representing the Eddington Basis. This method produces
 	 * an integer array list of Eddington numbers in order of ascending grade and
 	 * ascending component.
+	 * 
+	 * NOTE this is essentially a bitmask algorithm but using short integers and
+	 * producing long integer keys because location of a generator matters.
 	 * 
 	 * This method should only be called once the Basis is initialized. Construction
 	 * of the full basis array scales as grades * blades = generators *

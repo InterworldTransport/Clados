@@ -57,19 +57,86 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * the EnumSet. If the EnumSet is empty, zero directions are contained and the
  * blade represents a scalar.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  *
  */
-public final class Blade {
+public final class Blade implements Comparable<Blade> {
 	protected static final byte FLIP = -1;
-	protected static final byte MAX = 14;
-	protected static final byte MIN = 0;
-	protected static final long MAX_KEY = 2234152501943159L;
+
+	public final static Blade createBlade(byte pMaxGrade) throws GeneratorRangeException {
+		if (pMaxGrade < CladosConstant.BLADE_SCALARGRADE | pMaxGrade > CladosConstant.BLADE_MAXGRADE)
+			return null;
+		return new Blade(pMaxGrade);
+	}
+
+	public final static Blade createPScalarBlade(byte pMaxGrade) throws GeneratorRangeException {
+		if (pMaxGrade < CladosConstant.BLADE_SCALARGRADE | pMaxGrade > CladosConstant.BLADE_MAXGRADE)
+			return null;
+		EnumSet<Generator> possibles = EnumSet.noneOf(Generator.class);
+		Generator.flow(pMaxGrade).forEach(g -> possibles.add(g));
+
+		Blade returnIt = new Blade(pMaxGrade);
+		possibles.stream().forEach(g -> returnIt.add(g));
+
+		return returnIt; // new Blade(pSpan, temp); //Soon
+	}
+
+	public final static Blade createScalarBlade(byte pMaxGrade) throws GeneratorRangeException {
+		if (pMaxGrade < CladosConstant.BLADE_SCALARGRADE | pMaxGrade > CladosConstant.BLADE_MAXGRADE)
+			return null;
+		return new Blade(pMaxGrade);
+	}
+
+	public final static boolean isNBlade(Blade blade, byte n) {
+		return blade.getGenerators().size() == n;
+	}
+
+	public final static boolean isPScalar(Blade blade) {
+		return (blade.getGenerators().size() == blade.maxGrade);
+	}
+
+	public final static boolean isScalar(Blade blade) {
+		return blade.getGenerators().isEmpty();
+	}
+
+	public final static String toXMLOrdString(Blade blade, String indent) {
+		if (indent == null)
+			indent = "\t\t\t\t\t\t\t\t";
+		StringBuilder rB = new StringBuilder();
+		rB.append(indent).append("<Blade sign=\"").append(blade.sign()).append("\" maxGrade=\"")
+				.append(blade.blademax()).append("\" key=\"").append(blade.key()).append("\" generators=\"");
+
+		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.ord + ","));
+
+		if (blade.getGenerators().size() > 0)
+			rB.deleteCharAt(rB.length() - 1);
+		rB.append("\" />\n");
+		return rB.toString();
+	}
+
+	public final static String toXMLString(Blade blade, String indent) {
+		if (indent == null)
+			indent = "\t\t\t\t\t\t\t\t";
+		StringBuilder rB = new StringBuilder();
+		rB.append(indent).append("<Blade sign=\"").append(blade.sign()).append("\" maxGrade=\"")
+				.append(blade.blademax()).append("\" key=\"").append(blade.key()).append("\" generators=\"");
+
+		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString() + ","));
+
+		if (blade.getGenerators().size() > 0)
+			rB.deleteCharAt(rB.length() - 1);
+		rB.append("\" />\n");
+		return rB.toString();
+	}
+
 	private EnumSet<Generator> blade;
+
 	private long key = 0L;
+
 	private byte sign = 1;
-	protected final byte maxGrade; // This should be gradeCount-1 in a related basis
+
+	private final byte maxGrade; // This should be gradeCount-1 in a related basis
 
 	/**
 	 * This is a copy constructor that builds an identical blade with new boxed byte
@@ -83,7 +150,7 @@ public final class Blade {
 	public Blade(Blade pB) throws GeneratorRangeException {
 		this(pB.maxGrade);
 		blade = EnumSet.noneOf(Generator.class);
-		for (Generator pG : pB.get())
+		for (Generator pG : pB.getGenerators())
 			blade.add(pG);
 		sign = pB.sign();
 		key = pB.key();
@@ -106,32 +173,10 @@ public final class Blade {
 	 */
 	public Blade(byte pMaxGrade) throws GeneratorRangeException {
 		super();
-		if (pMaxGrade < MIN | pMaxGrade > MAX)
+		if (pMaxGrade < CladosConstant.BLADE_SCALARGRADE | pMaxGrade > CladosConstant.BLADE_MAXGRADE)
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pMaxGrade);
 		blade = EnumSet.noneOf(Generator.class);
 		maxGrade = pMaxGrade;
-	}
-
-	/**
-	 * This is a maximal constructor that establishes the blade's future maxGrade
-	 * expectations AND provides an array of directions to load into the blade.
-	 * 
-	 * @param pMaxGrade byte integer for the number of possible directions that
-	 *                  might appear in this blade.
-	 * @param pDirs     Generator[] containing directions to append to the blade.
-	 * @throws GeneratorRangeException This can happen a few different ways, but the
-	 *                                 typical one involves making blades with more
-	 *                                 than 14 directions. The current maximum is 14
-	 *                                 because a Basis internal array is indexed on
-	 *                                 byte integers. If 15 generators were
-	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for byte
-	 *                                 integers.
-	 */
-	public Blade(byte pMaxGrade, Generator[] pDirs) throws GeneratorRangeException {
-		this(pMaxGrade);
-		Stream.of(pDirs).forEach(g -> blade.add(g));
-		makeKey();
 	}
 
 	/**
@@ -160,43 +205,47 @@ public final class Blade {
 	}
 
 	/**
-	 * The generator represents a 'direction' in the blade to be added. The blade is
-	 * checked to see if it is at maximum size and whether the offered generator is
-	 * beyond masGrade. If either fails, the add silently returns the Blade
-	 * unchanged. If both pass, the generator is added to the set.
+	 * This is a maximal constructor that establishes the blade's future maxGrade
+	 * expectations AND provides an array of directions to load into the blade.
 	 * 
-	 * @param pS Generator that will be added to the set.
-	 * @return Blade The blade itself is returned to support stream calls.
+	 * @param pMaxGrade byte integer for the number of possible directions that
+	 *                  might appear in this blade.
+	 * @param pDirs     Generator[] containing directions to append to the blade.
+	 * @throws GeneratorRangeException This can happen a few different ways, but the
+	 *                                 typical one involves making blades with more
+	 *                                 than 14 directions. The current maximum is 14
+	 *                                 because a Basis internal array is indexed on
+	 *                                 byte integers. If 15 generators were
+	 *                                 expected, the basis would need a row index
+	 *                                 from 0 to 2^15 which is one too many for byte
+	 *                                 integers.
 	 */
-	public Blade add(Generator pS) {
-		if (isPScalar())
-			return this;
-		else if (pS.ord > maxGrade)
-			return this;
-		else {
-			blade.add(pS);
-			makeKey();
-			return this;
-		}
+	public Blade(byte pMaxGrade, EnumSet<Generator> pDirs) throws GeneratorRangeException {
+		this(pMaxGrade);
+		pDirs.forEach(g -> blade.add(g));
+		makeKey();
 	}
 
 	/**
-	 * The generators represent 'directions' in the blade to be added. The blade is
-	 * checked to see if it is at maximum size. If it is, the add silently returns
-	 * the Blade unchanged. If it passes, the generators are added to the set if
-	 * they pass through the filter that blocks generators larger than maxGrade.
+	 * This is a maximal constructor that establishes the blade's future maxGrade
+	 * expectations AND provides an array of directions to load into the blade.
 	 * 
-	 * @param pS Generators that will be added to the set.
-	 * @return Blade The blade itself is returned to support stream calls.
+	 * @param pMaxGrade byte integer for the number of possible directions that
+	 *                  might appear in this blade.
+	 * @param pDirs     Generator[] containing directions to append to the blade.
+	 * @throws GeneratorRangeException This can happen a few different ways, but the
+	 *                                 typical one involves making blades with more
+	 *                                 than 14 directions. The current maximum is 14
+	 *                                 because a Basis internal array is indexed on
+	 *                                 byte integers. If 15 generators were
+	 *                                 expected, the basis would need a row index
+	 *                                 from 0 to 2^15 which is one too many for byte
+	 *                                 integers.
 	 */
-	public Blade add(Generator[] pS) {
-		if (isPScalar())
-			return this;
-		else {
-			Stream.of(pS).filter(g -> g.ord <= maxGrade).forEach(g -> blade.add(g));
-			makeKey();
-			return this;
-		}
+	public Blade(byte pMaxGrade, Generator[] pDirs) throws GeneratorRangeException {
+		this(pMaxGrade);
+		Stream.of(pDirs).forEach(g -> blade.add(g));
+		makeKey();
 	}
 
 	/**
@@ -231,13 +280,13 @@ public final class Blade {
 	 *                                 exception to be thrown.
 	 */
 	public Blade add(Byte pS) throws GeneratorRangeException {
-		if (pS.byteValue() < Generator.MIN.ord | pS.byteValue() > Generator.MAX.ord)
+		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
 			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-		else if (isPScalar())
+		else if (isPScalar(this) | pS.byteValue() > maxGrade)
 			return this;
 		else {
-			blade.add(Generator.get(pS.byteValue()));
-			makeKey();
+			if (blade.add(Generator.get(pS.byteValue())))
+				makeKey();
 			return this;
 		}
 	}
@@ -281,6 +330,57 @@ public final class Blade {
 		return this;
 	}
 
+	public Blade add(EnumSet<Generator> pS) {
+		if (isPScalar(this))
+			return this;
+		else {
+			blade.addAll(pS);
+			return this;
+		}
+	}
+
+	/**
+	 * The generator represents a 'direction' in the blade to be added. The blade is
+	 * checked to see if it is at maximum size and whether the offered generator is
+	 * beyond masGrade. If either fails, the add silently returns the Blade
+	 * unchanged. If both pass, the generator is added to the set.
+	 * 
+	 * @param pS Generator that will be added to the set.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 */
+	public Blade add(Generator pS) {
+		if (isPScalar(this) | pS.ord > maxGrade)
+			return this;
+		else {
+			blade.add(pS);
+			makeKey();
+			return this;
+		}
+	}
+
+	/**
+	 * The generators represent 'directions' in the blade to be added. The blade is
+	 * checked to see if it is at maximum size. If it is, the add silently returns
+	 * the Blade unchanged. If it passes, the generators are added to the set if
+	 * they pass through the filter that blocks generators larger than maxGrade.
+	 * 
+	 * @param pS Generators that will be added to the set.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 */
+	public Blade add(Generator[] pS) {
+		if (isPScalar(this))
+			return this;
+		else {
+			Stream.of(pS).filter(g -> g.ord <= maxGrade).forEach(g -> blade.add(g));
+			makeKey();
+			return this;
+		}
+	}
+
+	public byte blademax() {
+		return maxGrade;
+	}
+
 	/**
 	 * The intended use for this method is with Comparators.
 	 * 
@@ -288,23 +388,11 @@ public final class Blade {
 	 * @return int in {-1, 0, 1} depending on the numeric order of each blade's long
 	 *         integer key.
 	 */
+	@Override
 	public int compareTo(Blade pIn) {
 		return (key() < pIn.key()) ? -1 : (key() > pIn.key() ? 1 : 0);
 	}
 
-	/**
-	 * This method is overridden Object equality test. As long as blades are being
-	 * tested, what is needed to pass this test is for them to have the same key and
-	 * sign values.
-	 * 
-	 * NOTE that the maximum possible grade for a blade is encoded in the key, thus
-	 * it gets tested when key values are compared. The sign value could be too, but
-	 * there is an advantage when building product tables NOT to have negative keys.
-	 * 
-	 * @param obj The object to test
-	 * @return boolean True implies two blades are the same. False implies they
-	 *         aren't.
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -313,9 +401,10 @@ public final class Blade {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		if (key != ((Blade) obj).key)
+		Blade other = (Blade) obj;
+		if (key != other.key)
 			return false;
-		if (sign != ((Blade) obj).sign)
+		if (sign != other.sign)
 			return false;
 		return true;
 	}
@@ -324,7 +413,7 @@ public final class Blade {
 	 * This method is very similar to the base object's equality test. The
 	 * difference is the sign of the blade is not checked. As long as blades are
 	 * being tested, all that is needed to pass this test is for them to have the
-	 * same key value.
+	 * same key and maxGrade values.
 	 * 
 	 * @param obj The object to test
 	 * @return boolean True implies two blades are equal to within a sign while
@@ -339,6 +428,8 @@ public final class Blade {
 			return false;
 		if (key != ((Blade) obj).key)
 			return false;
+		if (maxGrade != ((Blade) obj).maxGrade)
+			return false;
 		return true;
 	}
 
@@ -347,7 +438,7 @@ public final class Blade {
 	 * 
 	 * @return key Returns the blade's ArrayList of boxed bytes.
 	 */
-	public EnumSet<Generator> get() {
+	public EnumSet<Generator> getGenerators() {
 		return blade;
 	}
 
@@ -357,23 +448,7 @@ public final class Blade {
 		int result = 1;
 		result = prime * result + (int) (key ^ (key >>> 32));
 		result = prime * result + sign;
-		result = prime * result + maxGrade;
 		return result;
-	}
-
-	public boolean isOneBlade() {
-		return (blade.size() == 1);
-	}
-
-	public boolean isPScalar() {
-		if (blade.isEmpty())
-			return false;
-		else
-			return (blade.size() == maxGrade);
-	}
-
-	public boolean isScalar() {
-		return blade.isEmpty();
 	}
 
 	/**
@@ -384,19 +459,6 @@ public final class Blade {
 	 */
 	public long key() {
 		return key;
-	}
-
-	/**
-	 * The generator represents a 'direction' in the blade to be removed. If
-	 * anything is found to be removed, the key is recomputed.
-	 * 
-	 * @param pS Generator representing the 'direction' to remove from the blade.
-	 * @return Blade The blade itself is returned to support stream calls.
-	 */
-	public Blade remove(Generator pS) {
-		if (blade.remove(pS))
-			makeKey();
-		return this;
 	}
 
 	/**
@@ -429,10 +491,9 @@ public final class Blade {
 	 *                                 this exception to be thrown.
 	 */
 	public Blade remove(Byte pS) throws GeneratorRangeException {
-		if (pS.byteValue() < MIN + 1 | pS.byteValue() > MAX)
+		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
 			throw new GeneratorRangeException("Unsupported Generator for Blade.");
-
-		if (blade.remove(Generator.get(pS.byteValue())))
+		else if (blade.remove(Generator.get(pS.byteValue())))
 			makeKey();
 		return this;
 	}
@@ -452,12 +513,11 @@ public final class Blade {
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
 	public Blade remove(byte[] pS) throws GeneratorRangeException {
-		if (isScalar()) {
+		if (isScalar(this)) {
 			return this;
 		} else
-			for (byte tS : pS)
-				remove(Byte.valueOf(tS));
-		// No need to re-compute key here. It was done by the other remove method.
+			for (byte tS : pS) // NOT streamed in order to throw exception if necessary
+				remove(Byte.valueOf(tS)); // key re-computed here if necessary
 		return this;
 	}
 
@@ -476,53 +536,38 @@ public final class Blade {
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
 	public Blade remove(Byte[] pS) throws GeneratorRangeException {
-		if (isScalar()) {
+		if (isScalar(this)) {
 			return this;
 		} else
-			for (Byte tS : pS)
-				remove(tS);
-		// No need to re-compute key here. It was done by the other remove method.
+			for (Byte tS : pS) // NOT streamed in order to throw exception if necessary
+				remove(tS); // key re-computed here if necessary
+		return this;
+	}
+
+	public Blade remove(EnumSet<Generator> pS) {
+		if (isScalar(this))
+			return this;
+		else {
+			blade.removeAll(pS);
+			return this;
+		}
+	}
+
+	/**
+	 * The generator represents a 'direction' in the blade to be removed. If
+	 * anything is found to be removed, the key is recomputed.
+	 * 
+	 * @param pS Generator representing the 'direction' to remove from the blade.
+	 * @return Blade The blade itself is returned to support stream calls.
+	 */
+	public Blade remove(Generator pS) {
+		if (blade.remove(pS))
+			makeKey();
 		return this;
 	}
 
 	public byte sign() {
 		return sign;
-	}
-
-	public String toXMLOrdString(String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t\t\t\t\t";
-		//Iterator<Generator> cursor = blade.iterator();
-		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
-				+ "\" generators=\"");
-		
-		blade.stream().forEachOrdered(g -> rB.append(g.ord + ","));
-		//while (cursor.hasNext())
-		//	rB.append(cursor.next().ord + ",");
-
-		if (blade.size() > 0)
-			rB.deleteCharAt(rB.length() - 1);
-		rB.append("\" />\n");
-		return rB.toString();
-	}
-
-	public String toXMLString(String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t\t\t\t\t";
-		//Iterator<Generator> cursor = blade.iterator();
-		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<Blade sign=\"" + sign + "\" maxGrade=\"" + maxGrade + "\" key=\"" + key()
-				+ "\" generators=\"");
-		
-		blade.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
-		//while (cursor.hasNext())
-		//	rB.append(cursor.next().toString() + ",");
-
-		if (blade.size() > 0)
-			rB.deleteCharAt(rB.length() - 1);
-		rB.append("\" />\n");
-		return rB.toString();
 	}
 
 	/*
@@ -544,10 +589,24 @@ public final class Blade {
 			key += cursor.next().ord * Math.pow((maxGrade + 1), (blade.size() - 1 - counter));
 			counter++;
 		}
+
+		// BigInteger keyBI = BigInteger.ZERO;
+		// BigInteger grades = BigInteger.valueOf(maxGrade + 1);
+
+		// int counter = 0;
+		// Iterator<Generator> cursor = blade.iterator();
+		// while (cursor.hasNext()) {
+		// keyBI = keyBI.add(grades.pow(blade.size() - 1 -
+		// counter).multiply(BigInteger.valueOf(cursor.next().ord)));
+		// counter++;
+		// }
+
+		// key = keyBI.longValue();
 	}
 
 	protected Blade setSign(byte pSign) {
 		sign = pSign;
 		return this;
 	}
+
 }
