@@ -114,7 +114,7 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class BasisList {
+public final class BasisList {
 
 	/**
 	 * This is a validator to help ensure no construction occurs outside the

@@ -33,7 +33,7 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
-public class BladeDuet {
+public final class BladeDuet {
 	public static final Blade reduce(Blade pB1, Blade pB2, byte[] sig)
 			throws BladeCombinationException, GeneratorRangeException, BadSignatureException {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);

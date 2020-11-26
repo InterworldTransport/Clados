@@ -150,16 +150,6 @@ public abstract class AlgebraAbstract {
 	}
 
 	/**
-	 * Delivers an integer stream of the blades contained in the underlying basis
-	 * ranged from scalar to pscalar. (0 to bladeCount)
-	 * 
-	 * @return IntStream
-	 */
-	public IntStream getBladeStream() {
-		return gBasis.getBladeStream();
-	}
-
-	/**
 	 * This method returns a reference to the Foot of the algebra.
 	 * 
 	 * @return Foot
@@ -211,16 +201,6 @@ public abstract class AlgebraAbstract {
 	 */
 	public short[] getGradeRange(short pInd) {
 		return gProduct.getGradeRange(pInd);
-	}
-
-	/**
-	 * Delivers an integer stream of the grades contained in the underlying basis
-	 * ranged from scalar to pscalar. (0 to gradeCount)
-	 * 
-	 * @return IntStream
-	 */
-	public IntStream getGradeStream() {
-		return gBasis.getGradeStream();
 	}
 
 	public ArrayList<String> getReferenceFrames() {
