@@ -57,6 +57,11 @@ public enum Generator {
 		return Stream.of(Generator.values());
 	}
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 	public final static Stream<Generator> flow(byte pLimit) {
 		return Stream.of(Generator.values()).limit(pLimit);
 	}

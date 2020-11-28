@@ -25,12 +25,12 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -123,8 +123,47 @@ public final class BasisList {
 	 * @param pGens Short representing the number of unique algebraic directions
 	 * @return boolean True if parameter in the supported range [0, 14]
 	 */
-	public static final boolean validateSize(byte pGens) {
+	public static final boolean validateSize(int pGens) {
 		return (pGens >= CladosConstant.BLADE_SCALARGRADE & pGens <= CladosConstant.BLADE_MAXGRADE);
+	}
+
+	/**
+	 * This is just a factory method to help name a particular constructor. It is
+	 * used in place of 'new Basis(short)'.
+	 * 
+	 * @param numberOfGenerators Short representing unique algebraic directions
+	 * @return Basis Factory method returns a Basis with numberOfGenerators
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 */
+	public static final BasisList using(byte numberOfGenerators) throws GeneratorRangeException {
+		return new BasisList(numberOfGenerators);
+	}
+
+	/*
+	 * Deliver the powerset of generators present in the pscalar of a basis. Members
+	 * of this set ARE the other blades.
+	 * 
+	 * This is O(n^2), so improvements here matter.
+	 */
+	private final static Set<EnumSet<Generator>> powerSet(Set<Generator> inSet) {
+		Set<EnumSet<Generator>> sets = new HashSet<EnumSet<Generator>>();
+		if (inSet.isEmpty()) {
+			sets.add(EnumSet.noneOf(Generator.class));
+			return sets;
+		}
+		List<Generator> list = new ArrayList<Generator>(inSet);
+		Generator head = list.get(0);
+		Set<Generator> tailset = new HashSet<Generator>(list.subList(1, list.size()));
+		for (EnumSet<Generator> set : powerSet(tailset)) {
+			EnumSet<Generator> newSet = EnumSet.noneOf(Generator.class);
+			newSet.add(head);
+			newSet.addAll(set);
+			sets.add(newSet);
+			sets.add(set);
+		}
+		return sets;
 	}
 
 	/**
@@ -147,12 +186,12 @@ public final class BasisList {
 	 * the basis of the vector space spanned by all the blades.
 	 */
 	private final ArrayList<Blade> bladeList;
-
 	/**
 	 * This integer is the number of grades in the algebra. It is one more than the
 	 * number of generators and is used often enough to be worth keeping.
 	 */
 	private final byte gradeCount;
+
 	/**
 	 * This list is used for tracking of where grades start and stop in a bladeList.
 	 * The difference from grade k to k+1 is binomial(GradeCount-1, k) =
@@ -202,11 +241,17 @@ public final class BasisList {
 		if (pGens == 0) {
 			gradeList.add(Integer.valueOf(0));
 			bladeList.add(Blade.createScalarBlade(pGens));
+		} else if (pGens == 1) {
+			bladeList.add(Blade.createScalarBlade(pGens));
+			gradeList.add(Integer.valueOf(0));
+			bladeList.add(Blade.createPScalarBlade(pGens));
+			gradeList.add(Integer.valueOf(1));
 		} else {
 			EnumSet<Generator> offer = EnumSet.range(Generator.E1, Generator.get(pGens));
+			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
 			for (EnumSet<Generator> pG : powerSet(offer))
-				bladeList.add(new Blade(pGens, pG));
-			Collections.sort(bladeList);
+				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
+			sorted.iterator().forEachRemaining(b -> bladeList.add(b)); // exploit already sorted.
 		}
 		fillGradeList();
 	}
@@ -223,6 +268,13 @@ public final class BasisList {
 		if (gradeCount != other.gradeCount)
 			return false;
 		return true;
+	}
+
+	public int find(Blade pIn) {
+		for (Blade b : bladeList)
+			if (b.equalsAbs(pIn))
+				return bladeList.indexOf(b);
+		return -1;
 	}
 
 	/**
@@ -338,6 +390,12 @@ public final class BasisList {
 		return vKey;
 	}
 
+	public Blade getSingleBlade(int p1) {
+		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
+			return null;
+		return bladeList.get(p1);
+	}
+
 	@Override
 	public int hashCode() {
 		return 137 + gradeCount;
@@ -426,33 +484,5 @@ public final class BasisList {
 			}
 		}
 		gradeList.add((1 << (gradeCount - 1)) - 1); // Just bladeCount - 1
-	}
-
-	/*
-	 * Set the list used for representing the Eddington Basis.
-	 * 
-	 * This method should only be called once the Basis is initialized.
-	 * 
-	 * Construction scaled as grades * blades = (generators + 1) * 2^generators, so
-	 * it could take a long time and a lot of memory for a large basis. Efforts to
-	 * streamline code matter a great deal.
-	 */
-	private Set<EnumSet<Generator>> powerSet(Set<Generator> inSet) {
-		Set<EnumSet<Generator>> sets = new HashSet<EnumSet<Generator>>();
-		if (inSet.isEmpty()) {
-			sets.add(EnumSet.noneOf(Generator.class));
-			return sets;
-		}
-		List<Generator> list = new ArrayList<Generator>(inSet);
-		Generator head = list.get(0);
-		Set<Generator> tailset = new HashSet<Generator>(list.subList(1, list.size()));
-		for (EnumSet<Generator> set : powerSet(tailset)) {
-			EnumSet<Generator> newSet = EnumSet.noneOf(Generator.class);
-			newSet.add(head);
-			newSet.addAll(set);
-			sets.add(newSet);
-			sets.add(set);
-		}
-		return sets;
 	}
 }

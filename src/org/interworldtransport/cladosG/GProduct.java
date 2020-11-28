@@ -115,30 +115,6 @@ public final class GProduct {
 	private final String signature;
 
 	/**
-	 * Copy constructor of GProduct with other GProduct passed in. This constructor
-	 * enables a multivector to have its own GProduct object that happens to share a
-	 * Basis with some other GProduct object. This saves construction time and
-	 * memory because the basis isn't really the physical distinction between
-	 * reference frames. This constuctor enables two different algebras to share a
-	 * basis without forcing them to share the GProduct object.
-	 * 
-	 * @param pGP A GProduct to imitate
-	 * @throws BadSignatureException This exception is thrown when an null GProduct
-	 *                               is passed in.
-	 */
-	public GProduct(GProduct pGP) throws BadSignatureException {
-		if (pGP == null)
-			throw new BadSignatureException(this, "Can't extract signature from null GProduct.");
-
-		nSignature = (pGP.getSignature().length() == 0) ? new short[1] : new short[pGP.getSignature().length()];
-		fillNumericSignature(pGP.getSignature());
-		signature = new String(pGP.getSignature());
-		canonicalBasis = pGP.getBasis(); // Brand new one not needed. Re-used like an enumeration.
-
-		result = pGP.getResult().clone(); // No need to build it. Just copy the other one.
-	}
-
-	/**
 	 * Shortened constructor of ProductTable with signature information passed in,
 	 * but with a Basis already constructed elsewhere to re-use. A few checks have
 	 * to be done to make sure the Basis is compatible with the signature, but then
@@ -171,6 +147,30 @@ public final class GProduct {
 	}
 
 	/**
+	 * Copy constructor of GProduct with other GProduct passed in. This constructor
+	 * enables a multivector to have its own GProduct object that happens to share a
+	 * Basis with some other GProduct object. This saves construction time and
+	 * memory because the basis isn't really the physical distinction between
+	 * reference frames. This constuctor enables two different algebras to share a
+	 * basis without forcing them to share the GProduct object.
+	 * 
+	 * @param pGP A GProduct to imitate
+	 * @throws BadSignatureException This exception is thrown when an null GProduct
+	 *                               is passed in.
+	 */
+	public GProduct(GProduct pGP) throws BadSignatureException {
+		if (pGP == null)
+			throw new BadSignatureException(this, "Can't extract signature from null GProduct.");
+
+		nSignature = (pGP.getSignature().length() == 0) ? new short[1] : new short[pGP.getSignature().length()];
+		fillNumericSignature(pGP.getSignature());
+		signature = new String(pGP.getSignature());
+		canonicalBasis = pGP.getBasis(); // Brand new one not needed. Re-used like an enumeration.
+
+		result = pGP.getResult().clone(); // No need to build it. Just copy the other one.
+	}
+
+	/**
 	 * Main constructor of ProductTable with signature information passed in. It
 	 * figures out the rest of what it needs.
 	 * 
@@ -197,6 +197,18 @@ public final class GProduct {
 		// Basis elements that show the product of two other such elements.
 		result = new short[canonicalBasis.getBladeCount()][canonicalBasis.getBladeCount()];
 		fillResult();
+	}
+
+	@Override
+	public boolean equals(Object gp1) {
+		if (this == gp1)
+			return true;
+		if (gp1 == null)
+			return false;
+		if (gp1 instanceof GProduct)
+			return getSignature().equals(((GProduct) gp1).getSignature());
+		else
+			return false;
 	}
 
 	/**
@@ -258,33 +270,11 @@ public final class GProduct {
 	}
 
 	/**
-	 * Get start and end index from the GradeRange array for grade pGrade.
-	 * 
-	 * @param pGrade short primitive = grade for which the range is needed
-	 * @return short[] start and end indexes returned as a short[] array
-	 */
-	protected short[] getGradeRange(short pGrade) {
-		short[] tR = new short[2];
-		try {
-			tR[0] = canonicalBasis.getGradeStart(pGrade);
-			tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
-					? tR[0]
-					: (short) (canonicalBasis.getGradeStart((short) (pGrade + 1)) - 1));
-			return tR;
-		} catch (GradeOutOfRangeException e) {
-			// Ugly catch if there are internal errors with Grade Range retrieval.
-			// Keep away from calling getGradeRange as it is an internal method really only
-			// safe if called by other objects in the package that KNOW how to limit
-			// requested range.
-			return tR;
-		}
-	}
-
-	/**
 	 * Return whole result array. Meant for copy constructors.
 	 * 
 	 * @return short[][]
 	 */
+	@Deprecated
 	public short[][] getResult() {
 		return result;
 	}
@@ -333,6 +323,20 @@ public final class GProduct {
 		return signature;
 	}
 
+	@Override
+	public int hashCode() {
+		int pt = 0;
+		int m = 0;
+		for (char b : signature.toCharArray()) {
+			switch (b) {
+			case '+' -> pt += Math.pow(2, m);
+			case '-' -> pt += Math.pow(3, m);
+			}
+			m++;
+		}
+		return pt;
+	}
+
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
@@ -356,28 +360,6 @@ public final class GProduct {
 		rB.append(indent + "\t</ProductTable>\n");
 		rB.append(indent + "</GProduct>\n");
 		return rB.toString();
-	}
-
-	/**
-	 * This is a method that only gets called during construction. It fills the
-	 * numeric array similar to the string signature. '+' becomes 0 and '-' becomes
-	 * 1.
-	 * 
-	 * This numeric signature is used later as a shorthand for whether to do a sign
-	 * flip when generator pairs are removed from a product. 0 implies no need for
-	 * sign flip. 1 implies a need for sign flip.
-	 * 
-	 * @param pSig
-	 */
-	private void fillNumericSignature(String pSig) {
-		int m = 0;
-		for (char b : pSig.toCharArray()) {
-			switch (b) {
-			case '+' -> nSignature[m] = 0;
-			case '-' -> nSignature[m] = 1;
-			}
-			m++;
-		}
 	}
 
 	/**
@@ -502,6 +484,28 @@ public final class GProduct {
 		// basis
 	}
 
+	/**
+	 * This is a method that only gets called during construction. It fills the
+	 * numeric array similar to the string signature. '+' becomes 0 and '-' becomes
+	 * 1.
+	 * 
+	 * This numeric signature is used later as a shorthand for whether to do a sign
+	 * flip when generator pairs are removed from a product. 0 implies no need for
+	 * sign flip. 1 implies a need for sign flip.
+	 * 
+	 * @param pSig
+	 */
+	private void fillNumericSignature(String pSig) {
+		int m = 0;
+		for (char b : pSig.toCharArray()) {
+			switch (b) {
+			case '+' -> nSignature[m] = 0;
+			case '-' -> nSignature[m] = 1;
+			}
+			m++;
+		}
+	}
+
 	private void fillResult() {
 		for (short j = 0; j < getBladeCount(); j++) {
 			result[0][j] = (short) (j + 1);
@@ -541,29 +545,26 @@ public final class GProduct {
 		return tempBothOps;
 	}
 
-	@Override
-	public int hashCode() {
-		int pt = 0;
-		int m = 0;
-		for (char b : signature.toCharArray()) {
-			switch (b) {
-			case '+' -> pt += Math.pow(2, m);
-			case '-' -> pt += Math.pow(3, m);
-			}
-			m++;
+	/**
+	 * Get start and end index from the GradeRange array for grade pGrade.
+	 * 
+	 * @param pGrade short primitive = grade for which the range is needed
+	 * @return short[] start and end indexes returned as a short[] array
+	 */
+	protected short[] getGradeRange(short pGrade) {
+		short[] tR = new short[2];
+		try {
+			tR[0] = canonicalBasis.getGradeStart(pGrade);
+			tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+					? tR[0]
+					: (short) (canonicalBasis.getGradeStart((short) (pGrade + 1)) - 1));
+			return tR;
+		} catch (GradeOutOfRangeException e) {
+			// Ugly catch if there are internal errors with Grade Range retrieval.
+			// Keep away from calling getGradeRange as it is an internal method really only
+			// safe if called by other objects in the package that KNOW how to limit
+			// requested range.
+			return tR;
 		}
-		return pt;
-	}
-
-	@Override
-	public boolean equals(Object gp1) {
-		if (this == gp1)
-			return true;
-		if (gp1 == null)
-			return false;
-		if (gp1 instanceof GProduct)
-			return getSignature().equals(((GProduct) gp1).getSignature());
-		else
-			return false;
 	}
 }

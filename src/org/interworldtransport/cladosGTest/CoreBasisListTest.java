@@ -12,7 +12,6 @@ class CoreBasisListTest {
 
 	BasisList tBasis0;
 	BasisList tBasis4;
-	BasisList tBasis42;
 	BasisList tBasis43;
 	BasisList tBasis8;
 	BasisList tBasis10;
@@ -22,7 +21,6 @@ class CoreBasisListTest {
 	void setUp() throws Exception {
 		tBasis0 = new BasisList((byte) 0);
 		tBasis4 = new BasisList((byte) 4);
-		// tBasis42 = new BasisList(tBasis4);
 		tBasis43 = new BasisList((byte) 4);
 		tBasis8 = new BasisList((byte) 8);
 		tBasis10 = new BasisList((byte) 10);
@@ -82,7 +80,7 @@ class CoreBasisListTest {
 
 	@Test
 	void testXMLOutput() {
-		String xml = tBasis14.toXMLString("");
+		String xml = tBasis4.toXMLString("");
 		System.out.println(xml);
 		assertTrue(xml != null);
 	}

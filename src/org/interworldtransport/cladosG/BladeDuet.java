@@ -25,6 +25,7 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public final class BladeDuet {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);
 		return tBD.reduce(sig);
 	}
-	
+
 	public final static boolean isNBlade(Blade blade, byte n) {
 		return blade.getGenerators().size() == n;
 	}
@@ -87,6 +88,8 @@ public final class BladeDuet {
 
 		pB2.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
 		sign *= pB2.sign();
+
+		// System.out.print(this.toXMLString("") + " | ");
 	}
 
 	/**
@@ -212,10 +215,7 @@ public final class BladeDuet {
 		if (span != pSig.length)
 			throw new BadSignatureException(this, "Signature length mis-match with stored maxGrade.");
 
-		EnumSet<Generator> possibles = EnumSet.noneOf(Generator.class);
-		Generator.flow().limit(span).forEach(g -> possibles.add(g));
-
-		for (Generator pG : possibles) {
+		for (Generator pG : Blade.createPScalarBlade(span).getGenerators()) {
 			int firstFind = bladeDuet.indexOf(pG);
 			int secondFind = bladeDuet.lastIndexOf(pG);
 			if (firstFind > -1 && secondFind > -1 && secondFind - firstFind > 0) {
@@ -226,10 +226,12 @@ public final class BladeDuet {
 				bladeDuet.remove(firstFind);
 			}
 		}
-
-		removeNulls(); // This one avoids Blade complaining bitterly if nulls are 'added'.
+		// Remaining generators might not be in order. CommuteFlip was incomplete.
+		// Removing duplicates FIRST reduces size of this sort which cannot have more
+		// generators to sort than the size of the pscalar.
+		bubbleSortFlip();
+		// Blade construction can throw GeneratorRangeException but really shouldn't
 		Blade returnIt = (new Blade(span)).setSign(sign);
-		// Potentially throws GeneratorRangeException but really shouldn't
 		bladeDuet.stream().forEach(g -> returnIt.add(g));
 
 		return returnIt;
@@ -247,12 +249,24 @@ public final class BladeDuet {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent + "<BladeDuo sign=\"" + sign + "\" maxGrade=\"" + span() + "\" generators=\"");
+		rB.append(indent + "<BladeDuet sign=\"" + sign + "\" maxGrade=\"" + span() + "\" generators=\"");
 		bladeDuet.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
 		if (bladeDuet.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
 		return rB.toString();
+	}
+
+	private void bubbleSortFlip() {
+		for (byte m = 0; m < bladeDuet.size() - 1; m++) {
+			for (byte k = 0; k < bladeDuet.size() - 1 - m; k++) {
+				if (bladeDuet.get(k).ord > bladeDuet.get(k + 1).ord) {
+					Collections.swap(bladeDuet, k, k + 1);
+					sign *= -1;
+				}
+			}
+
+		}
 	}
 
 	private BladeDuet removeNulls() {
