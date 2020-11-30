@@ -24,19 +24,15 @@
  */
 package org.interworldtransport.cladosF;
 
-import java.util.ArrayList;
-
 /**
  * This builder gets basic information and constructs any of the DivFields and
  * their supporting classes like a Cardinal. Some features are supported by the
  * CladosField enumeration.
  * 
- * The DivField builder is a singleton enforced as an enumeration that keeps
- * track of Cardinals and builds them as needed.
+ * The DivField builder is a singleton enforced as an enumeration.
  * 
- * This enumeration has a non-static element for the instance, thus
- * CladosFBuilder HAS INTERNAL STATE that can change unlike the CladosField
- * enumerator of DivFields in the same package.
+ * This enumeration has NO non-static element for the instance, thus
+ * CladosFBuilder HAS NO INTERNAL STATE that can change.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -108,58 +104,29 @@ public enum CladosFBuilder { // This has an implicit private constructor we won'
 		return RealF.newZERO(pS);
 	}
 
-	/**
-	 * Heads Up! This ArrayList ensures this 'enumeration' is mutable. This class
-	 * isn't intended to be static/immutable. It is supposed to be instantiated once
-	 * and then used to keep track of the Cardinals in use while performing a useful
-	 * function as a Builder. It is doing DOUBLE DUTY.
-	 */
-	private ArrayList<Cardinal> listOfCardinals = new ArrayList<Cardinal>(1);
-
-	//
-	public Cardinal createCardinal(String pName) {
-		Cardinal test = findCardinal(pName);
-		if (test != null)
-			return test;
-		else {
+	public final static Cardinal createCardinal(String pName) {
+		Cardinal test = CladosFCache.INSTANCE.findCardinal(pName);
+		if (test == null) {
 			test = Cardinal.generate(pName);
-			listOfCardinals.add(test);
-			return test;
+			CladosFCache.INSTANCE.appendCardinal(test);
 		}
+		return test;
 	}
 
-	public ComplexD createComplexD() {
+	public final static ComplexD createComplexD() {
 		return new ComplexD(createCardinal("C|D"), 0d, 0d);
 	}
 
-	public ComplexF createComplexF() {
+	public final static ComplexF createComplexF() {
 		return new ComplexF(createCardinal("C|F"), 0f, 0f);
 	}
 
-	public RealD createRealD() {
+	public final static RealD createRealD() {
 		return new RealD(createCardinal("R|D"), 0d);
 	}
 
-	public RealF createRealF() {
+	public final static RealF createRealF() {
 		return new RealF(createCardinal("R|F"), 0f);
-	}
-
-	public Cardinal findCardinal(String pName) {
-		return listOfCardinals.stream().filter(x -> x.getUnit().equals(pName)).findFirst().orElse(null);
-	}
-
-	public Cardinal getCardinal(short pLoc) {
-		if (listOfCardinals.size() < 1 | listOfCardinals.size() < pLoc)
-			return null;
-		return listOfCardinals.get(pLoc);
-	}
-
-	public short getCardinalListSize() {
-		return (short) listOfCardinals.size();
-	}
-
-	public boolean removeCardinal(Cardinal pCard) {
-		return listOfCardinals.remove(pCard);
 	}
 
 }

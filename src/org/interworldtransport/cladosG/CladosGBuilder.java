@@ -22,10 +22,7 @@
  * ---org.interworldtransport.cladosF.CladosGBuilder<br>
  * ------------------------------------------------------------------------ <br>
  */
-
 package org.interworldtransport.cladosG;
-
-import java.util.ArrayList;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.DivField;
@@ -36,9 +33,8 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * This builder gets basic information and constructs many Clados Geometry
  * objects.
  * 
- * This enumeration has a non-static element for the instance, t hus
- * CladosGBuilder HAS INTERNAL STATE that can change unlike CladosGAlgebra,
- * CladosGMonad, and CladosGNyad.
+ * This enumeration has NO non-static element for the instance, thus
+ * CladosGBuilder HAS NO INTERNAL STATE that can change.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -46,8 +42,16 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 public enum CladosGBuilder { // This has an implicit private constructor we won't override.
 	INSTANCE;
 
+	public final static boolean validateSignature(String pSig) {
+		return GProduct.validateSignature(pSig);
+	}
+
+	public final static boolean validateSize(short pGen) {
+		return Basis.validateSize(pGen);
+	}
+	
 	public final static String cleanSignature(String pSig) {
-		if (GProduct.validateSignature(pSig))
+		if (validateSignature(pSig))
 			return pSig;
 		else {
 			StringBuffer tSpot = new StringBuffer();
@@ -87,45 +91,13 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
 	}
 
-	public final static boolean validateSize(short pGen) {
-		return Basis.validateSize(pGen);
-	}
-
-	public final static boolean validateSignature(String pSig) {
-		return GProduct.validateSignature(pSig);
-	}
-
-	/**
-	 * Heads Up! These ArrayList ensures this 'enumeration' is mutable. This class
-	 * isn't intended to be static/immutable. It is supposed to be instantiated once
-	 * and then used to keep track of the CladosG objects that can be safely share
-	 * in use while performing a useful function as a Builder. It is doing DOUBLE
-	 * DUTY.
-	 */
-	private ArrayList<Basis> listOfBases = new ArrayList<Basis>(1);
-	private ArrayList<GProduct> listOfGProducts = new ArrayList<GProduct>(1);
-
-	public void appendBasis(Basis pB) {
-		if (listOfBases.contains(pB))
-			return; // Already in ArrayList
-		listOfBases.ensureCapacity(listOfBases.size() + 1);
-		listOfBases.add(pB);
-	}
-
-	public void appendGProduct(GProduct pGP) {
-		if (listOfGProducts.contains(pGP))
-			return; // Already in ArrayList
-		listOfGProducts.ensureCapacity(listOfGProducts.size() + 1);
-		listOfGProducts.add(pGP);
-	}
-
 	public Basis createBasis(short pGen) throws GeneratorRangeException {
-		Basis tB = findBasis(pGen);
+		Basis tB = CladosGCache.INSTANCE.findBasis(pGen);
 		if (tB != null)
 			return tB;
 		else {
 			Basis tSpot = Basis.using(pGen);
-			appendBasis(tSpot);
+			CladosGCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
 
@@ -138,12 +110,12 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		if (pB == null)
 			tSpot = createGProduct(pSig);
 		else {
-			tSpot = findGProduct(pSig);
+			tSpot = CladosGCache.INSTANCE.findGProduct(pSig);
 			if (tSpot != null)
 				return tSpot; // GProduct already created, so just offer it instead of making a new one
 			tSpot = new GProduct(pB, pSig);// Make a new GProduct and return it
-			appendBasis(pB);
-			appendGProduct(tSpot);
+			CladosGCache.INSTANCE.appendBasis(pB);
+			CladosGCache.INSTANCE.appendGProduct(tSpot);
 		}
 		return tSpot;
 	}
@@ -151,65 +123,19 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public GProduct createGProduct(String pSig) throws GeneratorRangeException, BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tSpot = findGProduct(pSig);
+		GProduct tSpot = CladosGCache.INSTANCE.findGProduct(pSig);
 		if (tSpot != null)
 			return tSpot; // GProduct already created, so just offer it instead of making a new one
 		// At this point we have to create a new GProduct. HOWEVER, it may still be
 		// possible to share a Basis. So... look for it.
-		Basis tB = findBasis((short) pSig.length());
+		Basis tB = CladosGCache.INSTANCE.findBasis((short) pSig.length());
 		if (tB != null)
 			tSpot = new GProduct(tB, pSig); // Basis is found, so use re-use constructor.
 		else {
 			tSpot = new GProduct(pSig); // Make a new GProduct with implied new Basis.
-			appendBasis(tSpot.getBasis());
+			CladosGCache.INSTANCE.appendBasis(tSpot.getBasis());
 		}
-		appendGProduct(tSpot);
+		CladosGCache.INSTANCE.appendGProduct(tSpot);
 		return tSpot;
-	}
-
-	public Basis findBasis(short pGen) throws GeneratorRangeException {
-		if (!validateSize(pGen))
-			throw new GeneratorRangeException("Unsupported number of generators in findBasis(short)");
-		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst().orElse(null);
-		// Deliver Basis OR null
-	}
-
-	public GProduct findGProduct(String pSig) throws BadSignatureException {
-		if (!validateSignature(pSig))
-			throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
-		return listOfGProducts.stream().filter(x -> x.getSignature().equals(pSig)).findFirst().orElse(null);
-		// Deliver GProduct OR null
-	}
-
-	public short getBasisListSize() // shouldn't ever be larger than Basis.MAX_GEN
-	{
-		return (short) listOfBases.size();
-	}
-
-	public int getGProductListSize() // shouldn't ever be larger than 2^(Basis.MAX_GEN+1). +1 TOO BIG for shorts.
-	{
-		return listOfGProducts.size();
-	}
-
-	public boolean removeBasis(Basis pB) {
-		return listOfBases.remove(pB);
-	}
-
-	public boolean removeBasis(short pGen) throws GeneratorRangeException {
-		Basis B = findBasis(pGen); // This function validates the support status of the number of generators
-		if (B == null)
-			return true;
-		return removeBasis(B);
-	}
-
-	public boolean removeGProduct(GProduct pGP) {
-		return listOfGProducts.remove(pGP);
-	}
-
-	public boolean removeGProduct(String pSig) throws BadSignatureException {
-		GProduct GP = findGProduct(pSig); // This function validates the passed signature
-		if (GP == null)
-			return true;
-		return removeGProduct(GP);
 	}
 }
