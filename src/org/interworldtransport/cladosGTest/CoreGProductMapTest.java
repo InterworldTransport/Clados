@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 class CoreGProductMapTest {
 	String pSig0 = "";
-	String pSig2 = "++";
+	String pSig2 = "-+";
+	String pSig3 = "+++";
 	String pSig4 = "-+++";
 	String pSig8 = "-+++-+++";
 	String pSig10 = "+++-++++++";
@@ -40,16 +41,36 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-
+	
 	@Test
 	public void test02s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig2);
-		// System.out.println(GProductMap.toXMLString(tGP, ""));
-		assertTrue(tGP.signature().equals("++"));
+		//System.out.println(GProductMap.toXMLString(tGP, ""));
+		assertTrue(tGP.signature().equals("-+"));
 		assertTrue(tGP.getGradeCount() == 3);
 		assertTrue(tGP.getBladeCount() == (1 << 2));
 
 		int tS = (1 << 2);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+
+	@Test
+	public void test03s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+		GProductMap tGP = new GProductMap(pSig3);
+		System.out.println(GProductMap.toXMLString(tGP, ""));
+		assertTrue(tGP.signature().equals("+++"));
+		assertTrue(tGP.getGradeCount() == 4);
+		assertTrue(tGP.getBladeCount() == (1<<3));
+
+		int tS = 1<<3;
 		int tSum = tS * (tS + 1) / 2;
 		for (int k = 0; k < tGP.getBladeCount(); k++) {
 			int[] tSpot = tGP.getResult(k);
@@ -80,7 +101,7 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-
+	/*
 	@Test
 	public void test08s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig8);
@@ -137,17 +158,24 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-	/*
-	 * @Test public void test14s() throws BadSignatureException,
-	 * GeneratorRangeException, BladeCombinationException { GProductMap tGP = new
-	 * GProductMap(pSig14); assertTrue(tGP.signature().equals("++-+++-+++-+++"));
-	 * assertTrue(tGP.getGradeCount() == 15); assertTrue(tGP.getBladeCount() ==
-	 * Math.pow(2, 14));
-	 * 
-	 * int tS=(int)Math.pow(2,14); int tSum=tS*(tS+1)/2; for (int k=0;
-	 * k<tGP.getBladeCount(); k++) { int[] tSpot=tGP.getResult(k); int tSumP=0; for
-	 * (int j=0; j<tSpot.length; j++) tSumP += Math.abs(tSpot[j]);
-	 * 
-	 * assertTrue(tSum==tSumP); } }
-	 */
+
+	@Test
+	public void test14s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+		GProductMap tGP = new GProductMap(pSig14);
+		assertTrue(tGP.signature().equals("++-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 15);
+		assertTrue(tGP.getBladeCount() == Math.pow(2, 14));
+
+		int tS = (int) Math.pow(2, 14);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+*/
 }

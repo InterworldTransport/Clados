@@ -24,18 +24,9 @@ class CoreBladeDuetTest {
 	void setUp() throws Exception {
 		firstB = new Blade((byte) 4, g);
 		secondB = new Blade((byte) 4, i);
+		
 		euclidianB = new Blade((byte) 3, g);
 		minkowskiB = new Blade((byte) 4, i);
-	}
-
-	@Test
-	void testRaw() throws GeneratorRangeException, BladeCombinationException, BadSignatureException {
-		tBD = new BladeDuet((byte) 4);
-		tBD.assignFirst(firstB);
-		tBD.assignSecond(secondB);
-
-		out = tBD.reduce(sig);
-		assertTrue(Blade.isNBlade(out, (byte) 1));
 	}
 
 	@Test

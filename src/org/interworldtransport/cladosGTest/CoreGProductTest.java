@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 
 class CoreGProductTest {
 	String pSig0 = "";
-	String pSig2 = "++";
+	String pSig2 = "-+";
+	String pSig3 = "+++";
 	String pSig4 = "-+++";
 	String pSig8 = "-+++-+++";
 	String pSig10 = "+++-++++++";
@@ -50,13 +51,33 @@ class CoreGProductTest {
 	@Test
 	public void test02s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProduct tGP = new GProduct(pSig2);
-		System.out.println(tGP.toXMLString());
-		assertTrue(tGP.getSignature().equals("++"));
+		//System.out.println(tGP.toXMLString());
+		assertTrue(tGP.getSignature().equals("-+"));
 		assertTrue(tGP.getGradeCount() == 3);
 		assertTrue(tGP.getBladeCount() == (1 << 2));
 
 		int tS = (1 << 2);
 		int tSum = (tS * (tS + 1) / 2);
+		for (short k = 0; k < tGP.getBladeCount(); k++) {
+			short[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+	
+	@Test
+	public void test03s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+		GProduct tGP = new GProduct(pSig3);
+		System.out.println(tGP.toXMLString());
+		assertTrue(tGP.getSignature().equals("+++"));
+		assertTrue(tGP.getGradeCount() == 4);
+		assertTrue(tGP.getBladeCount() == (1<<3));
+
+		int tS = 1<<3;
+		int tSum = tS * (tS + 1) / 2;
 		for (short k = 0; k < tGP.getBladeCount(); k++) {
 			short[] tSpot = tGP.getResult(k);
 			int tSumP = 0;

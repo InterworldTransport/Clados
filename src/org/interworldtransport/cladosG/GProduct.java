@@ -24,7 +24,10 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Arrays;
+
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
@@ -143,7 +146,15 @@ public final class GProduct {
 		// Fill the ProductResult array with integers representing Vector
 		// Basis elements that show the product of two other such elements.
 		result = new short[canonicalBasis.getBladeCount()][canonicalBasis.getBladeCount()];
-		fillResult();
+		if (pSig.length() == 0) // Handle zero generator case manually
+			result[0][0] = 1;
+		else if (pSig.length() == 1) { // Handle single generator case manually
+			result[0][0] = 1;
+			result[0][1] = 2;
+			result[1][0] = 2;
+			result[1][1] = (short) ((nSignature[0] == 0) ? 1 : -1);
+		} else
+			fillResult();
 	}
 
 	/**
@@ -196,7 +207,15 @@ public final class GProduct {
 		// Fill the ProductResult array with integers representing Vector
 		// Basis elements that show the product of two other such elements.
 		result = new short[canonicalBasis.getBladeCount()][canonicalBasis.getBladeCount()];
-		fillResult();
+		if (pSig.length() == 0) // Handle zero generator case manually
+			result[0][0] = 1;
+		else if (pSig.length() == 1) { // Handle single generator case manually
+			result[0][0] = 1;
+			result[0][1] = 2;
+			result[1][0] = 2;
+			result[1][1] = (short) ((nSignature[0] == 0) ? 1 : -1);
+		} else
+			fillResult();
 	}
 
 	@Override
@@ -362,6 +381,36 @@ public final class GProduct {
 		return rB.toString();
 	}
 
+	private void fillCellByBlades(short j, short k) throws GeneratorRangeException, BladeCombinationException {
+		Blade left = new Blade((byte) (getGradeCount() - 1));
+		Blade right = new Blade((byte) (getGradeCount() - 1));
+		// No. pPS has to be passed in from fillResults which calculates it just once.
+		for (byte m = 0; m < getGradeCount() - 1; m++) {
+			if (canonicalBasis.getBasisCell(j, m) > 0)
+				left.add((byte) canonicalBasis.getBasisCell(j, m));
+			if (canonicalBasis.getBasisCell(k, m) > 0)
+				right.add((byte) canonicalBasis.getBasisCell(k, m));
+		}
+		byte[] sG = new byte[nSignature.length];
+		for (short m = 0; m < nSignature.length; m++) {
+			if (nSignature[m] == 1)
+				sG[m] = -1;
+			if (nSignature[m] == 0)
+				sG[m] = 1;
+		}
+		Blade tSpot = BladeDuet.reduce(left, right, sG);
+		result[j][k] = 0;
+		long[] pKey = canonicalBasis.getKeys();
+
+		for (short m = 0; m < getBladeCount(); m++) {
+			if (tSpot.key() == pKey[m]) {
+				result[j][k] = (short) ((m + 1) * tSpot.sign());
+				break; // Good enough. Done identifying resulting blade & its sign
+			}
+		}
+		assert (result[j][k] != 0); // if result entry is not zero, fill is complete.
+	}
+
 	/**
 	 * Set the array used for establishing the geometric multiplication results of
 	 * pairs of blades (j and k) of the Basis.
@@ -411,7 +460,7 @@ public final class GProduct {
 		// bothOps filled and partially sorted. That means the zero slots in both blades
 		// (if any) will be to the left of all of non-zero indexes in both blades.
 		// Needed next is to sort the non-zero's to the right of bothOps.
-		// Ex: 0023500134 -> 0000123345
+		// Ex: 0023500134 -> 0000235134-> 0000123345
 
 		for (m = 0; m < 2 * getGradeCount() - 2; m++) {
 			if (bothOps[m] == 0)
@@ -515,6 +564,7 @@ public final class GProduct {
 		for (short j = 1; j < getBladeCount(); j++)
 			for (short k = 1; k < getBladeCount(); k++)
 				fillCell(j, k);
+
 	}
 
 	/**

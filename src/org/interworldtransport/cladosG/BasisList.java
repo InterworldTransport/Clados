@@ -220,6 +220,12 @@ public final class BasisList {
 	private final ArrayList<Integer> gradeList;
 
 	/**
+	 * This list enables a lookup technique on the blades in bladeList. The keys
+	 * MUST be in the same order as the blades.
+	 */
+	private final ArrayList<Long> keyList;
+
+	/**
 	 * This is the basic constructor. It takes the number of generators as it's only
 	 * parameter. It can be instantiated on it's own for demonstration purposes, but
 	 * it has no awareness of the addition and multiplication operations in an
@@ -237,21 +243,25 @@ public final class BasisList {
 		gradeCount = (byte) (pGens + 1);
 		gradeList = new ArrayList<Integer>(gradeCount);
 		bladeList = new ArrayList<Blade>(1 << pGens);
-
+		keyList = new ArrayList<Long>(1 << pGens);
 		if (pGens == 0) {
 			gradeList.add(Integer.valueOf(0));
-			bladeList.add(Blade.createScalarBlade(pGens));
+			bladeList.add(Blade.createScalarBlade(pGens).setBasisIndex(1));
 		} else if (pGens == 1) {
-			bladeList.add(Blade.createScalarBlade(pGens));
+			bladeList.add(Blade.createScalarBlade(pGens).setBasisIndex(0));
 			gradeList.add(Integer.valueOf(0));
-			bladeList.add(Blade.createPScalarBlade(pGens));
+			bladeList.add(Blade.createPScalarBlade(pGens).setBasisIndex(1));
 			gradeList.add(Integer.valueOf(1));
 		} else {
 			EnumSet<Generator> offer = EnumSet.range(Generator.E1, Generator.get(pGens));
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
 			for (EnumSet<Generator> pG : powerSet(offer))
 				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
-			sorted.iterator().forEachRemaining(b -> bladeList.add(b)); // exploit already sorted.
+			sorted.iterator().forEachRemaining(b -> {
+				bladeList.add(b);
+				keyList.add(Long.valueOf(b.key()));
+				b.setBasisIndex(bladeList.indexOf(b)+1);
+			}); // exploit already sorted.
 		}
 		fillGradeList();
 	}
@@ -274,6 +284,13 @@ public final class BasisList {
 		for (Blade b : bladeList)
 			if (b.equalsAbs(pIn))
 				return bladeList.indexOf(b);
+		return -1;
+	}
+
+	public int findKey(Long pIn) {
+		for (Long l : keyList)
+			if (l.equals(pIn))
+				return keyList.indexOf(l);
 		return -1;
 	}
 
@@ -424,17 +441,7 @@ public final class BasisList {
 		// ------------------------------------------------------------------
 		rB.append(indent).append("\t<Blades count=\"").append(getBladeCount()).append("\">\n");
 		for (short k = 0; k < bladeList.size(); k++) // Appending blades
-		{
-			long tKey = bladeList.get(k).key();
-			rB.append(indent).append("\t\t<Blade number=\"").append(k + 1).append("\" key=\"").append(tKey)
-					.append("\" generators=\"");
-
-			bladeList.get(k).getGenerators().stream().forEachOrdered(g -> rB.append(g.toString() + ","));
-
-			if (tKey > 0)
-				rB.deleteCharAt(rB.length() - 1); // scalar generator list is empty. No ',' to delete.
-			rB.append("\" />\n");
-		}
+			rB.append(Blade.toXMLString(bladeList.get(k), indent + "\t\t"));
 		rB.append(indent).append("\t</Blades>\n");
 		// ------------------------------------------------------------------
 		rB.append(indent).append("</Basis>\n");

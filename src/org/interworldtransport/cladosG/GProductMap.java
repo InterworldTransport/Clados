@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Optional;
+
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -285,29 +287,25 @@ public class GProductMap {
 		}
 	}
 
-	private void fillResult() throws GeneratorRangeException, BladeCombinationException, BadSignatureException {
+	private void fillResult() throws BladeCombinationException, GeneratorRangeException {
 		for (int j = 0; j < getBladeCount(); j++) {
 			result[0][j] = (j + 1);
 			result[j][0] = (j + 1);
 		} // Scalar section of result done separately because result blade is known.
-		Blade bLeft, bRight, tSpot;
-		for (int j = 1; j < getBladeCount(); j++)
+		Blade bLeft, tSpot;  //bRight,
+		for (int j = 1; j < getBladeCount(); j++) {
+			bLeft = canonicalBasis.getSingleBlade(j);
 			for (int k = 1; k < getBladeCount(); k++) {
-				bLeft = canonicalBasis.getSingleBlade(j);
-				bRight = canonicalBasis.getSingleBlade(k);
-				// The next line can throw BadSignatureException for obvious reasons.
-				// It can also throw GeneratorRangeException if bLeft or bRight are malformed.
-				// That should NOT happen, but better safe than sorry.
-				tSpot = BladeDuet.reduce(bLeft, bRight, nSignature);
-				// BladeDuet does the heavy lifting of blade multiplication
-				int tSpotLoc = canonicalBasis.find(tSpot) + 1;
-				if (tSpotLoc > 0)
-					result[j][k] = tSpotLoc * tSpot.sign();
-				else
-					throw new BladeCombinationException(null, bLeft, bRight,
-							"Blade Combination did not reduce to a known blade, thus wasn't found in the basis.");
-			}
+				//bRight = canonicalBasis.getSingleBlade(k);
 
+				// TODO I don't really need the whole blade. I need the blade's key and sign.
+				tSpot = BladeDuet.reduce(bLeft, canonicalBasis.getSingleBlade(k), nSignature);
+				// BladeDuet does the heavy lifting of blade multiplication
+				int tSpotLoc = canonicalBasis.findKey(tSpot.key()) + 1;
+
+				result[j][k] = tSpotLoc * tSpot.sign();
+			}
+		}
 	}
 
 	/**

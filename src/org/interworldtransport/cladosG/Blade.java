@@ -26,6 +26,7 @@ package org.interworldtransport.cladosG;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -104,8 +105,9 @@ public final class Blade implements Comparable<Blade> {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent).append("<Blade sign=\"").append(blade.sign()).append("\" maxGrade=\"")
-				.append(blade.blademax()).append("\" key=\"").append(blade.key()).append("\" generators=\"");
+		rB.append(indent).append("<Blade index=\"").append(blade.basisIndex).append("\" key=\"").append(blade.key())
+				.append("\" bitKey=\"").append(blade.bitKey()).append("\" sign=\"").append(blade.sign())
+				.append("\" generators=\"");
 
 		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.ord + ","));
 
@@ -119,8 +121,9 @@ public final class Blade implements Comparable<Blade> {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent).append("<Blade sign=\"").append(blade.sign()).append("\" maxGrade=\"")
-				.append(blade.blademax()).append("\" key=\"").append(blade.key()).append("\" generators=\"");
+		rB.append(indent).append("<Blade index=\"").append(blade.basisIndex).append("\" key=\"").append(blade.key())
+				.append("\" bitKey=\"").append(Integer.toBinaryString(blade.bitKey())).append("\" sign=\"")
+				.append(blade.sign()).append("\" generators=\"");
 
 		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString() + ","));
 
@@ -130,13 +133,27 @@ public final class Blade implements Comparable<Blade> {
 		return rB.toString();
 	}
 
+	protected final static Blade createPScalarBlade(byte pMaxGrade, boolean pNoMatter) {
+		EnumSet<Generator> possibles = EnumSet.noneOf(Generator.class);
+		Generator.flow(pMaxGrade).forEach(g -> possibles.add(g));
+
+		Blade returnIt = new Blade(pMaxGrade, true);
+		possibles.stream().forEach(g -> returnIt.add(g));
+
+		return returnIt; // new Blade(pSpan, temp); //Soon
+	}
+
 	private EnumSet<Generator> blade;
 
 	private long key = 0L;
 
-	private byte sign = 1;
+	private int basisIndex = 0;
+
+	private int bitKey = 0;
 
 	private final byte maxGrade; // This should be gradeCount-1 in a related basis
+
+	private byte sign = 1;
 
 	/**
 	 * This is a copy constructor that builds an identical blade with new boxed byte
@@ -246,6 +263,11 @@ public final class Blade implements Comparable<Blade> {
 		this(pMaxGrade);
 		Stream.of(pDirs).forEach(g -> blade.add(g));
 		makeKey();
+	}
+
+	protected Blade(byte pMaxGrade, boolean pNoMatter) {
+		blade = EnumSet.noneOf(Generator.class);
+		maxGrade = pMaxGrade;
 	}
 
 	/**
@@ -433,6 +455,13 @@ public final class Blade implements Comparable<Blade> {
 		return true;
 	}
 
+	public Optional<Generator> get(Generator pG) {
+		Optional<Generator> find = Optional.empty();
+		if (blade.contains(pG))
+			find = Optional.ofNullable(pG);
+		return find;
+	}
+
 	/**
 	 * This is just a getter method named to support calls from within streams.
 	 * 
@@ -459,6 +488,16 @@ public final class Blade implements Comparable<Blade> {
 	 */
 	public long key() {
 		return key;
+	}
+
+	/**
+	 * This is just a getter method named to support consumers at the end of streams
+	 * of blades. This is how one gets a stream of blade keys.
+	 * 
+	 * @return key Returns the blade's bit integer key.
+	 */
+	public int bitKey() {
+		return bitKey;
 	}
 
 	/**
@@ -566,6 +605,32 @@ public final class Blade implements Comparable<Blade> {
 		return this;
 	}
 
+	/**
+	 * Flip the order of multiplication of the generators. This doesn't actually
+	 * alter the EnumSet containing generators, though. It computes the effect of a
+	 * reversal as a sign flip since the effect is to scale the blade by +1 or -1.
+	 * 
+	 * No Sign flip for blade size     = 0, 1,       4, 5,       8, 9,
+	 *    Sign flip for blade.size     =       2, 3,       6, 7,
+	 *    
+	 * No Sign flip for blade.size()/2 = 0,    2,    4, 
+	 *    Sign flip for blade.size()/2 =    1,    3, 
+	 *    
+	 * So sign flips when (blade.size()/2) %2 == 1
+	 * 
+	 * @return Blade This one after the action is complete. Supporting streams.
+	 */
+	public Blade reverse() {
+		if ((blade.size() / 2) % 2 == 1)
+			sign *= FLIP;
+		return this;
+	}
+
+	public Blade setBasisIndex(int pI) {
+		basisIndex = pI;
+		return this;
+	}
+
 	public byte sign() {
 		return sign;
 	}
@@ -583,25 +648,15 @@ public final class Blade implements Comparable<Blade> {
 	 */
 	private void makeKey() {
 		key = 0L;
+		bitKey = 0;
 		int counter = 0;
 		Iterator<Generator> cursor = blade.iterator();
 		while (cursor.hasNext()) {
-			key += cursor.next().ord * Math.pow((maxGrade + 1), (blade.size() - 1 - counter));
+			Generator g = cursor.next();
+			key += g.ord * Math.pow((maxGrade + 1), (blade.size() - 1 - counter));
+			bitKey += (1 << (g.ord - 1));
 			counter++;
 		}
-
-		// BigInteger keyBI = BigInteger.ZERO;
-		// BigInteger grades = BigInteger.valueOf(maxGrade + 1);
-
-		// int counter = 0;
-		// Iterator<Generator> cursor = blade.iterator();
-		// while (cursor.hasNext()) {
-		// keyBI = keyBI.add(grades.pow(blade.size() - 1 -
-		// counter).multiply(BigInteger.valueOf(cursor.next().ord)));
-		// counter++;
-		// }
-
-		// key = keyBI.longValue();
 	}
 
 	protected Blade setSign(byte pSign) {
