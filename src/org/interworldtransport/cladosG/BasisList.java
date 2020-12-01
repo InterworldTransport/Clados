@@ -250,7 +250,7 @@ public final class BasisList {
 		} else if (pGens == 1) {
 			bladeList.add(Blade.createScalarBlade(pGens).setBasisIndex(0));
 			gradeList.add(Integer.valueOf(0));
-			bladeList.add(Blade.createPScalarBlade(pGens).setBasisIndex(1));
+			bladeList.add(Blade.createPScalarBlade(pGens).orElseThrow().setBasisIndex(1));
 			gradeList.add(Integer.valueOf(1));
 		} else {
 			EnumSet<Generator> offer = EnumSet.range(Generator.E1, Generator.get(pGens));

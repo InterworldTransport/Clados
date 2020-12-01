@@ -299,7 +299,8 @@ public class GProductMap {
 				//bRight = canonicalBasis.getSingleBlade(k);
 
 				// TODO I don't really need the whole blade. I need the blade's key and sign.
-				tSpot = BladeDuet.reduce(bLeft, canonicalBasis.getSingleBlade(k), nSignature);
+				BladeDuet bD = new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k));
+				tSpot = bD.reduce(nSignature);
 				// BladeDuet does the heavy lifting of blade multiplication
 				int tSpotLoc = canonicalBasis.findKey(tSpot.key()) + 1;
 

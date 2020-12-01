@@ -71,16 +71,24 @@ public final class Blade implements Comparable<Blade> {
 		return new Blade(pMaxGrade);
 	}
 
-	public final static Blade createPScalarBlade(byte pMaxGrade) throws GeneratorRangeException {
-		if (pMaxGrade < CladosConstant.BLADE_SCALARGRADE | pMaxGrade > CladosConstant.BLADE_MAXGRADE)
-			return null;
-		EnumSet<Generator> possibles = EnumSet.noneOf(Generator.class);
-		Generator.flow(pMaxGrade).forEach(g -> possibles.add(g));
-
-		Blade returnIt = new Blade(pMaxGrade);
-		possibles.stream().forEach(g -> returnIt.add(g));
-
-		return returnIt; // new Blade(pSpan, temp); //Soon
+	public final static Optional<Blade> createPScalarBlade(byte pHighGrade) {
+		Blade returnIt = null;
+		if (pHighGrade < CladosConstant.BLADE_SCALARGRADE | pHighGrade > CladosConstant.BLADE_MAXGRADE)
+			return Optional.of(returnIt);
+		if (pHighGrade == 0) {
+			try {
+				returnIt = new Blade((byte) 0, EnumSet.noneOf(Generator.class));
+			} catch (GeneratorRangeException e) {
+				returnIt = null;
+			}
+		} else {
+			try {
+				returnIt = new Blade(pHighGrade, EnumSet.range(Generator.E1, Generator.get(pHighGrade)));
+			} catch (GeneratorRangeException e) {
+				returnIt = null;
+			}
+		}
+		return Optional.of(returnIt);
 	}
 
 	public final static Blade createScalarBlade(byte pMaxGrade) throws GeneratorRangeException {
@@ -133,26 +141,21 @@ public final class Blade implements Comparable<Blade> {
 		return rB.toString();
 	}
 
-	protected final static Blade createPScalarBlade(byte pMaxGrade, boolean pNoMatter) {
-		EnumSet<Generator> possibles = EnumSet.noneOf(Generator.class);
-		Generator.flow(pMaxGrade).forEach(g -> possibles.add(g));
+	protected final static Blade createPScalarBlade(byte pHighGrade, boolean pNoMatter) {
+		Blade returnIt = new Blade(pHighGrade, true);
+		if (pHighGrade == 0)
+			returnIt.add(EnumSet.noneOf(Generator.class));
+		if (pHighGrade > 0)
+			returnIt.add(EnumSet.range(Generator.E1, Generator.get(pHighGrade)));
 
-		Blade returnIt = new Blade(pMaxGrade, true);
-		possibles.stream().forEach(g -> returnIt.add(g));
-
-		return returnIt; // new Blade(pSpan, temp); //Soon
+		return returnIt;
 	}
 
 	private EnumSet<Generator> blade;
-
 	private long key = 0L;
-
 	private int basisIndex = 0;
-
 	private int bitKey = 0;
-
 	private final byte maxGrade; // This should be gradeCount-1 in a related basis
-
 	private byte sign = 1;
 
 	/**
@@ -166,11 +169,10 @@ public final class Blade implements Comparable<Blade> {
 	 */
 	public Blade(Blade pB) throws GeneratorRangeException {
 		this(pB.maxGrade);
-		blade = EnumSet.noneOf(Generator.class);
-		for (Generator pG : pB.getGenerators())
-			blade.add(pG);
+		blade.addAll(pB.getGenerators());
 		sign = pB.sign();
 		key = pB.key();
+		bitKey = pB.bitKey();
 	}
 
 	/**

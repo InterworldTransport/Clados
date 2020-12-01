@@ -81,7 +81,7 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-/*
+
 	@Test
 	public void test04s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig4);
@@ -101,7 +101,7 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-
+	/*
 	@Test
 	public void test08s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig8);

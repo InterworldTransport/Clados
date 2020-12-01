@@ -93,78 +93,45 @@ public final class BladeDuet {
 	 */
 	protected Blade reduce(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
-		for (byte gen = 0; gen < span; gen++) {
-			if (andKey / 2 != (andKey + 1) / 2) {// andKey is odd
-				Generator eq = Generator.get((byte) (gen+1));
+		byte gen = 1;
+		while (andKey > 0) {
+			if (Integer.lowestOneBit(andKey) == 1) {// andKey is odd
+				Generator eq = Generator.get(gen);
 				sign *= (bladeDuet.lastIndexOf(eq) - bladeDuet.indexOf(eq)) % 2 == 1 ? 1 : -1;
-				sign *= pSig[gen];
+				sign *= pSig[gen - 1];
 				bladeDuet.removeAll(Collections.singleton(eq));
 			}
+			gen++;
 			andKey = andKey >>> 1;
 		}
-		//for (Generator pG : pPS.getGenerators()) {
-		//	if (Collections.frequency(bladeDuet, pG) == 2) {
-		//		sign *= ((bladeDuet.lastIndexOf(pG) - bladeDuet.indexOf(pG)) % 2 == 1) ? 1 : -1; // partial commuteFlip
-		//		sign *= pSig[pG.ord - 1]; // sigFlip
-		//		bladeDuet.removeAll(Collections.singleton(pG));
-		//	}
-		//}
 		Blade returnIt = new Blade(span, true);
 		bladeDuet.stream().forEach(g -> returnIt.add(g));
-		// Possibly not in order, but we don't want to sort. We want to know if an
-		// even/odd number of transpositions separates the ArrayList from the
-		// EnumSet's natural order.
+		// returnIt has all the correct generators, but might have the wrong sign
+		// TRYING to avoid sorting to find transposition count.
 		// TODO Find the algorithm for this.
 
 		andKey = bitKeyLeft & bitKeyRight;
-		int bitKeyResLeft = bitKeyLeft - andKey;
-		int bitKeyResRight = bitKeyRight - andKey;
-		// At this point these two residue keys cannot be odd at the same time as they
-		// get bit shifted right. This is the case because andKey has been subtracted
-		// from both, thus their binary representations cannot have 'ones' in the same
-		// place digit.
-		//
-		// loop 
-		// 		IF comboResKey is odd 
-		//			IF rightKey is odd {flip Sign}
-		//			ELSE leftKey IS odd {flip flipper}
-		// 		ELSE comboResKey is even and no action is needed
-		// 		SHIFT RIGHT 1 bit all keys
-		// pool
-		int comboResKey = bitKeyResLeft | bitKeyResRight;
-		byte flipper = 1; // This is a sign flip tracker
+		int resLeft = (bitKeyLeft - andKey);
+		int resRight = (bitKeyRight - andKey);
+		// if resLeft or resRight are zero, the bladeDuet is already in order.
+		if (resLeft != 0 & resRight != 0) {
+			ArrayList<Generator> pB = new ArrayList<>(returnIt.getGenerators());
 
-		for (byte gen = 0; gen < span; gen++) {
-			if (comboResKey / 2 != (comboResKey + 1) / 2) {// comboResKey is odd
-				if (bitKeyResRight / 2 != (bitKeyResRight + 1) / 2)
-					sign *= flipper;
-				else
-					flipper *= Blade.FLIP;
+			int siftFlip = 0;
+			for (Generator pG : pB) {
+				int found = bladeDuet.indexOf(pG);
+				int refer = pB.indexOf(pG);
+				
+				if (found != refer) {
+					siftFlip = (2*(found - refer) - 1 + siftFlip) % 2;
+					Collections.swap(bladeDuet, found, refer);
+				}
 			}
-			comboResKey = comboResKey >>> 1;
-			bitKeyResLeft = bitKeyResLeft >>> 1;
-			bitKeyResRight = bitKeyResRight >>> 1;
+			if (siftFlip % 2 == 1)
+				sign *= -1;
+
 		}
-		
-		// 'returnIt' currently has them in natural order while bladeDuet might not.
-		//Generator[] outG = new Generator[returnIt.getGenerators().size()];
-		//returnIt.getGenerators().toArray(outG);
-
-		//int[] offBy = new int[span];
-		//int counter = 0;
-		//for (Generator g : outG) {
-		//	offBy[counter] = outG[counter].ord - bladeDuet.get(counter).ord;
-		//	counter++;
-		//}
-
-		//for (int m = 0; m < offBy.length; m++)
-		//	if (offBy[m] != 0) { // First cut. One loop replaces two if all zeros.
-		//		bubbleSortFlip();
-		//		break;
-		//	}
-
 		returnIt.setSign(sign);
-		returnIt.reverse(); // because commuting of resKeys done in reverse order
 		return returnIt;
 	}
 
@@ -179,18 +146,6 @@ public final class BladeDuet {
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
 		return rB.toString();
-	}
-
-	private void bubbleSortFlip() {
-		for (byte m = 0; m < bladeDuet.size() - 1; m++) {
-			for (byte k = 0; k < bladeDuet.size() - 1 - m; k++) {
-				if (bladeDuet.get(k).ord > bladeDuet.get(k + 1).ord) {
-					Collections.swap(bladeDuet, k, k + 1);
-					sign *= -1;
-				}
-			}
-
-		}
 	}
 
 }
