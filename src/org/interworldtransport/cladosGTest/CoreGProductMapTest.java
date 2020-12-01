@@ -65,7 +65,7 @@ class CoreGProductMapTest {
 	@Test
 	public void test03s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig3);
-		System.out.println(GProductMap.toXMLString(tGP, ""));
+		//System.out.println(GProductMap.toXMLString(tGP, ""));
 		assertTrue(tGP.signature().equals("+++"));
 		assertTrue(tGP.getGradeCount() == 4);
 		assertTrue(tGP.getBladeCount() == (1<<3));
@@ -101,7 +101,7 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-	/*
+	
 	@Test
 	public void test08s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig8);
@@ -158,7 +158,7 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-
+	/*
 	@Test
 	public void test14s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		GProductMap tGP = new GProductMap(pSig14);
