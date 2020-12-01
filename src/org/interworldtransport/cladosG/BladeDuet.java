@@ -97,7 +97,7 @@ public final class BladeDuet {
 		while (andKey > 0) {
 			if (Integer.lowestOneBit(andKey) == 1) {// andKey is odd
 				Generator eq = Generator.get(gen);
-				sign *= (bladeDuet.lastIndexOf(eq) - bladeDuet.indexOf(eq)) % 2 == 1 ? 1 : -1;
+				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? 1 : -1;
 				sign *= pSig[gen - 1];
 				bladeDuet.removeAll(Collections.singleton(eq));
 			}
@@ -107,29 +107,19 @@ public final class BladeDuet {
 		Blade returnIt = new Blade(span, true);
 		bladeDuet.stream().forEach(g -> returnIt.add(g));
 		// returnIt has all the correct generators, but might have the wrong sign
-		// TRYING to avoid sorting to find transposition count.
-		// TODO Find the algorithm for this.
-
 		andKey = bitKeyLeft & bitKeyRight;
-		int resLeft = (bitKeyLeft - andKey);
-		int resRight = (bitKeyRight - andKey);
-		// if resLeft or resRight are zero, the bladeDuet is already in order.
-		if (resLeft != 0 & resRight != 0) {
+		// if either residue key vanishes, the bladeDuet is already in order.
+		if ((bitKeyLeft - andKey) != 0 & (bitKeyRight - andKey) != 0) {
 			ArrayList<Generator> pB = new ArrayList<>(returnIt.getGenerators());
-
-			int siftFlip = 0;
-			for (Generator pG : pB) {
+			for (Generator pG : pB) { // Exploiting the KNOWN correct order.
 				int found = bladeDuet.indexOf(pG);
 				int refer = pB.indexOf(pG);
 				
 				if (found != refer) {
-					siftFlip = (2*(found - refer) - 1 + siftFlip) % 2;
+					sign *= -1;
 					Collections.swap(bladeDuet, found, refer);
 				}
 			}
-			if (siftFlip % 2 == 1)
-				sign *= -1;
-
 		}
 		returnIt.setSign(sign);
 		return returnIt;

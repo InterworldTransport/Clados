@@ -137,12 +137,12 @@ class HeatGProductMapTest {
 		assertFalse(a0 == null);
 
 	}
-/*
+
 	@Test
 	public void testGen14() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		a0 = new GProductMap("++-+++-+++-+++");
 		assertFalse(a0 == null);
 
 	}
-*/
+
 }
