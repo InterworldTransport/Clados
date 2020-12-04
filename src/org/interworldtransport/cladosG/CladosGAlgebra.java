@@ -31,6 +31,7 @@ import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
@@ -100,6 +101,7 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BladeCombinationException 
 	 */
 	public final AlgebraAbstract create(DivField pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
@@ -139,6 +141,7 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BladeCombinationException 
 	 */
 	public final AlgebraAbstract createWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
@@ -166,6 +169,7 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BladeCombinationException 
 	 */
 	public final AlgebraAbstract createWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
@@ -204,7 +208,7 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pName A String for the new algebra's name.
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
 	 */
-	public final AlgebraAbstract createWithFootPlus(Foot pF, Cardinal pCard, GProduct pGP, String pName) {
+	public final AlgebraAbstract createWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
 		switch (this) {
 		case REALF:
 			return new AlgebraRealF(pName, pF, pCard, pGP);

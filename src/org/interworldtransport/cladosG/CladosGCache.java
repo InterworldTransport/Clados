@@ -25,6 +25,7 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -45,68 +46,94 @@ public enum CladosGCache {
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<Basis> listOfBases = new ArrayList<Basis>(1);
-	private ArrayList<GProduct> listOfGProducts = new ArrayList<GProduct>(1);
-	private ArrayList<BasisList> listOfBasisLists = new ArrayList<BasisList>(1);
-	private ArrayList<GProductMap> listOfGProductMaps = new ArrayList<GProductMap>(1);
+	//private ArrayList<Basis> listOfBases = new ArrayList<Basis>(1);
+	//private ArrayList<GProduct> listOfGProducts = new ArrayList<GProduct>(1);
+	private ArrayList<CanonicalBasis> listOfBasisLists = new ArrayList<>(1);
+	private ArrayList<CliffordProduct> listOfGProductMaps = new ArrayList<>(1);
 
-	public void appendBasis(Basis pB) {
-		if (listOfBases.contains(pB))
+	//public void appendBasis(Basis pB) {
+	//	if (listOfBases.contains(pB))
+	//		return; // Already in ArrayList
+	//	listOfBases.ensureCapacity(listOfBases.size() + 1);
+	//	listOfBases.add(pB);
+	//}
+	
+	public void appendBasis(CanonicalBasis pB) {
+		if (listOfBasisLists.contains(pB))
 			return; // Already in ArrayList
-		listOfBases.ensureCapacity(listOfBases.size() + 1);
-		listOfBases.add(pB);
+		listOfBasisLists.ensureCapacity(listOfBasisLists.size() + 1);
+		listOfBasisLists.add(pB);
 	}
 
-	public void appendGProduct(GProduct pGP) {
-		if (listOfGProducts.contains(pGP))
+	//public void appendGProduct(GProduct pGP) {
+	//	if (listOfGProducts.contains(pGP))
+	//		return; // Already in ArrayList
+	//	listOfGProducts.ensureCapacity(listOfGProducts.size() + 1);
+	//	listOfGProducts.add(pGP);
+	//}
+	public void appendGProduct(CliffordProduct pGP) {
+		if (listOfGProductMaps.contains(pGP))
 			return; // Already in ArrayList
-		listOfGProducts.ensureCapacity(listOfGProducts.size() + 1);
-		listOfGProducts.add(pGP);
+		listOfGProductMaps.ensureCapacity(listOfGProductMaps.size() + 1);
+		listOfGProductMaps.add(pGP);
 	}
 
-	public Basis findBasis(short pGen) throws GeneratorRangeException {
+	//public Basis findBasis(short pGen) throws GeneratorRangeException {
+	//	if (!validateSize(pGen))
+	//		throw new GeneratorRangeException("Unsupported number of generators in findBasis(short)");
+	//	return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst().orElse(null);
+		// Deliver Basis OR null
+	//}
+	
+	public Optional<CanonicalBasis> findBasisList(short pGen) throws GeneratorRangeException {
 		if (!validateSize(pGen))
 			throw new GeneratorRangeException("Unsupported number of generators in findBasis(short)");
-		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst().orElse(null);
+		return listOfBasisLists.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
 		// Deliver Basis OR null
 	}
 
-	public GProduct findGProduct(String pSig) throws BadSignatureException {
+	//public GProduct findGProduct(String pSig) throws BadSignatureException {
+	//	if (!validateSignature(pSig))
+	//		throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
+	//	return listOfGProducts.stream().filter(x -> x.getSignature().equals(pSig)).findFirst().orElse(null);
+		// Deliver GProduct OR null
+	//}
+	public Optional<CliffordProduct> findGProductMap(String pSig) throws BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
-		return listOfGProducts.stream().filter(x -> x.getSignature().equals(pSig)).findFirst().orElse(null);
+		return listOfGProductMaps.stream().filter(x -> x.signature().equals(pSig)).findFirst();
 		// Deliver GProduct OR null
 	}
 
 	public short getBasisListSize() // shouldn't ever be larger than Basis.MAX_GEN
 	{
-		return (short) listOfBases.size();
+		return (short) listOfBasisLists.size();
 	}
 
 	public int getGProductListSize() // shouldn't ever be larger than 2^(Basis.MAX_GEN+1). +1 TOO BIG for shorts.
 	{
-		return listOfGProducts.size();
+		return listOfGProductMaps.size();
 	}
 
-	public boolean removeBasis(Basis pB) {
-		return listOfBases.remove(pB);
+	public boolean removeBasis(CanonicalBasis pB) {
+		return listOfBasisLists.remove(pB);
 	}
 
 	public boolean removeBasis(short pGen) throws GeneratorRangeException {
-		Basis B = findBasis(pGen); // This function validates the support status of the number of generators
-		if (B == null)
+		Optional<CanonicalBasis> B = findBasisList(pGen); // This function validates the support status of the number of generators
+		if (B.isEmpty())
 			return true;
-		return removeBasis(B);
+		return removeBasis(B.get());
 	}
 
-	public boolean removeGProduct(GProduct pGP) {
-		return listOfGProducts.remove(pGP);
+	public boolean removeGProduct(CliffordProduct pGP) {
+		return listOfGProductMaps.remove(pGP);
 	}
 
 	public boolean removeGProduct(String pSig) throws BadSignatureException {
-		GProduct GP = findGProduct(pSig); // This function validates the passed signature
-		if (GP == null)
+		Optional<CliffordProduct> GP = findGProductMap(pSig); // This function validates the passed signature
+		if (GP.isEmpty())
 			return true;
-		return removeGProduct(GP);
+		return removeGProduct(GP.get());
 	}
 }

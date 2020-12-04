@@ -25,17 +25,18 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
-import java.util.stream.IntStream;
+
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
  * a multivector over a division field {Cl(p,q) x DivField} except the actual
  * field. That makes this an abstraction of an algebra.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
-public abstract class AlgebraAbstract {
+public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbstract>{
 	/**
 	 * All algebra types share some elements that are not dependent on number types.
 	 * The first among them is the 'tangent point' of the sub-manifold represented
@@ -47,14 +48,14 @@ public abstract class AlgebraAbstract {
 	 * blades that can be produced through exterior products of generating
 	 * 'coordinate' vectors. For N generators, there are 2^N blades.
 	 */
-	protected Basis gBasis;
+	protected CanonicalBasis gBasis;
 	/**
 	 * The third among the common elements is the geometric product table formed by
 	 * every product possible using members of the Eddington basis. This class has a
 	 * few helper methods for dealing with symmetric and antisymmetric products and
 	 * detection of other useful conditions.
 	 */
-	protected GProduct gProduct;
+	protected CliffordProduct gProduct;
 	/**
 	 * Finally, the algebra has a name because this helps distinguish different
 	 * reference frames associated with the same tangent point Foot.
@@ -95,6 +96,7 @@ public abstract class AlgebraAbstract {
 	 *         0 if the two names are the same +1 if the name of this algebra is
 	 *         'greater' than that of pAnother.
 	 */
+	@Override
 	public int compareTo(AlgebraAbstract pAnother) {
 		if (this.name == null)
 			if (pAnother.name == null)
@@ -133,6 +135,7 @@ public abstract class AlgebraAbstract {
 	 * 
 	 * @return String
 	 */
+	@Override
 	public String getAlgebraName() {
 		return name;
 	}
@@ -145,7 +148,8 @@ public abstract class AlgebraAbstract {
 	 *         importantly it is the number of dimensions in the vector space
 	 *         represented by the canonical basis.
 	 */
-	public short getBladeCount() {
+	@Override
+	public int getBladeCount() {
 		return gBasis.getBladeCount();
 	}
 
@@ -154,6 +158,7 @@ public abstract class AlgebraAbstract {
 	 * 
 	 * @return Foot
 	 */
+	@Override
 	public Foot getFoot() {
 		return foot;
 	}
@@ -167,7 +172,8 @@ public abstract class AlgebraAbstract {
 	 * 
 	 * @return gBasis
 	 */
-	public Basis getGBasis() {
+	@Override
+	public CanonicalBasis getGBasis() {
 		return gBasis;
 	}
 
@@ -176,7 +182,8 @@ public abstract class AlgebraAbstract {
 	 * 
 	 * @return gProduct
 	 */
-	public GProduct getGProduct() {
+	@Override
+	public CliffordProduct getGProduct() {
 		return gProduct;
 	}
 
@@ -187,8 +194,9 @@ public abstract class AlgebraAbstract {
 	 * @return short This is the length of a monad's grade key. In an algebra with N
 	 *         generators it will always be N+1.
 	 */
-	public short getGradeCount() {
-		return gBasis.getGradeCount();
+	@Override
+	public byte getGradeCount() {
+		return (byte) gBasis.getGradeCount();
 	}
 
 	/**
@@ -198,8 +206,10 @@ public abstract class AlgebraAbstract {
 	 * 
 	 * @param pInd short integer describing the grade to be selected from the basis.
 	 * @return short This is an integer index between 0 and bladeCount inclusive.
+	 * @throws GradeOutOfRangeException 
 	 */
-	public short[] getGradeRange(short pInd) {
+	@Override
+	public int[] getGradeRange(byte pInd) {
 		return gProduct.getGradeRange(pInd);
 	}
 
@@ -225,6 +235,7 @@ public abstract class AlgebraAbstract {
 	 * 
 	 * @param pName String for the Algebra's name.
 	 */
+	@Override
 	public void setAlgebraName(String pName) {
 		name = pName;
 	}
@@ -240,6 +251,7 @@ public abstract class AlgebraAbstract {
 	 * @param footPoint Foot object for the Algebra to use as its 'tangent' contact
 	 *                  point.
 	 */
+	@Override
 	public void setFoot(Foot footPoint) {
 		foot = footPoint;
 	}
@@ -256,7 +268,7 @@ public abstract class AlgebraAbstract {
 	 * @param pGP GProduct GProduct object for the Algebra to use as its geometric
 	 *            product operation on the canonical basis.
 	 */
-	protected void setGProduct(GProduct pGP) {
+	protected void setGProduct(CliffordProduct pGP) {
 		gProduct = pGP;
 		gBasis = pGP.getBasis();
 	}

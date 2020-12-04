@@ -30,7 +30,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.IntStream;
 
 import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -114,18 +116,7 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public final class BasisList {
-
-	/**
-	 * This is a validator to help ensure no construction occurs outside the
-	 * currently supported range of generators.
-	 * 
-	 * @param pGens Short representing the number of unique algebraic directions
-	 * @return boolean True if parameter in the supported range [0, 14]
-	 */
-	public static final boolean validateSize(int pGens) {
-		return (pGens >= CladosConstant.BLADE_SCALARGRADE & pGens <= CladosConstant.BLADE_MAXGRADE);
-	}
+public final class BasisList implements CanonicalBasis {
 
 	/**
 	 * This is just a factory method to help name a particular constructor. It is
@@ -186,6 +177,7 @@ public final class BasisList {
 	 * the basis of the vector space spanned by all the blades.
 	 */
 	private final ArrayList<Blade> bladeList;
+
 	/**
 	 * This integer is the number of grades in the algebra. It is one more than the
 	 * number of generators and is used often enough to be worth keeping.
@@ -219,11 +211,7 @@ public final class BasisList {
 	 */
 	private final ArrayList<Integer> gradeList;
 
-	/**
-	 * This list enables a lookup technique on the blades in bladeList. The keys
-	 * MUST be in the same order as the blades.
-	 */
-	private final ArrayList<Long> keyList;
+	private final TreeMap<Long, Integer> keyIndexMap;
 
 	/**
 	 * This is the basic constructor. It takes the number of generators as it's only
@@ -237,21 +225,25 @@ public final class BasisList {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
 	public BasisList(byte pGens) throws GeneratorRangeException {
-		if (!validateSize(pGens))
+		if (!CanonicalBasis.validateSize(pGens))
 			throw new GeneratorRangeException("Supported range is 0<->14 using 8 bit integers");
-
+		// ------Initialize
 		gradeCount = (byte) (pGens + 1);
 		gradeList = new ArrayList<Integer>(gradeCount);
 		bladeList = new ArrayList<Blade>(1 << pGens);
-		keyList = new ArrayList<Long>(1 << pGens);
+		keyIndexMap = new TreeMap<>();
+		// ------Build bladeList
 		if (pGens == 0) {
 			gradeList.add(Integer.valueOf(0));
-			bladeList.add(Blade.createScalarBlade(pGens).setBasisIndex(1));
+			bladeList.add(Blade.createScalarBlade(pGens));
+			keyIndexMap.put(0L, 0);
 		} else if (pGens == 1) {
-			bladeList.add(Blade.createScalarBlade(pGens).setBasisIndex(0));
+			bladeList.add(Blade.createScalarBlade(pGens));
 			gradeList.add(Integer.valueOf(0));
-			bladeList.add(Blade.createPScalarBlade(pGens).orElseThrow().setBasisIndex(1));
+			keyIndexMap.put(0L, 0);
+			bladeList.add(Blade.createPScalarBlade(pGens).orElseThrow());
 			gradeList.add(Integer.valueOf(1));
+			keyIndexMap.put(1L, 0);
 		} else {
 			EnumSet<Generator> offer = EnumSet.range(Generator.E1, Generator.get(pGens));
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
@@ -259,11 +251,16 @@ public final class BasisList {
 				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
 			sorted.iterator().forEachRemaining(b -> {
 				bladeList.add(b);
-				keyList.add(Long.valueOf(b.key()));
-				b.setBasisIndex(bladeList.indexOf(b)+1);
+				keyIndexMap.put(b.key(), Integer.valueOf(bladeList.indexOf(b) + 1));
 			}); // exploit already sorted.
 		}
-		fillGradeList();
+		// ------Build gradeList
+		gradeList.add(0); // Will be auto-boxed by JVM.
+		gradeList.add(1); // Will be auto-boxed by JVM.
+		IntStream.range(2, gradeCount - 1).forEachOrdered(i -> gradeList.add(
+				keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue().intValue() - 1));
+		// keyIndexMap uses bladeKey (which is known to a blade) to find bladeIndex name used by products.
+		gradeList.add(getBladeCount() - 1); // Just bladeCount - 1
 	}
 
 	@Override
@@ -280,17 +277,11 @@ public final class BasisList {
 		return true;
 	}
 
+	@Override
 	public int find(Blade pIn) {
 		for (Blade b : bladeList)
 			if (b.equalsAbs(pIn))
 				return bladeList.indexOf(b);
-		return -1;
-	}
-
-	public int findKey(Long pIn) {
-		for (Long l : keyList)
-			if (l.equals(pIn))
-				return keyList.indexOf(l);
 		return -1;
 	}
 
@@ -325,6 +316,7 @@ public final class BasisList {
 		return tBS;
 	}
 
+	@Override
 	public int getBladeCount() {
 		return (1 << gradeCount - 1);
 	}
@@ -334,17 +326,19 @@ public final class BasisList {
 	 * it is replaced by this one that returns the enumerated set of generators in
 	 * the requested blade.
 	 * 
-	 * @param p1 short integer pointing to the blade in the internal list
+	 * @param p1 integer pointing to the blade in the internal list
 	 * @return EnumSet of Generator representing the blade without the context
 	 *         necessary for knowing much about the enclosing space for the blade.
 	 * @throws BladeOutOfRangeException
 	 */
-	public EnumSet<Generator> getBladeSet(short p1) throws BladeOutOfRangeException {
+	@Override
+	public EnumSet<Generator> getBladeSet(int p1) throws BladeOutOfRangeException {
 		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
 			throw new BladeOutOfRangeException(null, "Blade key requested {" + p1 + "} is not in the basis.");
 		return bladeList.get(p1).getGenerators();
 	}
 
+	@Override
 	public byte getGradeCount() {
 		return gradeCount;
 	}
@@ -355,6 +349,7 @@ public final class BasisList {
 	 * 
 	 * @return ArrayList of Integers A list of grades boxed as Integers.
 	 */
+	@Override
 	public ArrayList<Integer> getGrades() {
 		return gradeList;
 	}
@@ -371,9 +366,10 @@ public final class BasisList {
 	 *                                  grade is NOT between 0 and gradeCount
 	 *                                  inclusive.
 	 */
-	public int getGradeStart(byte p1) throws GradeOutOfRangeException {
+	@Override
+	public int getGradeStart(byte p1) {
 		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > gradeCount)
-			throw new GradeOutOfRangeException(null, "Grade requested {" + p1 + "} is not in the basis.");
+			return -1;
 		return gradeList.get(p1).intValue();
 	}
 
@@ -386,10 +382,16 @@ public final class BasisList {
 	 *                                  blade is NOT between 0 and bladeCount
 	 *                                  inclusive.
 	 */
+	@Override
 	public long getKey(int p1) throws BladeOutOfRangeException {
 		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
 			throw new BladeOutOfRangeException(null, "Requested Blade # {" + p1 + "} is not in basis");
 		return bladeList.get(p1).key();
+	}
+
+	@Override
+	public TreeMap<Long, Integer> getKeyIndexMap() {
+		return keyIndexMap;
 	}
 
 	/**
@@ -407,6 +409,12 @@ public final class BasisList {
 		return vKey;
 	}
 
+	@Override
+	public int getPScalarStart() {
+		return gradeList.get(gradeCount);
+	}
+
+	@Override
 	public Blade getSingleBlade(int p1) {
 		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
 			return null;
@@ -424,6 +432,7 @@ public final class BasisList {
 	 * 
 	 * @return String
 	 */
+	@Override
 	public String toXMLString(String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t";
@@ -456,40 +465,9 @@ public final class BasisList {
 	 * @param pIn Short representing the integer index of the blade
 	 * @return boolean True if parameter in the supported range [0, bladeCount]
 	 */
+	@Override
 	public final boolean validateBladeIndex(short pIn) {
 		return (pIn >= CladosConstant.BLADE_SCALARGRADE & pIn < getBladeCount());
 	}
 
-	/**
-	 * Set the array used for keeping track of where grades start in the Basis
-	 * array. GradeRange[j] is the first position for a blade of grade j. This
-	 * function used to use factorials and binomial coefficients to find how many
-	 * blades existed for a particular grade. Now it uses the Key and its
-	 * Base(GradeCount) encoding to do it better and faster.
-	 * 
-	 * Do not call this function unless the vBasis is properly sorted first. That
-	 * sort causes the vKey array to sort in ascending order and that is crucial to
-	 * this function. Any other arrangement utterly invalidates the gradeRange
-	 * array.
-	 * 
-	 */
-	private void fillGradeList() {
-		gradeList.add(0); // Will be auto-boxed by JVM.
-		gradeList.add(1); // Will be auto-boxed by JVM.
-
-		int m = 0;
-		for (byte j = 2; j < gradeCount - 1; j++) {
-			// Loop through the grades skipping scalar, vector, and pscalar
-			long test = (long) Math.pow(gradeCount, j - 1);// Ceiling Key for grade j-1
-
-			while (m < (1 << (gradeCount - 1))) {
-				if (bladeList.get(m).key() > test) {
-					gradeList.add(m); // Will be auto-boxed by JVM.
-					break; // Found first key above ceiling. Move to next grade.
-				}
-				m++; // Otherwise move to next blade.
-			}
-		}
-		gradeList.add((1 << (gradeCount - 1)) - 1); // Just bladeCount - 1
-	}
 }

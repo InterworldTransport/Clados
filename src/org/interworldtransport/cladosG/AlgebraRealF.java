@@ -59,18 +59,18 @@ public class AlgebraRealF extends AlgebraAbstract {
 
 	public final static String toXMLString(AlgebraRealF pA) {
 		String indent = "\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Algebra UUID=\"" + pA.uuid + "\" >\n");
-		rB.append(indent + "\t<Name>" + pA.getAlgebraName() + "</Name>\n");
-		rB.append(indent + "\t" + pA.protoNumber.toXMLString() + "\n");
+		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
+		rB.append(indent).append("\t").append(pA.protoNumber.toXMLString()).append("\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent + "\t<Frames number=\"" + pA.rFrames.size() + "\" >\n");
+		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
 		for (String tip : pA.rFrames)
-			rB.append(indent + "\t\t<Frame number=\"" + pA.rFrames.indexOf(tip) + "\" name=\"" + tip + "\" />\n");
-		rB.append(indent + "\t</Frames>\n");
+			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"").append(tip).append("\" />\n");
+		rB.append(indent).append("\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(pA.getFoot().toXMLString("\t\t\t"));
-		rB.append(pA.getGProduct().toXMLString());
-		rB.append(indent + "</Algebra>\n");
+		rB.append(pA.getGProduct().toXMLString(""));
+		rB.append(indent).append("</Algebra>\n");
 		return rB.toString();
 	}
 
@@ -116,7 +116,7 @@ public class AlgebraRealF extends AlgebraAbstract {
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public AlgebraRealF(String pS, Foot pF, Cardinal pCard, GProduct pGP) {
+	public AlgebraRealF(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
 		setAlgebraName(pS);
 		protoNumber = (RealF) CladosField.REALF.createONE(pCard);
 		setFoot(pF);
@@ -156,6 +156,7 @@ public class AlgebraRealF extends AlgebraAbstract {
 	 *                                 exception is thrown.
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
+	 * @throws BladeCombinationException 
 	 */
 	public AlgebraRealF(String pS, Foot pF, Cardinal pCard, String pSig)
 			throws BadSignatureException, GeneratorRangeException {

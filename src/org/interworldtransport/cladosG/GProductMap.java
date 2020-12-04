@@ -24,7 +24,7 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
@@ -50,7 +50,7 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class GProductMap {
+public class GProductMap implements CliffordProduct{
 
 	/**
 	 * Return a measure of the validity of the Signature string. A string with +'s
@@ -65,19 +65,22 @@ public class GProductMap {
 	public static final boolean validateSignature(String pSg) {
 		if (pSg == null)
 			return false; // Nothing to test
-		else if (!BasisList.validateSize((byte) pSg.length()))
+		else if (!CanonicalBasis.validateSize((byte) pSg.length()))
 			return false;
 		else if (pSg.length() == 0)
 			return true; // Empty list IS allowed
 		else
 			for (char j : pSg.toCharArray())
 				switch (j) {
-				case '+':
+				case '+' -> {
 					continue;
-				case '-':
+				}
+				case '-' -> {
 					continue;
-				default:
+				}
+				default -> {
 					return false;
+				}
 				}
 		return true; // nothing bad detected
 	}
@@ -87,7 +90,7 @@ public class GProductMap {
 	 * the generators to span the algebra's vector space. It is the object that Ken
 	 * Greider called the Eddington Basis.
 	 */
-	private final BasisList canonicalBasis;
+	private final CanonicalBasis canonicalBasis;
 
 	/**
 	 * This integer array is an internal translation of the product signature.
@@ -127,36 +130,98 @@ public class GProductMap {
 	 * @throws BladeCombinationException Thrown when to blades multiplied do not
 	 *                                   result in another known blade.
 	 */
-	public GProductMap(String pSig) throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+	public GProductMap(String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
-		else if (!BasisList.validateSize(pSig.length()))
+		else if (!CanonicalBasis.validateSize(pSig.length()))
 			throw new GeneratorRangeException("Signature length unsupported");
-
+		// ------Init signature
 		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];
-		fillNumericSignature(pSig);
+		int m = 0;
+		for (char b : pSig.toCharArray()) {
+			switch (b) {
+			case '+' -> nSignature[m] = 1;
+			case '-' -> nSignature[m] = -1;
+			}
+			m++;
+		}
 		signature = pSig;
-
-		// canonicalBasis = CladosGBuilder.INSTANCE.createBasis((short) pSig.length());
-		canonicalBasis = new BasisList((byte) pSig.length()); // Replace with CladosGBuilder call soon
-
+		// ------Build CanonicalBasis
+		canonicalBasis = CladosGBuilder.INSTANCE.createBasis((byte) pSig.length());
+		//canonicalBasis = BasisList.using((byte) pSig.length());// Replace with CladosGBuilder call soon
+		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
-		fillResult();
-		// fillResult() can throw two exceptions detected for above, so it likely won't.
-		// The third one involves malformed blade combinations. Again... that shouldn't
-		// happen if blades are well formed.
+		IntStream.range(0, getBladeCount()).parallel().forEach(j -> {
+			result[0][j] = (j + 1);
+			result[j][0] = (j + 1);
+		});
+		IntStream.range(1, getBladeCount()).parallel().forEach(p -> {
+			Blade bLeft = canonicalBasis.getSingleBlade(p);
+			IntStream.range(1, getBladeCount()).forEach(k -> {
+				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k), true)).reduce(nSignature);
+				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());
+				//result[p][k] = (1 + canonicalBasis.find(tSpot)) * tSpot.sign(); // TA DA!
+			});
+		});
+	}
+	
+	/**
+	 * Main constructor of ProductTable with signature information passed in. It
+	 * figures out the rest of what it needs.
+	 * 
+	 * @param pSig String form of the signature. Looks like "-+++".
+	 * @throws GeneratorRangeException   Thrown when a Basis fails to form because
+	 *                                   some internal call demands a generator not
+	 *                                   in the supported list.
+	 * @throws BadSignatureException     Thrown when an invalid signature is found
+	 * @throws BladeCombinationException Thrown when to blades multiplied do not
+	 *                                   result in another known blade.
+	 */
+	public GProductMap(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
+		if (!validateSignature(pSig))
+			throw new BadSignatureException(this, "Valid signature required.");
+		else if (!CanonicalBasis.validateSize(pSig.length()))
+			throw new GeneratorRangeException("Signature length unsupported");
+		// ------Init signature
+		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];
+		int m = 0;
+		for (char b : pSig.toCharArray()) {
+			switch (b) {
+			case '+' -> nSignature[m] = 1;
+			case '-' -> nSignature[m] = -1;
+			}
+			m++;
+		}
+		signature = pSig;
+		// ------Get CanonicalBasis
+		canonicalBasis = pB;
+		// ------Build Product Table
+		result = new int[getBladeCount()][getBladeCount()];
+		IntStream.range(0, getBladeCount()).parallel().forEach(j -> {
+			result[0][j] = (j + 1);
+			result[j][0] = (j + 1);
+		});
+		IntStream.range(1, getBladeCount()).parallel().forEach(p -> {
+			Blade bLeft = canonicalBasis.getSingleBlade(p);
+			IntStream.range(1, getBladeCount()).forEach(k -> {
+				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k), true)).reduce(nSignature);
+				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());
+				//result[p][k] = (1 + canonicalBasis.find(tSpot)) * tSpot.sign(); // TA DA!
+			});
+		});
 	}
 
 	/**
 	 * Return a measure of whether blades pj and pk anticommute. Return a 1 if they
 	 * anticommute. Return a 0 otherwise.
 	 * 
-	 * @param pj int
-	 * @param pk int
+	 * @param pRow int
+	 * @param pCol int
 	 * @return int
 	 */
-	public int getACommuteSign(int pj, int pk) {
-		return (result[pj][pk] == result[pk][pj] * -1) ? 1 : 0;
+	@Override
+	public int getACommuteSign(int pRow, int pCol) {
+		return (result[pRow][pCol] == result[pCol][pRow] * -1) ? 1 : 0;
 	}
 
 	/**
@@ -164,7 +229,8 @@ public class GProductMap {
 	 * 
 	 * @return Basis
 	 */
-	public BasisList getBasis() {
+	@Override
+	public CanonicalBasis getBasis() {
 		return canonicalBasis;
 	}
 
@@ -173,6 +239,7 @@ public class GProductMap {
 	 * 
 	 * @return int
 	 */
+	@Override
 	public int getBladeCount() {
 		return canonicalBasis.getBladeCount();
 	}
@@ -181,12 +248,13 @@ public class GProductMap {
 	 * Return a measure of whether blades pj and pk commute. Return a 1 if they
 	 * commute. Return a 0 otherwise.
 	 * 
-	 * @param pj int
-	 * @param pk int
+	 * @param pRow int
+	 * @param pCol int
 	 * @return int
 	 */
-	public int getCommuteSign(int pj, int pk) {
-		return (result[pj][pk] == result[pk][pj]) ? 1 : 0;
+	@Override
+	public int getCommuteSign(int pRow, int pCol) {
+		return (result[pRow][pCol] == result[pCol][pRow]) ? 1 : 0;
 	}
 
 	/**
@@ -194,40 +262,67 @@ public class GProductMap {
 	 * 
 	 * @return byte
 	 */
+	@Override
 	public byte getGradeCount() {
 		return canonicalBasis.getGradeCount();
 	}
 
 	/**
-	 * Return row pj of result array. Meant for alternate multiplication methods.
+	 * Get start and end index from the GradeRange array for grade pGrade.
 	 * 
-	 * @param pj int
+	 * @param pGrade short primitive = grade for which the range is needed
+	 * @return int[] start and end indexes returned as a short[] array
+	 * @throws GradeOutOfRangeException
+	 */
+	@Override
+	public int[] getGradeRange(byte pGrade) {
+		int[] tR = new int[2];
+		tR[0] = canonicalBasis.getGradeStart(pGrade);
+		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+				? tR[0]
+				: (canonicalBasis.getGradeStart((byte) (pGrade + 1)) - 1));
+		return tR;
+	}
+	@Override
+	public int[] getPScalarRange() {
+		int[] tR = new int[2];
+		tR[0] = canonicalBasis.getPScalarStart();
+		tR[1] = tR[0];
+		return tR;
+	}
+
+	/**
+	 * Return row of result array. Meant for alternate multiplication methods.
+	 * 
+	 * @param pRow int
 	 * @return int[][]
 	 */
-	public int[] getResult(int pj) {
-		return result[pj];
+	public int[] getResult(int pRow) {
+		return result[pRow];
 	}
 
 	/**
-	 * Return an element of the array holding the geometric multiplication results.
+	 * Return an element in the geometric multiplication result table.
 	 * 
-	 * @param pj int
-	 * @param pk int
+	 * @param pRow int
+	 * @param pCol int
 	 * @return int
 	 */
-	public int getResult(int pj, int pk) {
-		return result[pj][pk];
+	@Override
+	public int getResult(int pRow, int pCol) {
+		return result[pRow][pCol];
 	}
 
 	/**
-	 * Return an element of the array holding the geometric multiplication results.
+	 * Return the sign of an element in the geometric multiplication result table.
 	 * 
-	 * @param pj short
-	 * @param pk short
+	 * @param pRow short
+	 * @param pCol short
 	 * @return int
 	 */
-	public int getSign(int pj, int pk) {
-		return (result[pj][pk] < 0) ? -1 : 1;
+	@Override
+	public int getSign(int pRow, int pCol) {
+		return (result[pRow][pCol] < 0) ? -1 : 1;
 	}
 
 	/**
@@ -236,6 +331,7 @@ public class GProductMap {
 	 * 
 	 * @return String
 	 */
+	@Override
 	public String signature() {
 		return signature;
 	}
@@ -246,83 +342,24 @@ public class GProductMap {
 	 * 
 	 * @return String This is the XML string export of an object.
 	 */
-	public final static String toXMLString(GProductMap gP, String indent) {
+	@Override
+	public final String toXMLString(String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
-		rB.append(indent).append("\t<Signature>").append(gP.signature()).append("</Signature>\n");
-		rB.append(gP.getBasis().toXMLString(""));
-		rB.append(indent).append("\t<ProductTable rows=\"").append(gP.getBladeCount()).append("\">\n");
-		for (short k = 0; k < gP.getBladeCount(); k++) // Appending rows
+		rB.append(indent).append("\t<Signature>").append(signature()).append("</Signature>\n");
+		rB.append(getBasis().toXMLString(""));
+		rB.append(indent).append("\t<ProductTable rows=\"").append(getBladeCount()).append("\">\n");
+		for (short k = 0; k < getBladeCount(); k++) // Appending rows
 		{
 			rB.append(indent).append("\t\t<row number=\"").append(k).append("\" cells=\"");
-			for (short m = 0; m < gP.getBladeCount(); m++)
-				rB.append(gP.getResult(k, m)).append(",");
+			for (short m = 0; m < getBladeCount(); m++)
+				rB.append(getResult(k, m)).append(",");
 			rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
 		}
 		rB.append(indent + "\t</ProductTable>\n");
 		rB.append(indent + "</GProduct>\n");
 		return rB.toString();
-	}
-
-	/**
-	 * This is a method that only gets called during construction. It fills the
-	 * numeric signature array. '+' becomes 1 and '-' becomes -1.
-	 * 
-	 * This numeric signature is used later as a shorthand for whether to do a sign
-	 * flip when generator pairs are removed from a product. 1 implies no need for
-	 * sign flip. -1 implies a need for sign flip.
-	 * 
-	 * @param pSig
-	 */
-	private void fillNumericSignature(String pSig) {
-		int m = 0;
-		for (char b : pSig.toCharArray()) {
-			switch (b) {
-			case '+' -> nSignature[m] = 1;
-			case '-' -> nSignature[m] = -1;
-			}
-			m++;
-		}
-	}
-
-	private void fillResult() throws BladeCombinationException, GeneratorRangeException {
-		for (int j = 0; j < getBladeCount(); j++) {
-			result[0][j] = (j + 1);
-			result[j][0] = (j + 1);
-		} // Scalar section of result done separately because result blade is known.
-		Blade bLeft, tSpot;  //bRight,
-		for (int j = 1; j < getBladeCount(); j++) {
-			bLeft = canonicalBasis.getSingleBlade(j);
-			for (int k = 1; k < getBladeCount(); k++) {
-				//bRight = canonicalBasis.getSingleBlade(k);
-
-				// TODO I don't really need the whole blade. I need the blade's key and sign.
-				BladeDuet bD = new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k));
-				tSpot = bD.reduce(nSignature);
-				// BladeDuet does the heavy lifting of blade multiplication
-				int tSpotLoc = canonicalBasis.findKey(tSpot.key()) + 1;
-
-				result[j][k] = tSpotLoc * tSpot.sign();
-			}
-		}
-	}
-
-	/**
-	 * Get start and end index from the GradeRange array for grade pGrade.
-	 * 
-	 * @param pGrade short primitive = grade for which the range is needed
-	 * @return short[] start and end indexes returned as a short[] array
-	 * @throws GradeOutOfRangeException
-	 */
-	protected int[] getGradeRange(byte pGrade) throws GradeOutOfRangeException {
-		int[] tR = new int[2];
-		tR[0] = canonicalBasis.getGradeStart(pGrade);
-		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
-				? tR[0]
-				: (canonicalBasis.getGradeStart((byte) (pGrade + 1)) - 1));
-		return tR;
-	}
-
+	}	
 }

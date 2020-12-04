@@ -5,11 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosG.AlgebraComplexF;
-import org.interworldtransport.cladosG.AlgebraRealF;
-import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosG.Foot;
-import org.interworldtransport.cladosG.GProduct;
+//import org.interworldtransport.cladosG.GProductMap;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,7 @@ class CoreAlgebraComplexFTest {
 	protected ComplexF rNumber;
 	protected Foot tFoot;
 	protected Foot tFoot2;
-	protected GProduct gProduct;
+	//protected GProductMap gProduct;
 	protected AlgebraComplexF alg1;
 	protected AlgebraComplexF alg2;
 
@@ -45,7 +44,7 @@ class CoreAlgebraComplexFTest {
 		// Two algebras share a Basis?
 		//assertTrue(CladosGBuilder.INSTANCE.getBasisListSize() == 1);
 		assertFalse(alg1.getGProduct() == alg2.getGProduct()); // but not the products
-		assertFalse(alg1.getGProduct().getSignature().equals(alg2.getGProduct().getSignature()));
+		assertFalse(alg1.getGProduct().signature().equals(alg2.getGProduct().signature()));
 		// because the signatures are different.
 	}
 	
@@ -78,9 +77,9 @@ class CoreAlgebraComplexFTest {
 	}
 
 	@Test
-	public void testFootShared() throws BadSignatureException, GeneratorRangeException {
+	public void testFootShared() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		tFoot.appendCardinal(rNumber.getCardinal());
-		AlgebraRealF alg3 = new AlgebraRealF(aName, tFoot, pSig31, rNumber);
+		AlgebraComplexF alg3 = new AlgebraComplexF(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		// because the Foot is shared between algebras, changing the number
@@ -96,7 +95,7 @@ class CoreAlgebraComplexFTest {
 	}
 
 	@Test
-	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException, BladeCombinationException {
 
 		AlgebraComplexF alg4 = new AlgebraComplexF("light weight frame", alg1);
 		assertFalse(alg4 == alg1);

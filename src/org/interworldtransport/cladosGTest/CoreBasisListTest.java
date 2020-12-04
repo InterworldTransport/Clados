@@ -61,8 +61,9 @@ class CoreBasisListTest {
 		assertTrue(tSpot.get(0) == 0);
 
 		tSpot = tBasis4.getGrades();
-		for (int k = 1; k < 0.5 * (tBasis4.getGradeCount() - 1); k++)
+		for (int k = 1; k < 0.5 * (tBasis4.getGradeCount() - 1); k++) {
 			assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(4 - k + 1) - tSpot.get(4 - k));
+		}
 
 		tSpot = tBasis8.getGrades();
 		for (int k = 1; k < 0.5 * (tBasis8.getGradeCount() - 1); k++)

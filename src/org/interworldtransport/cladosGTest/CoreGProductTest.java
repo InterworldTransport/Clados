@@ -3,7 +3,6 @@ package org.interworldtransport.cladosGTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosG.GProduct;
-import org.interworldtransport.cladosG.GProductMap;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;

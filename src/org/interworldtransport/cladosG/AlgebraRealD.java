@@ -69,7 +69,7 @@ public class AlgebraRealD extends AlgebraAbstract {
 		rB.append(indent + "\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(pA.getFoot().toXMLString("\t\t\t"));
-		rB.append(pA.getGProduct().toXMLString());
+		rB.append(pA.getGProduct().toXMLString(""));
 		rB.append(indent + "</Algebra>\n");
 		return rB.toString();
 	}
@@ -116,7 +116,7 @@ public class AlgebraRealD extends AlgebraAbstract {
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public AlgebraRealD(String pS, Foot pF, Cardinal pCard, GProduct pGP) {
+	public AlgebraRealD(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
 		setAlgebraName(pS);
 		protoNumber = (RealD) CladosField.REALD.createONE(pCard);
 		setFoot(pF);

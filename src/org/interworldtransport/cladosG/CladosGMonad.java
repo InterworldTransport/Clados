@@ -30,6 +30,7 @@ import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
@@ -141,6 +142,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createOnlyCoeffs(DivField[] pNumber, String pName, String pAName, String pFrame,
 			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -186,6 +188,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws GeneratorRangeException  Thrown if the pSig parameter is too long
 	 * @throws GradeOutOfRangeException Thrown on an internal error if special case
 	 *                                  handler glitches
+	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createSpecial(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig, String pSpecial)
@@ -269,6 +272,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createZero(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -311,6 +315,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createWithFoot(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {

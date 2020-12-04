@@ -19,132 +19,146 @@ class HeatAlgebraComplexFTest {
 	String aName = "MotionAlgebra";
 	ComplexF coeff;
 	AlgebraComplexF a0;
+	int loopLimit = 1;
 
 	@BeforeEach
 	void setUp() throws Exception {
 	}
 
 	@Test
-	public void testGen01() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen01()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen02() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen02()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen03() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen03()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen04() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen04()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen05() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen05()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen06() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen06()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen07() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen07()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 1000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen08() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen08()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 1000; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "-+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen09() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen09()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 100; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+-+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen10() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen10()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 100; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "++-+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen11() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen11()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+++-+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen12() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen12()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
-		for (short m = 0; m < 10; m++) {
+		for (short m = 0; m < loopLimit; m++) {
 			a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "-+++-+++-+++");
 			assertFalse(a0 == null);
 		}
 	}
 
 	@Test
-	public void testGen13() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen13()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
 		a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "+-+++-+++-+++");
 		assertFalse(a0 == null);
 	}
 
 	@Test
-	public void testGen14() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void testGen14()
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		coeff = CladosFBuilder.createComplexF(Cardinal.generate(fType));
 		a0 = (AlgebraComplexF) CladosGAlgebra.COMPLEXF.create(coeff, aName, ftName, "++-+++-+++-+++");
 		assertFalse(a0 == null);
 	}
-
 
 }

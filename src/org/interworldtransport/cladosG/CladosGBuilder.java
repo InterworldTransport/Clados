@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Optional;
+
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -49,7 +51,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public final static boolean validateSize(short pGen) {
 		return Basis.validateSize(pGen);
 	}
-	
+
 	public final static String cleanSignature(String pSig) {
 		if (validateSignature(pSig))
 			return pSig;
@@ -71,9 +73,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		return Foot.buildAsType(pF.getFootName(), pF.getCardinal(pSpot));
 	}
 
-	public final static GProduct copyOfGProduct(GProduct pGP) throws BadSignatureException {
-		return new GProduct(pGP);
-	}
+	// public final static GProduct copyOfGProduct(GProduct pGP) throws
+	// BadSignatureException {
+	// return new GProduct(pGP);
+	// }
 
 	public final static Foot createFoot(String pName, String pCardName) {
 		return Foot.buildAsType(pName, Cardinal.generate(pCardName));
@@ -91,48 +94,53 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
 	}
 
-	public Basis createBasis(short pGen) throws GeneratorRangeException {
-		Basis tB = CladosGCache.INSTANCE.findBasis(pGen);
-		if (tB != null)
-			return tB;
+	public CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
+		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen);
+		if (tB.isPresent())
+			return tB.get();
 		else {
-			Basis tSpot = Basis.using(pGen);
+			CanonicalBasis tSpot = BasisList.using(pGen);
 			CladosGCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
 
 	}
 
-	public GProduct createGProduct(Basis pB, String pSig) throws GeneratorRangeException, BadSignatureException {
+	public CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
+			throws GeneratorRangeException, BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tSpot;
+		CliffordProduct tSpot;
 		if (pB == null)
 			tSpot = createGProduct(pSig);
 		else {
-			tSpot = CladosGCache.INSTANCE.findGProduct(pSig);
-			if (tSpot != null)
-				return tSpot; // GProduct already created, so just offer it instead of making a new one
-			tSpot = new GProduct(pB, pSig);// Make a new GProduct and return it
+			Optional<CliffordProduct> tSpot2 = CladosGCache.INSTANCE.findGProductMap(pSig);
+			if (tSpot2.isPresent())
+				return tSpot2.get(); // GProduct already created, so just offer it instead of making a new one
+			tSpot = new GProductMap(pB, pSig);// Make a new GProduct and return it
 			CladosGCache.INSTANCE.appendBasis(pB);
 			CladosGCache.INSTANCE.appendGProduct(tSpot);
 		}
 		return tSpot;
 	}
 
-	public GProduct createGProduct(String pSig) throws GeneratorRangeException, BadSignatureException {
+	public CliffordProduct createGProduct(String pSig)
+			throws GeneratorRangeException, BadSignatureException {
 		if (!validateSignature(pSig))
 			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tSpot = CladosGCache.INSTANCE.findGProduct(pSig);
-		if (tSpot != null)
-			return tSpot; // GProduct already created, so just offer it instead of making a new one
-		// At this point we have to create a new GProduct. HOWEVER, it may still be
-		// possible to share a Basis. So... look for it.
-		Basis tB = CladosGCache.INSTANCE.findBasis((short) pSig.length());
-		if (tB != null)
-			tSpot = new GProduct(tB, pSig); // Basis is found, so use re-use constructor.
+		Optional<CliffordProduct> tSpot2 = CladosGCache.INSTANCE.findGProductMap(pSig);
+		if (tSpot2.isPresent())
+			return tSpot2.get();
+		// GProduct already created, so just offer it instead of making a new one. At
+		// this point we have to create a new GProduct, but might still share a Basis.
+		// So... look for it.
+
+		CliffordProduct tSpot;
+		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList((short) pSig.length());
+		if (tB.isPresent())
+			tSpot = new GProductMap(tB.get(), pSig); // Basis is found, so use re-use constructor.
 		else {
-			tSpot = new GProduct(pSig); // Make a new GProduct with implied new Basis.
+			tSpot = new GProductMap(pSig); // Make a new GProduct with implied new Basis.
 			CladosGCache.INSTANCE.appendBasis(tSpot.getBasis());
 		}
 		CladosGCache.INSTANCE.appendGProduct(tSpot);

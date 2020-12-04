@@ -102,7 +102,7 @@ public final class Blade implements Comparable<Blade> {
 	}
 
 	public final static boolean isPScalar(Blade blade) {
-		return (blade.getGenerators().size() == blade.maxGrade);
+		return (blade.getGenerators().size() == blade.maxGen);
 	}
 
 	public final static boolean isScalar(Blade blade) {
@@ -113,9 +113,8 @@ public final class Blade implements Comparable<Blade> {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent).append("<Blade index=\"").append(blade.basisIndex).append("\" key=\"").append(blade.key())
-				.append("\" bitKey=\"").append(blade.bitKey()).append("\" sign=\"").append(blade.sign())
-				.append("\" generators=\"");
+		rB.append(indent).append("<Blade key=\"").append(blade.key()).append("\" bitKey=\"0b").append(blade.bitKey())
+				.append("\" sign=\"").append(blade.sign()).append("\" generators=\"");
 
 		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.ord + ","));
 
@@ -129,9 +128,9 @@ public final class Blade implements Comparable<Blade> {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent).append("<Blade index=\"").append(blade.basisIndex).append("\" key=\"").append(blade.key())
-				.append("\" bitKey=\"").append(Integer.toBinaryString(blade.bitKey())).append("\" sign=\"")
-				.append(blade.sign()).append("\" generators=\"");
+		rB.append(indent).append("<Blade key=\"").append(blade.key()).append("\" bitKey=\"0b")
+				.append(Integer.toBinaryString(blade.bitKey())).append("\" sign=\"").append(blade.sign())
+				.append("\" generators=\"");
 
 		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString() + ","));
 
@@ -151,11 +150,11 @@ public final class Blade implements Comparable<Blade> {
 		return returnIt;
 	}
 
+	//private int basisIndex = 0;
+	private int bitKey = 0;
 	private EnumSet<Generator> blade;
 	private long key = 0L;
-	private int basisIndex = 0;
-	private int bitKey = 0;
-	private final byte maxGrade; // This should be gradeCount-1 in a related basis
+	private final byte maxGen; // This should be gradeCount-1 in a related basis
 	private byte sign = 1;
 
 	/**
@@ -168,7 +167,7 @@ public final class Blade implements Comparable<Blade> {
 	 *                                 another Blade here.
 	 */
 	public Blade(Blade pB) throws GeneratorRangeException {
-		this(pB.maxGrade);
+		this(pB.maxGen);
 		blade.addAll(pB.getGenerators());
 		sign = pB.sign();
 		key = pB.key();
@@ -195,11 +194,11 @@ public final class Blade implements Comparable<Blade> {
 		if (pMaxGrade < CladosConstant.BLADE_SCALARGRADE | pMaxGrade > CladosConstant.BLADE_MAXGRADE)
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pMaxGrade);
 		blade = EnumSet.noneOf(Generator.class);
-		maxGrade = pMaxGrade;
+		maxGen = pMaxGrade;
 	}
 
 	/**
-	 * This is a maximal constructor that establishes the blade's future maxGrade
+	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides the byte integer array of directions to load into
 	 * the ArrayList. These bytes need not be sorted since this constructor uses the
 	 * add() method which will handle sorting.
@@ -224,7 +223,7 @@ public final class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * This is a maximal constructor that establishes the blade's future maxGrade
+	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
 	 * 
 	 * @param pMaxGrade byte integer for the number of possible directions that
@@ -246,7 +245,7 @@ public final class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * This is a maximal constructor that establishes the blade's future maxGrade
+	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
 	 * 
 	 * @param pMaxGrade byte integer for the number of possible directions that
@@ -269,7 +268,7 @@ public final class Blade implements Comparable<Blade> {
 
 	protected Blade(byte pMaxGrade, boolean pNoMatter) {
 		blade = EnumSet.noneOf(Generator.class);
-		maxGrade = pMaxGrade;
+		maxGen = pMaxGrade;
 	}
 
 	/**
@@ -306,7 +305,7 @@ public final class Blade implements Comparable<Blade> {
 	public Blade add(Byte pS) throws GeneratorRangeException {
 		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
 			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-		else if (isPScalar(this) | pS.byteValue() > maxGrade)
+		else if (isPScalar(this) | pS.byteValue() > maxGen)
 			return this;
 		else {
 			if (blade.add(Generator.get(pS.byteValue())))
@@ -327,11 +326,11 @@ public final class Blade implements Comparable<Blade> {
 	 *                                 trying to add 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade add(byte[] pS) throws GeneratorRangeException {
-		for (byte pt : pS)
-			add(Byte.valueOf(pt)); // Do NOT convert to Generator here. Validate first.
-		return this;
-	}
+	//public Blade add(byte[] pS) throws GeneratorRangeException {
+	//	for (byte pt : pS)
+	//		add(Byte.valueOf(pt)); // Do NOT convert to Generator here. Validate first.
+	//	return this;
+	//}
 
 	/**
 	 * An array of boxed bytes representing 'directions' in the blade to be added.
@@ -348,11 +347,11 @@ public final class Blade implements Comparable<Blade> {
 	 *                                 trying to remove 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade add(Byte[] pS) throws GeneratorRangeException {
-		for (Byte pt : pS)
-			add(pt); // Do NOT convert to Generator here. Let the other validate first.
-		return this;
-	}
+	//public Blade add(Byte[] pS) throws GeneratorRangeException {
+	//	for (Byte pt : pS)
+	//		add(pt); // Do NOT convert to Generator here. Let the other validate first.
+	//	return this;
+	//}
 
 	public Blade add(EnumSet<Generator> pS) {
 		if (isPScalar(this))
@@ -373,7 +372,7 @@ public final class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
 	public Blade add(Generator pS) {
-		if (isPScalar(this) | pS.ord > maxGrade)
+		if (isPScalar(this) | pS.ord > maxGen)
 			return this;
 		else {
 			blade.add(pS);
@@ -386,7 +385,7 @@ public final class Blade implements Comparable<Blade> {
 	 * The generators represent 'directions' in the blade to be added. The blade is
 	 * checked to see if it is at maximum size. If it is, the add silently returns
 	 * the Blade unchanged. If it passes, the generators are added to the set if
-	 * they pass through the filter that blocks generators larger than maxGrade.
+	 * they pass through the filter that blocks generators larger than maxGen.
 	 * 
 	 * @param pS Generators that will be added to the set.
 	 * @return Blade The blade itself is returned to support stream calls.
@@ -395,14 +394,24 @@ public final class Blade implements Comparable<Blade> {
 		if (isPScalar(this))
 			return this;
 		else {
-			Stream.of(pS).filter(g -> g.ord <= maxGrade).forEach(g -> blade.add(g));
+			Stream.of(pS).filter(g -> g.ord <= maxGen).forEach(g -> blade.add(g));
 			makeKey();
 			return this;
 		}
 	}
 
+	/**
+	 * This is just a getter method named to support consumers at the end of streams
+	 * of blades. This is how one gets a stream of blade keys.
+	 * 
+	 * @return key Returns the blade's bit integer key.
+	 */
+	public int bitKey() {
+		return bitKey;
+	}
+
 	public byte blademax() {
-		return maxGrade;
+		return maxGen;
 	}
 
 	/**
@@ -437,7 +446,7 @@ public final class Blade implements Comparable<Blade> {
 	 * This method is very similar to the base object's equality test. The
 	 * difference is the sign of the blade is not checked. As long as blades are
 	 * being tested, all that is needed to pass this test is for them to have the
-	 * same key and maxGrade values.
+	 * same key and maxGen values.
 	 * 
 	 * @param obj The object to test
 	 * @return boolean True implies two blades are equal to within a sign while
@@ -452,7 +461,7 @@ public final class Blade implements Comparable<Blade> {
 			return false;
 		if (key != ((Blade) obj).key)
 			return false;
-		if (maxGrade != ((Blade) obj).maxGrade)
+		if (maxGen != ((Blade) obj).maxGen)
 			return false;
 		return true;
 	}
@@ -463,6 +472,10 @@ public final class Blade implements Comparable<Blade> {
 			find = Optional.ofNullable(pG);
 		return find;
 	}
+
+	//public int getBasisIndex() {
+	//	return basisIndex;
+	//}
 
 	/**
 	 * This is just a getter method named to support calls from within streams.
@@ -490,16 +503,6 @@ public final class Blade implements Comparable<Blade> {
 	 */
 	public long key() {
 		return key;
-	}
-
-	/**
-	 * This is just a getter method named to support consumers at the end of streams
-	 * of blades. This is how one gets a stream of blade keys.
-	 * 
-	 * @return key Returns the blade's bit integer key.
-	 */
-	public int bitKey() {
-		return bitKey;
 	}
 
 	/**
@@ -553,14 +556,14 @@ public final class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
-	public Blade remove(byte[] pS) throws GeneratorRangeException {
-		if (isScalar(this)) {
-			return this;
-		} else
-			for (byte tS : pS) // NOT streamed in order to throw exception if necessary
-				remove(Byte.valueOf(tS)); // key re-computed here if necessary
-		return this;
-	}
+	//public Blade remove(byte[] pS) throws GeneratorRangeException {
+	//	if (isScalar(this)) {
+	//		return this;
+	//	} else
+	//		for (byte tS : pS) // NOT streamed in order to throw exception if necessary
+	//			remove(Byte.valueOf(tS)); // key re-computed here if necessary
+	//	return this;
+	//}
 
 	/**
 	 * The boxed byte array represents 'directions' in the blade to be removed. If
@@ -576,14 +579,14 @@ public final class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
-	public Blade remove(Byte[] pS) throws GeneratorRangeException {
-		if (isScalar(this)) {
-			return this;
-		} else
-			for (Byte tS : pS) // NOT streamed in order to throw exception if necessary
-				remove(tS); // key re-computed here if necessary
-		return this;
-	}
+	//public Blade remove(Byte[] pS) throws GeneratorRangeException {
+	//	if (isScalar(this)) {
+	//		return this;
+	//	} else
+	//		for (Byte tS : pS) // NOT streamed in order to throw exception if necessary
+	//			remove(tS); // key re-computed here if necessary
+	//	return this;
+	//}
 
 	public Blade remove(EnumSet<Generator> pS) {
 		if (isScalar(this))
@@ -606,7 +609,7 @@ public final class Blade implements Comparable<Blade> {
 			makeKey();
 		return this;
 	}
-
+	
 	/**
 	 * Flip the order of multiplication of the generators. This doesn't actually
 	 * alter the EnumSet containing generators, though. It computes the effect of a
@@ -628,17 +631,17 @@ public final class Blade implements Comparable<Blade> {
 		return this;
 	}
 
-	public Blade setBasisIndex(int pI) {
-		basisIndex = pI;
-		return this;
-	}
+	//public Blade setBasisIndex(int pI) {
+	//	basisIndex = pI;
+	//	return this;
+	//}
 
 	public byte sign() {
 		return sign;
 	}
 
 	/*
-	 * Base (maxGrade+1) representation of Eddington Number
+	 * Base (maxGen+1) representation of Eddington Number
 	 * 
 	 * Ex: 3 generators implies Base-4 keys stuffed into Base-10 number.
 	 * 
@@ -655,7 +658,7 @@ public final class Blade implements Comparable<Blade> {
 		Iterator<Generator> cursor = blade.iterator();
 		while (cursor.hasNext()) {
 			Generator g = cursor.next();
-			key += g.ord * Math.pow((maxGrade + 1), (blade.size() - 1 - counter));
+			key += g.ord * Math.pow((maxGen + 1), (blade.size() - 1 - counter));
 			bitKey += (1 << (g.ord - 1));
 			counter++;
 		}

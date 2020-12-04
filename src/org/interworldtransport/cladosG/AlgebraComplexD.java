@@ -70,7 +70,7 @@ public class AlgebraComplexD extends AlgebraAbstract {
 		rB.append(indent + "\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(pA.getFoot().toXMLString("\t\t\t"));
-		rB.append(pA.getGProduct().toXMLString());
+		rB.append(pA.getGProduct().toXMLString(""));
 		rB.append(indent + "</Algebra>\n");
 		return rB.toString();
 	}
@@ -117,7 +117,7 @@ public class AlgebraComplexD extends AlgebraAbstract {
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public AlgebraComplexD(String pS, Foot pF, Cardinal pCard, GProduct pGP) {
+	public AlgebraComplexD(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
 		setAlgebraName(pS);
 		protoNumber = (ComplexD) CladosField.COMPLEXD.createONE(pCard);
 		setFoot(pF);
