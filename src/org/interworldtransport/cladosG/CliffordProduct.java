@@ -27,6 +27,39 @@ package org.interworldtransport.cladosG;
 
 public interface CliffordProduct {
 	
+	/**
+	 * Return a measure of the validity of the Signature string. A string with +'s
+	 * and -'s will pass. No other one does.
+	 * 
+	 * This method also establishes the internal integer representation of the
+	 * signature.
+	 * 
+	 * @param pSg String
+	 * @return boolean This boolean states whether the GProduct signature is valid.
+	 */
+	public static boolean validateSignature(String pSg) {
+		if (pSg == null)
+			return false; // Nothing to test
+		else if (!CanonicalBasis.validateSize((byte) pSg.length()))
+			return false;
+		else if (pSg.length() == 0)
+			return true; // Empty list IS allowed
+		else
+			for (char j : pSg.toCharArray())
+				switch (j) {
+				case '+' -> {
+					continue;
+				}
+				case '-' -> {
+					continue;
+				}
+				default -> {
+					return false;
+				}
+				}
+		return true; // nothing bad detected
+	}
+	
 	public abstract int getACommuteSign(int pRow, int pCol);
 
 	public abstract CanonicalBasis getBasis();

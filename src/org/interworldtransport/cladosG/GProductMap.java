@@ -50,40 +50,7 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class GProductMap implements CliffordProduct{
-
-	/**
-	 * Return a measure of the validity of the Signature string. A string with +'s
-	 * and -'s will pass. No other one does.
-	 * 
-	 * This method also establishes the internal integer representation of the
-	 * signature.
-	 * 
-	 * @param pSg String
-	 * @return boolean This boolean states whether the GProduct signature is valid.
-	 */
-	public static final boolean validateSignature(String pSg) {
-		if (pSg == null)
-			return false; // Nothing to test
-		else if (!CanonicalBasis.validateSize((byte) pSg.length()))
-			return false;
-		else if (pSg.length() == 0)
-			return true; // Empty list IS allowed
-		else
-			for (char j : pSg.toCharArray())
-				switch (j) {
-				case '+' -> {
-					continue;
-				}
-				case '-' -> {
-					continue;
-				}
-				default -> {
-					return false;
-				}
-				}
-		return true; // nothing bad detected
-	}
+public class GProductMap implements CliffordProduct {
 
 	/**
 	 * This basis holds a representation of all the elements that can be built from
@@ -131,7 +98,7 @@ public class GProductMap implements CliffordProduct{
 	 *                                   result in another known blade.
 	 */
 	public GProductMap(String pSig) throws BadSignatureException, GeneratorRangeException {
-		if (!validateSignature(pSig))
+		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		else if (!CanonicalBasis.validateSize(pSig.length()))
 			throw new GeneratorRangeException("Signature length unsupported");
@@ -148,7 +115,6 @@ public class GProductMap implements CliffordProduct{
 		signature = pSig;
 		// ------Build CanonicalBasis
 		canonicalBasis = CladosGBuilder.INSTANCE.createBasis((byte) pSig.length());
-		//canonicalBasis = BasisList.using((byte) pSig.length());// Replace with CladosGBuilder call soon
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
 		IntStream.range(0, getBladeCount()).parallel().forEach(j -> {
@@ -159,12 +125,11 @@ public class GProductMap implements CliffordProduct{
 			Blade bLeft = canonicalBasis.getSingleBlade(p);
 			IntStream.range(1, getBladeCount()).forEach(k -> {
 				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k), true)).reduce(nSignature);
-				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());
-				//result[p][k] = (1 + canonicalBasis.find(tSpot)) * tSpot.sign(); // TA DA!
+				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());// TA DA!
 			});
 		});
 	}
-	
+
 	/**
 	 * Main constructor of ProductTable with signature information passed in. It
 	 * figures out the rest of what it needs.
@@ -178,7 +143,7 @@ public class GProductMap implements CliffordProduct{
 	 *                                   result in another known blade.
 	 */
 	public GProductMap(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
-		if (!validateSignature(pSig))
+		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		else if (!CanonicalBasis.validateSize(pSig.length()))
 			throw new GeneratorRangeException("Signature length unsupported");
@@ -205,8 +170,7 @@ public class GProductMap implements CliffordProduct{
 			Blade bLeft = canonicalBasis.getSingleBlade(p);
 			IntStream.range(1, getBladeCount()).forEach(k -> {
 				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k), true)).reduce(nSignature);
-				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());
-				//result[p][k] = (1 + canonicalBasis.find(tSpot)) * tSpot.sign(); // TA DA!
+				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());// TA DA!
 			});
 		});
 	}
@@ -283,6 +247,7 @@ public class GProductMap implements CliffordProduct{
 				: (canonicalBasis.getGradeStart((byte) (pGrade + 1)) - 1));
 		return tR;
 	}
+
 	@Override
 	public int[] getPScalarRange() {
 		int[] tR = new int[2];
@@ -361,5 +326,5 @@ public class GProductMap implements CliffordProduct{
 		rB.append(indent + "\t</ProductTable>\n");
 		rB.append(indent + "</GProduct>\n");
 		return rB.toString();
-	}	
+	}
 }

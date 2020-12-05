@@ -45,11 +45,11 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	INSTANCE;
 
 	public final static boolean validateSignature(String pSig) {
-		return GProduct.validateSignature(pSig);
+		return CliffordProduct.validateSignature(pSig);
 	}
 
 	public final static boolean validateSize(short pGen) {
-		return Basis.validateSize(pGen);
+		return CanonicalBasis.validateSize(pGen);
 	}
 
 	public final static String cleanSignature(String pSig) {
@@ -59,11 +59,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			StringBuffer tSpot = new StringBuffer();
 			for (char j : pSig.toCharArray())
 				switch (j) {
-				case '+':
-					tSpot.append(j); // good character
-					break;
-				case '-':
-					tSpot.append(j); // good character
+				case '+' -> tSpot.append(j); // good character
+				case '-' -> tSpot.append(j); // good character
 				}
 			return tSpot.toString();
 		}
