@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosG.AlgebraRealF;
-import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosG.Foot;
-import org.interworldtransport.cladosG.GProduct;
+//import org.interworldtransport.cladosG.GProductMap;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ class CoreAlgebraRealFTest {
 	protected RealF rNumber;
 	protected Foot tFoot;
 	protected Foot tFoot2;
-	protected GProduct gProduct;
+	//protected GProductMap gProduct;
 	protected AlgebraRealF alg1;
 	protected AlgebraRealF alg2;
 
@@ -44,7 +44,7 @@ class CoreAlgebraRealFTest {
 		// Two algebras share a Basis?
 		//assertTrue(CladosGBuilder.INSTANCE.getBasisListSize() == 1);
 		assertFalse(alg1.getGProduct() == alg2.getGProduct()); // but not the products
-		assertFalse(alg1.getGProduct().getSignature().equals(alg2.getGProduct().getSignature()));
+		assertFalse(alg1.getGProduct().signature().equals(alg2.getGProduct().signature()));
 		// because the signatures are different.
 	}
 	
@@ -77,7 +77,7 @@ class CoreAlgebraRealFTest {
 	}
 
 	@Test
-	public void testFootShared() throws BadSignatureException, GeneratorRangeException {
+	public void testFootShared() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		tFoot.appendCardinal(rNumber.getCardinal());
 		AlgebraRealF alg3 = new AlgebraRealF(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
@@ -95,7 +95,7 @@ class CoreAlgebraRealFTest {
 	}
 
 	@Test
-	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException, BladeCombinationException {
 
 		AlgebraRealF alg4 = new AlgebraRealF("light weight frame", alg1);
 		assertFalse(alg4 == alg1);
@@ -135,7 +135,7 @@ class CoreAlgebraRealFTest {
 
 	@Test
 	public void testStaticOp() {
-		RealF result = AlgebraRealF.generateNumber(alg1, 10.0f);
+		RealF result = alg1.generateNumber(10.0f);
 		assertTrue(result != null);
 		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
 		// this shows that an algebra can be used to generate numbers of the same type

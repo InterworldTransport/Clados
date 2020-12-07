@@ -43,21 +43,13 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public class AlgebraComplexD extends AlgebraAbstract {
-	public final static ComplexD generateNumber(AlgebraComplexD pA, double pF1, double pF2) {
-		ComplexD tSpot = CladosFBuilder.createComplexD(pA.shareCardinal());
-		tSpot.setReal(pF1);
-		tSpot.setImg(pF2);
-		return tSpot;
-	}
-
-	public final static Cardinal shareCardinal(AlgebraComplexD pA) {
-		return pA.protoNumber.getCardinal();
-	}
-
-	public final static ComplexD shareProtoNumber(AlgebraComplexD pA) {
-		return pA.protoNumber;
-	}
-
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain
+	 * security concerns related to Java serialization of objects.
+	 * 
+	 * @param pA Algebra to be exported as XML data
+	 * @return String formatted as XML containing information about the Algebra
+	 */
 	public final static String toXMLString(AlgebraComplexD pA) {
 		String indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Algebra UUID=\"" + pA.uuid + "\" >\n");
@@ -70,7 +62,7 @@ public class AlgebraComplexD extends AlgebraAbstract {
 		rB.append(indent + "\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(pA.getFoot().toXMLString("\t\t\t"));
-		rB.append(pA.getGProduct().toXMLString());
+		rB.append(pA.getGProduct().toXMLString(""));
 		rB.append(indent + "</Algebra>\n");
 		return rB.toString();
 	}
@@ -117,7 +109,7 @@ public class AlgebraComplexD extends AlgebraAbstract {
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public AlgebraComplexD(String pS, Foot pF, Cardinal pCard, GProduct pGP) {
+	public AlgebraComplexD(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
 		setAlgebraName(pS);
 		protoNumber = (ComplexD) CladosField.COMPLEXD.createONE(pCard);
 		setFoot(pF);
@@ -226,11 +218,36 @@ public class AlgebraComplexD extends AlgebraAbstract {
 				CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
 
-	public Cardinal shareCardinal() {
+	/**
+	 * Generate a number similar to the algebra's protonumber.
+	 * 
+	 * @param pF1 real value of the number to be generated
+	 * @param pF2 imaginary value of the number to be generated.
+	 * @return ComplexD using the same Cardinal as protonumber
+	 */
+	public final ComplexD generateNumber(double pF1, double pF2) {
+		ComplexD tSpot = CladosFBuilder.createComplexD(shareCardinal());
+		tSpot.setReal(pF1);
+		tSpot.setImg(pF2);
+		return tSpot;
+	}
+
+	/**
+	 * This is really just a gettor, but it reaches into the protoNumber and
+	 * retrieves the Cardinal.
+	 * 
+	 * @return Cardinal of the protoNumber
+	 */
+	public final Cardinal shareCardinal() {
 		return protoNumber.getCardinal();
 	}
 
-	public ComplexD shareProtoNumber() {
+	/**
+	 * This is really just a gettor for the protoNumber.
+	 * 
+	 * @return ComplexD protoNumber
+	 */
+	public final ComplexD shareProtoNumber() {
 		return protoNumber;
 	}
 }

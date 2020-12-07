@@ -30,10 +30,23 @@ import org.interworldtransport.cladosG.BladeDuet;
  * @author Dr Alfred W Differ
  */
 public class BladeCombinationException extends Exception {
-	private static final long serialVersionUID = -6954708621051937257L;
+	private static final long serialVersionUID = -8598601963117488822L;
+	/**
+	 * Reference to a BladeDuet leading to this exception. Could be null.
+	 */
 	private BladeDuet Pairing;
+	/**
+	 * Reference to the leftmost/row blade leading to this exception. Could be null.
+	 */
 	private Blade First;
+	/**
+	 * Reference to the rightmost/column blade leading to this exception. Could be
+	 * null.
+	 */
 	private Blade Second;
+	/**
+	 * Human readable issue detected that caused this exception.
+	 */
 	private String SourceMessage;
 
 	/**

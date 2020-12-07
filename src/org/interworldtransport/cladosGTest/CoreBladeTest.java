@@ -10,9 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreBladeTest {
-	private byte[] j = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 10 };
-	private byte[] k = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	private byte[] m = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
 	private Generator[] g = { Generator.E1, Generator.E2, Generator.E3, Generator.E4 };
 	private Blade tB0;
 	private Blade tB4;
@@ -21,7 +19,6 @@ class CoreBladeTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-
 		tB0 = new Blade((byte) 0);
 		tB4 = new Blade((byte) 4);
 		tB4.add(g[0]).add(g[1]);
@@ -46,11 +43,12 @@ class CoreBladeTest {
 		assertFalse(tB42.key() == tB43.key());
 
 		Blade tB8 = new Blade((byte) 8);
-		tB8.add(m); // Should be pscalar now
+		Generator.flow((byte) 8).forEach(g-> tB8.add(g));
 		Blade tB10 = new Blade((byte) 10);
-		tB10.add(k); // Should be pscalar now
+		Generator.flow((byte) 10).forEach(g-> tB10.add(g));
 		Blade tB15 = new Blade((byte) 14);
-		tB15.add(j); // Should be pscalar now
+		Generator.flow((byte) 14).forEach(g-> tB15.add(g));
+
 
 		assertTrue(tB8.getGenerators().size() == 8);
 		assertTrue(tB10.getGenerators().size() == 10);
@@ -73,7 +71,7 @@ class CoreBladeTest {
 		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there.
 		assertTrue(newtB0.equals(tB0)); // tB is a scalar. Nothing to remove. Silent acceptance expected.
 		Blade tB10 = new Blade((byte) 10);
-		tB10.add(k); // Should be pscalar now
+		Generator.flow((byte) 10).forEach(g-> tB10.add(g));
 		Blade newtB10 = new Blade(tB10);
 		newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
 		assertTrue(newtB10.equals(tB10));
@@ -92,7 +90,7 @@ class CoreBladeTest {
 	@Test
 	public void testXMLOutput() throws GeneratorRangeException {
 		Blade tB = new Blade((byte) 14);
-		tB.add(j); // Should be pscalar now
+		Generator.flow((byte) 14).forEach(g-> tB.add(g));
 		System.out.println(Blade.toXMLString(tB,""));
 	}
 

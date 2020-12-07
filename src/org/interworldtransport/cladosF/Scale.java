@@ -27,25 +27,59 @@ package org.interworldtransport.cladosF;
 import java.util.ArrayList;
 
 /**
+ * This class is definitely a work in progress. It is intended to replace an
+ * array of DivFields that store the coefficients in a Monad. So... inside this
+ * class is a list of RealF, RealD, ComplexF, or ComplexD.
  * 
+ * Java's ArrayList is directly extended for now, so all of it's behaviors
+ * should do the heavy liftfing for this class. The difference will be the
+ * limited types that may be found in the list AND how they may not be mixed.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
- * 
  */
 public class Scale<T extends DivField & Divisible> extends ArrayList<T> {
+	/**
+	 * This is the type of DivField that should be present in the list held by this
+	 * class. For example, if mode = CladosField.REALF, then all elements in the
+	 * list will be the RealF child of DivField.
+	 */
 	private CladosField mode;
 
-	public Scale(CladosField pIn) {
-		mode = pIn;
+	/**
+	 * This is about as close to a default constructor as can be done. Only the
+	 * Scale's mode gets set.
+	 * 
+	 * @param pMode CladosField element hinting at what list types are expected
+	 *              internally.
+	 */
+	public Scale(CladosField pMode) {
+		mode = pMode;
 	}
 
+	/**
+	 * Simple gettor method reporting the Scale's internal mode.
+	 * 
+	 * @return CladosField element reporting which DivField child is expected in the
+	 *         list of this Scale.
+	 */
 	public CladosField getMode() {
 		return mode;
 	}
-	
-	public Scale<T> setMode(CladosField mode) {
-		this.mode = mode;
+
+	/**
+	 * Simple settor method altering the Scale's internal mode. IF the new mode
+	 * involves a change, the internal list is cleared too.
+	 * 
+	 * @param pMode CladosField element hinting at what list types are expected
+	 *              internally.
+	 * @return Scale of DivField children of the type named in the mode.
+	 */
+	public Scale<T> setMode(CladosField pMode) {
+		if (this.mode != pMode) {
+			clear();
+			this.mode = pMode;
+		}
 		return this;
 	}
 }

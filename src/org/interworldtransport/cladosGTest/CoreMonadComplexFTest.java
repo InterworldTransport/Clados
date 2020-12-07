@@ -120,7 +120,7 @@ class CoreMonadComplexFTest {
 
 	@Test
 	public void testBiMathOps2() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
-		tM8.gradePart((short) 4).normalize();
+		tM8.gradePart((byte) 4).normalize();
 		// System.out.println(toXMLString(tM8));
 		tM6.multiplyLeft(tM8).dualLeft();
 		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));

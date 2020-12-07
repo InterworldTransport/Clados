@@ -44,8 +44,31 @@ import org.interworldtransport.cladosGExceptions.CladosNyadException;
  * @author Dr Alfred W Differ
  */
 public enum CladosGNyad { // All of these have implicit private constructors
-	COMPLEXD, COMPLEXF, REALD, REALF;
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	REALF,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	REALD,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	COMPLEXF,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	COMPLEXD;
 
+	/**
+	 * This is effectively an 'instanceof' operator that avoids naming the actual
+	 * class type. It compares to nyads to see if they are of the same class.
+	 * 
+	 * @param pN1 First nyad to test
+	 * @param pN2 Second nyad to test
+	 * @return TRUE if nyads are of the same type. FALSE otherwise.
+	 */
 	public static final boolean isClassMatch(NyadAbstract pN1, NyadAbstract pN2) {
 		return pN1.getClass().equals(pN2.getClass());
 	}
@@ -66,28 +89,33 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	public final NyadAbstract duplicateReference(NyadAbstract pN, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pN instanceof NyadRealF)
 				return new NyadRealF(pName, (NyadRealF) pN, false);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pN instanceof NyadRealD)
 				return new NyadRealD(pName, (NyadRealD) pN, false);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pN instanceof NyadComplexF)
 				return new NyadComplexF(pName, (NyadComplexF) pN, false);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pN instanceof NyadComplexD)
 				return new NyadComplexD(pName, (NyadComplexD) pN, false);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -103,28 +131,33 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	public final NyadAbstract copyOf(NyadAbstract pN)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pN instanceof NyadRealF)
 				return new NyadRealF((NyadRealF) pN);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pN instanceof NyadRealD)
 				return new NyadRealD((NyadRealD) pN);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pN instanceof NyadComplexF)
 				return new NyadComplexF((NyadComplexF) pN);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pN instanceof NyadComplexD)
 				return new NyadComplexD((NyadComplexD) pN);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -142,28 +175,33 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	public final NyadAbstract copyRename(NyadAbstract pN, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pN instanceof NyadRealF)
 				return new NyadRealF(pName, (NyadRealF) pN, true);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pN instanceof NyadRealD)
 				return new NyadRealD(pName, (NyadRealD) pN, true);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pN instanceof NyadComplexF)
 				return new NyadComplexF(pName, (NyadComplexF) pN, true);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pN instanceof NyadComplexD)
 				return new NyadComplexD(pName, (NyadComplexD) pN, true);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -181,28 +219,33 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	public final NyadAbstract createWithMonadCopy(MonadAbstract pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pM instanceof MonadRealF)
 				return new NyadRealF(pName, (MonadRealF) pM, true);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pM instanceof MonadRealD)
 				return new NyadRealD(pName, (MonadRealD) pM, true);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pM instanceof MonadComplexF)
 				return new NyadComplexF(pName, (MonadComplexF) pM, true);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pM instanceof MonadComplexD)
 				return new NyadComplexD(pName, (MonadComplexD) pM, true);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -220,28 +263,33 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	public final NyadAbstract createWithMonad(MonadAbstract pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pM instanceof MonadRealF)
 				return new NyadRealF(pName, (MonadRealF) pM, false);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pM instanceof MonadRealD)
 				return new NyadRealD(pName, (MonadRealD) pM, false);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pM instanceof MonadComplexF)
 				return new NyadComplexF(pName, (MonadComplexF) pM, false);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pM instanceof MonadComplexD)
 				return new NyadComplexD(pName, (MonadComplexD) pM, false);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 }

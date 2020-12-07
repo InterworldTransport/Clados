@@ -24,8 +24,6 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.Arrays;
-
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -200,8 +198,8 @@ public final class GProduct {
 		nSignature = (pSig.length() == 0) ? new short[1] : new short[pSig.length()];
 		fillNumericSignature(pSig);
 		signature = pSig;
-		canonicalBasis = CladosGBuilder.INSTANCE.createBasis((short) pSig.length());
-		// canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed?
+		//canonicalBasis = CladosGBuilder.INSTANCE.createBasis((byte) pSig.length());
+		canonicalBasis = new Basis((short) pSig.length()); // Brand new one needed?
 		// Implied by new Signature.
 
 		// Fill the ProductResult array with integers representing Vector

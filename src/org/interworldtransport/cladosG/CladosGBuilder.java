@@ -24,7 +24,10 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Optional;
+
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFCache;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -40,16 +43,49 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public enum CladosGBuilder { // This has an implicit private constructor we won't override.
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
 	INSTANCE;
 
+	/**
+	 * Tests the signature string to see if it contains the correct chars and no
+	 * more of them than can be supported.
+	 * 
+	 * This method just calls the method of the same name in the CliffordProduct
+	 * interface. It is here for convenience.
+	 * 
+	 * @param pSig String signature to be tested
+	 * @return TRUE if string is composed of '+' and '-' chars, but not too many.
+	 *         FALSE otherwise.
+	 */
 	public final static boolean validateSignature(String pSig) {
-		return GProduct.validateSignature(pSig);
+		return CliffordProduct.validateSignature(pSig);
 	}
 
-	public final static boolean validateSize(short pGen) {
-		return Basis.validateSize(pGen);
+	/**
+	 * Tests the byte integer of generators to be used to see if it can be
+	 * supported.
+	 * 
+	 * This method just calls the method of the same name in the CanonicalBasis
+	 * interface. It is here for convenience.
+	 * 
+	 * @param pGen byte integer of number of generators for the test
+	 * @return TRUE if integer is in the supported range. FALSE otherwise.
+	 */
+	public final static boolean validateSize(byte pGen) {
+		return CanonicalBasis.validateSize(pGen);
 	}
-	
+
+	/**
+	 * Cleans the signature string to ensure it passes the validateSignature() test.
+	 * 
+	 * Any char in the string that isn't '+' or '-' is simply removed. If the
+	 * resulting string is too long, it is clipped at the supported length.
+	 * 
+	 * @param pSig String signature to be cleaned
+	 * @return String that has only + or - characters in it.
+	 */
 	public final static String cleanSignature(String pSig) {
 		if (validateSignature(pSig))
 			return pSig;
@@ -57,85 +93,167 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			StringBuffer tSpot = new StringBuffer();
 			for (char j : pSig.toCharArray())
 				switch (j) {
-				case '+':
-					tSpot.append(j); // good character
-					break;
-				case '-':
-					tSpot.append(j); // good character
+				case '+' -> tSpot.append(j); // good character
+				case '-' -> tSpot.append(j); // good character
 				}
+			if (tSpot.length() > CladosConstant.MAXGRADE)
+				return tSpot.substring(0, CladosConstant.MAXGRADE).toString();
 			return tSpot.toString();
 		}
 	}
 
+	/**
+	 * This method creates a new Foot object with one Cardinal re-used from the Foot
+	 * to be imitated.
+	 * 
+	 * @param pF    Foot object to copy
+	 * @param pSpot indexed location in offered Foot to find a Cardinal
+	 * @return Foot (new instance)
+	 */
 	public final static Foot copyOfFoot(Foot pF, int pSpot) {
-		return Foot.buildAsType(pF.getFootName(), pF.getCardinal(pSpot));
+		return createFootLike(pF.getFootName(), pF, pSpot);
 	}
 
-	public final static GProduct copyOfGProduct(GProduct pGP) throws BadSignatureException {
-		return new GProduct(pGP);
-	}
-
+	/**
+	 * This method creates a new Foot object and a new Cardinal to go with it.
+	 * 
+	 * NOTE this method checks the Cardinal cache first. If one is found that
+	 * matches the offered name, it is re-used instead of creating a new Cardinal.
+	 * 
+	 * @param pName     String name of new Foot
+	 * @param pCardName String name of new Cardinal
+	 * @return Foot (new instance)
+	 */
 	public final static Foot createFoot(String pName, String pCardName) {
+		Optional<Cardinal> find = CladosFCache.INSTANCE.findCardinal(pCardName);
+		if (find.isPresent())
+			return createFootLike(pName, find.get());
 		return Foot.buildAsType(pName, Cardinal.generate(pCardName));
 	}
 
+	/**
+	 * This method creates a new Foot object using the Cardinal offered.
+	 * 
+	 * @param pName String name of new Foot
+	 * @param pCard Cardinal to be re-used.
+	 * @return Foot (new instance)
+	 */
 	public final static Foot createFootLike(String pName, Cardinal pCard) {
 		return Foot.buildAsType(pName, pCard);
 	}
 
+	/**
+	 * This method creates a new Foot object using the Cardinal offered.
+	 * 
+	 * @param pName String name of new Foot
+	 * @param pDiv  DivField holding Cardinal to be re-used.
+	 * @return Foot (new instance)
+	 */
 	public final static Foot createFootLike(String pName, DivField pDiv) {
-		return Foot.buildAsType(pName, pDiv.getCardinal());
+		return createFootLike(pName, pDiv.getCardinal());
 	}
 
+	/**
+	 * This method creates a new Foot object with one Cardinal re-used from the Foot
+	 * to be imitated but the Foot has a new name too.
+	 * 
+	 * @param pName New string name for Foot to be created.
+	 * @param pF    Foot object to copy
+	 * @param pSpot indexed location in offered Foot to find a Cardinal
+	 * @return Foot (new instance)
+	 */
 	public final static Foot createFootLike(String pName, Foot pF, int pSpot) {
 		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
 	}
 
-	public Basis createBasis(short pGen) throws GeneratorRangeException {
-		Basis tB = CladosGCache.INSTANCE.findBasis(pGen);
-		if (tB != null)
-			return tB;
+	/**
+	 * This method creates a basis and caches it.
+	 * 
+	 * @param pGen integer number of generators to use in constructing the basis.
+	 * @return CanonicalBasis constructed
+	 * @throws GeneratorRangeException This can be thrown by the constructors on
+	 *                                 which this method depends. Nothing special in
+	 *                                 this method will throw them, so look to the
+	 *                                 CanonicalBasis and see why it complains.
+	 */
+	public CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
+		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen);
+		if (tB.isPresent())
+			return tB.get();
 		else {
-			Basis tSpot = Basis.using(pGen);
+			CanonicalBasis tSpot = BasisList.using(pGen);
 			CladosGCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
 
 	}
 
-	public GProduct createGProduct(Basis pB, String pSig) throws GeneratorRangeException, BadSignatureException {
-		if (!validateSignature(pSig))
-			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tSpot;
-		if (pB == null)
-			tSpot = createGProduct(pSig);
+	/**
+	 * This method constructs a CliffordProduct using the offered basis and
+	 * signature. It first checks the product cache and returns a matching product
+	 * instead of constructing a new one IF it is found. If not, it deposits the
+	 * offered Basis in the cache and then calls the method for creating a product
+	 * that does not try to re-use a basis. The net result works the same, though,
+	 * since that other method checks the basis cache before making a new basis. By
+	 * the end of the method, both basis and product caches are populated with
+	 * anything that had to be constructed.
+	 * 
+	 * @param pB   Basis to re-use in constructing product
+	 * @param pSig String form of the product's signature
+	 * @return CliffordProduct constructed
+	 * @throws GeneratorRangeException This can be thrown by the constructors on
+	 *                                 which this method depends. Nothing special in
+	 *                                 this method will throw them, so look to the
+	 *                                 CanonicalBasis and see why it complains.
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 */
+	public CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
+			throws BadSignatureException, GeneratorRangeException {
+		Optional<CliffordProduct> tSpot = CladosGCache.INSTANCE.findGProductMap(pSig);
+		if (tSpot.isPresent())
+			return tSpot.get();
 		else {
-			tSpot = CladosGCache.INSTANCE.findGProduct(pSig);
-			if (tSpot != null)
-				return tSpot; // GProduct already created, so just offer it instead of making a new one
-			tSpot = new GProduct(pB, pSig);// Make a new GProduct and return it
-			CladosGCache.INSTANCE.appendBasis(pB);
-			CladosGCache.INSTANCE.appendGProduct(tSpot);
+			if (pB != null)
+				CladosGCache.INSTANCE.appendBasis(pB); // won't have to pass it now.
+			tSpot = Optional.ofNullable(createGProduct(pSig));
+			return tSpot.get();
 		}
-		return tSpot;
 	}
 
-	public GProduct createGProduct(String pSig) throws GeneratorRangeException, BadSignatureException {
-		if (!validateSignature(pSig))
-			throw new BadSignatureException(null, "Signature validation failed in GProduct Builder");
-		GProduct tSpot = CladosGCache.INSTANCE.findGProduct(pSig);
-		if (tSpot != null)
-			return tSpot; // GProduct already created, so just offer it instead of making a new one
-		// At this point we have to create a new GProduct. HOWEVER, it may still be
-		// possible to share a Basis. So... look for it.
-		Basis tB = CladosGCache.INSTANCE.findBasis((short) pSig.length());
-		if (tB != null)
-			tSpot = new GProduct(tB, pSig); // Basis is found, so use re-use constructor.
+	/**
+	 * This method constructs a CliffordProduct using the offered signature String.
+	 * It first checks the product cache and returns a matching product instead of
+	 * constructing a new one IF it is found. If not, it checks the basis cache for
+	 * a match to decide which product constructor to use. By the end of the method,
+	 * both basis and product caches are populated with anything that had to be
+	 * constructed.
+	 * 
+	 * @param pSig String form of the product's signature
+	 * @return CliffordProduct constructed
+	 * @throws GeneratorRangeException This can be thrown by the constructors on
+	 *                                 which this method depends. Nothing special in
+	 *                                 this method will throw them, so look to the
+	 *                                 CanonicalBasis and see why it complains.
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 */
+	public CliffordProduct createGProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
+		Optional<CliffordProduct> tSpot = CladosGCache.INSTANCE.findGProductMap(pSig);
+		if (tSpot.isPresent())
+			return tSpot.get(); // GProduct already created. return it.
 		else {
-			tSpot = new GProduct(pSig); // Make a new GProduct with implied new Basis.
-			CladosGCache.INSTANCE.appendBasis(tSpot.getBasis());
+			// Create a new GProduct, but might still find a cached Basis.
+			Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList((byte) pSig.length());
+			if (tB.isPresent())
+				tSpot = Optional.ofNullable(new GProductMap(tB.get(), pSig));
+			else
+				tSpot = Optional.ofNullable(new GProductMap(pSig));
+			
+			if (tSpot.isPresent()) {
+				CladosGCache.INSTANCE.appendBasis(tSpot.get().getBasis());
+				CladosGCache.INSTANCE.appendGProduct(tSpot.get());
+				return tSpot.get();
+			} else
+				return null;
 		}
-		CladosGCache.INSTANCE.appendGProduct(tSpot);
-		return tSpot;
 	}
 }

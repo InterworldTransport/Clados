@@ -50,10 +50,10 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
 		<delete dir="${docDir}"/>
 	  </target>
 
-  <target 		name="compile" 
+  <!--<target 		name="compile" 
   				depends="init"
         		description="compile the source">
-    <!-- Compile the Java code from ${src} into ${build} -->
+     Compile the Java code from ${src} into ${build}
     <javac 		includeantruntime="false" 
 				modulepath="/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:
 					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.opentest4j*.jar:
@@ -69,19 +69,17 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
 					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.hamcrest.core*.jar:
 					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.params*.jar"
     			srcdir="${srcDir}" 
-    			source="14"
+    			source="15"
     			destdir="${buildDir}"> 
-  		<!--<exclude name="org/interworldtransport/cladosGTest/**"/>-->
-  		<!--<exclude name="org/interworldtransport/cladosFTest/**"/>-->
     </javac>
-  </target>
+  </target>-->
 	
-	  <target 		name="compile-notests" 
+	  <target 		name="compile" 
 	  				depends="init"
 	        		description="compile the source">
 	    <!-- Compile the Java code from ${src} into ${build} -->
 	    <javac 		includeantruntime="false"  
-	    			source="14"
+	    			source="15"
 	    			srcdir="${srcDir}" 
 	    			destdir="${buildDir}"> 
 	  		<exclude name="org/interworldtransport/cladosGTest/*.java"/>
@@ -118,27 +116,26 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
 	    			overview="${srcDir}/overview.html" 
 	    			packagenames="	org.interworldtransport.cladosFExceptions,
 	    							org.interworldtransport.cladosF,
-	    							org.interworldtransport.cladosFTest,
 	    							org.interworldtransport.cladosGExceptions,
-	    							org.interworldtransport.cladosG,
-	    							org.interworldtransport.cladosGTest"
-	    			source="14" 
+	    							org.interworldtransport.cladosG"
+	    			source="15" 
 	    			sourcepath="${srcDir}" 
 	    			splitindex="true" 
 	    			use="true" 
 	    			version="true">
+	    	<!--
 	        <link href="http://hamcrest.org/JavaHamcrest/javadoc/1.3/"/>
 	        <link href="https://ota4j-team.github.io/opentest4j/docs/current/api/"/>
 	        <link href="https://apiguardian-team.github.io/apiguardian/docs/current/api/"/>
 	    	<link href="https://junit.org/junit5/docs/current/api/"/>
-	        <link href="https://junit.org/junit4/javadoc/latest/"/>
+	        <link href="https://junit.org/junit4/javadoc/latest/"/> -->
 	    </javadoc>
 	</target>
 
   
 	
 	<target 		name="dist" 
-	  				depends="compile-notests"
+	  				depends="compile"
 	        		description="generate the distribution">
 	    <!-- Create the distribution directory -->
 	    <mkdir 		dir="${distDir}/lib"/>

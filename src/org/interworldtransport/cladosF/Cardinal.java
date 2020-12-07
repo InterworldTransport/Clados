@@ -59,7 +59,6 @@ package org.interworldtransport.cladosF;
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
- * 
  */
 public final class Cardinal {
 	/**
@@ -113,6 +112,11 @@ public final class Cardinal {
 		return true;
 	}
 
+	/**
+	 * Simple gettor method for the name of the 'unit' represented by this Cardinal.
+	 * 
+	 * @return String This string names the 'unit type' represented by the Cardinal
+	 */
 	public String getUnit() {
 		return unit;
 	}
@@ -125,10 +129,20 @@ public final class Cardinal {
 		return result;
 	}
 
-	public void setUnit(String pFT) {
-		unit = pFT;
+	/**
+	 * Simple settor method for the name of the 'unit' represented by this Cardinal.
+	 * 
+	 * @param pUnit String This string names the 'unit type' represented by the Cardinal
+	 */
+	public void setUnit(String pUnit) {
+		unit = pUnit;
 	}
 
+	/**
+	 * Similar to a toString() mehtod, but it focuses upon an XML style output.
+	 * 
+	 * @return String XML compatible sub-unit for code relying on exportable Cardinals.
+	 */
 	public String toXMLString() {
 		return ("<Cardinal unit=\"" + unit + "\" />\n");
 	}

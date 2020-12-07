@@ -25,8 +25,23 @@
 package org.interworldtransport.cladosF;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Set;
 
+/**
+ * Any classes within CladosF which would benefit from a supporting cache make
+ * use of this singleton enumeration as a 'builder'. Nothing fancy here
+ * otherwise. Just simple create, append, find, and remove capabilities backed
+ * by ArrayLists of cached objects.
+ * 
+ * @version 1.0
+ * @author Dr Alfred W Differ
+ */
 public enum CladosFCache {
+	/**
+	 * There is an implicit private constructor for this singleton, but we won't
+	 * override it.
+	 */
 	INSTANCE;
 
 	/**
@@ -36,26 +51,81 @@ public enum CladosFCache {
 	 */
 	private ArrayList<Cardinal> listOfCardinals = new ArrayList<Cardinal>(1);
 
+	/**
+	 * Method appends offered Cardinal to cache IF one by that name is not already
+	 * present. If it IS, nothing is done and the method silently returns.
+	 * 
+	 * @param pIn Cardinal to be appended to the cache IF it isn't already present.
+	 */
 	public void appendCardinal(Cardinal pIn) {
-		Cardinal test = findCardinal(pIn.getUnit());
-		if (test != null)
+		Optional<Cardinal> test = findCardinal(pIn.getUnit());
+		if (test.isEmpty())
 			listOfCardinals.add(pIn);
 	}
 
-	public Cardinal findCardinal(String pName) {
-		return listOfCardinals.stream().filter(x -> x.getUnit().equals(pName)).findFirst().orElse(null);
+	/**
+	 * Method appends offered Cardinals to cache IF not already present. If are ARE,
+	 * nothing is done and the method silently loops through remaining Cardinals.
+	 * 
+	 * @param pIn Cardinal to be appended to the cache IF it isn't already present.
+	 */
+	public void appendCardinal(Set<Cardinal> pIn) {
+		pIn.stream().forEach(pC -> {
+			Optional<Cardinal> test = findCardinal(pC.getUnit());
+			if (test.isEmpty())
+				listOfCardinals.add(pC);
+		});
 	}
 
-	public Cardinal getCardinal(short pLoc) {
+	/**
+	 * This method returns an Optional of Cardinal using the string name offered for
+	 * the search. If found, the optional will be engaged. If not, it will be
+	 * disengaged. IF by some chance there are two cardinals in the cache by the
+	 * same name (which should NOT happen) the first one found will be returned.
+	 * 
+	 * @param pName String name of a Cardinal to be found in the cache
+	 * @return Optional of Cardinal matching the name offered.
+	 */
+	public Optional<Cardinal> findCardinal(String pName) {
+		return listOfCardinals.stream().filter(x -> x.getUnit().equals(pName)).findFirst();
+	}
+
+	/**
+	 * This method clears the Cardinal cache.
+	 */
+	public void clearCardinal() {
+		listOfCardinals.clear();
+	}
+
+	/**
+	 * This is a brute force way of retrieving Cardinals in the cache. It should
+	 * rarely be used.
+	 * 
+	 * @param pLoc integer index to be used when returning the listed Cardinal
+	 * @return Cardinal at pLoc index will be returned.
+	 */
+	public Cardinal getCardinal(int pLoc) {
 		if (listOfCardinals.size() < 1 | listOfCardinals.size() < pLoc)
 			return null;
 		return listOfCardinals.get(pLoc);
 	}
 
-	public short getCardinalListSize() {
-		return (short) listOfCardinals.size();
+	/**
+	 * This method reports the size of the Cardinal cache.
+	 * 
+	 * @return int size of the Cardinal cache.
+	 */
+	public int getCardinalListSize() {
+		return listOfCardinals.size();
 	}
 
+	/**
+	 * This method supports the removal of a Cardinal from the cache.
+	 * 
+	 * @param pCard Cardinal to be removed
+	 * @return boolean True if Cardinal found and removed. False if not found or
+	 *         removal fails.
+	 */
 	public boolean removeCardinal(Cardinal pCard) {
 		return listOfCardinals.remove(pCard);
 	}
