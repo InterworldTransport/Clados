@@ -72,7 +72,7 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pA2 Second algebra to test
 	 * @return TRUE if algebras are of the same type. FALSE otherwise.
 	 */
-	public static final boolean isClassMatch(AlgebraAbstract pA1, AlgebraAbstract pA2) {
+	public static final boolean isClassMatch(Algebra pA1, Algebra pA2) {
 		return pA1.getClass().equals(pA2.getClass());
 	}
 
@@ -81,10 +81,10 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * 
 	 * @param pA    The Algebra to be copied.
 	 * @param pName A String for the new algebra's name.
-	 * @return AlgebraAbstract
+	 * @return Algebra
 	 */
-	public final AlgebraAbstract copyOf(AlgebraAbstract pA, String pName) {
-		return new AlgebraAbstract(pName, pA);
+	public final Algebra copyOf(Algebra pA, String pName) {
+		return new Algebra(pName, pA);
 
 	}
 
@@ -95,26 +95,26 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pName   A String for the new algebra's name.
 	 * @param pFTName A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
-	 * @return AlgebraAbstract
+	 * @return Algebra
 	 * @throws BadSignatureException   Thrown by an algebra constructor if the pSig
 	 *                                 parameter is malformed
 	 * @throws GeneratorRangeException Thrown by an algebra constructor if the pSig
 	 *                                 parameter is too long
 	 */
-	public final AlgebraAbstract create(DivField pNumber, String pName, String pFTName, String pSig)
+	public final Algebra create(DivField pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
 		case REALF -> {
-			return new AlgebraAbstract(pName, pFTName, pSig, CladosFBuilder.createRealF(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createRealF(pNumber.getCardinal()));
 		}
 		case REALD -> {
-			return new AlgebraAbstract(pName, pFTName, pSig, CladosFBuilder.createRealD(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createRealD(pNumber.getCardinal()));
 		}
 		case COMPLEXF -> {
-			return new AlgebraAbstract(pName, pFTName, pSig, CladosFBuilder.createComplexF(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createComplexF(pNumber.getCardinal()));
 		}
 		case COMPLEXD -> {
-			return new AlgebraAbstract(pName, pFTName, pSig, CladosFBuilder.createComplexD(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createComplexD(pNumber.getCardinal()));
 		}
 		default -> throw new IllegalArgumentException("Unexpected value as an Algebra mode: " + this);
 		}
@@ -127,13 +127,13 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pCard The Cardinal to be re-used.
 	 * @param pName A String for the new algebra's name.
 	 * @param pSig  A String for the new algebra's signature.
-	 * @return AlgebraAbstract
+	 * @return Algebra
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public final AlgebraAbstract createWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
+	public final Algebra createWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		return new AlgebraAbstract(pName, pF, pCard, pSig);
+		return new Algebra(pName, pF, pCard, pSig);
 	}
 
 	/**
@@ -143,24 +143,24 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pNumber The DivField to be re-used.
 	 * @param pName   A String for the new algebra's name.
 	 * @param pSig    A String for the new algebra's signature.
-	 * @return AlgebraAbstract
+	 * @return Algebra
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public final AlgebraAbstract createWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
+	public final Algebra createWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
 		case REALF -> {
-			return new AlgebraAbstract(pName, pF, pSig, CladosFBuilder.createRealF(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.createRealF(pNumber.getCardinal()));
 		}
 		case REALD -> {
-			return new AlgebraAbstract(pName, pF, pSig, CladosFBuilder.createRealD(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.createRealD(pNumber.getCardinal()));
 		}
 		case COMPLEXF -> {
-			return new AlgebraAbstract(pName, pF, pSig, CladosFBuilder.createComplexF(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.createComplexF(pNumber.getCardinal()));
 		}
 		case COMPLEXD -> {
-			return new AlgebraAbstract(pName, pF, pSig, CladosFBuilder.createComplexD(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.createComplexD(pNumber.getCardinal()));
 		}
 		default -> throw new IllegalArgumentException("Unexpected value as an Algebra mode: " + this);
 		}
@@ -173,9 +173,9 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pCard The Cardinal to be re-used.
 	 * @param pGP   The GProduct to be re-used.
 	 * @param pName A String for the new algebra's name.
-	 * @return AlgebraAbstract
+	 * @return Algebra
 	 */
-	public final AlgebraAbstract createWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
-		return new AlgebraAbstract(pName, pF, pCard, pGP);
+	public final Algebra createWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
+		return new Algebra(pName, pF, pCard, pGP);
 	}
 }

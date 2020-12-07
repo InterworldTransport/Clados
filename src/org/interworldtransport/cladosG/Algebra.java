@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.AlgebraAbstract<br>
+ * ---org.interworldtransport.cladosG.Algebra<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.AlgebraAbstract<br>
+ * ---org.interworldtransport.cladosG.Algebra<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -41,7 +41,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
+public class Algebra implements Unitized, Comparable<Algebra> {
 	/**
 	 * All algebra types share some elements that are not dependent on number types.
 	 * The first among them is the 'tangent point' of the sub-manifold represented
@@ -94,7 +94,7 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * @param pA Algebra to be exported as XML data
 	 * @return String formatted as XML containing information about the Algebra
 	 */
-	public final static String toXMLString(AlgebraAbstract pA) {
+	public final static String toXMLString(Algebra pA) {
 		String indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
 		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
@@ -123,7 +123,7 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * @param pS This is the Algebra's name
 	 * @param pA This is the other Algebra to copy.
 	 */
-	public AlgebraAbstract(String pS, AlgebraAbstract pA) {
+	public Algebra(String pS, Algebra pA) {
 		this(pS, pA.getFoot(), pA.shareCardinal(), pA.getGProduct());
 	}
 
@@ -145,7 +145,7 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public AlgebraAbstract(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
+	public Algebra(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
 		setAlgebraName(pS);
 		protoNumber = new DivField(pCard);
 		setFoot(pF);
@@ -187,7 +187,7 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public AlgebraAbstract(String pS, Foot pF, Cardinal pCard, String pSig)
+	public Algebra(String pS, Foot pF, Cardinal pCard, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, pF, pCard, CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
@@ -221,7 +221,7 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public AlgebraAbstract(String pS, Foot pF, String pSig, DivField pDiv)
+	public Algebra(String pS, Foot pF, String pSig, DivField pDiv)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
@@ -248,7 +248,7 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public AlgebraAbstract(String pS, String pFootName, String pSig, DivField pF)
+	public Algebra(String pS, String pFootName, String pSig, DivField pF)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()), pF.getCardinal(),
 				CladosGBuilder.INSTANCE.createGProduct(pSig));
@@ -273,13 +273,13 @@ public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	 * models.
 	 * <p>
 	 * 
-	 * @param pAnother AlgebraAbstract This is the algebra to be name compared
+	 * @param pAnother Algebra This is the algebra to be name compared
 	 * @return int -1 if the name of 'this' algebra is 'less' than that of pAnother.
 	 *         0 if the two names are the same +1 if the name of this algebra is
 	 *         'greater' than that of pAnother.
 	 */
 	@Override
-	public int compareTo(AlgebraAbstract pAnother) {
+	public int compareTo(Algebra pAnother) {
 		if (this.name == null)
 			if (pAnother.name == null)
 				return 0;

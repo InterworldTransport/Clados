@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.GProductMap<br>
+ * ---org.interworldtransport.cladosG.GProduct<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.GProductMap<br>
+ * ---org.interworldtransport.cladosG.GProduct<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -48,7 +48,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class GProductMap implements CliffordProduct {
+public class GProduct implements CliffordProduct {
 
 	/**
 	 * This basis holds a representation of all the elements that can be built from
@@ -93,7 +93,7 @@ public class GProductMap implements CliffordProduct {
 	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProductMap(String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		else if (!CanonicalBasis.validateSize(pSig.length()))
@@ -137,7 +137,7 @@ public class GProductMap implements CliffordProduct {
 	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProductMap(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		else if (!CanonicalBasis.validateSize(pSig.length()))
@@ -182,7 +182,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return int
 	 */
 	@Override
-	public int getACommuteSign(int pRow, int pCol) {
+	public final int getACommuteSign(int pRow, int pCol) {
 		return (result[pRow][pCol] == result[pCol][pRow] * -1) ? 1 : 0;
 	}
 
@@ -192,7 +192,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return Basis
 	 */
 	@Override
-	public CanonicalBasis getBasis() {
+	public final CanonicalBasis getBasis() {
 		return canonicalBasis;
 	}
 
@@ -202,7 +202,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return int
 	 */
 	@Override
-	public int getBladeCount() {
+	public final int getBladeCount() {
 		return canonicalBasis.getBladeCount();
 	}
 
@@ -215,7 +215,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return int
 	 */
 	@Override
-	public int getCommuteSign(int pRow, int pCol) {
+	public final int getCommuteSign(int pRow, int pCol) {
 		return (result[pRow][pCol] == result[pCol][pRow]) ? 1 : 0;
 	}
 
@@ -225,7 +225,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return byte
 	 */
 	@Override
-	public byte getGradeCount() {
+	public final byte getGradeCount() {
 		return canonicalBasis.getGradeCount();
 	}
 
@@ -236,7 +236,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return int[] start and end indexes returned as a short[] array
 	 */
 	@Override
-	public int[] getGradeRange(byte pGrade) {
+	public final int[] getGradeRange(byte pGrade) {
 		int[] tR = new int[2];
 		tR[0] = canonicalBasis.getGradeStart(pGrade);
 		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
@@ -246,7 +246,7 @@ public class GProductMap implements CliffordProduct {
 	}
 
 	@Override
-	public int[] getPScalarRange() {
+	public final int[] getPScalarRange() {
 		int[] tR = new int[2];
 		tR[0] = canonicalBasis.getPScalarStart();
 		tR[1] = tR[0];
@@ -259,7 +259,7 @@ public class GProductMap implements CliffordProduct {
 	 * @param pRow int
 	 * @return int[][]
 	 */
-	public int[] getResult(int pRow) {
+	public final int[] getResult(int pRow) {
 		return result[pRow];
 	}
 
@@ -271,7 +271,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return int
 	 */
 	@Override
-	public int getResult(int pRow, int pCol) {
+	public final int getResult(int pRow, int pCol) {
 		return result[pRow][pCol];
 	}
 
@@ -283,7 +283,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return int
 	 */
 	@Override
-	public int getSign(int pRow, int pCol) {
+	public final int getSign(int pRow, int pCol) {
 		return (result[pRow][pCol] < 0) ? -1 : 1;
 	}
 
@@ -294,7 +294,7 @@ public class GProductMap implements CliffordProduct {
 	 * @return String
 	 */
 	@Override
-	public String signature() {
+	public final String signature() {
 		return signature;
 	}
 

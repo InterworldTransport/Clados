@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.BasisList<br>
+ * ---org.interworldtransport.cladosG.Basis<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.BasisList<br>
+ * ---org.interworldtransport.cladosG.Basis<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -115,7 +115,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public final class BasisList implements CanonicalBasis {
+public final class Basis implements CanonicalBasis {
 
 	/**
 	 * This is just a factory method to help name a particular constructor. It is
@@ -127,8 +127,8 @@ public final class BasisList implements CanonicalBasis {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public static final BasisList using(byte numberOfGenerators) throws GeneratorRangeException {
-		return new BasisList(numberOfGenerators);
+	public static final Basis using(byte numberOfGenerators) throws GeneratorRangeException {
+		return new Basis(numberOfGenerators);
 	}
 
 	/*
@@ -227,7 +227,7 @@ public final class BasisList implements CanonicalBasis {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public BasisList(byte pGens) throws GeneratorRangeException {
+	public Basis(byte pGens) throws GeneratorRangeException {
 		if (!CanonicalBasis.validateSize(pGens))
 			throw new GeneratorRangeException("Supported range is 0<->14 using 8 bit integers");
 		// ------Initialize
@@ -275,7 +275,7 @@ public final class BasisList implements CanonicalBasis {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BasisList other = (BasisList) obj;
+		Basis other = (Basis) obj;
 		if (gradeCount != other.gradeCount)
 			return false;
 		return true;

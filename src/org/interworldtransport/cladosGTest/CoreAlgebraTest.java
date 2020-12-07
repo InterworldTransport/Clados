@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosG.AlgebraAbstract;
+import org.interworldtransport.cladosG.Algebra;
 import org.interworldtransport.cladosG.Foot;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
@@ -22,9 +22,9 @@ class CoreAlgebraTest {
 	protected RealF rNumber;
 	protected Foot tFoot;
 	protected Foot tFoot2;
-	//protected GProductMap gProduct;
-	protected AlgebraAbstract alg1;
-	protected AlgebraAbstract alg2;
+	//protected GProduct gProduct;
+	protected Algebra alg1;
+	protected Algebra alg2;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -33,8 +33,8 @@ class CoreAlgebraTest {
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
 
-		alg1 = new AlgebraAbstract(aName, tFoot, pSig31, rNumber);
-		alg2 = new AlgebraAbstract(aName, tFoot, pSig13, rNumber);
+		alg1 = new Algebra(aName, tFoot, pSig31, rNumber);
+		alg2 = new Algebra(aName, tFoot, pSig13, rNumber);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ class CoreAlgebraTest {
 	@Test
 	public void testFootShared() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		tFoot.appendCardinal(rNumber.getCardinal());
-		AlgebraAbstract alg3 = new AlgebraAbstract(aName, tFoot, pSig31, rNumber);
+		Algebra alg3 = new Algebra(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		// because the Foot is shared between algebras, changing the number
@@ -96,13 +96,13 @@ class CoreAlgebraTest {
 	@Test
 	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException, BladeCombinationException {
 
-		AlgebraAbstract alg4 = new AlgebraAbstract("light weight frame", alg1);
+		Algebra alg4 = new Algebra("light weight frame", alg1);
 		assertFalse(alg4 == alg1);
 		assertTrue(alg4.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg4.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, GProduct re-used, but different names ensures algebra mis-match
 
-		AlgebraAbstract alg5 = new AlgebraAbstract("medium weight frame", alg1);
+		Algebra alg5 = new Algebra("medium weight frame", alg1);
 		assertFalse(alg5 == alg1);
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg5.getGProduct() == (alg1.getGProduct()));
@@ -116,7 +116,7 @@ class CoreAlgebraTest {
 		// Setting names equal isn't anywhere near enough to make algebras pass
 		// reference match
 
-		AlgebraAbstract alg6 = new AlgebraAbstract(aName, fName, pSig31, rNumber);
+		Algebra alg6 = new Algebra(aName, fName, pSig31, rNumber);
 		assertFalse(alg6.equals(alg1));
 		assertFalse(alg6.getFoot() == alg1.getFoot());
 		assertTrue(alg6.getGProduct() == (alg1.getGProduct()));
@@ -134,7 +134,7 @@ class CoreAlgebraTest {
 
 	@Test
 	public void testXMLOutput() {
-		String test = AlgebraAbstract.toXMLString(alg1);
+		String test = Algebra.toXMLString(alg1);
 		assertTrue(test != null);
 	}
 

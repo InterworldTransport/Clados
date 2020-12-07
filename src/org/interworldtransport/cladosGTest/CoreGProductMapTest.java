@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosG.CladosGCache;
 import org.interworldtransport.cladosG.CliffordProduct;
-import org.interworldtransport.cladosG.GProductMap;
+import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class CoreGProductMapTest {
 	
 	@Test
 	public void test00s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig0);
+		GProduct tGP = new GProduct(pSig0);
 		assertTrue(tGP.signature().equals(""));
 		assertTrue(tGP.getGradeCount() == 1);
 		assertTrue(tGP.getBladeCount() == (1 << 0));
@@ -55,7 +55,7 @@ class CoreGProductMapTest {
 
 	@Test
 	public void test02s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig2);
+		GProduct tGP = new GProduct(pSig2);
 		//System.out.println(tGP.toXMLString(""));
 		assertTrue(tGP.signature().equals("-+"));
 		assertTrue(tGP.getGradeCount() == 3);
@@ -76,7 +76,7 @@ class CoreGProductMapTest {
 	
 	@Test
 	public void test03s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig3);
+		GProduct tGP = new GProduct(pSig3);
 		//System.out.println(tGP.toXMLString(""));
 		assertTrue(tGP.signature().equals("+++"));
 		assertTrue(tGP.getGradeCount() == 4);
@@ -96,7 +96,7 @@ class CoreGProductMapTest {
 
 	@Test
 	public void test04s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig4);
+		GProduct tGP = new GProduct(pSig4);
 		//System.out.println(tGP.toXMLString(""));
 		assertTrue(tGP.signature().equals("-+++"));
 		assertTrue(tGP.getGradeCount() == 5);
@@ -116,7 +116,7 @@ class CoreGProductMapTest {
 
 	@Test
 	public void test08s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig8);
+		GProduct tGP = new GProduct(pSig8);
 		assertTrue(tGP.signature().equals("-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 9);
 		assertTrue(tGP.getBladeCount() == Math.pow(2, 8));
@@ -135,7 +135,7 @@ class CoreGProductMapTest {
 
 	@Test
 	public void test10s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig10);
+		GProduct tGP = new GProduct(pSig10);
 		assertTrue(tGP.signature().equals("+++-++++++"));
 		assertTrue(tGP.getGradeCount() == 11);
 		assertTrue(tGP.getBladeCount() == Math.pow(2, 10));
@@ -154,7 +154,7 @@ class CoreGProductMapTest {
 
 	@Test
 	public void test12s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig12);
+		GProduct tGP = new GProduct(pSig12);
 		assertTrue(tGP.signature().equals("-+++-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 13);
 		assertTrue(tGP.getBladeCount() == Math.pow(2, 12));
@@ -173,7 +173,7 @@ class CoreGProductMapTest {
 
 	@Test
 	public void test14s() throws BadSignatureException, GeneratorRangeException {
-		GProductMap tGP = new GProductMap(pSig14);
+		GProduct tGP = new GProduct(pSig14);
 		assertTrue(tGP.signature().equals("++-+++-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 15);
 		assertTrue(tGP.getBladeCount() == Math.pow(2, 14));

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-import org.interworldtransport.cladosG.BasisList;
+import org.interworldtransport.cladosG.Basis;
 import org.interworldtransport.cladosG.CanonicalBasis;
 import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosG.CladosGCache;
@@ -23,12 +23,12 @@ class CoreBasisListTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		tBasis0 = new BasisList((byte) 0);
-		tBasis4 = new BasisList((byte) 4);
-		tBasis43 = new BasisList((byte) 4);
-		tBasis8 = new BasisList((byte) 8);
-		tBasis10 = new BasisList((byte) 10);
-		tBasis14 = new BasisList((byte) 14);
+		tBasis0 = new Basis((byte) 0);
+		tBasis4 = new Basis((byte) 4);
+		tBasis43 = new Basis((byte) 4);
+		tBasis8 = new Basis((byte) 8);
+		tBasis10 = new Basis((byte) 10);
+		tBasis14 = new Basis((byte) 14);
 	}
 	
 	@Test

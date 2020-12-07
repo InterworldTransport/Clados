@@ -181,7 +181,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		if (tB.isPresent())
 			return tB.get();
 		else {
-			CanonicalBasis tSpot = BasisList.using(pGen);
+			CanonicalBasis tSpot = Basis.using(pGen);
 			CladosGCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
@@ -245,9 +245,9 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList((byte) pSig.length());
 			CliffordProduct tSpot2;
 			if (tB.isPresent())
-				tSpot2 = new GProductMap(tB.get(), pSig);
+				tSpot2 = new GProduct(tB.get(), pSig);
 			else
-				tSpot2 = new GProductMap(pSig);
+				tSpot2 = new GProduct(pSig);
 
 			if (tSpot2 != null) {
 				CladosGCache.INSTANCE.appendBasis(tSpot2.getBasis());

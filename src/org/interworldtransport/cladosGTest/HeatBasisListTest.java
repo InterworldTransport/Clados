@@ -2,13 +2,13 @@ package org.interworldtransport.cladosGTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosG.BasisList;
+import org.interworldtransport.cladosG.Basis;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class HeatBasisListTest {
-	BasisList a0;
+	Basis a0;
 	int loopLimit=1000;
 
 	@BeforeEach
@@ -19,7 +19,7 @@ class HeatBasisListTest {
 	public void testGen00() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 0);
+			a0 = new Basis((byte) 0);
 			assertFalse(a0 == null);
 		}
 	}
@@ -28,7 +28,7 @@ class HeatBasisListTest {
 	public void testGen01() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 1);
+			a0 = new Basis((byte) 1);
 			assertFalse(a0 == null);
 		}
 	}
@@ -37,7 +37,7 @@ class HeatBasisListTest {
 	public void testGen02() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 2);
+			a0 = new Basis((byte) 2);
 			assertFalse(a0 == null);
 		}
 	}
@@ -46,7 +46,7 @@ class HeatBasisListTest {
 	public void testGen03() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 3);
+			a0 = new Basis((byte) 3);
 			assertFalse(a0 == null);
 		}
 	}
@@ -55,7 +55,7 @@ class HeatBasisListTest {
 	public void testGen04() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 4);
+			a0 = new Basis((byte) 4);
 			assertFalse(a0 == null);
 		}
 	}
@@ -64,7 +64,7 @@ class HeatBasisListTest {
 	public void testGen05() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 5);
+			a0 = new Basis((byte) 5);
 			assertFalse(a0 == null);
 		}
 	}
@@ -73,7 +73,7 @@ class HeatBasisListTest {
 	public void testGen06() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 6);
+			a0 = new Basis((byte) 6);
 			assertFalse(a0 == null);
 		}
 	}
@@ -82,7 +82,7 @@ class HeatBasisListTest {
 	public void testGen07() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 7);
+			a0 = new Basis((byte) 7);
 			assertFalse(a0 == null);
 		}
 	}
@@ -91,7 +91,7 @@ class HeatBasisListTest {
 	public void testGen08() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 8);
+			a0 = new Basis((byte) 8);
 			assertFalse(a0 == null);
 		}
 	}
@@ -100,7 +100,7 @@ class HeatBasisListTest {
 	public void testGen09() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 9);
+			a0 = new Basis((byte) 9);
 			assertFalse(a0 == null);
 		}
 	}
@@ -109,7 +109,7 @@ class HeatBasisListTest {
 	public void testGen10() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 10);
+			a0 = new Basis((byte) 10);
 			assertFalse(a0 == null);
 		}
 	}
@@ -118,7 +118,7 @@ class HeatBasisListTest {
 	public void testGen11() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 11);
+			a0 = new Basis((byte) 11);
 			assertFalse(a0 == null);
 		}
 	}
@@ -127,7 +127,7 @@ class HeatBasisListTest {
 	public void testGen12() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 12);
+			a0 = new Basis((byte) 12);
 			assertFalse(a0 == null);
 		}
 	}
@@ -136,7 +136,7 @@ class HeatBasisListTest {
 	public void testGen13() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 13);
+			a0 = new Basis((byte) 13);
 			assertFalse(a0 == null);
 		}
 	}
@@ -145,7 +145,7 @@ class HeatBasisListTest {
 	public void testGen14() throws GeneratorRangeException {
 		int m = 0;
 		for (m = 0; m < loopLimit; m++) {
-			a0 = new BasisList((byte) 14);
+			a0 = new Basis((byte) 14);
 			assertFalse(a0 == null);
 		}
 	}

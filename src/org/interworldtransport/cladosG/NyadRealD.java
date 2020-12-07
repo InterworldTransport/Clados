@@ -28,7 +28,6 @@ import static org.interworldtransport.cladosG.MonadRealD.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.RealD;
@@ -71,7 +70,7 @@ public class NyadRealD extends NyadAbstract
 	 * @param pAlg	String
 	 * @return int
 	 */
-	public static final int findAlgebra(NyadRealD pN, AlgebraAbstract pAlg)
+	public static final int findAlgebra(NyadRealD pN, Algebra pAlg)
 	{
 		for (MonadRealD pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
@@ -87,7 +86,7 @@ public class NyadRealD extends NyadAbstract
 	 * @param pStart	int
 	 * @return int
 	 */
-	public static final int findNextAlgebra(NyadRealD pN, AlgebraAbstract pAlg, int pStart)
+	public static final int findNextAlgebra(NyadRealD pN, Algebra pAlg, int pStart)
 	{
 		if(pN.getMonadList().size()<pStart) return -1;
 		for (int j=pStart; j < pN.getMonadList().size(); j++)
@@ -156,9 +155,9 @@ public class NyadRealD extends NyadAbstract
 	 *            String
 	 * @return boolean
 	 */
-	public static final boolean hasAlgebra(NyadRealD pN, AlgebraAbstract pAlg)
+	public static final boolean hasAlgebra(NyadRealD pN, Algebra pAlg)
 	{
-		for (AlgebraAbstract pM : pN.getAlgebraList())
+		for (Algebra pM : pN.getAlgebraList())
 			if (pAlg.equals(pM)) return true;
 		return false;
 	}
@@ -190,7 +189,7 @@ public class NyadRealD extends NyadAbstract
 	 * 	This method counts how many instances of the algebra are present in
 	 *  monads in the nyad
 	 */
-	public static final int howManyAtAlgebra(NyadRealD pN, AlgebraAbstract pAlg)
+	public static final int howManyAtAlgebra(NyadRealD pN, Algebra pAlg)
 	{
 		if (pN.getNyadOrder() == 0) return 0;
 		if (pAlg == null) return 0;
@@ -254,7 +253,7 @@ public class NyadRealD extends NyadAbstract
 			// in the second nyad for the Monad in tSpot
 			forwardCheck = false;
 			// Get the Algebra for tSpot
-			AlgebraAbstract tSpotAlg1 = tSpot.getAlgebra();
+			Algebra tSpotAlg1 = tSpot.getAlgebra();
 			// Now loop through the second nyad looking for an algebra match
 			for (MonadRealD tSpot2 : pN.getMonadList())
 			{
@@ -287,7 +286,7 @@ public class NyadRealD extends NyadAbstract
 			// in the second nyad for the Monad in tSpot
 			backwardCheck = false;
 			// Get the Algebra for tSpot
-			AlgebraAbstract tSpotAlg1 = tSpot.getAlgebra();
+			Algebra tSpotAlg1 = tSpot.getAlgebra();
 			// Now loop through the second nyad looking for an algebra match
 			for (MonadRealD tSpot2 : pTs.getMonadList())
 			{
@@ -322,7 +321,7 @@ public class NyadRealD extends NyadAbstract
 	 * @param 	pAlg	AlgebraRealD
 	 * @return 	boolean
 	 */
-	public static final boolean isPScalarAt(NyadRealD pN, AlgebraAbstract pAlg)
+	public static final boolean isPScalarAt(NyadRealD pN, Algebra pAlg)
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
@@ -356,7 +355,7 @@ public class NyadRealD extends NyadAbstract
 	 * @param 	pAlg	AlgebraRealD
 	 * @return 	boolean
 	 */
-	public static final boolean isScalarAt(NyadRealD pN, AlgebraAbstract pAlg)
+	public static final boolean isScalarAt(NyadRealD pN, Algebra pAlg)
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
@@ -479,7 +478,7 @@ public class NyadRealD extends NyadAbstract
 
 		for (MonadRealD tSpot : pTs.getMonadList())
 		{
-			AlgebraAbstract tAlg1 = tSpot.getAlgebra();
+			Algebra tAlg1 = tSpot.getAlgebra();
 			for (MonadRealD tSpot2 : pN.getMonadList())
 			{
 				if (tAlg1.equals(tSpot2.getAlgebra()))
@@ -533,7 +532,7 @@ public class NyadRealD extends NyadAbstract
 		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
 		rB.append(pN.getFoot().toXMLString(""));
 		rB.append("\t\t<AlgebraList>\n");
-		for (AlgebraAbstract point : pN.getAlgebraList())
+		for (Algebra point : pN.getAlgebraList())
 			rB.append("\t\t\t<Algebra>\n"+"\t\t\t\t<Name>"+point.getAlgebraName()+"</Name>\n"+"\t\t\t</Algebra>\n");
 		rB.append("\t\t</AlgebraList>\n");
 		rB.append("\t\t<MonadList>\n");
@@ -553,7 +552,7 @@ public class NyadRealD extends NyadAbstract
 	/**
 	 * This array is the list of algebras used in the NyadReald. 
 	 */
-	protected ArrayList<AlgebraAbstract>	algebraList;
+	protected ArrayList<Algebra>	algebraList;
 
 	/**
 	 * This element holds holds the field's multiplicative unity. It gets used
@@ -595,7 +594,7 @@ public class NyadRealD extends NyadAbstract
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		monadList = new ArrayList<MonadRealD>(1);
-		algebraList = new ArrayList<AlgebraAbstract>(1);
+		algebraList = new ArrayList<Algebra>(1);
 		if (pCopy) appendMonadCopy(pM);
 		else appendMonad(pM);
 	}
@@ -629,7 +628,7 @@ public class NyadRealD extends NyadAbstract
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadRealD>(pN.getMonadList().size());
-			algebraList = new ArrayList<AlgebraAbstract>(pN.getAlgebraList().size());
+			algebraList = new ArrayList<Algebra>(pN.getAlgebraList().size());
 			if (pCopy)
 				for (MonadRealD tSpot : pN.getMonadList()) appendMonadCopy(tSpot);
 			else
@@ -833,7 +832,7 @@ public class NyadRealD extends NyadAbstract
 	 * 
 	 * @return ArrayList (of Algebras)
 	 */
-	public ArrayList<AlgebraAbstract> getAlgebraList()
+	public ArrayList<Algebra> getAlgebraList()
 	{
 		return algebraList;
 	}
@@ -845,7 +844,7 @@ public class NyadRealD extends NyadAbstract
 	 *            int
 	 * @return AlgebraRealD
 	 */
-	public AlgebraAbstract getAlgebraList(int pj)
+	public Algebra getAlgebraList(int pj)
 	{
 		return algebraList.get(pj);
 	}
@@ -1093,7 +1092,7 @@ public class NyadRealD extends NyadAbstract
 			if (!algebraList.contains(point.getAlgebra())) algebraList.add(point.getAlgebra());
 		// 1 <= algebraList.size() <= monadList.size()
 		// AlgebraList is reset to show which algebras are used by monads in this nyad
-		//Comparator<AlgebraAbstract> comp = (AlgebraAbstract a, AlgebraAbstract b) -> {return b.compareTo(a);};
+		//Comparator<Algebra> comp = (Algebra a, Algebra b) -> {return b.compareTo(a);};
 		Collections.sort(algebraList);	// and now that list is sorted by name
 
 		if (monadList.size()==1) 
