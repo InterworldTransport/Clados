@@ -75,9 +75,8 @@ public enum CladosGCache {
 	 * @param pB CanonicalBasis to be appended to the cache IF not already present.
 	 */
 	public void appendBasis(CanonicalBasis pB) {
-		if (listOfBasisLists.contains(pB))
-			return;
-		listOfBasisLists.add(pB);
+		if (!listOfBasisLists.contains(pB))
+			listOfBasisLists.add(pB);
 	}
 
 	/**
@@ -95,10 +94,11 @@ public enum CladosGCache {
 	 * a product table of elements of a CanonicalBasis. As with a basis, no meaning
 	 * to the generators or blades is implied in a product table.
 	 * 
-	 * @param pGP CliffordProduct to be appended to the cache IF not already present.
+	 * @param pGP CliffordProduct to be appended to the cache IF not already
+	 *            present.
 	 */
 	public void appendGProduct(CliffordProduct pGP) {
-		if (listOfGProductMaps.contains(pGP))
+		if (!listOfGProductMaps.contains(pGP))
 			listOfGProductMaps.add(pGP);
 	}
 

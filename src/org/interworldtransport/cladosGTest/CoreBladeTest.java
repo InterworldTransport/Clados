@@ -87,11 +87,11 @@ class CoreBladeTest {
 		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 16));
 	}
 
-	@Test
-	public void testXMLOutput() throws GeneratorRangeException {
-		Blade tB = new Blade((byte) 14);
-		Generator.flow((byte) 14).forEach(g-> tB.add(g));
-		System.out.println(Blade.toXMLString(tB,""));
-	}
+	//@Test
+	//public void testXMLOutput() throws GeneratorRangeException {
+	//	Blade tB = new Blade((byte) 14);
+	//	Generator.flow((byte) 14).forEach(g-> tB.add(g));
+	//	System.out.println(Blade.toXMLString(tB,""));
+	//}
 
 }

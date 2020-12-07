@@ -5,17 +5,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 
 import org.interworldtransport.cladosG.BasisList;
+import org.interworldtransport.cladosG.CanonicalBasis;
+import org.interworldtransport.cladosG.CladosGBuilder;
+import org.interworldtransport.cladosG.CladosGCache;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreBasisListTest {
 
-	BasisList tBasis0;
-	BasisList tBasis4;
-	BasisList tBasis43;
-	BasisList tBasis8;
-	BasisList tBasis10;
-	BasisList tBasis14;
+	CanonicalBasis tBasis0;
+	CanonicalBasis tBasis4;
+	CanonicalBasis tBasis43;
+	CanonicalBasis tBasis8;
+	CanonicalBasis tBasis10;
+	CanonicalBasis tBasis14;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -25,6 +29,14 @@ class CoreBasisListTest {
 		tBasis8 = new BasisList((byte) 8);
 		tBasis10 = new BasisList((byte) 10);
 		tBasis14 = new BasisList((byte) 14);
+	}
+	
+	@Test
+	public void testCachedBasis() throws GeneratorRangeException {
+		CanonicalBasis tB1 = CladosGBuilder.INSTANCE.createBasis((byte) 3);
+		assertTrue(CladosGCache.INSTANCE.getBasisListSize()>0);
+		CanonicalBasis tB2 = CladosGBuilder.INSTANCE.createBasis((byte) 3);
+		assertTrue(tB1 == tB2);
 	}
 
 	@Test
@@ -82,7 +94,7 @@ class CoreBasisListTest {
 	@Test
 	void testXMLOutput() {
 		String xml = tBasis4.toXMLString("");
-		System.out.println(xml);
+		//System.out.println(xml);
 		assertTrue(xml != null);
 	}
 

@@ -88,10 +88,10 @@ public class GProductMap implements CliffordProduct {
 	 * figures out the rest of what it needs.
 	 * 
 	 * @param pSig String form of the signature. Looks like "-+++".
-	 * @throws GeneratorRangeException   Thrown when a Basis fails to form because
-	 *                                   some internal call demands a generator not
-	 *                                   in the supported list.
-	 * @throws BadSignatureException     Thrown when an invalid signature is found
+	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
+	 *                                 some internal call demands a generator not in
+	 *                                 the supported list.
+	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
 	public GProductMap(String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
@@ -131,11 +131,11 @@ public class GProductMap implements CliffordProduct {
 	 * figures out the rest of what it needs.
 	 * 
 	 * @param pSig String form of the signature. Looks like "-+++".
-	 * @param pB Canonical Basis to re-use in constructing this product.
-	 * @throws GeneratorRangeException   Thrown when a Basis fails to form because
-	 *                                   some internal call demands a generator not
-	 *                                   in the supported list.
-	 * @throws BadSignatureException     Thrown when an invalid signature is found
+	 * @param pB   Canonical Basis to re-use in constructing this product.
+	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
+	 *                                 some internal call demands a generator not in
+	 *                                 the supported list.
+	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
 	public GProductMap(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
@@ -154,7 +154,10 @@ public class GProductMap implements CliffordProduct {
 		}
 		signature = pSig;
 		// ------Get CanonicalBasis
-		canonicalBasis = pB;
+		if (pB != null)
+			canonicalBasis = pB;
+		else
+			canonicalBasis = CladosGBuilder.INSTANCE.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
 		IntStream.range(0, getBladeCount()).parallel().forEach(j -> {

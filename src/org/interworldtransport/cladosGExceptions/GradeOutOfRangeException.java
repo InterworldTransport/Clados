@@ -18,7 +18,7 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
-import org.interworldtransport.cladosG.Basis;
+import org.interworldtransport.cladosG.CanonicalBasis;
 
 /**
  * This exception is supposed to be similar to IndexOutOfRange exceptions on
@@ -34,7 +34,7 @@ public class GradeOutOfRangeException extends Exception {
 	/**
 	 * The source Basis is the originator of the Exception.
 	 */
-	public Basis Source;
+	public CanonicalBasis Source;
 	/**
 	 * The source message is the reason given by the originating Monad for the
 	 * exception.
@@ -48,7 +48,7 @@ public class GradeOutOfRangeException extends Exception {
 	 * @param pSource  GProduct
 	 * @param pMessage String
 	 */
-	public GradeOutOfRangeException(Basis pSource, String pMessage) {
+	public GradeOutOfRangeException(CanonicalBasis pSource, String pMessage) {
 		super();
 		Source = pSource;
 		SourceMessage = pMessage;
@@ -60,7 +60,7 @@ public class GradeOutOfRangeException extends Exception {
 	 * 
 	 * @return GProduct
 	 */
-	public Basis getSource() {
+	public CanonicalBasis getSource() {
 		return Source;
 	}
 

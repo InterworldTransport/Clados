@@ -243,17 +243,17 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		else {
 			// Create a new GProduct, but might still find a cached Basis.
 			Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList((byte) pSig.length());
+			CliffordProduct tSpot2;
 			if (tB.isPresent())
-				tSpot = Optional.ofNullable(new GProductMap(tB.get(), pSig));
+				tSpot2 = new GProductMap(tB.get(), pSig);
 			else
-				tSpot = Optional.ofNullable(new GProductMap(pSig));
-			
-			if (tSpot.isPresent()) {
-				CladosGCache.INSTANCE.appendBasis(tSpot.get().getBasis());
-				CladosGCache.INSTANCE.appendGProduct(tSpot.get());
-				return tSpot.get();
-			} else
-				return null;
+				tSpot2 = new GProductMap(pSig);
+
+			if (tSpot2 != null) {
+				CladosGCache.INSTANCE.appendBasis(tSpot2.getBasis());
+				CladosGCache.INSTANCE.appendGProduct(tSpot2);
+			}
+			return tSpot2;
 		}
 	}
 }

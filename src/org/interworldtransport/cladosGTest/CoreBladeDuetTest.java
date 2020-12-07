@@ -39,7 +39,7 @@ class CoreBladeDuetTest {
 
 	@Test
 	void testBladeMatchFail() {
-		Assertions.assertThrows(BladeCombinationException.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
+		Assertions.assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
 	}
 
 }

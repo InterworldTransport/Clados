@@ -2,6 +2,9 @@ package org.interworldtransport.cladosGTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.interworldtransport.cladosG.CladosGBuilder;
+import org.interworldtransport.cladosG.CladosGCache;
+import org.interworldtransport.cladosG.CliffordProduct;
 import org.interworldtransport.cladosG.GProductMap;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -21,9 +24,18 @@ class CoreGProductMapTest {
 	@BeforeEach
 	void setUp() throws Exception {
 	}
-/*
+
 	@Test
-	public void test00s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
+		CliffordProduct tGP1 = CladosGBuilder.INSTANCE.createGProduct(pSig3);
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize()>0);
+		CliffordProduct tGP2 = CladosGBuilder.INSTANCE.createGProduct(pSig3);
+		assertTrue(tGP1 == tGP2);
+	}
+	
+	
+	@Test
+	public void test00s() throws BadSignatureException, GeneratorRangeException {
 		GProductMap tGP = new GProductMap(pSig0);
 		assertTrue(tGP.signature().equals(""));
 		assertTrue(tGP.getGradeCount() == 1);
@@ -40,7 +52,7 @@ class CoreGProductMapTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-*/	
+
 	@Test
 	public void test02s() throws BadSignatureException, GeneratorRangeException {
 		GProductMap tGP = new GProductMap(pSig2);
