@@ -71,7 +71,7 @@ public class NyadComplexF extends NyadAbstract
 	 * @param pAlg	String
 	 * @return int
 	 */
-	public static final int findAlgebra(NyadComplexF pN, AlgebraComplexF pAlg)
+	public static final int findAlgebra(NyadComplexF pN, AlgebraAbstract pAlg)
 	{
 		for (MonadComplexF pM : pN.getMonadList())
 			if (pAlg.equals(pM.getAlgebra())) return pN.monadList.indexOf(pM);
@@ -87,7 +87,7 @@ public class NyadComplexF extends NyadAbstract
 	 * @param pStart	int
 	 * @return int
 	 */
-	public static final int findNextAlgebra(NyadComplexF pN, AlgebraComplexF pAlg, int pStart)
+	public static final int findNextAlgebra(NyadComplexF pN, AlgebraAbstract pAlg, int pStart)
 	{
 		if(pN.getMonadList().size()<pStart) return -1;
 		for (int j=pStart; j < pN.getMonadList().size(); j++)
@@ -156,9 +156,9 @@ public class NyadComplexF extends NyadAbstract
 	 *            String
 	 * @return boolean
 	 */
-	public static final boolean hasAlgebra(NyadComplexF pN, AlgebraComplexF pAlg)
+	public static final boolean hasAlgebra(NyadComplexF pN, AlgebraAbstract pAlg)
 	{
-		for (AlgebraComplexF pM : pN.getAlgebraList())
+		for (AlgebraAbstract pM : pN.getAlgebraList())
 			if (pAlg.equals(pM)) return true;
 		return false;
 	}
@@ -190,7 +190,7 @@ public class NyadComplexF extends NyadAbstract
 	 * 	This method counts how many instances of the algebra are present in
 	 *  monads in the nyad
 	 */
-	public static final int howManyAtAlgebra(NyadComplexF pN, AlgebraComplexF pAlg)
+	public static final int howManyAtAlgebra(NyadComplexF pN, AlgebraAbstract pAlg)
 	{
 		if (pN.getNyadOrder() == 0) return 0;
 		if (pAlg == null) return 0;
@@ -254,7 +254,7 @@ public class NyadComplexF extends NyadAbstract
 			// in the second nyad for the Monad in tSpot
 			forwardCheck = false;
 			// Get the Algebra for tSpot
-			AlgebraComplexF tSpotAlg1 = tSpot.getAlgebra();
+			AlgebraAbstract tSpotAlg1 = tSpot.getAlgebra();
 			// Now loop through the second nyad looking for an algebra match
 			for (MonadComplexF tSpot2 : pN.getMonadList())
 			{
@@ -287,7 +287,7 @@ public class NyadComplexF extends NyadAbstract
 			// in the second nyad for the Monad in tSpot
 			backwardCheck = false;
 			// Get the Algebra for tSpot
-			AlgebraComplexF tSpotAlg1 = tSpot.getAlgebra();
+			AlgebraAbstract tSpotAlg1 = tSpot.getAlgebra();
 			// Now loop through the second nyad looking for an algebra match
 			for (MonadComplexF tSpot2 : pTs.getMonadList())
 			{
@@ -322,7 +322,7 @@ public class NyadComplexF extends NyadAbstract
 	 * @param 	pAlg	AlgebraComplexF
 	 * @return 	boolean
 	 */
-	public static final boolean isPScalarAt(NyadComplexF pN, AlgebraComplexF pAlg)
+	public static final boolean isPScalarAt(NyadComplexF pN, AlgebraAbstract pAlg)
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
@@ -356,7 +356,7 @@ public class NyadComplexF extends NyadAbstract
 	 * @param 	pAlg	AlgebraComplexF
 	 * @return 	boolean
 	 */
-	public static final boolean isScalarAt(NyadComplexF pN, AlgebraComplexF pAlg)
+	public static final boolean isScalarAt(NyadComplexF pN, AlgebraAbstract pAlg)
 	{
 		boolean test = false;	// Assume test fails
 		if (pN.getMonadList().size()<=0) return false;	// No monads? Fails.
@@ -479,7 +479,7 @@ public class NyadComplexF extends NyadAbstract
 
 		for (MonadComplexF tSpot : pTs.getMonadList())
 		{
-			AlgebraComplexF tAlg1 = tSpot.getAlgebra();
+			AlgebraAbstract tAlg1 = tSpot.getAlgebra();
 			for (MonadComplexF tSpot2 : pN.getMonadList())
 			{
 				if (tAlg1.equals(tSpot2.getAlgebra()))
@@ -533,7 +533,7 @@ public class NyadComplexF extends NyadAbstract
 		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
 		rB.append(pN.getFoot().toXMLString(""));
 		rB.append("\t\t<AlgebraList>\n");
-		for (AlgebraComplexF point : pN.getAlgebraList())
+		for (AlgebraAbstract point : pN.getAlgebraList())
 			rB.append("\t\t\t<Algebra>\n"+"\t\t\t\t<Name>"+point.getAlgebraName()+"</Name>\n"+"\t\t\t</Algebra>\n");
 		rB.append("\t\t</AlgebraList>\n");
 		rB.append("\t\t<MonadList>\n");
@@ -553,7 +553,7 @@ public class NyadComplexF extends NyadAbstract
 	/**
 	 * This array is the list of algebras used in the NyadComplexF. 
 	 */
-	protected ArrayList<AlgebraComplexF>	algebraList;
+	protected ArrayList<AlgebraAbstract>	algebraList;
 
 	/**
 	 * This element holds holds the field's multiplicative unity. It gets used
@@ -595,7 +595,7 @@ public class NyadComplexF extends NyadAbstract
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		monadList = new ArrayList<MonadComplexF>(1);
-		algebraList = new ArrayList<AlgebraComplexF>(1);
+		algebraList = new ArrayList<AlgebraAbstract>(1);
 		if (pCopy) appendMonadCopy(pM);
 		else appendMonad(pM);
 	}
@@ -629,7 +629,7 @@ public class NyadComplexF extends NyadAbstract
 		if (pN.getMonadList() != null)
 		{
 			monadList = new ArrayList<MonadComplexF>(pN.getMonadList().size());
-			algebraList = new ArrayList<AlgebraComplexF>(pN.getAlgebraList().size());
+			algebraList = new ArrayList<AlgebraAbstract>(pN.getAlgebraList().size());
 			if (pCopy)
 				for (MonadComplexF tSpot : pN.getMonadList()) appendMonadCopy(tSpot);
 			else
@@ -833,7 +833,7 @@ public class NyadComplexF extends NyadAbstract
 	 * 
 	 * @return ArrayList (of Algebras)
 	 */
-	public ArrayList<AlgebraComplexF> getAlgebraList()
+	public ArrayList<AlgebraAbstract> getAlgebraList()
 	{
 		return algebraList;
 	}
@@ -845,7 +845,7 @@ public class NyadComplexF extends NyadAbstract
 	 *            int
 	 * @return AlgebraComplexF
 	 */
-	public AlgebraComplexF getAlgebraList(int pj)
+	public AlgebraAbstract getAlgebraList(int pj)
 	{
 		return algebraList.get(pj);
 	}
@@ -1093,8 +1093,8 @@ public class NyadComplexF extends NyadAbstract
 			if (!algebraList.contains(point.getAlgebra())) algebraList.add(point.getAlgebra());
 		// 1 <= algebraList.size() <= monadList.size()
 		// AlgebraList is reset to show which algebras are used by monads in this nyad
-		Comparator<AlgebraComplexF> comp = (AlgebraComplexF a, AlgebraComplexF b) -> {return b.compareTo(a);};
-		Collections.sort(algebraList, comp);	// and now that list is sorted by name
+		//Comparator<AlgebraAbstract> comp = (AlgebraAbstract a, AlgebraAbstract b) -> {return b.compareTo(a);};
+		Collections.sort(algebraList);	// and now that list is sorted by name
 
 		if (monadList.size()==1) 
 		{

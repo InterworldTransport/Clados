@@ -241,7 +241,7 @@ public class MonadRealD extends MonadAbstract {
 		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
 		rB.append(">\n");
 		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
-		rB.append(AlgebraRealD.toXMLString(pM.getAlgebra()));
+		rB.append(AlgebraAbstract.toXMLString(pM.getAlgebra()));
 		rB.append("\t\t\t\t<Frame>\"" + pM.getFrameName() + "\"</Frame>\n");
 		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()
 				+ "\">\n");
@@ -256,7 +256,7 @@ public class MonadRealD extends MonadAbstract {
 	/**
 	 * All clados objects are elements of some algebra. That algebra has a name.
 	 */
-	public AlgebraRealD algebra;
+	public AlgebraAbstract algebra;
 	/**
 	 * This array holds the coefficients of the Monad.
 	 */
@@ -325,7 +325,7 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		setAlgebra(new AlgebraRealD(pAlgebraName, new Foot(pFootName, pF.getCardinal()), pSig, pF));
+		setAlgebra(new AlgebraAbstract(pAlgebraName, new Foot(pFootName, pF.getCardinal()), pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
@@ -361,7 +361,7 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		setAlgebra(new AlgebraRealD(pAlgebraName, pFoot, pSig, pF));
+		setAlgebra(new AlgebraAbstract(pAlgebraName, pFoot, pSig, pF));
 
 		setName(pMonadName);
 		setFrameName(pFrameName);
@@ -477,7 +477,7 @@ public class MonadRealD extends MonadAbstract {
 		if (pC[0] == null)
 			throw new CladosMonadException(this, "First coefficient is null.  There could be more nulls too.");
 
-		setAlgebra(new AlgebraRealD(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig, pC[0]));
+		setAlgebra(new AlgebraAbstract(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig, pC[0]));
 
 		if (pC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array size does not match bladecount for Signature.");
@@ -503,7 +503,7 @@ public class MonadRealD extends MonadAbstract {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public MonadRealD(String pMonadName, AlgebraRealD pAlgebra, String pFrameName, RealD[] pC)
+	public MonadRealD(String pMonadName, AlgebraAbstract pAlgebra, String pFrameName, RealD[] pC)
 			throws CladosMonadException {
 		if (pC.length != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
@@ -606,7 +606,7 @@ public class MonadRealD extends MonadAbstract {
 	 * 
 	 * @return AlgebraRealD
 	 */
-	public AlgebraRealD getAlgebra() {
+	public AlgebraAbstract getAlgebra() {
 		return algebra;
 	}
 
@@ -1137,7 +1137,7 @@ public class MonadRealD extends MonadAbstract {
 	 * 
 	 * @param pA Algebra to set
 	 */
-	protected void setAlgebra(AlgebraRealD pA) {
+	protected void setAlgebra(AlgebraAbstract pA) {
 		algebra = pA;
 	}
 

@@ -356,8 +356,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * Basic Constructor with no values to initialize.
 	 */
 	public ComplexD() {
+		super(Cardinal.generate(CladosField.COMPLEXD));
 		vals = new double[2];
-		setCardinal(Cardinal.generate(CladosField.COMPLEXD));
 		setReal(0.0D);
 		setImg(0.0D);
 	}
@@ -368,8 +368,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * @param pC ComplexD
 	 */
 	public ComplexD(ComplexD pC) {
+		super(pC.getCardinal());
 		vals = new double[2];
-		setCardinal(pC.getCardinal());
 		setReal(pC.getReal());
 		setImg(pC.getImg());
 	}
@@ -383,8 +383,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * @param pI double
 	 */
 	public ComplexD(DivField pC, double pR, double pI) {
+		super(pC.getCardinal());
 		vals = new double[2];
-		setCardinal(pC.getCardinal());
 		setReal(pR);
 		setImg(pI);
 	}
@@ -395,8 +395,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * @param pT Cardinal
 	 */
 	public ComplexD(Cardinal pT) {
+		super(pT);
 		vals = new double[2];
-		setCardinal(pT);
 		setReal(0.0D);
 		setImg(0.0D);
 	}
@@ -408,8 +408,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * @param pR double
 	 */
 	public ComplexD(Cardinal pT, double pR) {
+		super(pT);
 		vals = new double[2];
-		setCardinal(pT);
 		setReal(pR);
 		setImg(0.0D);
 	}
@@ -422,8 +422,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * @param pI double
 	 */
 	public ComplexD(Cardinal pT, double pR, double pI) {
+		super(pT);
 		vals = new double[2];
-		setCardinal(pT);
 		setReal(pR);
 		setImg(pI);
 	}
@@ -435,8 +435,8 @@ public class ComplexD extends DivField implements Divisible, Normalizable {
 	 * @param pI double
 	 */
 	public ComplexD(double pR, double pI) {
+		super(Cardinal.generate("Complex"));
 		vals = new double[2];
-		setCardinal(Cardinal.generate("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}

@@ -25,6 +25,13 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.UUID;
+
+import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosField;
+import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
@@ -34,7 +41,7 @@ import java.util.ArrayList;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbstract> {
+public class AlgebraAbstract implements Unitized, Comparable<AlgebraAbstract> {
 	/**
 	 * All algebra types share some elements that are not dependent on number types.
 	 * The first among them is the 'tangent point' of the sub-manifold represented
@@ -55,20 +62,197 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 */
 	protected CliffordProduct gProduct;
 	/**
+	 * The algebras mode is the particular DivField child used to represent numbers.
+	 */
+	protected CladosField mode;
+	/**
 	 * Finally, the algebra has a name because this helps distinguish different
 	 * reference frames associated with the same tangent point Foot.
 	 */
 	protected String name;
 	/**
+	 * The algebra's prototypical 'number'. A DivField suffices most of the time,
+	 * but there is no issue with using a child of DivField.
+	 */
+	protected DivField protoNumber;
+	/**
 	 * This is the list of known frames defined against this Algebra.
 	 */
 	protected ArrayList<String> rFrames;
+
 	/**
 	 * Unique string (hopefully) that provides a machine readable name more likely
 	 * to be unique. Used by apps that need more than the human readable name to
 	 * avoid duplicating objects unnecessarily.
 	 */
 	protected String uuid;
+	
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain
+	 * security concerns related to Java serialization of objects.
+	 * 
+	 * @param pA Algebra to be exported as XML data
+	 * @return String formatted as XML containing information about the Algebra
+	 */
+	public final static String toXMLString(AlgebraAbstract pA) {
+		String indent = "\t\t\t\t";
+		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
+		rB.append(indent).append("\t").append(pA.protoNumber.toXMLString()).append("\n");
+		// -----------------------------------------------------------------------
+		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
+		for (String tip : pA.rFrames)
+			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"")
+					.append(tip).append("\" />\n");
+		rB.append(indent).append("\t</Frames>\n");
+		// -----------------------------------------------------------------------
+		rB.append(pA.getFoot().toXMLString("\t\t\t"));
+		rB.append(pA.getGProduct().toXMLString(""));
+		rB.append(indent).append("</Algebra>\n");
+		return rB.toString();
+	}
+
+	/**
+	 * This is the constructor that assumes a full Algebra has already been
+	 * constructed. This new one re-uses the objects in the one offered. No
+	 * independent objects are made in this constructor except the algebra itself
+	 * 
+	 * THIS CONSTRUCTOR is one that enables algebras to function as light weight
+	 * frames.
+	 * 
+	 * @param pS This is the Algebra's name
+	 * @param pA This is the other Algebra to copy.
+	 */
+	public AlgebraAbstract(String pS, AlgebraAbstract pA) {
+		this(pS, pA.getFoot(), pA.shareCardinal(), pA.getGProduct());
+	}
+
+	/**
+	 * This is the constructor that assumes a Foot, Cardinal, and GProduct have been
+	 * instantiated. It appends the Cardinal to the Foot and points at the offered
+	 * GProduct. It takes in one string for the algebra name as well and then
+	 * produces the algebra. Nothing can be wrong with the signature since the
+	 * GProduct is already constructed.
+	 * 
+	 * THIS CONSTRUCTOR is the one that most enables algebras to function as light
+	 * weight frames. Two algebras can have different names but share everything
+	 * else and cause reference matches to fail. The effect is that the canonical
+	 * basis in both algebras is the same, but the name differences ensure the
+	 * mismatch needed to prevent unphysical operations.
+	 * 
+	 * @param pS    This is the Algebra's name
+	 * @param pF    This is the foot being offered for reference
+	 * @param pCard This is the Cardinal to use as a protoNumber
+	 * @param pGP   This is the geometric product being offered for reference
+	 */
+	public AlgebraAbstract(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
+		setAlgebraName(pS);
+		protoNumber = new DivField(pCard);
+		setFoot(pF);
+		foot.appendCardinal(protoNumber.getCardinal());
+		setGProduct(pGP);
+		gBasis = pGP.getBasis();
+		rFrames = new ArrayList<String>(1);
+		rFrames.add("canonical"); // Canonical basis is ALWAYS a frame
+		uuid = UUID.randomUUID().toString();
+	}
+
+	/**
+	 * This is the constructor that assumes a Foot has been instantiated, so it
+	 * takes the ComplexD number type from there. It takes in two strings (one name
+	 * and a product signature) and the Foot and produces an AlgebraComplexD. If
+	 * anything is wrong with the signature it throws an exception. Any other error
+	 * throws a general monad exception.
+	 * 
+	 * THIS CONSTRUCTOR is the one that enables algebras to function as medium
+	 * weight frames. Two algebras can have different names and GProducts but share
+	 * a Foot and cause reference matches to fail. This is the behavior necessary to
+	 * prevent unintended operations between monads expressed using different
+	 * signatures in their geometric products.
+	 * 
+	 * This is also the one that enables a zero or one generator algebra to be used
+	 * as a 'number' in a nyad. Because the Foot is reused, the Cardinal will match
+	 * and no field mismatches will happen. The small algebra can be set up to
+	 * imitate real or complex numbers and take on the role of 'scale' in a nyad.
+	 * [This may result in eliminating this class.]
+	 * 
+	 * @param pS    This is the Algebra's name
+	 * @param pF    This is the foot being offered for reference
+	 * @param pCard This is the Cardinal to use as a protoNumber
+	 * @param pSig  This is the signature of the GProduct
+	 * @throws BadSignatureException   This constructor creates a new GProduct which
+	 *                                 requires a signature for the generators. This
+	 *                                 signature string must be parse-able or this
+	 *                                 exception is thrown.
+	 * @throws GeneratorRangeException This exception catches when the supported
+	 *                                 number of generators is out of range.
+	 */
+	public AlgebraAbstract(String pS, Foot pF, Cardinal pCard, String pSig)
+			throws BadSignatureException, GeneratorRangeException {
+		this(pS, pF, pCard, CladosGBuilder.INSTANCE.createGProduct(pSig));
+	}
+
+	/**
+	 * This is the constructor that assumes a Foot and DivField have been
+	 * instantiated. It takes in two strings (one name and a product signature), the
+	 * Foot and Cardinal and produces an Algebra.
+	 * 
+	 * If anything is wrong with the signature it throws one of two exception,
+	 * though both errors can be manifest in the signature string.
+	 * 
+	 * THIS CONSTRUCTOR is one that enables algebras to function as medium weight
+	 * frames. Two algebras can have different names and GProducts but share a Foot
+	 * and Cardinal causing reference matches to fail.
+	 * 
+	 * This is also the one that enables a zero or one generator algebra to be used
+	 * as a 'scale' in a nyad. Because a Foot and Cardinal are reused, reference
+	 * match tests within a nyad will pass. The small algebra can be set up to
+	 * imitate real or complex numbers and take on the role of 'scale' in a nyad if
+	 * so desired.
+	 * 
+	 * @param pS   This is the Algebra's name
+	 * @param pF   This is the foot being offered for reference
+	 * @param pSig This is the signature of the GProduct
+	 * @param pDiv This is the DivField to imitate when the Foot tracks Cardinals
+	 * @throws BadSignatureException   This constructor creates a new GProduct which
+	 *                                 requires a signature for the generators. This
+	 *                                 signature string must be parse-able or this
+	 *                                 exception is thrown.
+	 * @throws GeneratorRangeException This exception catches when the supported
+	 *                                 number of generators is out of range.
+	 */
+	public AlgebraAbstract(String pS, Foot pF, String pSig, DivField pDiv)
+			throws BadSignatureException, GeneratorRangeException {
+		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.INSTANCE.createGProduct(pSig));
+	}
+
+	/**
+	 * This is the raw constructor that assumes only the number type has been
+	 * instantiated. It takes in three strings (two names and a product signature)
+	 * and the example DivField and produces an Algebra. If anything is wrong with
+	 * the signature it throws one of two exceptions.
+	 * 
+	 * This is the constructor that ensures algebra reference match failures even
+	 * when exactly the same string names are used to construct all its parts.
+	 * Because the Foot object is constructed within, the algebra will be distinct
+	 * by definition.
+	 * 
+	 * @param pS        This is the Algebra's name
+	 * @param pFootName This is the Foot's name
+	 * @param pSig      This is the signature of the GProduct
+	 * @param pF        This is the number type to use expressed as a DivField
+	 * @throws BadSignatureException   This constructor creates a new GProduct which
+	 *                                 requires a signature for the generators. This
+	 *                                 signature string must be parse-able or this
+	 *                                 exception is thrown.
+	 * @throws GeneratorRangeException This exception catches when the supported
+	 *                                 number of generators is out of range.
+	 */
+	public AlgebraAbstract(String pS, String pFootName, String pSig, DivField pF)
+			throws BadSignatureException, GeneratorRangeException {
+		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()), pF.getCardinal(),
+				CladosGBuilder.INSTANCE.createGProduct(pSig));
+	}
 
 	/**
 	 * This method appends a frame name to the list of known frames for this foot.
@@ -133,7 +317,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * 
 	 * @return String
 	 */
-	@Override
 	public String getAlgebraName() {
 		return name;
 	}
@@ -146,7 +329,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 *         importantly it is the number of dimensions in the vector space
 	 *         represented by the canonical basis.
 	 */
-	@Override
 	public int getBladeCount() {
 		return gBasis.getBladeCount();
 	}
@@ -156,7 +338,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * 
 	 * @return Foot
 	 */
-	@Override
 	public Foot getFoot() {
 		return foot;
 	}
@@ -177,7 +358,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * 
 	 * @return gBasis
 	 */
-	@Override
 	public CanonicalBasis getGBasis() {
 		return gBasis;
 	}
@@ -187,7 +367,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * 
 	 * @return gProduct
 	 */
-	@Override
 	public CliffordProduct getGProduct() {
 		return gProduct;
 	}
@@ -199,7 +378,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * @return byte This is the length of a monad's grade key. In an algebra with N
 	 *         generators it will always be N+1.
 	 */
-	@Override
 	public byte getGradeCount() {
 		return (byte) gBasis.getGradeCount();
 	}
@@ -212,9 +390,17 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * @param pInd short integer describing the grade to be selected from the basis.
 	 * @return int[] This is an integer index between 0 and bladeCount inclusive.
 	 */
-	@Override
 	public int[] getGradeRange(byte pInd) {
 		return gProduct.getGradeRange(pInd);
+	}
+
+	/**
+	 * Simple gettor for the kind of DivField in use in the algebra as a 'number.'
+	 * 
+	 * @return CladosField instance that matches the type of DivField in use
+	 */
+	public CladosField getMode() {
+		return mode;
 	}
 
 	/**
@@ -246,7 +432,6 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * 
 	 * @param pName String for the Algebra's name.
 	 */
-	@Override
 	public void setAlgebraName(String pName) {
 		name = pName;
 	}
@@ -261,9 +446,38 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * 
 	 * @param footPoint Foot for the Algebra to use as its 'tangent' contact point.
 	 */
-	@Override
 	public void setFoot(Foot footPoint) {
 		foot = footPoint;
+	}
+
+	/**
+	 * Simple setter for the kind of DivField in use in the algebra as a 'number.'
+	 * 
+	 * @param pMode CladosField instance that matches the type of DivField in use
+	 */
+	public void setMode(CladosField pMode) {
+		this.mode = pMode;
+	}
+
+	/**
+	 * This is really just a gettor, but it reaches into the protoNumber and
+	 * retrieves the Cardinal.
+	 * 
+	 * @return Cardinal of the protoNumber
+	 */
+	@Override
+	public final Cardinal shareCardinal() {
+		return protoNumber.getCardinal();
+	}
+
+	/**
+	 * This is really just a gettor for the protoNumber.
+	 * 
+	 * @return DivField protoNumber
+	 */
+	@Override
+	public final DivField shareProtoNumber() {
+		return protoNumber;
 	}
 
 	/**

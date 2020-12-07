@@ -28,23 +28,19 @@ package org.interworldtransport.cladosF;
  * This class supports the concept of a Division Field from mathematics. Field
  * objects within the clados packages are used as 'numbers' in the definition of
  * an algebra. All Clados objects use DivField descendants as a result.
- * <p>
+ * 
  * DivField's capture only a reference frame type, so they appear to be named.
  * However, they are named with Cardinal objects so their names can be shared as
  * references, thus survive reference frame match tests.
- * <p>
+ * 
  * The number to be plugged in, though, doesn't appear until later in a child of
  * this class. This matters because the number of reals involved in the field
  * varies. Complex numbers require two. Quaternions would require four.
- * <p>
- * The only reason this class isn't an interface is the presence of the Cardinal
- * data member.
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
- * 
  */
-public abstract class DivField {
+public class DivField {
 	/**
 	 * Check to see if the two argument are of the same cardinal.
 	 * 
@@ -65,6 +61,15 @@ public abstract class DivField {
 	 */
 	protected Cardinal _card;
 
+	/**
+	 * Construct a simple DivField using the Cardinal offered.
+	 * 
+	 * @param pCard Cardinal to re-use.
+	 */
+	public DivField(Cardinal pCard) {
+		setCardinal(pCard);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -109,6 +114,15 @@ public abstract class DivField {
 	}
 
 	/**
+	 * Return a string representation of the field element.
+	 * 
+	 * @return String Flat string representation of this Divisible float(s) field
+	 */
+	public String toXMLString() {
+		return ("<DivField cardinal=\"" + getCardinalString() + " />");
+	}
+	
+	/**
 	 * Set method for _card
 	 * 
 	 * @param pType Cardinal
@@ -116,11 +130,4 @@ public abstract class DivField {
 	protected void setCardinal(Cardinal pType) {
 		_card = pType;
 	}
-	
-	/**
-	 * Return a string representation of the field element.
-	 * 
-	 * @return String Flat string representation of this Divisible float(s) field
-	 */
-	public abstract String toXMLString();
 }

@@ -328,8 +328,8 @@ public class RealD extends DivField implements Divisible, Normalizable {
 	 * Basic Constructor with no values to initialize.
 	 */
 	public RealD() {
+		super(Cardinal.generate(CladosField.REALD));
 		vals = new double[1];
-		setCardinal(Cardinal.generate(CladosField.REALD));
 		setReal(0.0D);
 
 	}
@@ -340,8 +340,8 @@ public class RealD extends DivField implements Divisible, Normalizable {
 	 * @param pT Cardinal
 	 */
 	public RealD(Cardinal pT) {
+		super(pT);
 		vals = new double[1];
-		setCardinal(pT);
 		setReal(0.0D);
 
 	}
@@ -353,8 +353,8 @@ public class RealD extends DivField implements Divisible, Normalizable {
 	 * @param pR double
 	 */
 	public RealD(Cardinal pT, double pR) {
+		super(pT);
 		vals = new double[1];
-		setCardinal(pT);
 		setReal(pR);
 
 	}
@@ -367,8 +367,8 @@ public class RealD extends DivField implements Divisible, Normalizable {
 	 * 
 	 */
 	public RealD(double pR) {
+		super(Cardinal.generate("Real"));
 		vals = new double[1];
-		setCardinal(Cardinal.generate("Real"));
 		setReal(pR);
 
 	}
@@ -379,8 +379,8 @@ public class RealD extends DivField implements Divisible, Normalizable {
 	 * @param pR RealD
 	 */
 	public RealD(RealD pR) {
+		super(pR.getCardinal());
 		vals = new double[1];
-		setCardinal(pR.getCardinal());
 		setReal(pR.getReal());
 
 	}
@@ -395,8 +395,8 @@ public class RealD extends DivField implements Divisible, Normalizable {
 	 * @param pD float
 	 */
 	public RealD(DivField pR, double pD) {
+		super(pR.getCardinal());
 		vals = new double[1];
-		setCardinal(pR.getCardinal());
 		setReal(pD);
 
 	}

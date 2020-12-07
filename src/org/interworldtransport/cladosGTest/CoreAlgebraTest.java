@@ -4,9 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosG.AlgebraRealF;
+import org.interworldtransport.cladosG.AlgebraAbstract;
 import org.interworldtransport.cladosG.Foot;
-//import org.interworldtransport.cladosG.GProductMap;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -14,7 +13,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CoreAlgebraRealFTest {
+class CoreAlgebraTest {
 	protected String fName = "Test:TangentPoint";
 	protected String aName = "Test Algebra";
 	protected String pSig31 = "-+++";
@@ -24,8 +23,8 @@ class CoreAlgebraRealFTest {
 	protected Foot tFoot;
 	protected Foot tFoot2;
 	//protected GProductMap gProduct;
-	protected AlgebraRealF alg1;
-	protected AlgebraRealF alg2;
+	protected AlgebraAbstract alg1;
+	protected AlgebraAbstract alg2;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -34,8 +33,8 @@ class CoreAlgebraRealFTest {
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
 
-		alg1 = new AlgebraRealF(aName, tFoot, pSig31, rNumber);
-		alg2 = new AlgebraRealF(aName, tFoot, pSig13, rNumber);
+		alg1 = new AlgebraAbstract(aName, tFoot, pSig31, rNumber);
+		alg2 = new AlgebraAbstract(aName, tFoot, pSig13, rNumber);
 	}
 
 	@Test
@@ -79,7 +78,7 @@ class CoreAlgebraRealFTest {
 	@Test
 	public void testFootShared() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
 		tFoot.appendCardinal(rNumber.getCardinal());
-		AlgebraRealF alg3 = new AlgebraRealF(aName, tFoot, pSig31, rNumber);
+		AlgebraAbstract alg3 = new AlgebraAbstract(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
 		assertTrue(alg1.getFoot() == alg2.getFoot());
 		// because the Foot is shared between algebras, changing the number
@@ -97,13 +96,13 @@ class CoreAlgebraRealFTest {
 	@Test
 	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException, BladeCombinationException {
 
-		AlgebraRealF alg4 = new AlgebraRealF("light weight frame", alg1);
+		AlgebraAbstract alg4 = new AlgebraAbstract("light weight frame", alg1);
 		assertFalse(alg4 == alg1);
 		assertTrue(alg4.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg4.getGProduct() == (alg1.getGProduct()));
 		// Foot re-used, GProduct re-used, but different names ensures algebra mis-match
 
-		AlgebraRealF alg5 = new AlgebraRealF("medium weight frame", alg1);
+		AlgebraAbstract alg5 = new AlgebraAbstract("medium weight frame", alg1);
 		assertFalse(alg5 == alg1);
 		assertTrue(alg5.getFoot().equals(alg1.getFoot()));
 		assertTrue(alg5.getGProduct() == (alg1.getGProduct()));
@@ -117,7 +116,7 @@ class CoreAlgebraRealFTest {
 		// Setting names equal isn't anywhere near enough to make algebras pass
 		// reference match
 
-		AlgebraRealF alg6 = new AlgebraRealF(aName, fName, pSig31, rNumber);
+		AlgebraAbstract alg6 = new AlgebraAbstract(aName, fName, pSig31, rNumber);
 		assertFalse(alg6.equals(alg1));
 		assertFalse(alg6.getFoot() == alg1.getFoot());
 		assertTrue(alg6.getGProduct() == (alg1.getGProduct()));
@@ -134,19 +133,8 @@ class CoreAlgebraRealFTest {
 	}
 
 	@Test
-	public void testStaticOp() {
-		RealF result = alg1.generateNumber(10.0f);
-		assertTrue(result != null);
-		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
-		// this shows that an algebra can be used to generate numbers of the same type
-		// by using the static method built into the class. This method is picky, but
-		// when used properly it will safely generate matches that will pass reference
-		// tests.
-	}
-
-	@Test
 	public void testXMLOutput() {
-		String test = AlgebraRealF.toXMLString(alg1);
+		String test = AlgebraAbstract.toXMLString(alg1);
 		assertTrue(test != null);
 	}
 

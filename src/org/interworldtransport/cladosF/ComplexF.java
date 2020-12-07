@@ -356,8 +356,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * Basic Constructor with no values to initialize.
 	 */
 	public ComplexF() {
+		super(Cardinal.generate(CladosField.COMPLEXF));
 		vals = new float[2];
-		setCardinal(Cardinal.generate(CladosField.COMPLEXF));
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -368,8 +368,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pC ComplexF
 	 */
 	public ComplexF(ComplexF pC) {
+		super(pC.getCardinal());
 		vals = new float[2];
-		setCardinal(pC.getCardinal());
 		setReal(pC.getReal());
 		setImg(pC.getImg());
 	}
@@ -383,6 +383,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pI float
 	 */
 	public ComplexF(DivField pC, float pR, float pI) {
+		super(pC.getCardinal());
 		vals = new float[2];
 		setCardinal(pC.getCardinal());
 		setReal(pR);
@@ -395,8 +396,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pT Cardinal
 	 */
 	public ComplexF(Cardinal pT) {
+		super(pT);
 		vals = new float[2];
-		setCardinal(pT);
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -408,8 +409,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pR float
 	 */
 	public ComplexF(Cardinal pT, float pR) {
+		super(pT);
 		vals = new float[2];
-		setCardinal(pT);
 		setReal(pR);
 		setImg(0.0f);
 	}
@@ -422,8 +423,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pI float
 	 */
 	public ComplexF(Cardinal pT, float pR, float pI) {
+		super(pT);
 		vals = new float[2];
-		setCardinal(pT);
 		setReal(pR);
 		setImg(pI);
 	}
@@ -435,8 +436,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pI float
 	 */
 	public ComplexF(float pR, float pI) {
+		super(Cardinal.generate("Complex"));
 		vals = new float[2];
-		setCardinal(Cardinal.generate("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}

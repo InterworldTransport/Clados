@@ -275,26 +275,26 @@ public enum CladosGMonad { // All of these have implicit private constructors
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
 		case REALF -> {
-			if (pNumber[0] instanceof RealF & pA instanceof AlgebraRealF)
-				return new MonadRealF(pName, (AlgebraRealF) pA, pFrame, (RealF[]) pNumber);
+			if (pNumber[0] instanceof RealF)
+				return new MonadRealF(pName, pA, pFrame, (RealF[]) pNumber);
 			else
 				return null;
 		}
 		case REALD -> {
-			if (pNumber[0] instanceof RealD & pA instanceof AlgebraRealD)
-				return new MonadRealD(pName, (AlgebraRealD) pA, pFrame, (RealD[]) pNumber);
+			if (pNumber[0] instanceof RealD)
+				return new MonadRealD(pName, pA, pFrame, (RealD[]) pNumber);
 			else
 				return null;
 		}
 		case COMPLEXF -> {
-			if (pNumber[0] instanceof ComplexF & pA instanceof AlgebraComplexF)
-				return new MonadComplexF(pName, (AlgebraComplexF) pA, pFrame, (ComplexF[]) pNumber);
+			if (pNumber[0] instanceof ComplexF)
+				return new MonadComplexF(pName, pA, pFrame, (ComplexF[]) pNumber);
 			else
 				return null;
 		}
 		case COMPLEXD -> {
-			if (pNumber[0] instanceof ComplexD & pA instanceof AlgebraComplexD)
-				return new MonadComplexD(pName, (AlgebraComplexD) pA, pFrame, (ComplexD[]) pNumber);
+			if (pNumber[0] instanceof ComplexD)
+				return new MonadComplexD(pName, pA, pFrame, (ComplexD[]) pNumber);
 			else
 				return null;
 		}
