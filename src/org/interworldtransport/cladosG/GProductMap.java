@@ -27,9 +27,7 @@ package org.interworldtransport.cladosG;
 import java.util.stream.IntStream;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * This class defines a geometric product on an associated basis within a
@@ -94,8 +92,6 @@ public class GProductMap implements CliffordProduct {
 	 *                                   some internal call demands a generator not
 	 *                                   in the supported list.
 	 * @throws BadSignatureException     Thrown when an invalid signature is found
-	 * @throws BladeCombinationException Thrown when to blades multiplied do not
-	 *                                   result in another known blade.
 	 */
 	public GProductMap(String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
@@ -124,7 +120,7 @@ public class GProductMap implements CliffordProduct {
 		IntStream.range(1, getBladeCount()).parallel().forEach(p -> {
 			Blade bLeft = canonicalBasis.getSingleBlade(p);
 			IntStream.range(1, getBladeCount()).forEach(k -> {
-				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k), true)).reduce(nSignature);
+				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k))).reduce(nSignature);
 				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());// TA DA!
 			});
 		});
@@ -135,12 +131,11 @@ public class GProductMap implements CliffordProduct {
 	 * figures out the rest of what it needs.
 	 * 
 	 * @param pSig String form of the signature. Looks like "-+++".
+	 * @param pB Canonical Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException   Thrown when a Basis fails to form because
 	 *                                   some internal call demands a generator not
 	 *                                   in the supported list.
 	 * @throws BadSignatureException     Thrown when an invalid signature is found
-	 * @throws BladeCombinationException Thrown when to blades multiplied do not
-	 *                                   result in another known blade.
 	 */
 	public GProductMap(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
@@ -169,7 +164,7 @@ public class GProductMap implements CliffordProduct {
 		IntStream.range(1, getBladeCount()).parallel().forEach(p -> {
 			Blade bLeft = canonicalBasis.getSingleBlade(p);
 			IntStream.range(1, getBladeCount()).forEach(k -> {
-				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k), true)).reduce(nSignature);
+				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k))).reduce(nSignature);
 				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());// TA DA!
 			});
 		});
@@ -236,7 +231,6 @@ public class GProductMap implements CliffordProduct {
 	 * 
 	 * @param pGrade short primitive = grade for which the range is needed
 	 * @return int[] start and end indexes returned as a short[] array
-	 * @throws GradeOutOfRangeException
 	 */
 	@Override
 	public int[] getGradeRange(byte pGrade) {
@@ -281,8 +275,8 @@ public class GProductMap implements CliffordProduct {
 	/**
 	 * Return the sign of an element in the geometric multiplication result table.
 	 * 
-	 * @param pRow short
-	 * @param pCol short
+	 * @param pRow int
+	 * @param pCol int
 	 * @return int
 	 */
 	@Override
@@ -303,7 +297,7 @@ public class GProductMap implements CliffordProduct {
 
 	/**
 	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form. return String
+	 * Basis in a human readable form.
 	 * 
 	 * @return String This is the XML string export of an object.
 	 */

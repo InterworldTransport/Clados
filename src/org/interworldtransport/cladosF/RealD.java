@@ -318,6 +318,10 @@ public class RealD extends DivField implements Divisible, Normalizable {
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
 
+	/**
+	 * These are the actual java primitives within the DivField child that as as
+	 * 'the number.'
+	 */
 	protected double[] vals;
 
 	/**

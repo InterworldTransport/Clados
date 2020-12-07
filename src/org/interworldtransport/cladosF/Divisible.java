@@ -120,11 +120,11 @@ public interface Divisible {
 	 * 
 	 * One very important distinction is that cladosF DivField children are scaled
 	 * by Numbers from java.lang. Essentially the boxed promitives that look like
-	 * numbers will do. Byte, Short, Integer, and Long along with Float & Double.
+	 * numbers will do. Byte, Short, Integer, and Long along with Float and Double.
 	 * Geometry in cladosG is scaled by CladosF DivField children and NOT Numbers.
 	 * Why? In order to bring Cardinal into a physical model containing geometry.
 	 * 
-	 * @param pS Number
+	 * @param pN Number
 	 * @return Divisable
 	 */
 	public abstract Divisible scale(Number pN); // Note | No throwing of FieldBinaryException

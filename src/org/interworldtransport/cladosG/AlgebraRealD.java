@@ -43,20 +43,13 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public class AlgebraRealD extends AlgebraAbstract {
-	public final static RealD generateNumber(AlgebraRealD pA, double pF) {
-		RealD tSpot = CladosFBuilder.createRealD(pA.shareCardinal());
-		tSpot.setReal(pF);
-		return tSpot;
-	}
-
-	public final static Cardinal shareCardinal(AlgebraRealD pA) {
-		return pA.protoNumber.getCardinal();
-	}
-
-	public final static RealD shareProtoNumber(AlgebraRealD pA) {
-		return pA.protoNumber;
-	}
-
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain
+	 * security concerns related to Java serialization of objects.
+	 * 
+	 * @param pA Algebra to be exported as XML data
+	 * @return String formatted as XML containing information about the Algebra
+	 */
 	public final static String toXMLString(AlgebraRealD pA) {
 		String indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Algebra UUID=\"" + pA.uuid + "\" >\n");
@@ -224,11 +217,34 @@ public class AlgebraRealD extends AlgebraAbstract {
 				CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
 
-	public Cardinal shareCardinal() {
+	/**
+	 * Generate a number similar to the algebra's protonumber.
+	 * 
+	 * @param pF real value of the number to be generated
+	 * @return RealD using the same Cardinal as protonumber
+	 */
+	public final RealD generateNumber(double pF) {
+		RealD tSpot = CladosFBuilder.createRealD(shareCardinal());
+		tSpot.setReal(pF);
+		return tSpot;
+	}
+
+	/**
+	 * This is really just a gettor, but it reaches into the protoNumber and
+	 * retrieves the Cardinal.
+	 * 
+	 * @return Cardinal of the protoNumber
+	 */
+	public final Cardinal shareCardinal() {
 		return protoNumber.getCardinal();
 	}
 
-	public RealD shareProtoNumber() {
+	/**
+	 * This is really just a gettor for the protoNumber.
+	 * 
+	 * @return RealD protoNumber
+	 */
+	public final RealD shareProtoNumber() {
 		return protoNumber;
 	}
 }

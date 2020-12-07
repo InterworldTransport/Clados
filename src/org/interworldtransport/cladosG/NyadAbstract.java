@@ -36,101 +36,107 @@ package org.interworldtransport.cladosG;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public abstract class NyadAbstract
-{
+public abstract class NyadAbstract {
 	/**
-	 * If the monads listed within a nyad are all of the same algebra,
-	 * the strongFlag should be set to false AND the oneAlgebra flag should
-	 * be set to True. This method returns that the oneAlgebra flag.
-	 * <p>
-	 * In the future, the Frame classes will override this as it is likely
-	 * that other tests are required to ensure a monad list is actually a
-	 * reference frame. At the NyadAbstract leve, therefore, it is best to
-	 * to think of a true response to this method as suggesting the nyad 
-	 * is a frame candidate.
-	 * <p>
-	 * @param pN	NyadAbstract to be tested 
-	 * @return boolean
-	 * 	True if nyad's monads are all of the same algebra
+	 * If the monads listed within a nyad are all of the same algebra, the
+	 * strongFlag should be set to false AND the oneAlgebra flag should be set to
+	 * True. This method returns that the oneAlgebra flag.
+	 * 
+	 * In the future, the Frame classes will override this as it is likely that
+	 * other tests are required to ensure a monad list is actually a reference
+	 * frame. At the NyadAbstract leve, therefore, it is best to to think of a true
+	 * response to this method as suggesting the nyad is a frame candidate.
+	 * 
+	 * @param pN NyadAbstract to be tested
+	 * @return boolean True if nyad's monads are all of the same algebra
 	 */
-	public static final boolean isFrame(NyadAbstract pN)
-	{
-		if (pN._strongFlag) return !pN._strongFlag;
+	public static final boolean isFrame(NyadAbstract pN) {
+		if (pN._strongFlag)
+			return !pN._strongFlag;
 		return pN._oneAlgebra;
 	}
+
 	/**
-	 * If the monads listed within a nyad are all of a different algebra,
-	 * the strongFlag should be set to true. This method returns that flag.
-	 * <p>
-	 * @param pN	NyadAbstract to be tested 
-	 * @return boolean
-	 * 	True if nyad is strong meaning each Monad is of a different algebra
-	 * 	False if nyad's monads double up on any particular algebra
+	 * If the monads listed within a nyad are all of a different algebra, the
+	 * strongFlag should be set to true. This method returns that flag.
+	 * 
+	 * @param pN NyadAbstract to be tested
+	 * @return boolean True if nyad is strong meaning each Monad is of a different
+	 *         algebra False if nyad's monads double up on any particular algebra
 	 */
-	public static final boolean	isStrong(NyadAbstract pN)
-	{
+	public static final boolean isStrong(NyadAbstract pN) {
 		return pN._strongFlag;
 	}
+
 	/**
-	 * If the monads listed within a nyad are all of a different algebra,
-	 * the strongFlag should be set to true. This method returns that the
-	 * inverse of that flag.
-	 * <p>
-	 * @param pN	NyadAbstract to be tested 
-	 * @return boolean
-	 * 	False if nyad is strong meaning each Monad is of a different algebra
-	 * 	True if nyad's monads double up on any particular algebra
+	 * If the monads listed within a nyad are all of a different algebra, the
+	 * strongFlag should be set to true. This method returns that the inverse of
+	 * that flag.
+	 * 
+	 * @param pN NyadAbstract to be tested
+	 * @return boolean False if nyad is strong meaning each Monad is of a different
+	 *         algebra True if nyad's monads double up on any particular algebra
 	 */
-	public static final boolean	isWeak(NyadAbstract pN)
-	{
+	public static final boolean isWeak(NyadAbstract pN) {
 		return !pN._strongFlag;
 	}
-	
-	protected boolean					_oneAlgebra;
 
-	protected boolean					_strongFlag;
-	
+	/**
+	 * This is a boolean flag set to True when the monads ALL refer to the same
+	 * algebra. Otherwise it should be false.
+	 */
+	protected boolean _oneAlgebra = false;
+
+	/**
+	 * This is a boolean flag set to True when the monads ALL refer to DIFFERENT
+	 * algebras. Otherwise it should be false.
+	 */
+	protected boolean _strongFlag;
+
 	/**
 	 * This String is the name the footPoint of the Reference Frame of the Monad
 	 */
-	protected Foot						footPoint;
+	protected Foot footPoint;
+	
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
-	protected String					Name;
+	protected String Name;
+
 	/**
 	 * Simple getter for the Foot for which the nyad relies
+	 * 
 	 * @return Foot
 	 */
-	public Foot getFoot()
-	{
+	public Foot getFoot() {
 		return footPoint;
 	}
 
-	public String getName()
-	{
+	/**
+	 * Simple getter method of the name of a nyad.
+	 * 
+	 * @return String name of the nyad.
+	 */
+	public String getName() {
 		return Name;
 	}
 
 	/**
 	 * Set the name of this NyadRealD
-	 * <p>
-	 * @param name
-	 *            String
+	 * 
+	 * @param name String
 	 */
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		Name = name;
 	}
 
 	/**
-	 * Set the Foot for the nyad using this method. A Foot merely labels where 
-	 * an algebra is expected to be tangent to an underlying manifold.
-	 * <p>
-	 * @param pF	Foot to set for the nyad.
+	 * Set the Foot for the nyad using this method. A Foot merely labels where an
+	 * algebra is expected to be tangent to an underlying manifold.
+	 * 
+	 * @param pF Foot to set for the nyad.
 	 */
-	protected void setFoot(Foot pF)
-	{
+	protected void setFoot(Foot pF) {
 		footPoint = pF;
 	}
 }

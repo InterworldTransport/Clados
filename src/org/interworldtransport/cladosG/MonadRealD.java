@@ -322,7 +322,6 @@ public class MonadRealD extends MonadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -359,7 +358,6 @@ public class MonadRealD extends MonadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -406,7 +404,6 @@ public class MonadRealD extends MonadAbstract {
 	 *                                  the case. It really shouldn't happen, but
 	 *                                  might if someone tinkers with the case in an
 	 *                                  unsafe way.
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			DivField pF, String pSpecial)
@@ -474,7 +471,6 @@ public class MonadRealD extends MonadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			RealD[] pC) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -651,7 +647,7 @@ public class MonadRealD extends MonadAbstract {
 	 * @param pGrade short
 	 */
 	@Override
-	public MonadRealD gradePart(short pGrade) {
+	public MonadRealD gradePart(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 
@@ -681,7 +677,7 @@ public class MonadRealD extends MonadAbstract {
 	 * @param pGrade short
 	 */
 	@Override
-	public MonadRealD gradeSuppress(short pGrade) {
+	public MonadRealD gradeSuppress(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 
@@ -1133,6 +1129,14 @@ public class MonadRealD extends MonadAbstract {
 		return this;
 	}
 
+	/**
+	 * Simple setter method of the algebra for this monad.
+	 * 
+	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
+	 * 'directions' in the underlying basis.
+	 * 
+	 * @param pA Algebra to set
+	 */
 	protected void setAlgebra(AlgebraRealD pA) {
 		algebra = pA;
 	}
@@ -1219,7 +1223,7 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD SP() {
-		gradePart((short) 0);
+		gradePart((byte) 0);
 		return this;
 	}
 

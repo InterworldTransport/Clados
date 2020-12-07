@@ -135,7 +135,7 @@ class CoreAlgebraRealFTest {
 
 	@Test
 	public void testStaticOp() {
-		RealF result = AlgebraRealF.generateNumber(alg1, 10.0f);
+		RealF result = alg1.generateNumber(10.0f);
 		assertTrue(result != null);
 		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
 		// this shows that an algebra can be used to generate numbers of the same type

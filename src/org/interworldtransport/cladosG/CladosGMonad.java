@@ -30,7 +30,6 @@ import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
@@ -51,8 +50,31 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @author Dr Alfred W Differ
  */
 public enum CladosGMonad { // All of these have implicit private constructors
-	COMPLEXD, COMPLEXF, REALD, REALF;
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	REALF,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	REALD,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	COMPLEXF,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	COMPLEXD;
 
+	/**
+	 * This is effectively an 'instanceof' operator that avoids naming the actual
+	 * class type. It compares to monads to see if they are of the same class.
+	 * 
+	 * @param pM1 First monad to test
+	 * @param pM2 Second monad to test
+	 * @return TRUE if monads are of the same type. FALSE otherwise.
+	 */
 	public static final boolean isClassMatch(MonadAbstract pM1, MonadAbstract pM2) {
 		return pM1.getClass().equals(pM2.getClass());
 	}
@@ -67,28 +89,33 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 */
 	public final MonadAbstract copyOf(MonadAbstract pA) throws BadSignatureException, CladosMonadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pA instanceof MonadRealF)
 				return new MonadRealF((MonadRealF) pA);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pA instanceof MonadRealD)
 				return new MonadRealD((MonadRealD) pA);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pA instanceof MonadComplexF)
 				return new MonadComplexF((MonadComplexF) pA);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pA instanceof MonadComplexD)
 				return new MonadComplexD((MonadComplexD) pA);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -104,28 +131,33 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	public final MonadAbstract copyRename(MonadAbstract pA, String pName)
 			throws BadSignatureException, CladosMonadException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pA instanceof MonadRealF)
 				return new MonadRealF(pName, (MonadRealF) pA);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pA instanceof MonadRealD)
 				return new MonadRealD(pName, (MonadRealD) pA);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pA instanceof MonadComplexF)
 				return new MonadComplexF(pName, (MonadComplexF) pA);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pA instanceof MonadComplexD)
 				return new MonadComplexD(pName, (MonadComplexD) pA);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -142,33 +174,37 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
-	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createOnlyCoeffs(DivField[] pNumber, String pName, String pAName, String pFrame,
 			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber[0] instanceof RealF)
 				return new MonadRealF(pName, pAName, pFrame, pFoot, pSig, (RealF[]) pNumber);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber[0] instanceof RealD)
 				return new MonadRealD(pName, pAName, pFrame, pFoot, pSig, (RealD[]) pNumber);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber[0] instanceof ComplexF)
 				return new MonadComplexF(pName, pAName, pFrame, pFoot, pSig, (ComplexF[]) pNumber);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber[0] instanceof ComplexD)
 				return new MonadComplexD(pName, pAName, pFrame, pFoot, pSig, (ComplexD[]) pNumber);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -188,34 +224,38 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws GeneratorRangeException  Thrown if the pSig parameter is too long
 	 * @throws GradeOutOfRangeException Thrown on an internal error if special case
 	 *                                  handler glitches
-	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createSpecial(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber instanceof RealF)
 				return new MonadRealF(pName, pAName, pFrame, pFoot, pSig, (RealF) pNumber, pSpecial);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber instanceof RealD)
 				return new MonadRealD(pName, pAName, pFrame, pFoot, pSig, (RealD) pNumber, pSpecial);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber instanceof ComplexF)
 				return new MonadComplexF(pName, pAName, pFrame, pFoot, pSig, (ComplexF) pNumber, pSpecial);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber instanceof ComplexD)
 				return new MonadComplexD(pName, pAName, pFrame, pFoot, pSig, (ComplexD) pNumber, pSpecial);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -234,28 +274,33 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	public final MonadAbstract createWithAlgebra(DivField[] pNumber, AlgebraAbstract pA, String pName, String pFrame)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber[0] instanceof RealF & pA instanceof AlgebraRealF)
 				return new MonadRealF(pName, (AlgebraRealF) pA, pFrame, (RealF[]) pNumber);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber[0] instanceof RealD & pA instanceof AlgebraRealD)
 				return new MonadRealD(pName, (AlgebraRealD) pA, pFrame, (RealD[]) pNumber);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber[0] instanceof ComplexF & pA instanceof AlgebraComplexF)
 				return new MonadComplexF(pName, (AlgebraComplexF) pA, pFrame, (ComplexF[]) pNumber);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber[0] instanceof ComplexD & pA instanceof AlgebraComplexD)
 				return new MonadComplexD(pName, (AlgebraComplexD) pA, pFrame, (ComplexD[]) pNumber);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -272,33 +317,37 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
-	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createZero(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber instanceof RealF)
 				return new MonadRealF(pName, pAName, pFrame, pFoot, pSig, (RealF) pNumber);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber instanceof RealD)
 				return new MonadRealD(pName, pAName, pFrame, pFoot, pSig, (RealD) pNumber);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber instanceof ComplexF)
 				return new MonadComplexF(pName, pAName, pFrame, pFoot, pSig, (ComplexF) pNumber);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber instanceof ComplexD)
 				return new MonadComplexD(pName, pAName, pFrame, pFoot, pSig, (ComplexD) pNumber);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -315,33 +364,37 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
-	 * @throws BladeCombinationException 
 	 */
 	public final MonadAbstract createWithFoot(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber instanceof RealF)
 				return new MonadRealF(pName, pAName, pFrame, pFt, pSig, (RealF) pNumber);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber instanceof RealD)
 				return new MonadRealD(pName, pAName, pFrame, pFt, pSig, (RealD) pNumber);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber instanceof ComplexF)
 				return new MonadComplexF(pName, pAName, pFrame, pFt, pSig, (ComplexF) pNumber);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber instanceof ComplexD)
 				return new MonadComplexD(pName, pAName, pFrame, pFt, pSig, (ComplexD) pNumber);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 }

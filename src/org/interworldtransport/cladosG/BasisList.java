@@ -36,7 +36,6 @@ import java.util.stream.IntStream;
 
 import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * All geometry objects within the cladosG package have elements that form a
@@ -48,8 +47,8 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * The gradeCount is tracked using byte integers as it isn't expected that
  * anyone will work with algebras of more than 254 generators any time soon.
  * 
- * The bladeCount is computed as (1 << gradeCount - 1) instead of stored. It is
- * reported as an integer though that DOES limit the size of a basis to 31
+ * The bladeCount is computed as (1 &lt;&lt; gradeCount - 1) instead of stored.
+ * It is reported as an integer though that DOES limit the size of a basis to 31
  * generators. Again, it isn't expected anyone will need more any time soon.
  * 
  * The bladeList is stored as an ArrayList of Blades that should be no longer
@@ -211,6 +210,10 @@ public final class BasisList implements CanonicalBasis {
 	 */
 	private final ArrayList<Integer> gradeList;
 
+	/**
+	 * This map connects a Blade's internal key to its indexed location in the
+	 * basis.
+	 */
 	private final TreeMap<Long, Integer> keyIndexMap;
 
 	/**
@@ -235,17 +238,17 @@ public final class BasisList implements CanonicalBasis {
 		// ------Build bladeList
 		if (pGens == 0) {
 			gradeList.add(Integer.valueOf(0));
-			bladeList.add(Blade.createScalarBlade(pGens));
+			bladeList.add(Blade.createBlade(pGens).get());
 			keyIndexMap.put(0L, 0);
 		} else if (pGens == 1) {
-			bladeList.add(Blade.createScalarBlade(pGens));
+			bladeList.add(Blade.createScalarBlade(Generator.E1));
 			gradeList.add(Integer.valueOf(0));
 			keyIndexMap.put(0L, 0);
-			bladeList.add(Blade.createPScalarBlade(pGens).orElseThrow());
+			bladeList.add(Blade.createPScalarBlade(Generator.E1));
 			gradeList.add(Integer.valueOf(1));
 			keyIndexMap.put(1L, 0);
 		} else {
-			EnumSet<Generator> offer = EnumSet.range(Generator.E1, Generator.get(pGens));
+			EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, Generator.get(pGens));
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
 			for (EnumSet<Generator> pG : powerSet(offer))
 				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
@@ -259,7 +262,8 @@ public final class BasisList implements CanonicalBasis {
 		gradeList.add(1); // Will be auto-boxed by JVM.
 		IntStream.range(2, gradeCount - 1).forEachOrdered(i -> gradeList.add(
 				keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue().intValue() - 1));
-		// keyIndexMap uses bladeKey (which is known to a blade) to find bladeIndex name used by products.
+		// keyIndexMap uses bladeKey (which is known to a blade) to find bladeIndex name
+		// used by products.
 		gradeList.add(getBladeCount() - 1); // Just bladeCount - 1
 	}
 
@@ -277,12 +281,20 @@ public final class BasisList implements CanonicalBasis {
 		return true;
 	}
 
+	/**
+	 * Old-fashioned 'find' method that reports index location in the basis where a
+	 * Blade is found OR -1 if it wasn't found.
+	 * 
+	 * @param pIn Blade to be found
+	 * @return integer index pointing to element of a list containing the Blade OR
+	 *         -1 if the blade wasn't found.
+	 */
 	@Override
 	public int find(Blade pIn) {
-		for (Blade b : bladeList)
-			if (b.equalsAbs(pIn))
-				return bladeList.indexOf(b);
-		return -1;
+		Integer loc = keyIndexMap.get(pIn.key());
+		if (loc == null)
+			return -1;
+		return loc.intValue();
 	}
 
 	/**
@@ -296,11 +308,14 @@ public final class BasisList implements CanonicalBasis {
 	 * @param p1 short This is the desired blade number within the basis.
 	 * 
 	 * @return short[] This is the returned blade.
-	 * @throws BladeOutOfRangeException
+	 * @throws BladeOutOfRangeException This exception is thrown when the short
+	 *                                  integer index would result in an
+	 *                                  IndexOutOfRange exception on an array of
+	 *                                  blades.
 	 */
 	@Deprecated
 	public short[] getBlade(short p1) throws BladeOutOfRangeException {
-		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
+		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
 			throw new BladeOutOfRangeException(null, "Requested Blade # {" + p1 + "} is not in basis");
 
 		short[] tBS = new short[gradeCount - 1]; // prepare the array to return
@@ -316,6 +331,12 @@ public final class BasisList implements CanonicalBasis {
 		return tBS;
 	}
 
+	/**
+	 * Return the number of independent blades in the basis. This is the same as the
+	 * linear dimension of an algebra that uses this basis.
+	 * 
+	 * @return int
+	 */
 	@Override
 	public int getBladeCount() {
 		return (1 << gradeCount - 1);
@@ -329,15 +350,26 @@ public final class BasisList implements CanonicalBasis {
 	 * @param p1 integer pointing to the blade in the internal list
 	 * @return EnumSet of Generator representing the blade without the context
 	 *         necessary for knowing much about the enclosing space for the blade.
-	 * @throws BladeOutOfRangeException
+	 * @throws BladeOutOfRangeException This exception is thrown when the integer
+	 *                                  index would result in an IndexOutOfRange
+	 *                                  exception on an array of blades.
 	 */
 	@Override
 	public EnumSet<Generator> getBladeSet(int p1) throws BladeOutOfRangeException {
-		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
+		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
 			throw new BladeOutOfRangeException(null, "Blade key requested {" + p1 + "} is not in the basis.");
 		return bladeList.get(p1).getGenerators();
 	}
 
+	/**
+	 * Return the number of grades in the basis. Since there is no geometry in the
+	 * basis this is a measure of the number of distinct generator subset types that
+	 * can be formed where the element count determines the type. Because the empty
+	 * set includes no generators, GradeCount will always be one more than the
+	 * number of generators.
+	 * 
+	 * @return byte
+	 */
 	@Override
 	public byte getGradeCount() {
 		return gradeCount;
@@ -357,18 +389,12 @@ public final class BasisList implements CanonicalBasis {
 	/**
 	 * Get an index to the first blade of grade specified by the parameter.
 	 * 
-	 * NOTE this method will shift away from short integers to some other primitive
-	 * in the near future.
-	 * 
 	 * @param p1 byte This is for choosing which grade index range to return.
 	 * @return int Index within the basis where requested grade starts.
-	 * @throws GradeOutOfRangeException This exception is thrown if the requested
-	 *                                  grade is NOT between 0 and gradeCount
-	 *                                  inclusive.
 	 */
 	@Override
 	public int getGradeStart(byte p1) {
-		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > gradeCount)
+		if (p1 < CladosConstant.SCALARGRADE | p1 > gradeCount)
 			return -1;
 		return gradeList.get(p1).intValue();
 	}
@@ -384,11 +410,15 @@ public final class BasisList implements CanonicalBasis {
 	 */
 	@Override
 	public long getKey(int p1) throws BladeOutOfRangeException {
-		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
+		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
 			throw new BladeOutOfRangeException(null, "Requested Blade # {" + p1 + "} is not in basis");
 		return bladeList.get(p1).key();
 	}
 
+	/**
+	 * Simple gettor method for the Map connecting Blade keys to their indexed
+	 * position in a basis.
+	 */
 	@Override
 	public TreeMap<Long, Integer> getKeyIndexMap() {
 		return keyIndexMap;
@@ -409,14 +439,26 @@ public final class BasisList implements CanonicalBasis {
 		return vKey;
 	}
 
+	/**
+	 * This is a special version of getGradeStart() that finds the highest grade.
+	 * 
+	 * @return int Index within the basis where pscalar grade starts.
+	 */
 	@Override
 	public int getPScalarStart() {
 		return gradeList.get(gradeCount);
 	}
 
+	/**
+	 * Simple gettor method retrieves the Blade at the indexed position in the
+	 * Basis.
+	 * 
+	 * @param p1 integer index
+	 * @return Blade at the indexed position.
+	 */
 	@Override
 	public Blade getSingleBlade(int p1) {
-		if (p1 < CladosConstant.BLADE_SCALARGRADE | p1 > getBladeCount())
+		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
 			return null;
 		return bladeList.get(p1);
 	}
@@ -430,6 +472,9 @@ public final class BasisList implements CanonicalBasis {
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
 	 * 
+	 * @param indent String of 'tab' characters that help space the output correctly
+	 *               visually. It's not actually necessary except for human
+	 *               readability of the output.
 	 * @return String
 	 */
 	@Override
@@ -467,7 +512,7 @@ public final class BasisList implements CanonicalBasis {
 	 */
 	@Override
 	public final boolean validateBladeIndex(short pIn) {
-		return (pIn >= CladosConstant.BLADE_SCALARGRADE & pIn < getBladeCount());
+		return (pIn >= CladosConstant.SCALARGRADE & pIn < getBladeCount());
 	}
 
 }

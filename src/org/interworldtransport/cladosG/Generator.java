@@ -48,20 +48,82 @@ import java.util.stream.Stream;
  * @author Dr Alfred W Differ
  */
 public enum Generator {
-	E1((byte) 1), E2((byte) 2), E3((byte) 3), E4((byte) 4), 
-	E5((byte) 5), E6((byte) 6), E7((byte) 7), E8((byte) 8),
-	E9((byte) 9), EA((byte) 10), EB((byte) 11), EC((byte) 12), 
-	ED((byte) 13), EE((byte) 14);//, EF((byte) 15), EG((byte) 16);
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E1((byte) 1),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E2((byte) 2),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E3((byte) 3),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E4((byte) 4),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E5((byte) 5),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E6((byte) 6),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E7((byte) 7),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E8((byte) 8),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	E9((byte) 9),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EA((byte) 10),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EB((byte) 11),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EC((byte) 12),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	ED((byte) 13),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EE((byte) 14);
 
+	// EF((byte) 15),
+	// EG((byte) 16);
+
+	/**
+	 * This method returns an unlimited stream of generators in this enumeration.
+	 * 
+	 * @return Stream of Generator
+	 */
 	public final static Stream<Generator> flow() {
 		return Stream.of(Generator.values());
 	}
 
-	@Override
-	public String toString() {
-		return super.toString();
-	}
-
+	/**
+	 * This method returns an limited stream of generators in this enumeration.
+	 * 
+	 * @param pLimit byte integer limit of the stream. The stream stops when we
+	 *               reach the same ordinal value of a generator.
+	 * @return Stream of Generator
+	 */
 	public final static Stream<Generator> flow(byte pLimit) {
 		return Stream.of(Generator.values()).limit(pLimit);
 	}
@@ -80,15 +142,23 @@ public enum Generator {
 		return ((Generator[]) Generator.values())[pS - 1];
 	}
 
+	/**
+	 * This method connects boxed byte integers to Generator instances. It gets a
+	 * reference to the enumeration instance that has the same ordinal as the byte
+	 * integer within the boxed parameter.
+	 * 
+	 * @param pS Byte integer offered
+	 * @return and get back the corresponding Generator instance
+	 */
 	public final static Generator get(Byte pS) {
 		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
 			return null;
 		return ((Generator[]) Generator.values())[pS - 1];
 	}
 
-	/*
-	 * This is a byte integer representation of a generator. It is useful when
-	 * building a list of generators as it is easier to loop on integers.
+	/**
+	 * This is a byte integer representation of a generator. It is useful when doing
+	 * arithmetic with generators.
 	 */
 	protected final byte ord;
 
@@ -97,6 +167,11 @@ public enum Generator {
 	 */
 	private Generator(byte ps) {
 		ord = ps;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString();
 	}
 
 }

@@ -293,6 +293,21 @@ public final class Basis {
 		return vBasis[p1];
 	}
 
+	/**
+	 * This method returns the row of the basis that represents a 'blade' and
+	 * packages it as an ArrayList of boxed short integers.
+	 * 
+	 * This method is not going to be present in Clados V2. There is no point to it
+	 * as V2 has a Blade class.
+	 * 
+	 * @param p1 short integer index of blade to be returned
+	 * @return ArrayList of Shorts.
+	 * @throws BladeOutOfRangeException This happens when the short integer
+	 *                                  represents a blade that is 'out of range' in
+	 *                                  the array sense. If it were not checked,
+	 *                                  this method would throw a typical
+	 *                                  IndexOutOfRangeException on a row of vBasis.
+	 */
 	@Deprecated
 	public ArrayList<Short> getBladeAsList(short p1) throws BladeOutOfRangeException {
 		if (p1 < 0 | p1 > bladeCount)

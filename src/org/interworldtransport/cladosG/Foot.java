@@ -127,9 +127,9 @@ public final class Foot {
 	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
 	 * That means visual inspection of the cardinal list could reveal entries that
 	 * appear to be the same. They aren't, though. The cardinalList references
-	 * objects and NOT their string names.
+	 * objects and NOT their string names. To avoid this use CladosFCache.
 	 * 
-	 * @param fN Cardinal This is a reference to the Cardinal to append to this Foot
+	 * @param fN Cardinal reference to append to this Foot
 	 */
 	public void appendCardinal(Cardinal fN) {
 		if (cardinalList.contains(fN))
@@ -155,39 +155,83 @@ public final class Foot {
 		return -1;
 	}
 
+	/**
+	 * Simple gettor for one of the cardinals associated with this Foot.
+	 * 
+	 * Note that an error condition (like indexOutOfBounds) will return null.
+	 * 
+	 * @param pIn Integer index of Cardinal in this Foot to retrieve.
+	 * @return Cardinal found at the integer index... or null.
+	 */
 	public Cardinal getCardinal(int pIn) {
-		return cardinalList.get(pIn);
+		if (pIn >= 0 & pIn < cardinalList.size())
+			return cardinalList.get(pIn);
+		return null;
 	}
 
+	/**
+	 * Simple gettor for the entire list of cardinals associated with this Foot.
+	 * 
+	 * @return ArrayList of Cardinal instances associated with this Foot.
+	 */
 	public ArrayList<Cardinal> getCardinals() {
 		return cardinalList;
 	}
 
+	/**
+	 * Simple gettor of the Foot's name element
+	 * 
+	 * @return String name of the Foot
+	 */
 	public String getFootName() {
 		return footName;
 	}
 
+	/**
+	 * This method removes a Cardinal from the list of known cardinals for this
+	 * foot. It will silently return IF the cardinal wasn't already on the list.
+	 * 
+	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
+	 * That means visual inspection of the cardinal list could reveal entries that
+	 * appear to be the same. They aren't, though. The cardinalList references
+	 * objects and NOT their string names. To avoid this use CladosFCache.
+	 * 
+	 * @param pCard Cardinal reference to remove to this Foot
+	 */
 	public void removeCardinal(Cardinal pCard) {
 		cardinalList.remove(pCard);
 	}
 
+	/**
+	 * Simple setter of the Foot's name element.
+	 * 
+	 * @param footName String name of the Foot to set here
+	 */
 	public void setFootName(String footName) {
 		this.footName = footName;
 	}
 
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain
+	 * security concerns related to Java serialization of objects.
+	 * 
+	 * @param pind String indentation to assist with human readability of output XML
+	 *             data
+	 * @return String formatted as XML containing information about the Foot
+	 */
 	public String toXMLString(String pind) {
 		String indent = "\t\t";
 		if (pind == null)
 			pind = "";
 		StringBuilder rB = new StringBuilder(indent + pind + "<Foot>\n");
-		rB.append(indent + pind + "\t<Name>" + getFootName() + "</Name>\n");
+		rB.append(indent).append(pind).append("\t<Name>").append(getFootName()).append("</Name>\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent + pind + "\t<Cardinals number=\"" + cardinalList.size() + "\" >\n");
+		rB.append(indent).append(pind).append("\t<Cardinals number=\"").append(cardinalList.size()).append("\" >\n");
 		for (Cardinal point : cardinalList)
-			rB.append(indent + pind + "\t\t" + point.toXMLString());
-		rB.append(indent + pind + "\t</Cardinals>\n");
+			rB.append(indent).append(pind).append("\t\t").append(point.toXMLString());
+		rB.append(indent).append(pind).append("\t</Cardinals>\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent + pind + "</Foot>\n");
+		rB.append(indent).append(pind).append("</Foot>\n");
 		return rB.toString();
 	}
 }

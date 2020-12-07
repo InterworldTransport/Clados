@@ -322,7 +322,6 @@ public class MonadRealF extends MonadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -333,7 +332,7 @@ public class MonadRealF extends MonadAbstract {
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		RealF tR = (RealF) CladosField.REALF.createZERO(pF);
-		//RealF tR = copyZERO(pF);
+		// RealF tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same Cardinal
@@ -359,7 +358,6 @@ public class MonadRealF extends MonadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -370,7 +368,7 @@ public class MonadRealF extends MonadAbstract {
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		RealF tR = (RealF) CladosField.REALF.createZERO(pF);
-		//RealF tR = copyZERO(pF);
+		// RealF tR = copyZERO(pF);
 		for (int k = 0; k < cM.length; k++)
 			cM[k] = copyOf(tR);
 		// cM array now filled with zeros that all share the same Cardinal
@@ -406,7 +404,6 @@ public class MonadRealF extends MonadAbstract {
 	 *                                  the case. It really shouldn't happen, but
 	 *                                  might if someone tinkers with the case in an
 	 *                                  unsafe way.
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			DivField pF, String pSpecial)
@@ -474,7 +471,6 @@ public class MonadRealF extends MonadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @throws BladeCombinationException 
 	 */
 	public MonadRealF(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			RealF[] pC) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -629,7 +625,7 @@ public class MonadRealF extends MonadAbstract {
 	 * multipliers making linear combinations of the basis elements.
 	 * 
 	 * @param i short This points at the coefficient at the equivalent tuple
-	 *           location.
+	 *          location.
 	 * 
 	 * @return RealF
 	 */
@@ -651,7 +647,7 @@ public class MonadRealF extends MonadAbstract {
 	 * @param pGrade short
 	 */
 	@Override
-	public MonadRealF gradePart(short pGrade) {
+	public MonadRealF gradePart(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 
@@ -681,7 +677,7 @@ public class MonadRealF extends MonadAbstract {
 	 * @param pGrade short
 	 */
 	@Override
-	public MonadRealF gradeSuppress(short pGrade) {
+	public MonadRealF gradeSuppress(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 
@@ -1133,6 +1129,14 @@ public class MonadRealF extends MonadAbstract {
 		return this;
 	}
 
+	/**
+	 * Simple setter method of the algebra for this monad.
+	 * 
+	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
+	 * 'directions' in the underlying basis.
+	 * 
+	 * @param pA Algebra to set
+	 */
 	protected void setAlgebra(AlgebraRealF pA) {
 		algebra = pA;
 	}
@@ -1219,7 +1223,7 @@ public class MonadRealF extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealF SP() {
-		gradePart((short) 0);
+		gradePart((byte) 0);
 		return this;
 	}
 

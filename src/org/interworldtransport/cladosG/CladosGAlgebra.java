@@ -31,7 +31,6 @@ import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
@@ -51,8 +50,31 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public enum CladosGAlgebra { // All of these have implicit private constructors
-	COMPLEXD, COMPLEXF, REALD, REALF;
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	REALF,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	REALD,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	COMPLEXF,
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	COMPLEXD;
 
+	/**
+	 * This is effectively an 'instanceof' operator that avoids naming the actual
+	 * class type. It compares to algebras to see if they are of the same class.
+	 * 
+	 * @param pA1 First algebra to test
+	 * @param pA2 Second algebra to test
+	 * @return TRUE if algebras are of the same type. FALSE otherwise.
+	 */
 	public static final boolean isClassMatch(AlgebraAbstract pA1, AlgebraAbstract pA2) {
 		return pA1.getClass().equals(pA2.getClass());
 	}
@@ -66,28 +88,33 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 */
 	public final AlgebraAbstract copyOf(AlgebraAbstract pA, String pName) {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pA instanceof AlgebraRealF)
 				return new AlgebraRealF(pName, (AlgebraRealF) pA);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pA instanceof AlgebraRealD)
 				return new AlgebraRealD(pName, (AlgebraRealD) pA);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pA instanceof AlgebraComplexF)
 				return new AlgebraComplexF(pName, (AlgebraComplexF) pA);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pA instanceof AlgebraComplexD)
 				return new AlgebraComplexD(pName, (AlgebraComplexD) pA);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -99,35 +126,41 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @param pFTName A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
-	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
-	 * @throws BladeCombinationException 
+	 * @throws BadSignatureException   Thrown by an algebra constructor if the pSig
+	 *                                 parameter is malformed
+	 * @throws GeneratorRangeException Thrown by an algebra constructor if the pSig
+	 *                                 parameter is too long
 	 */
 	public final AlgebraAbstract create(DivField pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber instanceof RealF)
 				return new AlgebraRealF(pName, pFTName, pSig, (RealF) pNumber);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber instanceof RealD)
 				return new AlgebraRealD(pName, pFTName, pSig, (RealD) pNumber);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber instanceof ComplexF)
 				return new AlgebraComplexF(pName, pFTName, pSig, (ComplexF) pNumber);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber instanceof ComplexD)
 				return new AlgebraComplexD(pName, pFTName, pSig, (ComplexD) pNumber);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -141,21 +174,25 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
-	 * @throws BladeCombinationException 
 	 */
 	public final AlgebraAbstract createWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			return new AlgebraRealF(pName, pF, pCard, pSig);
-		case REALD:
+		}
+		case REALD -> {
 			return new AlgebraRealD(pName, pF, pCard, pSig);
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			return new AlgebraComplexF(pName, pF, pCard, pSig);
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			return new AlgebraComplexD(pName, pF, pCard, pSig);
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -169,33 +206,37 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 * @return AlgebraAbstract (Cast this as the concrete algebra to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
-	 * @throws BladeCombinationException 
 	 */
 	public final AlgebraAbstract createWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			if (pNumber instanceof RealF)
 				return new AlgebraRealF(pName, pF, pSig, (RealF) pNumber);
 			else
 				return null;
-		case REALD:
+		}
+		case REALD -> {
 			if (pNumber instanceof RealD)
 				return new AlgebraRealD(pName, pF, pSig, (RealD) pNumber);
 			else
 				return null;
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			if (pNumber instanceof ComplexF)
 				return new AlgebraComplexF(pName, pF, pSig, (ComplexF) pNumber);
 			else
 				return null;
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			if (pNumber instanceof ComplexD)
 				return new AlgebraComplexD(pName, pF, pSig, (ComplexD) pNumber);
 			else
 				return null;
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
@@ -210,16 +251,21 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 	 */
 	public final AlgebraAbstract createWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
 		switch (this) {
-		case REALF:
+		case REALF -> {
 			return new AlgebraRealF(pName, pF, pCard, pGP);
-		case REALD:
+		}
+		case REALD -> {
 			return new AlgebraRealD(pName, pF, pCard, pGP);
-		case COMPLEXF:
+		}
+		case COMPLEXF -> {
 			return new AlgebraComplexF(pName, pF, pCard, pGP);
-		case COMPLEXD:
+		}
+		case COMPLEXD -> {
 			return new AlgebraComplexD(pName, pF, pCard, pGP);
-		default:
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 }

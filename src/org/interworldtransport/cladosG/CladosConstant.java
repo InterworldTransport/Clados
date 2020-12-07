@@ -24,11 +24,33 @@
  */
 package org.interworldtransport.cladosG;
 
-public class CladosConstant {
+/**
+ * This class just acts as a bucket for magic numbers so they aren't nightmarish
+ * to find when they change in the future.
+ * 
+ * @version 1.0
+ * @author Dr Alfred W Differ
+ */
+public final class CladosConstant {
+	/**
+	 * This is the smallest generator in the enumeration of the same name.
+	 */
 	public final static Generator GENERATOR_MIN = Generator.E1;
+	/**
+	 * This is the largest generator in the enumeration of the same name. It's value
+	 * can change here when Clados is reworked to support larger algebras. Changing
+	 * it here enables all support validity testing methods to refer here instead of
+	 * supporting their own 'magic numbers'.
+	 */
 	public final static Generator GENERATOR_MAX = Generator.EE;
-	public final static byte BLADE_SCALARGRADE = 0;
-	public final static byte BLADE_MAXGRADE = 14;
+	/**
+	 * This is teh smallest grade supported by Clados.
+	 */
+	public final static byte SCALARGRADE = 0;
+	/**
+	 * This is the largest grade supported by Clados
+	 */
+	public final static byte MAXGRADE = CladosConstant.GENERATOR_MAX.ord;
 
 	private CladosConstant() {
 		;

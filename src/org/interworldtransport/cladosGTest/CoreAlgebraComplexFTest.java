@@ -135,7 +135,7 @@ class CoreAlgebraComplexFTest {
 
 	@Test
 	public void testStaticOp() {
-		ComplexF result = AlgebraComplexF.generateNumber(alg1, 5.0f, 10.0f);
+		ComplexF result = alg1.generateNumber(5.0f, 10.0f);
 		assertTrue(result != null);
 		assertTrue(result.getCardinal() == alg1.getFoot().getCardinal(0));
 		// this shows that an algebra can be used to generate numbers of the same type

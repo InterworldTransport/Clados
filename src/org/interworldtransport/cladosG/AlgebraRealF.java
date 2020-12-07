@@ -43,20 +43,13 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public class AlgebraRealF extends AlgebraAbstract {
-	public final static RealF generateNumber(AlgebraRealF pA, float pF) {
-		RealF tSpot = CladosFBuilder.createRealF(pA.shareCardinal());
-		tSpot.setReal(pF);
-		return tSpot;
-	}
-
-	public final static Cardinal shareCardinal(AlgebraRealF pA) {
-		return pA.protoNumber.getCardinal();
-	}
-
-	public final static RealF shareProtoNumber(AlgebraRealF pA) {
-		return pA.protoNumber;
-	}
-
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain
+	 * security concerns related to Java serialization of objects.
+	 * 
+	 * @param pA Algebra to be exported as XML data
+	 * @return String formatted as XML containing information about the Algebra
+	 */
 	public final static String toXMLString(AlgebraRealF pA) {
 		String indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
@@ -65,7 +58,8 @@ public class AlgebraRealF extends AlgebraAbstract {
 		// -----------------------------------------------------------------------
 		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
 		for (String tip : pA.rFrames)
-			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"").append(tip).append("\" />\n");
+			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"")
+					.append(tip).append("\" />\n");
 		rB.append(indent).append("\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(pA.getFoot().toXMLString("\t\t\t"));
@@ -156,7 +150,6 @@ public class AlgebraRealF extends AlgebraAbstract {
 	 *                                 exception is thrown.
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
-	 * @throws BladeCombinationException 
 	 */
 	public AlgebraRealF(String pS, Foot pF, Cardinal pCard, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
@@ -225,11 +218,34 @@ public class AlgebraRealF extends AlgebraAbstract {
 				CladosGBuilder.INSTANCE.createGProduct(pSig));
 	}
 
-	public Cardinal shareCardinal() {
+	/**
+	 * Generate a number similar to the algebra's protonumber.
+	 * 
+	 * @param pF real value of the number to be generated
+	 * @return RealF using the same Cardinal as protonumber
+	 */
+	public final RealF generateNumber(float pF) {
+		RealF tSpot = CladosFBuilder.createRealF(shareCardinal());
+		tSpot.setReal(pF);
+		return tSpot;
+	}
+
+	/**
+	 * This is really just a gettor, but it reaches into the protoNumber and
+	 * retrieves the Cardinal.
+	 * 
+	 * @return Cardinal of the protoNumber
+	 */
+	public final Cardinal shareCardinal() {
 		return protoNumber.getCardinal();
 	}
 
-	public RealF shareProtoNumber() {
+	/**
+	 * This is really just a gettor for the protoNumber.
+	 * 
+	 * @return RealF protoNumber
+	 */
+	public final RealF shareProtoNumber() {
 		return protoNumber;
 	}
 }

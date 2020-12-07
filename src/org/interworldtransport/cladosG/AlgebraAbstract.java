@@ -26,8 +26,6 @@ package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
 
-import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
-
 /**
  * The algebra object holds all geometric details that support the definition of
  * a multivector over a division field {Cl(p,q) x DivField} except the actual
@@ -36,7 +34,7 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbstract>{
+public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbstract> {
 	/**
 	 * All algebra types share some elements that are not dependent on number types.
 	 * The first among them is the 'tangent point' of the sub-manifold represented
@@ -163,6 +161,13 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 		return foot;
 	}
 
+	/**
+	 * Simple gettor
+	 * 
+	 * This will change soon. Don't rely upon it.
+	 * 
+	 * @return ArrayList of string names for the frames
+	 */
 	public ArrayList<String> getFrames() {
 		return rFrames;
 	}
@@ -191,7 +196,7 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * This is a short-hand method providing the grade count on the canonical basis.
 	 * A Frame's grade count is limited at the upper end by this grade count.
 	 * 
-	 * @return short This is the length of a monad's grade key. In an algebra with N
+	 * @return byte This is the length of a monad's grade key. In an algebra with N
 	 *         generators it will always be N+1.
 	 */
 	@Override
@@ -205,14 +210,20 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * because the basis tracks where they start. GProduct already knows where.
 	 * 
 	 * @param pInd short integer describing the grade to be selected from the basis.
-	 * @return short This is an integer index between 0 and bladeCount inclusive.
-	 * @throws GradeOutOfRangeException 
+	 * @return int[] This is an integer index between 0 and bladeCount inclusive.
 	 */
 	@Override
 	public int[] getGradeRange(byte pInd) {
 		return gProduct.getGradeRange(pInd);
 	}
 
+	/**
+	 * Simple gettor
+	 * 
+	 * This will change soon. Don't rely upon it.
+	 * 
+	 * @return ArrayList of string names for the frames
+	 */
 	public ArrayList<String> getReferenceFrames() {
 		return rFrames;
 	}
@@ -248,8 +259,7 @@ public abstract class AlgebraAbstract implements Algebra, Comparable<AlgebraAbst
 	 * case it should be possible for a model writer to adjust an algebra to point
 	 * at a different foot after construction.
 	 * 
-	 * @param footPoint Foot object for the Algebra to use as its 'tangent' contact
-	 *                  point.
+	 * @param footPoint Foot for the Algebra to use as its 'tangent' contact point.
 	 */
 	@Override
 	public void setFoot(Foot footPoint) {

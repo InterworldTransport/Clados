@@ -27,110 +27,196 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-
+/**
+ * Any classes within CladosG which would benefit from a supporting cache make
+ * use of this singleton enumeration as a 'builder'. Nothing fancy here
+ * otherwise. Just simple create, append, find, and remove capabilities backed
+ * by ArrayLists of cached objects.
+ * 
+ * @version 1.0
+ * @author Dr Alfred W Differ
+ */
 public enum CladosGCache {
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
 	INSTANCE;
 
-	public final static boolean validateSignature(String pSig) {
-		return GProduct.validateSignature(pSig);
-	}
-
-	public final static boolean validateSize(short pGen) {
-		return Basis.validateSize(pGen);
-	}
-
 	/**
-	 * Heads Up! These ArrayList ensures this 'enumeration' is mutable. This class
+	 * Heads Up! These ArrayLists ensures this 'enumeration' is mutable. This class
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	//private ArrayList<Basis> listOfBases = new ArrayList<Basis>(1);
-	//private ArrayList<GProduct> listOfGProducts = new ArrayList<GProduct>(1);
 	private ArrayList<CanonicalBasis> listOfBasisLists = new ArrayList<>(1);
+	/**
+	 * Heads Up! These ArrayLists ensures this 'enumeration' is mutable. This class
+	 * is a cache, so this should suprise no one. It is supposed to keep track of
+	 * the CladosG objects that can be safely shared in use.
+	 */
 	private ArrayList<CliffordProduct> listOfGProductMaps = new ArrayList<>(1);
 
-	//public void appendBasis(Basis pB) {
-	//	if (listOfBases.contains(pB))
-	//		return; // Already in ArrayList
-	//	listOfBases.ensureCapacity(listOfBases.size() + 1);
-	//	listOfBases.add(pB);
-	//}
-	
+	/**
+	 * Method appends offered basis to cache IF one like it is not already present.
+	 * If it IS, nothing is done and the method silently returns.
+	 * 
+	 * By 'like it' we mean the basis objects have the same number of generators
+	 * used to construct them. It doesn't matter what signatures are used as a basis
+	 * isn't aware of products except as lists. NO generator duplications should
+	 * exist in blades within a basis, thus all N-generator basis objects are
+	 * structurally the same even if represented by different instances.
+	 * 
+	 * Important NOTE. Basis objects capture structural meaning implied by a list of
+	 * generators of an algebra. They do NOT capture the meaning of the generators
+	 * themselves. Generators in one algebra need not mean the same thing as
+	 * generators in another algebra, but the structure created in a basis is the
+	 * same between algebras if the basis for each shares the same number of
+	 * generators.
+	 * 
+	 * @param pB CanonicalBasis to be appended to the cache IF not already present.
+	 */
 	public void appendBasis(CanonicalBasis pB) {
 		if (listOfBasisLists.contains(pB))
-			return; // Already in ArrayList
-		listOfBasisLists.ensureCapacity(listOfBasisLists.size() + 1);
+			return;
 		listOfBasisLists.add(pB);
 	}
 
-	//public void appendGProduct(GProduct pGP) {
-	//	if (listOfGProducts.contains(pGP))
-	//		return; // Already in ArrayList
-	//	listOfGProducts.ensureCapacity(listOfGProducts.size() + 1);
-	//	listOfGProducts.add(pGP);
-	//}
+	/**
+	 * Method appends offered product to cache IF one like it is not already
+	 * present. If it IS, nothing is done and the method silently returns.
+	 * 
+	 * By 'like it' we mean the product objects have the same number of generators
+	 * and identical signatures used to construct them. NO generator duplications
+	 * will survive in a product table after reducing blade combinations using the
+	 * product's signature, so there is structural similarity between product tables
+	 * that use the same number of generators (because of basis similarities) and
+	 * the same signatures.
+	 * 
+	 * Important Note. CliffordProduct objects capture structural meaning implied in
+	 * a product table of elements of a CanonicalBasis. As with a basis, no meaning
+	 * to the generators or blades is implied in a product table.
+	 * 
+	 * @param pGP CliffordProduct to be appended to the cache IF not already present.
+	 */
 	public void appendGProduct(CliffordProduct pGP) {
 		if (listOfGProductMaps.contains(pGP))
-			return; // Already in ArrayList
-		listOfGProductMaps.ensureCapacity(listOfGProductMaps.size() + 1);
-		listOfGProductMaps.add(pGP);
+			listOfGProductMaps.add(pGP);
 	}
 
-	//public Basis findBasis(short pGen) throws GeneratorRangeException {
-	//	if (!validateSize(pGen))
-	//		throw new GeneratorRangeException("Unsupported number of generators in findBasis(short)");
-	//	return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst().orElse(null);
-		// Deliver Basis OR null
-	//}
-	
-	public Optional<CanonicalBasis> findBasisList(short pGen) throws GeneratorRangeException {
-		if (!validateSize(pGen))
-			throw new GeneratorRangeException("Unsupported number of generators in findBasis(short)");
+	/**
+	 * This method returns an Optional of CanonicalBasis using the integer number of
+	 * generators offered for the search. If found, the optional will be engaged. If
+	 * not, it will be disengaged. IF by some chance there are two basis instances
+	 * in the cache by the same number of generators (which should NOT happen) the
+	 * first one found will be returned in the Optional.
+	 * 
+	 * @param pGen byte integer of generators in a basis to be found in the cache
+	 * @return Optional of CanonicalBasis matching the number of generators offered.
+	 */
+	public Optional<CanonicalBasis> findBasisList(byte pGen) {
 		return listOfBasisLists.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
-		// Deliver Basis OR null
 	}
 
-	//public GProduct findGProduct(String pSig) throws BadSignatureException {
-	//	if (!validateSignature(pSig))
-	//		throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
-	//	return listOfGProducts.stream().filter(x -> x.getSignature().equals(pSig)).findFirst().orElse(null);
-		// Deliver GProduct OR null
-	//}
-	public Optional<CliffordProduct> findGProductMap(String pSig) throws BadSignatureException {
-		if (!validateSignature(pSig))
-			throw new BadSignatureException(null, "Signature validation failed in GProduct Finder");
+	/**
+	 * This method returns an Optional of CliffordProduct using the String signature
+	 * offered for the search. If found, the optional will be engaged. If not, it
+	 * will be disengaged. IF by some chance there are two product instances in the
+	 * cache by the same signatures (which should NOT happen) the first one found
+	 * will be returned in the Optional.
+	 * 
+	 * @param pSig String signature in a product to be found in the cache
+	 * @return Optional of CliffordProduct matching the signature offered.
+	 */
+	public Optional<CliffordProduct> findGProductMap(String pSig) {
 		return listOfGProductMaps.stream().filter(x -> x.signature().equals(pSig)).findFirst();
-		// Deliver GProduct OR null
 	}
 
-	public short getBasisListSize() // shouldn't ever be larger than Basis.MAX_GEN
-	{
-		return (short) listOfBasisLists.size();
+	/**
+	 * Simple gettor for the size of the basis cache. Since there is a limit to the
+	 * Generator enumeration, there is also a limit to the basis cache. One should
+	 * NEVER see more than CladosConstant.MAXGRADE basis objects in the cache.
+	 * 
+	 * @return byte integer of the size of the cache of basis instances.
+	 */
+	public byte getBasisListSize() {
+		return (byte) listOfBasisLists.size();
 	}
 
-	public int getGProductListSize() // shouldn't ever be larger than 2^(Basis.MAX_GEN+1). +1 TOO BIG for shorts.
-	{
+	/**
+	 * Simple gettor for the size of the product cache. Since there is a limit to
+	 * the Generator enumeration, there is also a limit to the product cache. One
+	 * should NEVER see more than 2^(CladosConstant.MAXGRADE+1)-1 product objects in
+	 * the cache.
+	 * 
+	 * @return integer of the size of the cache of basis instances.
+	 */
+	public int getGProductListSize() {
 		return listOfGProductMaps.size();
 	}
 
+	/**
+	 * Method removes explicit basis from cache IF present. If it IS NOT, nothing is
+	 * done and the method silently returns.
+	 * 
+	 * @param pB CanonicalBasis to remove from the cache IF present.
+	 * @return boolean TRUE if removal succeed. FALSE otherwise.
+	 */
 	public boolean removeBasis(CanonicalBasis pB) {
 		return listOfBasisLists.remove(pB);
 	}
 
-	public boolean removeBasis(short pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> B = findBasisList(pGen); // This function validates the support status of the number of generators
+	/**
+	 * Method removes implied basis from cache IF one like it is present. If it IS
+	 * NOT, nothing is done and the method silently returns.
+	 * 
+	 * An implied basis is simply one that matches the integer number of generators
+	 * passed in as a parameter. If no basis is found, nothing is done. That covers
+	 * error conditions too. For example, no basis exists with -1 generators, but
+	 * this method will report TRUE as though it removed it. There is no harm in
+	 * this since the point of this method is to clean out the cache and NOT to
+	 * error check the calling object.
+	 * 
+	 * So... Generator size quality is NOT checked.
+	 * 
+	 * @param pGen byte integer number of generators in a basis to remove from the
+	 *             cache IF present.
+	 * @return boolean TRUE if removal succeed. FALSE otherwise.
+	 */
+	public boolean removeBasis(byte pGen) {
+		Optional<CanonicalBasis> B = findBasisList(pGen);
 		if (B.isEmpty())
 			return true;
 		return removeBasis(B.get());
 	}
 
+	/**
+	 * Method removes explicit product from cache IF present. If it IS NOT, nothing
+	 * is done and the method silently returns.
+	 * 
+	 * @param pGP CliffordProduct to remove from the cache IF present.
+	 * @return boolean TRUE if removal succeed. FALSE otherwise.
+	 */
 	public boolean removeGProduct(CliffordProduct pGP) {
 		return listOfGProductMaps.remove(pGP);
 	}
 
-	public boolean removeGProduct(String pSig) throws BadSignatureException {
+	/**
+	 * Method removes implied product from cache IF one like it is present. If it IS
+	 * NOT, nothing is done and the method silently returns.
+	 * 
+	 * An implied product is simply one that matches the signature parameter and its
+	 * integer size. If no product is found, nothing is done. That covers error
+	 * conditions too. For example, no CliffordProduct exists with -1 generators (no
+	 * matter the signature) or 3 generators with "+*-" signature, but this method
+	 * will report TRUE as though it removed them. There is no harm in this since
+	 * the point of this method is to clean out the cache and NOT to error check the
+	 * calling object.
+	 * 
+	 * So... Signature quality is NOT checked.
+	 * 
+	 * @param pSig String signature of product to remove from the cache IF present.
+	 * @return boolean TRUE if removal succeed. FALSE otherwise.
+	 */
+	public boolean removeGProduct(String pSig) {
 		Optional<CliffordProduct> GP = findGProductMap(pSig); // This function validates the passed signature
 		if (GP.isEmpty())
 			return true;

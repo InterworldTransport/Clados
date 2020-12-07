@@ -781,7 +781,6 @@ public class NyadRealF extends NyadAbstract
 	 * 			This exception is thrown when the integer number of generators
 	 * 			for the basis is out of the supported range. {0, 1, 2, ..., 14}
 	 * @return NyadRealF
-	 * @throws BladeCombinationException 
 	 */
 	public NyadRealF createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard) 
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException
