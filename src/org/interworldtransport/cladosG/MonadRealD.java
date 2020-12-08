@@ -24,14 +24,16 @@
  */
 package org.interworldtransport.cladosG;
 
-import static org.interworldtransport.cladosF.RealD.*;
-
-import org.interworldtransport.cladosF.CladosFListBuilder;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.DivField;
-import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
+import static org.interworldtransport.cladosF.RealD.*;
+
+import java.util.stream.IntStream;
+
+import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.RealD;
 
 /**
  * Multivector over a division field {Cl(p,q) x DivField}.
@@ -64,7 +66,7 @@ import org.interworldtransport.cladosGExceptions.*;
  * @author Dr Alfred W Differ
  */
 public class MonadRealD extends MonadAbstract {
-	private String[] specialCases = { "Zero", "Unit Scalar", "Unit -Scalar", "Unit PScalar", "Unit -PScalar" };
+	//private final static String[] specialCases = { "Zero", "Unit Scalar", "Unit -Scalar", "Unit PScalar", "Unit -PScalar" };
 
 	/**
 	 * Return true if more the monad is a ZERO scalar.
@@ -74,10 +76,7 @@ public class MonadRealD extends MonadAbstract {
 	 * @return boolean
 	 */
 	public static boolean isGZero(MonadRealD pM) {
-		if (pM.getGradeKey() == 1 & isZero(pM.getCoeff((short) 0)))
-			return true;
-		
-		return false;
+		return (pM.getGradeKey() == 1 & isZero(pM.getCoeff(0)));
 	}
 
 	/**
@@ -94,11 +93,7 @@ public class MonadRealD extends MonadAbstract {
 	public static boolean isIdempotent(MonadRealD pM) throws FieldBinaryException, CladosMonadException {
 		if (isGZero(pM))
 			return true;
-		MonadRealD check1 = new MonadRealD(pM);
-		check1.multiplyLeft(pM);
-		if (check1.isGEqual(pM))
-			return true;
-		return false;
+		return ((MonadRealD) CladosGMonad.REALD.copyOf(pM)).multiplyLeft(pM).isGEqual(pM);
 	}
 
 	/**
@@ -112,34 +107,30 @@ public class MonadRealD extends MonadAbstract {
 	 *                              copy the field used by the monad to be checked.
 	 */
 	public static boolean isScaledIdempotent(MonadRealD pM) throws CladosMonadException, FieldException {
-		if (isGZero(pM))
-			return true;
-		else if (isIdempotent(pM))
+		if (isIdempotent(pM))
 			return true;
 
 		// Find the first non-zero coefficient of pM^2, invert it, rescale pM by it and
 		// that to see if it
 		// is an idempotent that way. If it is, then pM is an idempotent multiple.
 
-		short k = 1;
-		MonadRealD check1 = new MonadRealD(pM);
+		int k = 1;
+		MonadRealD check1 = (MonadRealD) CladosGMonad.REALD.copyOf(pM);
 		check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
 		if (isGZero(check1))
 			return false; // pM is nilpotent at power=2
-		RealD fstnzeroC = copyOf(pM.getCoeff((short) 0)); // Grab copy of Scalar part
+		RealD fstnzeroC = CladosFBuilder.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
 
 		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) { // Loop skipped if check1.SP() != 0
-			if (!isZero(pM.getCoeff(k))) // If next coeff isn't zero
-			{
+			if (!isZero(pM.getCoeff(k))) {
 				fstnzeroC = copyOf(pM.getCoeff(k)); // Grab a copy of it instead
 				break; // Good enough. Move on.
 			}
 			k++; // If next coeff is zero, look at next next
 		}
-		check1 = (new MonadRealD(pM)).scale(fstnzeroC.invert()); // No risk of inverting a zero. Caught at top
-		if (isIdempotent(check1))
-			return true;
-		return false;
+		check1 = ((MonadRealD) CladosGMonad.REALD.copyOf(pM)).scale(fstnzeroC.invert());
+		// No risk of inverting a zero. Caught at top
+		return isIdempotent(check1);
 	}
 
 	/**
@@ -157,16 +148,13 @@ public class MonadRealD extends MonadAbstract {
 	public static boolean isNilpotent(MonadRealD pM, int pPower) throws FieldBinaryException, CladosMonadException {
 		if (isGZero(pM))
 			return true;
-		if (pPower < 2)
-			return false;
 
 		MonadRealD check1 = new MonadRealD(pM);
-		int i = 2;
-		while (i <= pPower) {
+		while (pPower>1) {
 			check1.multiplyLeft(pM);
 			if (isGZero(check1))
 				return true;
-			i++;
+			pPower--;
 		}
 		return false;
 	}
@@ -183,18 +171,18 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public static boolean isReferenceMatch(MonadRealD pM, MonadRealD pN) {
 		// The algebras must actually be the same object to match.
-		if (!pM.getAlgebra().equals(pN.getAlgebra()))
+		if ((pM.getAlgebra() != (pN.getAlgebra())))
 			return false;
 
 		// The frame names must match too
-		if (!pM.getFrameName().equals(pN.getFrameName()))
+		else if (!pM.getFrameName().equals(pN.getFrameName()))
 			return false;
 
 		// There is a possibility that the coefficients are of different field
 		// types but that is unlikely if the algebras match. The problem is that
 		// someone can write new coefficients and break the consistency with the
 		// Algebra's protonumber.
-		if (!pM.getCoeff((short) 0).getCardinal().equals(pN.getCoeff((short) 0).getCardinal()))
+		else if (!pM.getCoeff(0).getCardinal().equals(pN.getCoeff(0).getCardinal()))
 			return false;
 
 		return true;
@@ -209,17 +197,17 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public static String toXMLString(MonadRealD pM) {
 		StringBuilder rB = new StringBuilder("\t\t\t<Monad ");
-		rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
-		rB.append("frame=\"" + pM.getFrameName() + "\" ");
-		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
-		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
+		rB.append("algebra=\"").append(pM.getAlgebra().getAlgebraName()).append("\" ");
+		rB.append("frame=\"").append(pM.getFrameName()).append("\" ");
+		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
+		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
 		rB.append(">\n");
 
-		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
-		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()
-				+ "\">\n");
+		rB.append("\t\t\t\t<Name>").append(pM.getName()).append("</Name>\n");
+		rB.append("\t\t\t\t<Coefficients number=\"").append(pM.getCoeff().length).append("\" gradeKey=\"")
+				.append(pM.getGradeKey()).append("\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
-			rB.append("\t\t\t\t\t" + pM.getCoeff()[k].toXMLString() + "\n");
+			rB.append("\t\t\t\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
 
 		rB.append("\t\t\t\t</Coefficients>\n");
 		rB.append("\t\t\t</Monad>\n");
@@ -235,28 +223,23 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public static String toXMLFullString(MonadRealD pM) {
 		StringBuilder rB = new StringBuilder("\t\t\t<Monad ");
-		// rB.append("algebra=\"" + pM.getAlgebra().getAlgebraName() + "\" ");
-		// rB.append("frame=\"" + pM.getFrameName() + "\" ");
-		rB.append("gradeKey=\"" + pM.getGradeKey() + "\" ");
-		rB.append("sparseFlag=\"" + pM.getSparseFlag() + "\" ");
+		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
+		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
 		rB.append(">\n");
-		rB.append("\t\t\t\t<Name>" + pM.getName() + "</Name>\n");
+		rB.append("\t\t\t\t<Name>").append(pM.getName()).append("</Name>\n");
 		rB.append(Algebra.toXMLString(pM.getAlgebra()));
-		rB.append("\t\t\t\t<Frame>\"" + pM.getFrameName() + "\"</Frame>\n");
-		rB.append("\t\t\t\t<Coefficients number=\"" + pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()
-				+ "\">\n");
+		rB.append("\t\t\t\t<Frame>\"").append(pM.getFrameName()).append("\"</Frame>\n");
+		rB.append("\t\t\t\t<Coefficients number=\"").append(pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey())
+				.append("\">\n");
+		
 		for (int k = 0; k < pM.getCoeff().length; k++)
-			rB.append("\t\t\t\t\t" + pM.getCoeff()[k].toXMLString() + "\n");
+			rB.append("\t\t\t\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
 
 		rB.append("\t\t\t\t</Coefficients>\n");
 		rB.append("\t\t\t</Monad>\n");
 		return rB.toString();
 	}
 
-	/**
-	 * All clados objects are elements of some algebra. That algebra has a name.
-	 */
-	public Algebra algebra;
 	/**
 	 * This array holds the coefficients of the Monad.
 	 */
@@ -293,7 +276,7 @@ public class MonadRealD extends MonadAbstract {
 	 *                               involve null coefficients or a coefficient
 	 *                               array of the wrong size.
 	 */
-	public MonadRealD(String pName, MonadRealD pM) throws BadSignatureException, CladosMonadException {
+	public MonadRealD(String pName, MonadRealD pM) throws CladosMonadException {
 		setName(pName);
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
@@ -312,7 +295,7 @@ public class MonadRealD extends MonadAbstract {
 	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
-	 * @param pF           RealD
+	 * @param pF           DivField Used to construct a RealD
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
@@ -325,17 +308,13 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			DivField pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		setAlgebra(new Algebra(pAlgebraName, new Foot(pFootName, pF.getCardinal()), pSig, pF));
-
+		setAlgebra(CladosGAlgebra.REALD.create(pF, pAlgebraName, pFootName, pSig));//proto is RealD
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = new RealD[getAlgebra().getBladeCount()];
-		RealD tR = (RealD) CladosField.REALD.createZERO(pF);
-		//RealD tR = copyZERO(pF);
+		cM = CladosFListBuilder.createRealD(getAlgebra().getBladeCount());
 		for (int k = 0; k < cM.length; k++)
-			cM[k] = copyOf(tR);
-		// cM array now filled with zeros that all share the same Cardinal
+			cM[k] = CladosFBuilder.createRealD(getAlgebra().shareProtoNumber().getCardinal());
 		setGradeKey();
 	}
 
@@ -361,17 +340,13 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		setAlgebra(new Algebra(pAlgebraName, pFoot, pSig, pF));
-
+		setAlgebra(CladosGAlgebra.REALD.createWithFoot(pFoot, pF, pAlgebraName, pSig));
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = new RealD[getAlgebra().getBladeCount()];
-		RealD tR = (RealD) CladosField.REALD.createZERO(pF);
-		//RealD tR = copyZERO(pF);
+		cM = CladosFListBuilder.createRealD(getAlgebra().getBladeCount());
 		for (int k = 0; k < cM.length; k++)
-			cM[k] = copyOf(tR);
-		// cM array now filled with zeros that all share the same Cardinal
+			cM[k] = CladosFBuilder.createRealD(getAlgebra().shareProtoNumber().getCardinal());
 		setGradeKey();
 	}
 
@@ -412,44 +387,15 @@ public class MonadRealD extends MonadAbstract {
 		// Default ZERO Monad is constructed already.
 		// Now handle the special cases and make adjustments to the cM array.
 
-		int cursor = 0;
-		int[] tSpot = new int[1];
-
-		for (short m = 0; m < specialCases.length; m++) {
-			if (specialCases[m].contentEquals(pSpecial)) {
-				cursor = m;
-				break;
+		if (CladosConstant.MONAD_SPECIAL_CASES.contains(pSpecial)) {
+			switch (pSpecial) {
+			case "Unit Scalar" -> cM[0] = copyONE(cM[0]); // always first blade
+			case "Unit -Scalar" -> cM[0] = copyONE(cM[0]).scale(CladosConstant.MINUS_ONE_D);
+			case "Unit PScalar" -> cM[getAlgebra().getBladeCount() - 1] = copyONE(cM[0]); // always last blade
+			case "Unit -PScalar" -> cM[getAlgebra().getBladeCount() - 1] = copyONE(cM[0])
+					.scale(CladosConstant.MINUS_ONE_F);
 			}
-		}
-
-		switch (cursor) {
-		case 0: // Zero case
-			break; // Already done by default
-
-		case 1: // Unit Scalar case
-			tSpot = getAlgebra().getGradeRange((byte) 0);
-			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
-			break;
-
-		case 2: // Unit -Scalar case
-			tSpot = getAlgebra().getGradeRange((byte) 0);
-			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
-			break;
-
-		case 3: // Unit PScalar case
-			tSpot = getAlgebra().getGradeRange((byte) (getAlgebra().getGradeCount() - 1));
-			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
-			break;
-
-		case 4: // Unit -PScalar case
-			tSpot = getAlgebra().getGradeRange((byte) (getAlgebra().getGradeCount() - 1));
-			cM[tSpot[0]] = copyONE(cM[tSpot[0]]);
-			cM[tSpot[0]].scale(Double.valueOf(-1.0d));
-			break;
-
-		default:
-			break;
-		}
+		} // failure to find matching special case defaults ZERO monad by doing nothing.
 		setGradeKey();
 	}
 
@@ -474,14 +420,11 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	public MonadRealD(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
 			RealD[] pC) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		if (pC[0] == null)
-			throw new CladosMonadException(this, "First coefficient is null.  There could be more nulls too.");
-
-		setAlgebra(new Algebra(pAlgebraName, new Foot(pFootName, pC[0].getCardinal()), pSig, pC[0]));
-
+		if (pC == null | pC[0] == null)
+			throw new CladosMonadException(this, "Missing coefficients.");
+		setAlgebra(CladosGAlgebra.REALD.create(pC[0], pAlgebraName, pFootName, pSig));
 		if (pC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array size does not match bladecount for Signature.");
-
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
@@ -508,7 +451,6 @@ public class MonadRealD extends MonadAbstract {
 		if (pC.length != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array size does not match bladecount from offered Algebra.");
-
 		setAlgebra(pAlgebra);
 		setName(pMonadName);
 		setFrameName(pFrameName);
@@ -536,7 +478,7 @@ public class MonadRealD extends MonadAbstract {
 			throw new CladosMonadBinaryException(this, "Can't add when frames don't match.", pM);
 
 		for (int i = 0; i < getAlgebra().getBladeCount(); i++)
-			cM[i].add(pM.getCoeff()[i]);
+			cM[i].add(pM.getCoeff(i));
 
 		setGradeKey();
 		return this;
@@ -549,7 +491,6 @@ public class MonadRealD extends MonadAbstract {
 	@Override
 	public MonadRealD conjugate() {
 		//
-		//
 		return this;
 	}
 
@@ -558,21 +499,13 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD dualLeft() {
-		int[] tSpot; // tSpot points at the PScalar blade
-		tSpot = getAlgebra().getGProduct().getGradeRange((byte) (getAlgebra().getGradeCount() - 1));
-		// initialize a new coefficient array to hold the results
-		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];
-
-		for (int j = 0; j < getAlgebra().getBladeCount(); j++) {
-			// resulting blade of left-product because tSpot[0] points at PScalar
-			int prd = (Math.abs(getAlgebra().getGProduct().getResult(tSpot[0], j)) - 1);
-			// new coefficient is old coeff moved to left-dual blade.
+		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
+		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];// initialize results
+		IntStream.range(0, getAlgebra().getBladeCount()).forEach(j -> {
+			int prd = (Math.abs(getAlgebra().getGProduct().getResult(tSpot, j)) - 1);
 			tNewCoeff[prd] = copyOf(cM[j]);
-			// now account for possible sign flip from left dual
-			tNewCoeff[prd].scale(Double.valueOf(getAlgebra().getGProduct().getSign(tSpot[0], j)));
-			// sign flip works because number type accepts scaling by raw shorts
-		}
-		// tNewCoeff now has a copy of the coefficients needed for 'this', so set them.
+			tNewCoeff[prd].scale(Double.valueOf(getAlgebra().getGProduct().getSign(tSpot, j)));
+		});// tNewCoeff now has a copy of the result
 		setCoeffInternal(tNewCoeff);
 		return this;
 	}
@@ -582,32 +515,15 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD dualRight() {
-		int[] tSpot; // tSpot points at the PScalar blade
-		tSpot = getAlgebra().getGProduct().getGradeRange((byte) (getAlgebra().getGradeCount() - 1));
-		// initialize a new coefficient array to hold the results
-		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];
-
-		for (int j = 0; j < getAlgebra().getBladeCount(); j++) {
-			// resulting blade of left-product because tSpot[0] points at PScalar
-			int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot[0])) - 1);
-			// new coefficient is old coeff moved to left-dual blade.
+		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
+		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];// initialize results
+		IntStream.range(0, getAlgebra().getBladeCount()).forEach(j -> {
+			int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot)) - 1);
 			tNewCoeff[drp] = copyOf(cM[j]);
-			// now account for possible sign flip from left dual
-			tNewCoeff[drp].scale(Double.valueOf(getAlgebra().getGProduct().getSign(j, tSpot[0])));
-			// sign flip works because number type accepts scaling by raw shorts
-		}
-		// tNewCoeff now has a copy of the coefficients needed for 'this', so set them.
+			tNewCoeff[drp].scale(Double.valueOf(getAlgebra().getGProduct().getSign(j, tSpot)));
+		});// tNewCoeff now has a copy of the result
 		setCoeffInternal(tNewCoeff);
 		return this;
-	}
-
-	/**
-	 * This method returns the Algebra for this Monad.
-	 * 
-	 * @return AlgebraRealD
-	 */
-	public Algebra getAlgebra() {
-		return algebra;
 	}
 
 	/**
@@ -616,6 +532,7 @@ public class MonadRealD extends MonadAbstract {
 	 * 
 	 * @return RealD[]
 	 */
+	@Override
 	public RealD[] getCoeff() {
 		return cM;
 	}
@@ -624,16 +541,16 @@ public class MonadRealD extends MonadAbstract {
 	 * Return a field Coefficient for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
 	 * 
-	 * @param i short This points at the coefficient at the equivalent tuple
+	 * @param i int This points at the coefficient at the equivalent tuple
 	 *           location.
 	 * 
 	 * @return RealD
 	 */
+	@Override
 	public RealD getCoeff(int i) {
 		if (i >= 0 & i < getAlgebra().getBladeCount())
 			return cM[i];
-		else
-			return null;
+		return null;
 	}
 
 	/**
@@ -644,24 +561,17 @@ public class MonadRealD extends MonadAbstract {
 	 * If the grade to be preserved is not within the gradeRange of this monad this
 	 * method silently fails. No suppression occurs.
 	 * 
-	 * @param pGrade short
+	 * @param pGrade byte
 	 */
 	@Override
 	public MonadRealD gradePart(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
-
-		byte j = 0;
-		while (j <= getAlgebra().getGradeCount() - 1) {
-			if (j == pGrade) {
-				j++;
-				continue;
-			}
-			int[] tSpot = getAlgebra().getGradeRange(j);
-			for (int l = tSpot[0]; l <= tSpot[1]; l++)
-				cM[l].scale(Double.valueOf(0.0d));
-			j++;
-		}
+		int[] tSpotProtect = getAlgebra().getGradeRange(pGrade);
+		IntStream.range(0, getAlgebra().getBladeCount()).filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
+				.parallel().forEach(j -> {
+					cM[j].scale(Double.valueOf(0.0F));
+				});
 		setGradeKey();
 		return this;
 	}
@@ -674,17 +584,14 @@ public class MonadRealD extends MonadAbstract {
 	 * If the grade to be suppressed is not within the gradeRange of this monad this
 	 * method silently fails. No suppression occurs.
 	 * 
-	 * @param pGrade short
+	 * @param pGrade byte
 	 */
 	@Override
 	public MonadRealD gradeSuppress(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
-
-		int[] tSpot = getAlgebra().getGradeRange((byte) pGrade);
-		for (int l = tSpot[0]; l <= tSpot[1]; l++)
-			cM[l].scale(Double.valueOf(0.0d));
-
+		int[] tSpot = getAlgebra().getGradeRange(pGrade);
+		IntStream.rangeClosed(tSpot[0], tSpot[1]).parallel().forEach(l -> cM[l].scale(Double.valueOf(0.0d)));
 		setGradeKey();
 		return this;
 	}
@@ -697,12 +604,10 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD invert() {
-		int[] tSpot;
-		for (byte j = 1; j < getAlgebra().getGradeCount(); j += 2) {
-			tSpot = getAlgebra().getGradeRange(j);
-			for (int l = tSpot[0]; l <= tSpot[1]; l++)
-				cM[l].scale(Double.valueOf(-1.0d));
-		}
+		IntStream.range(0, getAlgebra().getGradeCount()).filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(j -> {
+			int[] tSpot = getAlgebra().getGradeRange((byte) j);
+			IntStream.rangeClosed(tSpot[0], tSpot[1]).forEach(l -> cM[l].scale(CladosConstant.MINUS_ONE_D));
+		});
 		return this;
 	}
 
@@ -719,10 +624,7 @@ public class MonadRealD extends MonadAbstract {
 	public boolean isGEqual(MonadRealD pM) {
 		if (!isReferenceMatch(this, pM))
 			return false;
-		for (short i = 0; i < getAlgebra().getBladeCount(); i++)
-			if (!isEqual(cM[i], pM.getCoeff(i)))
-				return false;
-		return true;
+		return IntStream.range(0, getAlgebra().getBladeCount()).allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
 	}
 
 	/**
@@ -752,14 +654,12 @@ public class MonadRealD extends MonadAbstract {
 	 * Matching test.
 	 * 
 	 * @param pM MonadRealD
-	 * @throws CladosMonadBinaryException This exception is thrown when the
-	 *                                    reference match test fails with the two
-	 *                                    monads
-	 * @throws FieldBinaryException       This exception is thrown when the field
-	 *                                    match test fails with the two monads
 	 * @return MonadRealD
+	 * @throws FieldBinaryException This exception is thrown when the field match
+	 *                              test fails with the two monads
+	 * @throws CladosMonadException
 	 */
-	public MonadRealD multiplyAntisymm(MonadRealD pM) throws FieldBinaryException, CladosMonadBinaryException {
+	public MonadRealD multiplyAntisymm(MonadRealD pM) throws FieldBinaryException, CladosMonadException {
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
 		else if (isGZero(this))
@@ -767,13 +667,8 @@ public class MonadRealD extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		MonadRealD halfTwo = new MonadRealD(this);
-		halfTwo.multiplyRight(pM);
-
-		multiplyLeft(pM);
-		subtract(halfTwo);
-
-		scale(new RealD(cM[0], 0.5f));
+		MonadRealD halfTwo = ((MonadRealD) CladosGMonad.REALD.copyOf(this)).multiplyRight(pM);
+		multiplyLeft(pM).subtract(halfTwo).scale(RealD.newONE(cM[0].getCardinal()).scale(CladosConstant.BY2_F));
 		setGradeKey();
 		return this;
 	}
@@ -798,97 +693,59 @@ public class MonadRealD extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];
-		// new coeff array built to hold result
-		for (int k = 0; k < getAlgebra().getBladeCount(); k++)
-			tNewCoeff[k] = copyZERO(cM[0]);
-		// new coeff array populated with ZEROES from the field.
+		RealD[] tNewCoeff = CladosFListBuilder.createRealDZERO(cM[0].getCardinal(), getAlgebra().getBladeCount());
 
 		if (sparseFlag) {
 			/*
-			 * Use gradeKey to find the non-zero grades. gradeKey is is a long with a 1 in a
-			 * digit if the ten's power represented by that digit is represented as a grade
-			 * in a monad.
+			 * Use gradeKey (a base 10 representation of grades present) to find the
+			 * non-zero grades. For example: gradeKey=101 means the monad is a sum of
+			 * bivector and scalar because 10^2+10^0 = 101.
 			 * 
-			 * For example: gradeKey=101 means the monad is a sum of bivector and scalar
-			 * because 10^2+10^0 = 101.
-			 * 
-			 * In a sparse monad, the gradeKey will have few 1's, so multiplication can be
-			 * simplified by not looping through each blade. Instead, we parse the gradeKey
-			 * and only loop through the blades for grades that could be non-ZERO.
+			 * In a sparse monad, the gradeKey will have few 1's, making looping on all
+			 * blades less optimal. Instead, we parse gradeKey and loop through the blades
+			 * for grades that could be non-ZERO.
 			 */
-			long tempGradeKey = gradeKey;
-			byte logKey = (byte) Math.log10(tempGradeKey);
+			long slideKey = gradeKey;
+			byte logKey = (byte) Math.log10(slideKey);
 			int[] tSpot = { 0, 0 };
 
 			// logKey is the highest grade with non-zero blades
 			// tSpot will point at the blades of that grade
 			while (logKey >= 0.0D) {
-				tSpot = getAlgebra().getGradeRange(logKey);
-				for (int i = tSpot[0]; i <= tSpot[1]; i++) {
-					// Looping through row blades in product array for grade logKey
-					if (isZero(pM.getCoeff(i)))
-						continue;
-					// This is a weak form of the sparse flag kept here.
-					for (int j = 0; j < getAlgebra().getBladeCount(); j++)
-					// Looping through column blades in product array
-					{
-						if (isZero(cM[j]))
-							continue;
-						// This is a weak form of the sparse flag repeated here.
-						// Don't bother summing on zeroes.
-
-						// multiply the coefficients first
-						RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]);
-
+				tSpot = this.getAlgebra().getGradeRange(logKey);
+				for (int i = tSpot[0]; i <= tSpot[1]; i++) { // loop on rows
+					if (!isZero(pM.getCoeff(i))) { // a weak sparse flag for pM
+						for (int j = 0; j < getAlgebra().getBladeCount(); j++) { //loop on columns
+							if (!isZero(cM[j])) { // a weak sparse flag
+								RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]); //coeffs first
+								// find the blade to which this partial product contributes
+								int prd = (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
+								// Adjust sign of contribution for product sign of blades
+								tCtrbt.scale(Double.valueOf(getAlgebra().getGProduct().getSign(i, j)));
+								// Add the contribution to new coeff array
+								tNewCoeff[prd].add(tCtrbt);
+							}
+						} 
+					}
+				}
+				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
+				if (slideKey == 0)
+					break; //we've processed all grades including scalar.
+				logKey = (byte) Math.log10(slideKey); //if zero it will be the last in loop
+			} // tNewCoeff now has a copy of the coefficients needed for 'this'.
+		} else { // loop through ALL the blades in 'this' individually.
+			for (int i = 0; i < getAlgebra().getBladeCount(); i++) { // Looping on rows
+				if (!isZero(pM.getCoeff(i))) { // a weak sparse flag
+					for (int j = 0; j < getAlgebra().getBladeCount(); j++){// Looping on columns
+						RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]); // coefficients first
 						// find the blade to which this partial product contributes
 						int prd = (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
-
 						// Adjust sign of contribution for product sign of blades
 						tCtrbt.scale(Double.valueOf(getAlgebra().getGProduct().getSign(i, j)));
-
 						// Add the contribution to new coeff array
 						tNewCoeff[prd].add(tCtrbt);
-
 					} // blade i in 'this' multiplied by pM is done.
 				}
-				// Subtract 10^logKey so we can mark that the grade is done.
-				tempGradeKey -= Math.pow(10, logKey);
-
-				// if tempGradeKey is zero, we've processed all grades including scalar.
-				if (tempGradeKey == 0)
-					break;
-
-				// logKey can be zero for scalar grade.
-				logKey = (byte) Math.log10(tempGradeKey);
-
-			} // tNewCoeff now has a copy of the coefficients needed for 'this'.
-		} else // loop through ALL the blades in 'this' individually.
-		{
-			for (int i = 0; i < getAlgebra().getBladeCount(); i++)
-			// Looping through row blades in product array
-			{
-				if (isZero(pM.getCoeff(i)))
-					continue;
-				// This is a weak form of the sparse flag that notes a zero coefficient
-				// in pM need not be processed because it won't contribute to any sums.
-
-				for (int j = 0; j < getAlgebra().getBladeCount(); j++)
-				// Looping through column blades in product array
-				{
-					// multiply the coefficients first
-					RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]);
-
-					// find the blade to which this partial product contributes
-					int prd = (Math.abs(getAlgebra().getGProduct().getResult(i, j)) - 1);
-
-					// Adjust sign of contribution for product sign of blades
-					tCtrbt.scale(Double.valueOf(getAlgebra().getGProduct().getSign(i, j)));
-
-					// Add the contribution to new coeff array
-					tNewCoeff[prd].add(tCtrbt);
-
-				} // blade i in 'this' multiplied by pM is done.
 			} // tNewCoeff now has a copy of the coefficients needed for 'this'.
 		}
 		// set the coeffs for this product result
@@ -917,96 +774,59 @@ public class MonadRealD extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];
-		// new coeff array
-		for (int k = 0; k < getAlgebra().getBladeCount(); k++)
-			tNewCoeff[k] = copyZERO(cM[0]);
-		// new coeff array built to hold result
+		RealD[] tNewCoeff = CladosFListBuilder.createRealDZERO(cM[0].getCardinal(), getAlgebra().getBladeCount());
 
 		if (sparseFlag) {
 			/*
-			 * Use gradeKey to find the non-zero grades. gradeKey is is a long with a 1 in a
-			 * digit if the ten's power represented by that digit is represented as a grade
-			 * in a monad.
+			 * Use gradeKey (a base 10 representation of grades present) to find the
+			 * non-zero grades. For example: gradeKey=101 means the monad is a sum of
+			 * bivector and scalar because 10^2+10^0 = 101.
 			 * 
-			 * For example: gradeKey=1001 means the monad is a sum of trivector and scalar
-			 * because 10^3+10^0 = 1001.
-			 * 
-			 * In a sparse monad, the gradeKey will have few 1's, so multiplication can be
-			 * simplified by not looping through each blade. Instead, we parse the gradeKey
-			 * and only loop through the blades for grades that could be non-ZERO.
+			 * In a sparse monad, the gradeKey will have few 1's, making looping on all
+			 * blades less optimal. Instead, we parse gradeKey and loop through the blades
+			 * for grades that could be non-ZERO.
 			 */
-			long tempGradeKey = gradeKey;
-			byte logKey = (byte) Math.log10(tempGradeKey);
+			long slideKey = gradeKey;
+			byte logKey = (byte) Math.log10(slideKey);
 			int[] tSpot = { 0, 0 };
 
 			// logKey is the highest grade with non-zero blades
 			// tSpot will point at the blades of that grade
 			while (logKey >= 0.0D) {
-				tSpot = getAlgebra().getGradeRange(logKey);
-				for (int i = tSpot[0]; i <= tSpot[1]; i++) {
-					// Looping through row blades in product array for grade logKey
-					if (isZero(pM.getCoeff(i)))
-						continue;
-					// This is a weak form of the sparse flag kept here.
-					for (int j = 0; j < getAlgebra().getBladeCount(); j++)
-					// Looping through column blades in product array
-					{
-						if (isZero(cM[j]))
-							continue;
-						// This is a weak form of the sparse flag repeated here.
-						// Don't bother summing on zeroes.
-
-						// multiply the coefficients first
-						RealD tCtrbt = multiply(cM[j], pM.getCoeff(i));
-
+				tSpot = this.getAlgebra().getGradeRange(logKey);
+				for (int i = tSpot[0]; i <= tSpot[1]; i++) { // loop on rows
+					if (!isZero(pM.getCoeff(i))) { // a weak sparse flag for pM
+						for (int j = 0; j < getAlgebra().getBladeCount(); j++) { // loop on columns
+							if (!isZero(cM[j])) { // a weak sparse flag
+								RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]); // coeffs first
+								// find the blade to which this partial product contributes
+								int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
+								// Adjust sign of contribution for product sign of blades
+								tCtrbt.scale(Double.valueOf(getAlgebra().getGProduct().getSign(j, i)));
+								// Add the contribution to new coeff array
+								tNewCoeff[drp].add(tCtrbt);
+							}
+						}
+					}
+				}
+				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
+				if (slideKey == 0)
+					break; // we've processed all grades including scalar.
+				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
+			} // tNewCoeff now has a copy of the coefficients needed for 'this'.
+		} else { // loop through ALL the blades in 'this' individually.
+			for (int i = 0; i < getAlgebra().getBladeCount(); i++) {// Looping on rows
+				if (!isZero(pM.getCoeff(i))) { // a weak sparse flag
+					for (int j = 0; j < getAlgebra().getBladeCount(); j++) {// Looping on columns
+						RealD tCtrbt = multiply(pM.getCoeff(i), cM[j]); // coefficients first
 						// find the blade to which this partial product contributes
-						int prd = (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
-
+						int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
 						// Adjust sign of contribution for product sign of blades
 						tCtrbt.scale(Double.valueOf(getAlgebra().getGProduct().getSign(j, i)));
-
 						// Add the contribution to new coeff array
-						tNewCoeff[prd].add(tCtrbt);
-
-					} // blade i in 'this' multiplied by pM is done.
+						tNewCoeff[drp].add(tCtrbt);
+					} // blade i in pM multiplied by all blades of this
 				}
-				// Subtract 10^logKey so we can mark that the grade is done.
-				tempGradeKey -= Math.pow(10, logKey);
-
-				// if tempGradeKey is zero, we've processed all grades including scalar.
-				if (tempGradeKey == 0)
-					break;
-
-				// logKey can be zero for scalar grade.
-				logKey = (byte) Math.log10(tempGradeKey);
-			} // tNewCoeff now has a copy of the coefficients needed for 'this'.
-		} else // loop through the blades in 'this' individually.
-		{
-			for (int i = 0; i < getAlgebra().getBladeCount(); i++)
-			// Looping through row blades in product array
-			{
-				if (isZero(pM.getCoeff(i)))
-					continue;
-				// This is a weak form of the sparse flag that notes a zero coefficient
-				// in pM need not be processed because it won't contribute to any sums.
-
-				for (int j = 0; j < getAlgebra().getBladeCount(); j++)
-				// Looping through column blades in product array
-				{
-					// multiply the coefficients first
-					RealD tCtrbt = multiply(cM[j], pM.getCoeff(i));
-
-					// find the blade to which this partial product contributes
-					int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, i)) - 1);
-
-					// Adjust sign of contribution for product sign of blades
-					tCtrbt.scale(Double.valueOf(getAlgebra().getGProduct().getSign(j, i)));
-
-					// Add the contribution to new coeff array
-					tNewCoeff[drp].add(tCtrbt);
-
-				} // pM multiplied by blade i in 'this' is done.
 			} // tNewCoeff now has a copy of the coefficients needed for 'this'.
 		}
 		// set the coeffs for this product result
@@ -1021,14 +841,12 @@ public class MonadRealD extends MonadAbstract {
 	 * Matching test.
 	 * 
 	 * @param pM MonadRealD
-	 * @throws CladosMonadBinaryException This exception is thrown when the
-	 *                                    reference match test fails with the two
-	 *                                    monads
+	 * @return MonadRealD
 	 * @throws FieldBinaryException       This exception is thrown when the field
 	 *                                    match test fails with the two monads
-	 * @return MonadRealD
+	 * @throws CladosMonadException 
 	 */
-	public MonadRealD multiplySymm(MonadRealD pM) throws FieldBinaryException, CladosMonadBinaryException {
+	public MonadRealD multiplySymm(MonadRealD pM) throws FieldBinaryException, CladosMonadException {
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
 		else if (isGZero(this))
@@ -1036,13 +854,8 @@ public class MonadRealD extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		MonadRealD halfTwo = new MonadRealD(this);
-		halfTwo.multiplyRight(pM);
-
-		multiplyLeft(pM);
-		add(halfTwo);
-
-		scale(new RealD(cM[0], 0.5d));
+		MonadRealD halfTwo = ((MonadRealD) CladosGMonad.REALD.copyOf(this)).multiplyRight(pM);
+		multiplyLeft(pM).add(halfTwo).scale(RealD.newONE(cM[0].getCardinal()).scale(CladosConstant.BY2_F));
 		setGradeKey();
 		return this;
 	}
@@ -1056,12 +869,10 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD normalize() throws CladosMonadException {
-		if (gradeKey == 0L)
+		if (gradeKey == 0L & isZero(cM[0]))
 			throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
 		try {
-			RealD temp = magnitude();
-			temp.invert();
-			scale(temp);
+			this.scale(this.magnitude().invert());
 		} catch (FieldException e) {
 			throw new CladosMonadException(this,
 					"Normalizing a zero magnitude or Field conflicted Monad isn't possible");
@@ -1099,16 +910,10 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD reverse() {
-		int[] tSpot;
-		byte k = 0;
-		for (byte j = 0; j <= getAlgebra().getGradeCount() - 1; j++) {
-			k = (byte) (j % 4);
-			if (k < 2)
-				continue; // This ensures the remainder must be 2 or 3
-			tSpot = getAlgebra().getGradeRange(j);
-			for (int l = tSpot[0]; l <= tSpot[1]; l++)
-				cM[l].scale(Double.valueOf(-1.0d));
-		}
+		IntStream.range(0, getAlgebra().getGradeCount()).filter(j -> (j % 4 > 1)).parallel().forEach(j -> {
+			int[] tSpot = getAlgebra().getGradeRange((byte) j);
+			IntStream.rangeClosed(tSpot[0], tSpot[1]).forEach(l -> cM[l].scale(CladosConstant.MINUS_ONE_D));
+		});
 		return this;
 	}
 
@@ -1122,23 +927,19 @@ public class MonadRealD extends MonadAbstract {
 	 * @return MonadRealD
 	 */
 	public MonadRealD scale(RealD pScale) throws FieldBinaryException {
-		for (int j = 0; j < getAlgebra().getBladeCount(); j++)
-			cM[j].multiply(pScale);
-
-		setGradeKey();
-		return this;
-	}
-
-	/**
-	 * Simple setter method of the algebra for this monad.
-	 * 
-	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
-	 * 'directions' in the underlying basis.
-	 * 
-	 * @param pA Algebra to set
-	 */
-	protected void setAlgebra(Algebra pA) {
-		algebra = pA;
+		if (IntStream.range(0, getAlgebra().getBladeCount()).allMatch(j -> isTypeMatch(cM[j], pScale))) {
+			IntStream.range(0, getAlgebra().getBladeCount()).forEach(j -> {
+				try {
+					cM[j].multiply(pScale);
+				} catch (FieldBinaryException e) {
+					;
+				}
+			});
+			setGradeKey();
+			return this;
+		} else {
+			throw new FieldBinaryException(cM[0], "Fields must share the same cardinal to scale a Monad.", pScale);
+		}
 	}
 
 	/**
@@ -1175,13 +976,6 @@ public class MonadRealD extends MonadAbstract {
 		setGradeKey();
 	}
 
-	@Override
-	public void setFrameName(String pRName) {
-		getAlgebra().removeFrame(frameName);
-		frameName = pRName;
-		getAlgebra().appendFrame(pRName);
-	}
-
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.
@@ -1192,20 +986,16 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public void setGradeKey() {
-		byte foundGrades = 0;
+		foundGrades = 0;
 		gradeKey = 0;
-		for (byte j = 0; j < getAlgebra().getGradeCount(); j++) {
-			int[] tSpot = getAlgebra().getGradeRange(j);
-			for (int k = tSpot[0]; k <= tSpot[1]; k++) {
-				if (!isZero(cM[k])) {
-					foundGrades++;
-					gradeKey += Math.pow(10, j);
-					break;
-					// Grade j found. Don't need to look at the other k's,
-					// so move to grade j+1
-				}
+		IntStream.range(0, getAlgebra().getGradeCount()).forEach(g -> {
+			int[] tSpot = getAlgebra().getGradeRange((byte) g);
+			if (IntStream.rangeClosed(tSpot[0], tSpot[1]).filter(k -> !isZero(cM[k])).findAny().isPresent()) {
+				foundGrades++;
+				gradeKey += Math.pow(10, g);
 			}
-		}
+		});
+
 		if (gradeKey == 0) {
 			foundGrades++;
 			gradeKey++;
@@ -1277,7 +1067,7 @@ public class MonadRealD extends MonadAbstract {
 			throw new CladosMonadBinaryException(this, "Can't subtract without a reference match.", pM);
 
 		for (int i = 0; i < getAlgebra().getBladeCount(); i++)
-			cM[i].subtract(pM.getCoeff()[i]);
+			cM[i].subtract(pM.getCoeff(i));
 
 		setGradeKey();
 		return this;

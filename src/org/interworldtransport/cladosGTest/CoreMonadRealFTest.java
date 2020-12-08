@@ -150,7 +150,7 @@ class CoreMonadRealFTest {
 		tM6.multiplyLeft(tM8).dualLeft();
 		tM6.scale(new RealF(tM6.getCoeff((short) 0), -1f));
 		assertTrue(tM6.isGEqual(tM7));
-
+		
 		tM6.multiplyRight(tM8).dualRight();
 		tM6.scale(new RealF(tM6.getCoeff((short) 0), -1f));
 		assertTrue(tM6.isGEqual(tM7));

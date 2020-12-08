@@ -84,10 +84,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * 
 	 * @param pA The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 */
-	public final MonadAbstract copyOf(MonadAbstract pA) throws BadSignatureException, CladosMonadException {
+	public final MonadAbstract copyOf(MonadAbstract pA) throws CladosMonadException {
 		switch (this) {
 		case REALF -> {
 			if (pA instanceof MonadRealF)
@@ -125,11 +124,9 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	 * @param pA    The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new monad's name.
 	 * @return MonadAbstract (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 */
-	public final MonadAbstract copyRename(MonadAbstract pA, String pName)
-			throws BadSignatureException, CladosMonadException {
+	public final MonadAbstract copyRename(MonadAbstract pA, String pName) throws CladosMonadException {
 		switch (this) {
 		case REALF -> {
 			if (pA instanceof MonadRealF)

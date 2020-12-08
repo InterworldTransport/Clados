@@ -548,11 +548,6 @@ public class NyadComplexF extends NyadAbstract
 	 * tied to the footPoint members of each Monad as keys.
 	 */
 	protected ArrayList<MonadComplexF>		monadList;
-	
-	/**
-	 * This array is the list of algebras used in the NyadComplexF. 
-	 */
-	protected ArrayList<Algebra>	algebraList;
 
 	/**
 	 * This element holds holds the field's multiplicative unity. It gets used
@@ -689,11 +684,10 @@ public class NyadComplexF extends NyadAbstract
 	 * 
 	 * @throws FieldBinaryException
 	 * 	This exception is thrown when the monads to be compressed fail the Field match test
-	 * @throws CladosMonadBinaryException
-	 * 	This exception is thrown when the monads to be compressed fail a reference match test
+	 * @throws CladosMonadException 
 	 */
 	public void antisymmCompress(int pInto, int pFrom)
-					throws FieldBinaryException, CladosMonadBinaryException
+					throws FieldBinaryException, CladosMonadException
 	{
 		MonadComplexF tempLeft = monadList.get(pInto);
 		MonadComplexF tempRight = monadList.get(pFrom);
@@ -1130,13 +1124,12 @@ public class NyadComplexF extends NyadAbstract
 	 * @param pFrom
 	 * 		int
 	 * 
-	 * @throws CladosMonadBinaryException
-	 * 		This exception is thrown when the monads being compressed fail a reference test
 	 * @throws FieldBinaryException
 	 * 		This exception is thrown when the scale field doesn't match the nyad's field.
+	 * @throws CladosMonadException 
 	 */
 	public void symmCompress(int pInto, int pFrom)
-					throws FieldBinaryException, CladosMonadBinaryException
+					throws FieldBinaryException, CladosMonadException
 	{
 		MonadComplexF tempLeft = monadList.get(pInto);
 		MonadComplexF tempRight = monadList.get(pFrom);

@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.ArrayList;
+
 /**
  * Many math objects within the cladosG package have a number of attributes in
  * common. They are named objects from named algebras and with named feet. The
@@ -92,6 +94,11 @@ public abstract class NyadAbstract {
 	 * algebras. Otherwise it should be false.
 	 */
 	protected boolean _strongFlag;
+	
+	/**
+	 * This array is the list of algebras used in the NyadComplexF. 
+	 */
+	protected ArrayList<Algebra>	algebraList;
 
 	/**
 	 * This String is the name the footPoint of the Reference Frame of the Monad

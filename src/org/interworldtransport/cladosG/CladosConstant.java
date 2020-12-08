@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.List;
+
 /**
  * This class just acts as a bucket for magic numbers so they aren't nightmarish
  * to find when they change in the future.
@@ -51,6 +53,23 @@ public final class CladosConstant {
 	 * This is the largest grade supported by Clados
 	 */
 	public final static byte MAXGRADE = CladosConstant.GENERATOR_MAX.ord;
+	/**
+	 * This is just a list of the special cases for Monad construction. Rather than
+	 * have a copy of them in each monad class, we keep them here.
+	 */
+	public final static List<String> MONAD_SPECIAL_CASES = List.of("Zero", "Unit Scalar", "Unit -Scalar",
+			"Unit PScalar", "Unit -PScalar");
+	/**
+	 * Alias for -1 to help readability elsewhere. Java's Float doesn't have it.
+	 */
+	public final static Float MINUS_ONE_F = Float.valueOf(-1.0f);
+	/**
+	 * Alias for -1 to help readability elsewhere. Java's Double doesn't have it.
+	 */
+	public final static Double MINUS_ONE_D = Double.valueOf(-1.0d);
+	
+	public final static Float BY2_F = Float.valueOf(1/2);
+	public final static Double BY2_D = Double.valueOf(1/2);
 
 	private CladosConstant() {
 		;

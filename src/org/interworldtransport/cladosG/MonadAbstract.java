@@ -113,16 +113,20 @@ public abstract class MonadAbstract {
 	}
 
 	/**
+	 * All clados objects are elements of some algebra. That algebra has a name.
+	 */
+	protected Algebra algebra;
+	protected byte foundGrades;
+
+	/**
 	 * This String is the name of the Reference Frame of the Monad
 	 */
 	protected String frameName;
-
 	/**
 	 * This long holds a key that shows which grades are present in the monad. The
 	 * key is a sum over powers of 10 with the grade as the exponent.
 	 */
 	protected long gradeKey;
-
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
@@ -158,6 +162,15 @@ public abstract class MonadAbstract {
 	public abstract MonadAbstract dualRight();
 
 	/**
+	 * This method returns the Algebra for this Monad.
+	 * 
+	 * @return Algebra
+	 */
+	public Algebra getAlgebra() {
+		return algebra;
+	}
+
+	/**
 	 * Return the name of the Reference Frame for this Monad
 	 * 
 	 * @return String
@@ -165,6 +178,25 @@ public abstract class MonadAbstract {
 	public String getFrameName() {
 		return frameName;
 	}
+	
+	/**
+	 * Return the field Coefficients for this Monad. These coefficients are the
+	 * multipliers making linear combinations of the basis elements.
+	 * 
+	 * @return DivField[]
+	 */
+	public abstract DivField[] getCoeff();
+	
+	/**
+	 * Return a field Coefficient for this Monad. These coefficients are the
+	 * multipliers making linear combinations of the basis elements.
+	 * 
+	 * @param i int This points at the coefficient at the equivalent tuple
+	 *           location.
+	 * 
+	 * @return DivField
+	 */
+	public abstract DivField getCoeff(int i);
 
 	/**
 	 * Return the grade key for the monad
@@ -278,8 +310,12 @@ public abstract class MonadAbstract {
 	 * 
 	 * @param pFrameName String
 	 */
-	protected abstract void setFrameName(String pFrameName);
-
+	public void setFrameName(String pRName) {
+		getAlgebra().removeFrame(frameName);
+		frameName = pRName;
+		getAlgebra().appendFrame(pRName);
+	}
+	
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.
@@ -293,54 +329,6 @@ public abstract class MonadAbstract {
 	 */
 	public void setName(String pName) {
 		name = pName;
-	}
-
-	/**
-	 * This method is called every time the gradeKey is set to determine whether the
-	 * sparseFlag should be set. The technique involves taking the log10 of the
-	 * gradeKey and truncating it. The first time through, one can get any integer
-	 * between 1 and gradeCount inclusive. Before the loop iterates, that integer is
-	 * used to subtract 10^logKey from gradeKey. That ensures the next pass through
-	 * the loop will produce an integer between 1 and the next lower grade unless
-	 * the one just found was the scalar grade. Once the scalar grade is found,
-	 * logKey=0, tempGradeKey=0, and the loop breaks out.
-	 * 
-	 * If the number of found grades is less than or equal to half the grades the
-	 * sparse flag is set to true. Otherwise it is set to false.
-	 * 
-	 * This method isn't actually used by child classes because the method for
-	 * setting the gradeKey does the same detection one coefficient at a time
-	 * breaking out when a non-zero coeff is found. Incrementing foundGrades in that
-	 * loop suffices. Still... there might be a need for this method elsewhere
-	 * later.
-	 * 
-	 * @param pGrades short The parameter is the gradeCount for the monad. It is
-	 *                passed into this method rather than looked up in order to
-	 *                allow this method to reside in the MonadAbstract class. If it
-	 *                were in one of the child monad classes, it would work just as
-	 *                well, but it would have to know the child algebra class too in
-	 *                order to avoid DivField confusion. Since a monad can be sparse
-	 *                or not independent of the DivField used, the method is placed
-	 *                here in the abstract parent.
-	 */
-	protected void setSparseFlag(short pGrades) {
-		long tempGradeKey = gradeKey;
-		short logKey = (short) Math.log10(tempGradeKey);
-		short foundGrades = 0; // This will be the number of grades found in the key.
-		while (logKey >= 0) // There will always be one trip through the loop because
-		{ // zero is a scalar and its logKey=1.
-			foundGrades++;
-			if (logKey == 0)
-				break; // logKey = 0 means we processed all grades including scalar.
-			tempGradeKey -= Math.pow(10, logKey);
-			// We processed logKey grade. Remove it from temporary gradeKey.
-			logKey = (short) Math.log10(tempGradeKey);
-			// logKey will be the highest remaining unprocessed grade
-		}
-		if (foundGrades < pGrades / 2)
-			sparseFlag = true;
-		else
-			sparseFlag = false;
 	}
 
 	/**
@@ -374,5 +362,67 @@ public abstract class MonadAbstract {
 	 *                              coefficients.
 	 */
 	public abstract DivField sqMagnitude() throws CladosMonadException;
+
+	/**
+	 * Simple setter method of the algebra for this monad.
+	 * 
+	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
+	 * 'directions' in the underlying basis.
+	 * 
+	 * @param pA Algebra to set
+	 */
+	protected void setAlgebra(Algebra pA) {
+		algebra = pA;
+	}
+
+	/**
+	 * This method is called every time the gradeKey is set to determine whether the
+	 * sparseFlag should be set. The technique involves taking the log10 of the
+	 * gradeKey and truncating it. The first time through, one can get any integer
+	 * between 1 and gradeCount inclusive. Before the loop iterates, that integer is
+	 * used to subtract 10^logKey from gradeKey. That ensures the next pass through
+	 * the loop will produce an integer between 1 and the next lower grade unless
+	 * the one just found was the scalar grade. Once the scalar grade is found,
+	 * logKey=0, tempGradeKey=0, and the loop breaks out.
+	 * 
+	 * If the number of found grades is less than or equal to half the grades the
+	 * sparse flag is set to true. Otherwise it is set to false.
+	 * 
+	 * This method isn't actually used by child classes because the method for
+	 * setting the gradeKey does the same detection one coefficient at a time
+	 * breaking out when a non-zero coeff is found. Incrementing foundGrades in that
+	 * loop suffices. Still... there might be a need for this method elsewhere
+	 * later.
+	 * 
+	 * @param pGrades short The parameter is the gradeCount for the monad. It is
+	 *                passed into this method rather than looked up in order to
+	 *                allow this method to reside in the MonadAbstract class. If it
+	 *                were in one of the child monad classes, it would work just as
+	 *                well, but it would have to know the child algebra class too in
+	 *                order to avoid DivField confusion. Since a monad can be sparse
+	 *                or not independent of the DivField used, the method is placed
+	 *                here in the abstract parent.
+	 */
+	protected void setSparseFlag(short pGrades) {
+		long slideKey = gradeKey;
+		byte logSlide = (byte) Math.log10(slideKey); // highest grade found
+		foundGrades = 0; // This will be the number of grades found in the key.
+		// There will always be one trip through the next while loop because zero is a
+		// scalar and its logSlide=1.
+		while (logSlide >= 0) {
+			foundGrades++;
+			if (logSlide == 0)
+				break; // we processed all grades including scalar.
+			// logSlide grade processed so remove it from slideKey and recompute logSlide.
+			slideKey -= Math.pow(10, logSlide);
+			logSlide = (byte) Math.log10(slideKey);
+		}
+		if (gradeKey > 1)
+			foundGrades--; // Don't get credit for scalar when other grades present.
+		if (foundGrades < pGrades / 2)
+			sparseFlag = true;
+		else
+			sparseFlag = false;
+	}
 
 }
