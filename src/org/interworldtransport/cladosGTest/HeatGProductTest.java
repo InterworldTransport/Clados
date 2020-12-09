@@ -2,7 +2,6 @@ package org.interworldtransport.cladosGTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosG.CliffordProduct;
 import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -10,7 +9,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class HeatGProductMapTest {
+class HeatGProductTest {
 	CliffordProduct a0;
 
 	@BeforeEach
@@ -108,4 +107,9 @@ class HeatGProductMapTest {
 		assertFalse(a0 == null);
 	}
 
+	@Test
+	public void testGen15() throws BadSignatureException, GeneratorRangeException {
+		a0 = new GProduct("+++-+++-+++-+++");
+		assertFalse(a0 == null);
+	}
 }

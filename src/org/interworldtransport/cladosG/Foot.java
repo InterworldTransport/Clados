@@ -28,6 +28,7 @@ import java.util.ArrayList;
 //import java.util.ListIterator;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.DivField;
 
 /**
@@ -91,7 +92,7 @@ public final class Foot {
 	public Foot(String pName) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
-		cardinalList.add(Cardinal.generate(pName));
+		cardinalList.add(CladosFBuilder.createCardinal(pName));
 	}
 
 	/**

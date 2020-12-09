@@ -176,7 +176,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 *                                 this method will throw them, so look to the
 	 *                                 CanonicalBasis and see why it complains.
 	 */
-	public CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
+	public final static CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
 		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen);
 		if (tB.isPresent())
 			return tB.get();
@@ -207,7 +207,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 *                                 CanonicalBasis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
+	public final static CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		Optional<CliffordProduct> tSpot = CladosGCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
@@ -236,7 +236,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 *                                 CanonicalBasis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public CliffordProduct createGProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
+	public final static CliffordProduct createGProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
 		Optional<CliffordProduct> tSpot = CladosGCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.

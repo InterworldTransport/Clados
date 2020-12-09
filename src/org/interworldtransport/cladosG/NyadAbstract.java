@@ -25,6 +25,8 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 /**
  * Many math objects within the cladosG package have a number of attributes in
@@ -39,6 +41,22 @@ import java.util.ArrayList;
  * @author Dr Alfred W Differ
  */
 public abstract class NyadAbstract {
+	/**
+	 * Return a boolean stating whether or not the nyad covers the algebra named in
+	 * the parameter. Coverage is true if a monad can be found in the nyad that
+	 * belongs to the algebra.
+	 * 
+	 * @param pN   NyadAbstract
+	 * @param pAlg String
+	 * @return boolean
+	 */
+	public static final boolean hasAlgebra(NyadAbstract pN, Algebra pAlg) {
+		for (Algebra pM : pN.getAlgebraList())
+			if (pAlg.equals(pM))
+				return true;
+		return false;
+	}
+
 	/**
 	 * If the monads listed within a nyad are all of the same algebra, the
 	 * strongFlag should be set to false AND the oneAlgebra flag should be set to
@@ -101,7 +119,7 @@ public abstract class NyadAbstract {
 	protected ArrayList<Algebra> algebraList;
 
 	/**
-	 * This String is the name the footPoint of the Reference Frame of the Monad
+	 * This is the Foot to which all the algebras of all monads should reference
 	 */
 	protected Foot footPoint;
 
@@ -109,6 +127,34 @@ public abstract class NyadAbstract {
 	 * All objects of this class have a name independent of all other features.
 	 */
 	protected String Name;
+
+	/**
+	 * This is just an alias for algebraList.stream().
+	 * 
+	 * @return Stream of distinct algebras in use in this Nyad.
+	 */
+	public Stream<Algebra> algebraStream() {
+		return algebraList.stream();
+	}
+	
+	/**
+	 * Return the array of Algebras
+	 * 
+	 * @return ArrayList (of Algebras)
+	 */
+	public ArrayList<Algebra> getAlgebraList() {
+		return algebraList;
+	}
+
+	/**
+	 * Return the element of the array of Algebras at the jth index.
+	 * 
+	 * @param pj int
+	 * @return Algebra
+	 */
+	public Algebra getAlgebra(int pj) {
+		return algebraList.get(pj);
+	}
 
 	/**
 	 * Simple getter for the Foot for which the nyad relies
@@ -129,12 +175,47 @@ public abstract class NyadAbstract {
 	}
 
 	/**
+	 * Return the algebra order of this Nyad
+	 * 
+	 * @return short
+	 */
+	public int getNyadAlgebraOrder() {
+		return algebraList.size();
+	}
+
+	/**
 	 * Set the name of this NyadRealD
 	 * 
 	 * @param name String
 	 */
 	public void setName(String name) {
 		Name = name;
+	}
+
+	protected <T extends MonadAbstract> void resetAlgebraList(ArrayList<T> pMLIn) {
+		algebraList.clear();
+		algebraList.ensureCapacity(pMLIn.size());
+		for (MonadAbstract point : pMLIn)
+			if (!algebraList.contains(point.getAlgebra()))
+				algebraList.add(point.getAlgebra());
+		// 1 <= algebraList.size() <= monadList.size()
+		// AlgebraList is reset to show which algebras are used by monads in this nyad
+
+		Collections.sort(algebraList); // and now that list is sorted by name
+
+		if (pMLIn.size() == 1) {
+			_strongFlag = true;
+			_oneAlgebra = true;
+		} else if (algebraList.size() == 1) {
+			_strongFlag = false;
+			_oneAlgebra = true;
+		} else if (pMLIn.size() == algebraList.size()) {
+			_strongFlag = true;
+			_oneAlgebra = false;
+		} else {// We know monadList.size()>algebraList.size()>1 at this point
+			_strongFlag = false;
+			_oneAlgebra = false;
+		}
 	}
 
 	/**

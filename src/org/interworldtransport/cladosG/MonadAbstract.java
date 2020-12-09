@@ -347,7 +347,7 @@ public abstract class MonadAbstract {
 	 * would take place to point out a passive rotation or translation or any other
 	 * alteration to the reference frame.
 	 * 
-	 * @param pFrameName String
+	 * @param pRName String
 	 */
 	public void setFrameName(String pRName) {
 		getAlgebra().removeFrame(frameName);

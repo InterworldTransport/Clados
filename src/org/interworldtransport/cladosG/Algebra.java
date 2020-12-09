@@ -214,7 +214,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 */
 	public Algebra(String pS, Foot pF, Cardinal pCard, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, pCard, CladosGBuilder.INSTANCE.createGProduct(pSig));
+		this(pS, pF, pCard, CladosGBuilder.createGProduct(pSig));
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 */
 	public Algebra(String pS, Foot pF, String pSig, DivField pDiv)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.INSTANCE.createGProduct(pSig));
+		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.createGProduct(pSig));
 	}
 
 	/**
@@ -276,7 +276,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	public Algebra(String pS, String pFootName, String pSig, DivField pF)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()), pF.getCardinal(),
-				CladosGBuilder.INSTANCE.createGProduct(pSig));
+				CladosGBuilder.createGProduct(pSig));
 	}
 
 	/**

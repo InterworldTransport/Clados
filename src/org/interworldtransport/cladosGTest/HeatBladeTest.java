@@ -174,7 +174,17 @@ class HeatBladeTest {
 
 	@Test
 	public void testGen14() throws GeneratorRangeException {
-		Generator[] j = Generator.values();
+		Generator[] j = Arrays.copyOf(Generator.values(), 14);
+		int m = 0;
+		for (m = 0; m < 10000000; m++) {
+			a0 = new Blade((byte) j.length, j);
+			assertFalse(a0 == null);
+		}
+	}
+	
+	@Test
+	public void testGen15() throws GeneratorRangeException {
+		Generator[] j = Arrays.copyOf(Generator.values(), 15);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);

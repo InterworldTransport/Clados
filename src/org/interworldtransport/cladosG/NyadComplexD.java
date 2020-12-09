@@ -24,15 +24,19 @@
  */
 package org.interworldtransport.cladosG;
 
-import static org.interworldtransport.cladosG.MonadComplexD.*;
+import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
+import static org.interworldtransport.cladosG.MonadComplexD.isReferenceMatch;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import org.interworldtransport.cladosF.CladosField;
+import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
-import org.interworldtransport.cladosGExceptions.*;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.CladosNyadException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * Multivector Lists over a shared division field and shared algebraic foot.
@@ -61,152 +65,6 @@ import org.interworldtransport.cladosGExceptions.*;
  * @author Dr Alfred W Differ
  */
 public class NyadComplexD extends NyadAbstract {
-	/**
-	 * Return an integer pointing to a monad in the nyad that uses the algebra named
-	 * in the parameter.
-	 * 
-	 * @param pN   NyadComplexD
-	 * @param pAlg String
-	 * @return int
-	 */
-	public static final int findAlgebra(NyadComplexD pN, Algebra pAlg) {
-		for (MonadComplexD pM : pN.getMonadList())
-			if (pAlg.equals(pM.getAlgebra()))
-				return pN.monadList.indexOf(pM);
-		return -1;
-	}
-
-	/**
-	 * Return an integer larger than pStart pointing to a monad in the nyad that
-	 * uses the algebra named in the parameter.
-	 * 
-	 * @param pN     NyadComplexD
-	 * @param pAlg   String
-	 * @param pStart int
-	 * @return int
-	 */
-	public static final int findNextAlgebra(NyadComplexD pN, Algebra pAlg, int pStart) {
-		if (pN.getMonadList().size() < pStart)
-			return -1;
-		for (int j = pStart; j < pN.getMonadList().size(); j++)
-			if (pAlg.equals(pN.getMonadList(j).getAlgebra()))
-				return j;
-		return -1;
-	}
-
-	/**
-	 * Return an integer pointing to the part of the nyad expressed in the frame
-	 * named in the parameter.
-	 * 
-	 * @param pN     NyadComplexD
-	 * @param pFrame String
-	 * @return boolean
-	 */
-	public static final int findFrame(NyadComplexD pN, String pFrame) {
-		for (MonadComplexD pM : pN.getMonadList())
-			if (pFrame.equals(pM.getFrameName()))
-				return pN.monadList.indexOf(pM);
-		return -1;
-	}
-
-	/**
-	 * Return the index for monad matching requested name within the nyad if found.
-	 * 
-	 * @param pN    NyadComplexD
-	 * @param pName String
-	 * @return int
-	 */
-	public static final int findName(NyadComplexD pN, String pName) {
-		for (MonadComplexD pM : pN.getMonadList())
-			if (pName.equals(pM.getName()))
-				return pN.monadList.indexOf(pM);
-		return -1;
-	}
-
-	/**
-	 * Return the index for monad within the nyad if found.
-	 * 
-	 * @param pN  NyadComplexD
-	 * @param pIn MonadComplexD
-	 * @return int
-	 */
-	public static final int findMonad(NyadComplexD pN, MonadComplexD pIn) {
-		for (MonadComplexD pM : pN.getMonadList())
-			if (pIn == pM)
-				return pN.monadList.indexOf(pM);
-		return -1;
-	}
-
-	/**
-	 * Return a boolean stating whether or not the nyad covers the algebra named in
-	 * the parameter. Coverage is true if a monad can be found in the nyad that
-	 * belongs to the algebra.
-	 * 
-	 * @param pN   NyadAbstract
-	 * @param pAlg String
-	 * @return boolean
-	 */
-	public static final boolean hasAlgebra(NyadComplexD pN, Algebra pAlg) {
-		for (Algebra pM : pN.getAlgebraList())
-			if (pAlg.equals(pM))
-				return true;
-		return false;
-	}
-
-	/**
-	 * Return a boolean stating whether or not the nyad is expressed in the frame
-	 * named in the parameter.
-	 * 
-	 * @param pN     NyadComplexD
-	 * @param pFrame String
-	 * @return boolean
-	 */
-	public static final boolean hasFrame(NyadComplexD pN, String pFrame) {
-		for (MonadComplexD pM : pN.getMonadList())
-			if (pFrame.equals(pM.getFrameName()))
-				return true;
-		return false;
-	}
-
-	/**
-	 * This method finds how often a particular algebra shows up in use by monads in
-	 * the nyad. Results could range from zero to nyadOrder.
-	 * <p>
-	 * 
-	 * @param pN   NyadComplexD
-	 * @param pAlg AlgebraComplexD
-	 * @return int This method counts how many instances of the algebra are present
-	 *         in monads in the nyad
-	 */
-	public static final int howManyAtAlgebra(NyadComplexD pN, Algebra pAlg) {
-		if (pN.getNyadOrder() == 0)
-			return 0;
-		if (pAlg == null)
-			return 0;
-		int found = 0;
-		int test = 0;
-		while (test >= 0) {
-			test = findNextAlgebra(pN, pAlg, test);
-			if (test >= 0)
-				found++;
-		}
-		return found;
-	}
-
-	/**
-	 * Return a boolean stating whether or not the nyad contained the named monad.
-	 * 
-	 * @param pN    NyadComplexD
-	 * @param pName String
-	 * @return boolean
-	 */
-	public static final boolean hasName(NyadComplexD pN, String pName) {
-		for (MonadComplexD pM : pN.getMonadList())
-			if (pName.equals(pM.getName()))
-				return true;
-		return false;
-	}
-
 	/**
 	 * Return true if the Monads in the two lists are GEqual and the nyads are
 	 * reference matches. Only monads sharing the same algebra name need to be
@@ -298,73 +156,6 @@ public class NyadComplexD extends NyadAbstract {
 		// counterparts in the first.
 		// The other direction has already been checked, thus reflexivity is assured.
 		return true;
-	}
-
-	/**
-	 * This method determines whether or not the Nyad is a pscalar in the algebra in
-	 * question. It works essentially the same way as isScalarAt.
-	 * 
-	 * @param pN   NyadComplexD
-	 * @param pAlg AlgebraComplexD
-	 * @return boolean
-	 */
-	public static final boolean isPScalarAt(NyadComplexD pN, Algebra pAlg) {
-		boolean test = false; // Assume test fails
-		if (pN.getMonadList().size() <= 0)
-			return false; // No monads? Fails.
-		int maxGrade = pAlg.getGradeCount() - 1; // find pAlg's max grade
-		int j = 0;
-		int tSpot = 0;
-		while (j < pN.getMonadList().size()) // loop through monads
-		{
-			tSpot = findNextAlgebra(pN, pAlg, j); // find a monad using pAlg
-			if (tSpot < 0)
-				break; // none found? break out of loop
-			else if (!isGrade(pN.getMonadList(tSpot), maxGrade))
-				return false; // found and not pscalar? Fails.
-			else {
-				test = true; // found and IS pscalar? test=true because one was found.
-				j = tSpot + 1; // increment loop var to where Alg match was found
-			}
-		} // loop all done
-		return test; // if test is true, no non-pscalar(s) found at pAlg, but pscalar WAS found.
-	}
-
-	/**
-	 * This method determines whether or not the Nyad is a scalar in the algebra in
-	 * question.
-	 * 
-	 * The method looks for Algebra matches in the monad list. If none are found the
-	 * test fails. If one is found and the related monad is a scalar, the test is
-	 * temporarily true, but the search continues until one exhausts the monad list
-	 * for algebra matches. If exhaustion occurs before another match is found with
-	 * a non-scalar monad, the test is solidly true. If a non-scalar is found before
-	 * the monad list is exhausted, the test fails.
-	 * 
-	 * @param pN   NyadComplexD
-	 * @param pAlg AlgebraComplexD
-	 * @return boolean
-	 */
-	public static final boolean isScalarAt(NyadComplexD pN, Algebra pAlg) {
-		boolean test = false; // Assume test fails
-		if (pN.getMonadList().size() <= 0)
-			return false; // No monads? Fails.
-
-		int j = 0;
-		int tSpot = 0;
-		while (j < pN.getMonadList().size()) // loop through monads
-		{
-			tSpot = findNextAlgebra(pN, pAlg, j); // find a monad using pAlg
-			if (tSpot < 0)
-				break; // none found? break out of loop
-			else if (!isGrade(pN.getMonadList(tSpot), 0))
-				return false; // found and not scalar? Fails.
-			else {
-				test = true; // found and IS scalar? test=true because one was found.
-				j = tSpot + 1; // increment loop var to where Alg match was found
-			}
-		} // loop all done
-		return test; // if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
 	}
 
 	/**
@@ -487,26 +278,6 @@ public class NyadComplexD extends NyadAbstract {
 	 * 
 	 * @return String
 	 */
-	public static String toXMLString(NyadComplexD pN) {
-		StringBuilder rB = new StringBuilder("<Nyad order=\"" + pN.getNyadOrder() + "\" ");
-		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
-		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
-		rB.append(pN.getFoot().toXMLString(""));
-		rB.append("\t<MonadList>\n");
-		for (MonadComplexD tSpot : pN.getMonadList())
-			rB.append(MonadComplexD.toXMLString(tSpot));
-		rB.append("\t</MonadList>\n");
-		rB.append("</Nyad>\n");
-		return rB.toString();
-	}
-
-	/**
-	 * Display XML string that represents the Nyad
-	 * 
-	 * @param pN NyadComplexD This is the nyad to be converted to XML.
-	 * 
-	 * @return String
-	 */
 	public static String toXMLFullString(NyadComplexD pN) {
 		StringBuilder rB = new StringBuilder("\t<Nyad order=\"" + pN.getNyadOrder() + "\" ");
 		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
@@ -526,22 +297,44 @@ public class NyadComplexD extends NyadAbstract {
 	}
 
 	/**
+	 * Display XML string that represents the Nyad
+	 * 
+	 * @param pN NyadComplexD This is the nyad to be converted to XML.
+	 * 
+	 * @return String
+	 */
+	public static String toXMLString(NyadComplexD pN) {
+		StringBuilder rB = new StringBuilder("<Nyad order=\"" + pN.getNyadOrder() + "\" ");
+		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
+		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
+		rB.append(pN.getFoot().toXMLString(""));
+		rB.append("\t<MonadList>\n");
+		for (MonadComplexD tSpot : pN.getMonadList())
+			rB.append(MonadComplexD.toXMLString(tSpot));
+		rB.append("\t</MonadList>\n");
+		rB.append("</Nyad>\n");
+		return rB.toString();
+	}
+
+	/**
 	 * This array is the list of Monads that makes up the NyadComplexD. It will be
 	 * tied to the footPoint members of each Monad as keys.
 	 */
 	protected ArrayList<MonadComplexD> monadList;
 
 	/**
-	 * Simple copy constructor of a NyadComplexD. The passed NyadComplexD will be
-	 * copied in detail. This contructor is used most often to get around operations
-	 * that alter one of the nyads when the developer does not wish it to be
-	 * altered.
+	 * Simple copy constructor of a Nyad. The passed NyadComplexD will be copied in
+	 * detail. This contructor is used most often to get around operations that
+	 * alter one of the nyads when the developer does not wish it to be altered.
 	 * 
 	 * @param pN NyadComplexD
-	 * @throws CladosNyadException This exception is thrown when the offered Nyad is
-	 *                             malformed. Make no assumptions!
+	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
+	 *                              is malformed. Make no assumptions!
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed one one of the
+	 *                              monads in the nyad being copied.
 	 */
-	public NyadComplexD(NyadComplexD pN) throws CladosNyadException {
+	public NyadComplexD(NyadComplexD pN) throws CladosNyadException, CladosMonadException {
 		this(pN.getName(), pN, true);
 	}
 
@@ -553,10 +346,14 @@ public class NyadComplexD extends NyadAbstract {
 	 * @param pName String
 	 * @param pM    MonadComplexD
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
-	 * @throws CladosNyadException This exception is thrown when the offered Nyad is
-	 *                             malformed. Make no assumptions!
+	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
+	 *                              is malformed. Make no assumptions!
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed about the monad
+	 *                              being used/copied.
 	 */
-	public NyadComplexD(String pName, MonadComplexD pM, boolean pCopy) throws CladosNyadException {
+	public NyadComplexD(String pName, MonadComplexD pM, boolean pCopy)
+			throws CladosNyadException, CladosMonadException {
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		monadList = new ArrayList<MonadComplexD>(1);
@@ -582,10 +379,13 @@ public class NyadComplexD extends NyadAbstract {
 	 * @param pName String
 	 * @param pN    NyadComplexD
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
-	 * @throws CladosNyadException This exception is thrown when the offered Nyad is
-	 *                             malformed. Make no assumptions!
+	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
+	 *                              is malformed. Make no assumptions!
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed one one of the
+	 *                              monads in the nyad being copied.
 	 */
-	public NyadComplexD(String pName, NyadComplexD pN, boolean pCopy) throws CladosNyadException {
+	public NyadComplexD(String pName, NyadComplexD pN, boolean pCopy) throws CladosNyadException, CladosMonadException {
 		setName(pName);
 		setFoot(pN.getFoot());
 		if (pN.getMonadList() != null) {
@@ -598,57 +398,6 @@ public class NyadComplexD extends NyadAbstract {
 				for (MonadComplexD tSpot : pN.getMonadList())
 					appendMonad(tSpot);
 		}
-	}
-
-	/**
-	 * Dyadic antisymmetric compression: 1/2 (left right - right left) Monads are
-	 * placed in the same algebra and antisymmetrically multiplied to each other. A
-	 * reference match test must pass for both after the algebra names have been
-	 * changed.
-	 * 
-	 * @param pInto AlgebraComplexD
-	 * @param pFrom AlgebraComplexD
-	 * @throws CladosNyadException This exception is thrown when the monads to be
-	 *                             compressed fail a field match test or a reference
-	 *                             match test used in multiplication.
-	 * 
-	 * @return NyadComplexD
-	 */
-	/*
-	 * public NyadComplexD antisymmCompress(AlgebraComplexD pInto, AlgebraComplexD
-	 * pFrom) throws CladosNyadException { // The strings refer to particular
-	 * algebras. Find them in the AlgebraKey // to know which two monads are being
-	 * compress. Once that is done, do // the operation. int tempInto =
-	 * findAlgebra(this, pInto); int tempFrom = findAlgebra(this, pFrom);
-	 * 
-	 * try { antisymmCompress(tempInto, tempFrom); return this; } catch
-	 * (FieldBinaryException e) { throw new CladosNyadException(this,
-	 * "Monad cardinals must match for compression."); } catch
-	 * (CladosMonadBinaryException e) { throw new CladosNyadException(this,
-	 * "Monad mutliplication failed for compression."); } }
-	 */
-	/**
-	 * Dyad anymmetric compression: 1/2 (left right - right left) Monads are placed
-	 * in the same algebra and antisymmetrically multiplied to eachother. A
-	 * reference match test must pass for both after the algebra names have been
-	 * changed.
-	 * 
-	 * @param pInto int
-	 * @param pFrom int
-	 * 
-	 * @throws FieldBinaryException This exception is thrown when the monads to be
-	 *                              compressed fail the Field match test
-	 * @throws CladosMonadException
-	 */
-	public void antisymmCompress(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
-		MonadComplexD tempLeft = monadList.get(pInto);
-		MonadComplexD tempRight = monadList.get(pFrom);
-
-		tempRight.setAlgebra(tempLeft.getAlgebra());
-		tempLeft.multiplyAntisymm(tempRight);
-
-		tempRight = monadList.remove(pFrom);
-		monadList.trimToSize();
 	}
 
 	/**
@@ -670,7 +419,7 @@ public class NyadComplexD extends NyadAbstract {
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
 		monadList.add(pM);
-		resetAlgebraList();
+		resetAlgebraList(monadList);
 		return this;
 	}
 
@@ -680,13 +429,14 @@ public class NyadComplexD extends NyadAbstract {
 	 * wind up referencing the passed Monad.
 	 * 
 	 * @param pM MonadComplexD
-	 * 
-	 * @throws CladosNyadException This exception is thrown if the foot of the new
-	 *                             monad fails to match
-	 * 
 	 * @return NyadComplexD
+	 * @throws CladosNyadException  This exception is thrown if the foot of the new
+	 *                              monad fails to match.
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed about the monad
+	 *                              being copied.
 	 */
-	public NyadComplexD appendMonadCopy(MonadComplexD pM) throws CladosNyadException {
+	public NyadComplexD appendMonadCopy(MonadComplexD pM) throws CladosNyadException, CladosMonadException {
 		// This method works if the foot of pM matches the foot of this nyad
 		// The footPoint objects must match.
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
@@ -694,9 +444,58 @@ public class NyadComplexD extends NyadAbstract {
 
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
-		monadList.add(new MonadComplexD(pM));
-		resetAlgebraList();
+		monadList.add((MonadComplexD) CladosGMonad.COMPLEXD.copyOf(pM));
+		resetAlgebraList(monadList);
 		return this;
+	}
+
+	/**
+	 * Dyad anymmetric compression: 1/2 (left right - right left) Monads are placed
+	 * in the same algebra and antisymmetrically multiplied to eachother. A
+	 * reference match test must pass for both after the algebra names have been
+	 * changed.
+	 * 
+	 * @param pInto int
+	 * @param pFrom int
+	 * 
+	 * @throws FieldBinaryException This exception is thrown when the monads to be
+	 *                              compressed fail the Field match test
+	 * @throws CladosMonadException
+	 */
+	public void compressAntiSymm(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
+		MonadComplexD tempLeft = monadList.get(pInto);
+		MonadComplexD tempRight = monadList.get(pFrom);
+
+		tempRight.setAlgebra(tempLeft.getAlgebra());
+		tempLeft.multiplyAntisymm(tempRight);
+
+		monadList.remove(pFrom);
+		//TODO RESET Algebra list or write small method that removes it being careful for weak detection
+		monadList.trimToSize();
+	}
+
+	/**
+	 * Dyad symmetric compression: 1/2 (left right + right left) Monads are placed
+	 * in the same algebra and symmetrically multiplied to each other. A reference
+	 * match test must pass for both after the algebra names have been changed.
+	 * 
+	 * @param pInto int
+	 * @param pFrom int
+	 * 
+	 * @throws FieldBinaryException This exception is thrown when the scale field
+	 *                              doesn't match the nyad's field.
+	 * @throws CladosMonadException
+	 */
+	public void compressSymm(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
+		MonadComplexD tempLeft = monadList.get(pInto);
+		MonadComplexD tempRight = monadList.get(pFrom);
+
+		tempRight.setAlgebra(tempLeft.getAlgebra());
+		tempLeft.multiplySymm(tempRight);
+
+		monadList.remove(pFrom);
+		//TODO RESET Algebra list or write small method that removes it being careful for weak detection
+		monadList.trimToSize();
 	}
 
 	/**
@@ -727,13 +526,10 @@ public class NyadComplexD extends NyadAbstract {
 	 */
 	public NyadComplexD createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard)
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
-		MonadComplexD tM;
-		if (pCard == null)
-			tM = new MonadComplexD(pName, pAlgebra, pFrame, getFoot(), pSig,
-					(ComplexD) CladosField.COMPLEXD.createZERO(getFoot().getCardinal(0)));
-		else
-			tM = new MonadComplexD(pName, pAlgebra, pFrame, getFoot(), pSig,
-					(ComplexD) CladosField.COMPLEXD.createZERO(pCard));
+		Cardinal tCard = (pCard == null) ? CladosFBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
+				: CladosFBuilder.createCardinal(pCard);
+		MonadComplexD tM = (MonadComplexD) CladosGMonad.COMPLEXD
+				.createWithFoot(CladosFBuilder.DIVFIELD.createZERO(tCard), getFoot(), pName, pAlgebra, pFrame, pSig);
 		appendMonad(tM);
 		return this;
 	}
@@ -761,22 +557,79 @@ public class NyadComplexD extends NyadAbstract {
 	}
 
 	/**
-	 * Return the array of Algebras
+	 * Return an integer pointing to a monad in the nyad that uses the algebra named
+	 * in the parameter.
 	 * 
-	 * @return ArrayList (of Algebras)
+	 * @param pN   NyadComplexD
+	 * @param pAlg String
+	 * @return int
 	 */
-	public ArrayList<Algebra> getAlgebraList() {
-		return algebraList;
+	public int findAlgebra(Algebra pAlg) {
+		for (MonadComplexD pM : getMonadList())
+			if (pAlg.equals(pM.getAlgebra()))
+				return monadList.indexOf(pM);
+		return -1;
 	}
 
 	/**
-	 * Return the element of the array of Algebras at the jth index.
+	 * Return an integer pointing to the part of the nyad expressed in the frame
+	 * named in the parameter.
 	 * 
-	 * @param pj int
-	 * @return AlgebraComplexD
+	 * @param pN     NyadComplexD
+	 * @param pFrame String
+	 * @return boolean
 	 */
-	public Algebra getAlgebraList(int pj) {
-		return algebraList.get(pj);
+	public int findFrame(String pFrame) {
+		for (MonadComplexD pM : getMonadList())
+			if (pFrame.equals(pM.getFrameName()))
+				return monadList.indexOf(pM);
+		return -1;
+	}
+
+	/**
+	 * Return the index for monad within the nyad if found.
+	 * 
+	 * @param pN  NyadComplexD
+	 * @param pIn MonadComplexD
+	 * @return int
+	 */
+	public int findMonad(MonadComplexD pIn) {
+		for (MonadComplexD pM : getMonadList())
+			if (pIn == pM)
+				return monadList.indexOf(pM);
+		return -1;
+	}
+
+	/**
+	 * Return the index for monad matching requested name within the nyad if found.
+	 * 
+	 * @param pN    NyadComplexD
+	 * @param pName String
+	 * @return int
+	 */
+	public int findName(String pName) {
+		for (MonadComplexD pM : getMonadList())
+			if (pName.equals(pM.getName()))
+				return monadList.indexOf(pM);
+		return -1;
+	}
+
+	/**
+	 * Return an integer larger than pStart pointing to a monad in the nyad that
+	 * uses the algebra named in the parameter.
+	 * 
+	 * @param pN     NyadComplexD
+	 * @param pAlg   String
+	 * @param pStart int
+	 * @return int
+	 */
+	public int findNextAlgebra(Algebra pAlg, int pStart) {
+		if (getMonadList().size() < pStart)
+			return -1;
+		for (int j = pStart; j < getMonadList().size(); j++)
+			if (pAlg.equals(getMonadList(j).getAlgebra()))
+				return j;
+		return -1;
 	}
 
 	/**
@@ -808,12 +661,124 @@ public class NyadComplexD extends NyadAbstract {
 	}
 
 	/**
-	 * Return the algebra order of this Nyad
+	 * Return a boolean stating whether or not the nyad is expressed in the frame
+	 * named in the parameter.
 	 * 
-	 * @return short
+	 * @param pN     NyadComplexD
+	 * @param pFrame String
+	 * @return boolean
 	 */
-	public int getNyadAlgebraOrder() {
-		return algebraList.size();
+	public boolean hasFrame(String pFrame) {
+		for (MonadComplexD pM : getMonadList())
+			if (pFrame.equals(pM.getFrameName()))
+				return true;
+		return false;
+	}
+
+	/**
+	 * Return a boolean stating whether or not the nyad contained the named monad.
+	 * 
+	 * @param pN    NyadComplexD
+	 * @param pName String
+	 * @return boolean
+	 */
+	public boolean hasName(String pName) {
+		for (MonadComplexD pM : getMonadList())
+			if (pName.equals(pM.getName()))
+				return true;
+		return false;
+	}
+
+	/**
+	 * This method finds how often a particular algebra shows up in use by monads in
+	 * the nyad. Results could range from zero to nyadOrder.
+	 * <p>
+	 * 
+	 * @param pN   NyadComplexD
+	 * @param pAlg AlgebraComplexD
+	 * @return int This method counts how many instances of the algebra are present
+	 *         in monads in the nyad
+	 */
+	public int howManyAtAlgebra(Algebra pAlg) {
+		if (getNyadOrder() == 0)
+			return 0;
+		if (pAlg == null)
+			return 0;
+		int found = 0;
+		int test = 0;
+		while (test >= 0) {
+			test = findNextAlgebra(pAlg, test);
+			if (test >= 0)
+				found++;
+		}
+		return found;
+	}
+
+	/**
+	 * This method determines whether or not the Nyad is a pscalar in the algebra in
+	 * question. It works essentially the same way as isScalarAt.
+	 * 
+	 * @param pN   NyadComplexD
+	 * @param pAlg AlgebraComplexD
+	 * @return boolean
+	 */
+	public boolean isPScalarAt(Algebra pAlg) {
+		boolean test = false; // Assume test fails
+		if (getMonadList().size() <= 0)
+			return false; // No monads? Fails.
+		int maxGrade = pAlg.getGradeCount() - 1; // find pAlg's max grade
+		int j = 0;
+		int tSpot = 0;
+		while (j < getMonadList().size()) // loop through monads
+		{
+			tSpot = findNextAlgebra(pAlg, j); // find a monad using pAlg
+			if (tSpot < 0)
+				break; // none found? break out of loop
+			else if (!isGrade(getMonadList(tSpot), maxGrade))
+				return false; // found and not pscalar? Fails.
+			else {
+				test = true; // found and IS pscalar? test=true because one was found.
+				j = tSpot + 1; // increment loop var to where Alg match was found
+			}
+		} // loop all done
+		return test; // if test is true, no non-pscalar(s) found at pAlg, but pscalar WAS found.
+	}
+
+	/**
+	 * This method determines whether or not the Nyad is a scalar in the algebra in
+	 * question.
+	 * 
+	 * The method looks for Algebra matches in the monad list. If none are found the
+	 * test fails. If one is found and the related monad is a scalar, the test is
+	 * temporarily true, but the search continues until one exhausts the monad list
+	 * for algebra matches. If exhaustion occurs before another match is found with
+	 * a non-scalar monad, the test is solidly true. If a non-scalar is found before
+	 * the monad list is exhausted, the test fails.
+	 * 
+	 * @param pN   NyadComplexD
+	 * @param pAlg AlgebraComplexD
+	 * @return boolean
+	 */
+	public boolean isScalarAt(Algebra pAlg) {
+		boolean test = false; // Assume test fails
+		if (getMonadList().size() <= 0)
+			return false; // No monads? Fails.
+
+		int j = 0;
+		int tSpot = 0;
+		while (j < getMonadList().size()) // loop through monads
+		{
+			tSpot = findNextAlgebra(pAlg, j); // find a monad using pAlg
+			if (tSpot < 0)
+				break; // none found? break out of loop
+			else if (!isGrade(getMonadList(tSpot), 0))
+				return false; // found and not scalar? Fails.
+			else {
+				test = true; // found and IS scalar? test=true because one was found.
+				j = tSpot + 1; // increment loop var to where Alg match was found
+			}
+		} // loop all done
+		return test; // if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
 	}
 
 	/**
@@ -870,7 +835,7 @@ public class NyadComplexD extends NyadAbstract {
 		} finally {
 			if (test != null) {
 				monadList.trimToSize();
-				resetAlgebraList();
+				resetAlgebraList(monadList);
 			}
 		}
 
@@ -892,28 +857,6 @@ public class NyadComplexD extends NyadAbstract {
 		removeMonad(testfind);
 		return this;
 	}
-
-	/**
-	 * NyadComplexD Scaling: Pick a monad and scale it by the magnitude provided.
-	 * Only one monad can be scaled within a nyad at a time. Note that a request to
-	 * scale a monad that cannot be found in the list results in no action and no
-	 * exception. The scaling is effectively performed against a 'zero' monad for
-	 * the algebra not represented in the list since much monads can be appended to
-	 * the list without really changing the nature of the nyad.
-	 * 
-	 * @param pk   String
-	 * @param pMag ComplexD
-	 * @throws FieldBinaryException This exception is thrown when the scale field
-	 *                              doesn't match the nyad's field.
-	 * @return NyadComplexD
-	 */
-	// public NyadComplexD scale(AlgebraComplexD pk, ComplexD pMag) throws
-	// FieldBinaryException
-	// {
-	// int tF = algebraList.indexOf(pk);
-	// if (tF >= 0 && tF <= monadList.size()) monadList.get(tF).scale(pMag);
-	// return this;
-	// }
 
 	/**
 	 * NyadComplexD Scaling: Pick a monad and scale it by the magnitude provided.
@@ -946,87 +889,5 @@ public class NyadComplexD extends NyadAbstract {
 			monadList = null;
 		else
 			monadList = new ArrayList<MonadComplexD>(pML);
-
-	}
-
-	/**
-	 * Dyad symmetric compression: 1/2 (left right + right left) Monads are placed
-	 * in the same algebra and symmetrically multiplied to each other. A reference
-	 * match test must pass for both after the algebra names have been changed.
-	 * 
-	 * @param pInto AlgebraComplexD
-	 * @param pFrom AlgebraComplexD
-	 * 
-	 * @throws CladosNyadException This exception is thrown when the monads being
-	 *                             compressed fail a field match or reference match
-	 *                             test used in multiplication.
-	 * @return NyadComplexD
-	 */
-	/*
-	 * public NyadComplexD symmCompress(AlgebraComplexD pInto, AlgebraComplexD
-	 * pFrom) throws CladosNyadException { // The strings refer to particular
-	 * algebras. Find them in the AlgebraKey // to know which two monads are being
-	 * compress. Once that is done, do // the operation. int tempInto =
-	 * findAlgebra(this, pInto); int tempFrom = findAlgebra(this, pFrom);
-	 * 
-	 * try { symmCompress(tempInto, tempFrom); return this; } catch
-	 * (FieldBinaryException e) { throw new CladosNyadException(this,
-	 * "Monad cardinals must match for compression."); } catch
-	 * (CladosMonadBinaryException e) { throw new CladosNyadException(this,
-	 * "Monad cardinals must match for compression."); } }
-	 */
-	private void resetAlgebraList() {
-		algebraList.clear();
-		algebraList.ensureCapacity(monadList.size());
-		for (MonadComplexD point : monadList)
-			if (!algebraList.contains(point.getAlgebra()))
-				algebraList.add(point.getAlgebra());
-		// 1 <= algebraList.size() <= monadList.size()
-		// AlgebraList is reset to show which algebras are used by monads in this nyad
-		// Comparator<Algebra> comp = (Algebra a, Algebra b) -> {return
-		// b.compareTo(a);};
-		Collections.sort(algebraList); // and now that list is sorted by name
-
-		if (monadList.size() == 1) {
-			_strongFlag = true;
-			_oneAlgebra = true;
-			return;
-		}
-		// We know monadList.size()>1 at this point
-		if (algebraList.size() == 1) {
-			_strongFlag = false;
-			_oneAlgebra = true;
-			return;
-		} else if (monadList.size() == algebraList.size()) {
-			_strongFlag = true;
-			_oneAlgebra = false;
-			return;
-		}
-		// We know monadList.size()>algebraList.size()>1 at this point
-		_strongFlag = false;
-		_oneAlgebra = false;
-	}
-
-	/**
-	 * Dyad symmetric compression: 1/2 (left right + right left) Monads are placed
-	 * in the same algebra and symmetrically multiplied to each other. A reference
-	 * match test must pass for both after the algebra names have been changed.
-	 * 
-	 * @param pInto int
-	 * @param pFrom int
-	 * 
-	 * @throws FieldBinaryException This exception is thrown when the scale field
-	 *                              doesn't match the nyad's field.
-	 * @throws CladosMonadException
-	 */
-	public void symmCompress(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
-		MonadComplexD tempLeft = monadList.get(pInto);
-		MonadComplexD tempRight = monadList.get(pFrom);
-
-		tempRight.setAlgebra(tempLeft.getAlgebra());
-		tempLeft.multiplySymm(tempRight);
-
-		tempRight = monadList.remove(pFrom);
-		monadList.trimToSize();
 	}
 }

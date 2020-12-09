@@ -11,7 +11,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CoreGProductMapTest {
+class CoreGProductTest {
 	String pSig0 = "";
 	String pSig2 = "-+";
 	String pSig3 = "+++";

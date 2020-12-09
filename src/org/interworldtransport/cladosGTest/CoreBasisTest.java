@@ -12,7 +12,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CoreBasisListTest {
+class CoreBasisTest {
 
 	CanonicalBasis tBasis0;
 	CanonicalBasis tBasis4;

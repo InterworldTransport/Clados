@@ -351,7 +351,7 @@ public enum CladosGMonad { // All of these have implicit private constructors
 	/**
 	 * Monad Constructor #4 covered with this method
 	 * 
-	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pNumber The DivField to be re-used.
 	 * @param pFt     A Foot to be referenced so a new one is NOT created.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
@@ -367,25 +367,25 @@ public enum CladosGMonad { // All of these have implicit private constructors
 		switch (this) {
 		case REALF -> {
 			if (pNumber instanceof RealF)
-				return new MonadRealF(pName, pAName, pFrame, pFt, pSig, (RealF) pNumber);
+				return new MonadRealF(pName, pAName, pFrame, pFt, pSig, pNumber);
 			else
 				return null;
 		}
 		case REALD -> {
 			if (pNumber instanceof RealD)
-				return new MonadRealD(pName, pAName, pFrame, pFt, pSig, (RealD) pNumber);
+				return new MonadRealD(pName, pAName, pFrame, pFt, pSig, pNumber);
 			else
 				return null;
 		}
 		case COMPLEXF -> {
 			if (pNumber instanceof ComplexF)
-				return new MonadComplexF(pName, pAName, pFrame, pFt, pSig, (ComplexF) pNumber);
+				return new MonadComplexF(pName, pAName, pFrame, pFt, pSig, pNumber);
 			else
 				return null;
 		}
 		case COMPLEXD -> {
 			if (pNumber instanceof ComplexD)
-				return new MonadComplexD(pName, pAName, pFrame, pFt, pSig, (ComplexD) pNumber);
+				return new MonadComplexD(pName, pAName, pFrame, pFt, pSig, pNumber);
 			else
 				return null;
 		}

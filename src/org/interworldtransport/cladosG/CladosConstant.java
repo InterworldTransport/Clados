@@ -44,7 +44,7 @@ public final class CladosConstant {
 	 * it here enables all support validity testing methods to refer here instead of
 	 * supporting their own 'magic numbers'.
 	 */
-	public final static Generator GENERATOR_MAX = Generator.EE;
+	public final static Generator GENERATOR_MAX = Generator.EF;
 	/**
 	 * This is teh smallest grade supported by Clados.
 	 */
@@ -67,8 +67,13 @@ public final class CladosConstant {
 	 * Alias for -1 to help readability elsewhere. Java's Double doesn't have it.
 	 */
 	public final static Double MINUS_ONE_D = Double.valueOf(-1.0d);
-	
+	/**
+	 * This is just an alias for 0.5f
+	 */
 	public final static Float BY2_F = Float.valueOf(1/2);
+	/**
+	 * This is just an alias for 0.5d
+	 */
 	public final static Double BY2_D = Double.valueOf(1/2);
 
 	private CladosConstant() {

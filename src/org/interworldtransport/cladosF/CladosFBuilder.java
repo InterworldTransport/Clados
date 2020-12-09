@@ -185,6 +185,11 @@ public enum CladosFBuilder {
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
 	 * 
+	 * NOTE there is an odd exceptional case here. There is also the option to
+	 * create a DivField directly. That particular object doesn't have any 'number'
+	 * within it. It just captures these sense of 'number' as described in CladosF.
+	 * At present, it is only used for testing purposes.
+	 * 
 	 * @param pCard Cardinal to be re-used.
 	 * @return DivField child number created
 	 */
@@ -206,6 +211,9 @@ public enum CladosFBuilder {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
 			return ComplexD.newZERO(pCard);
 		}
+		case DIVFIELD -> {
+			return new DivField(pCard);
+		}
 		default -> {
 			return null;
 		}
@@ -215,6 +223,11 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
+	 * 
+	 * NOTE there is an odd exceptional case here. There is also the option to
+	 * create a DivField directly. That particular object doesn't have any 'number'
+	 * within it. It just captures these sense of 'number' as described in CladosF.
+	 * At present, it is only used for testing purposes.
 	 * 
 	 * @param pS String name for the associated Cardinal
 	 * @return DivField child number created
@@ -236,6 +249,10 @@ public enum CladosFBuilder {
 		case COMPLEXD -> {
 			Cardinal toCache = createCardinal(pS);
 			return ComplexD.newZERO(toCache);
+		}
+		case DIVFIELD -> {
+			Cardinal toCache = createCardinal(pS);
+			return new DivField(toCache);
 		}
 		default -> {
 			return null;

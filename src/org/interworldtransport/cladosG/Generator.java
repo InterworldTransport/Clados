@@ -103,10 +103,15 @@ public enum Generator {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	EE((byte) 14);
-
-	// EF((byte) 15),
-	// EG((byte) 16);
+	EE((byte) 14),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EF((byte) 15),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EG((byte) 16);
 
 	/**
 	 * This method returns an unlimited stream of generators in this enumeration.
