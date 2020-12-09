@@ -27,9 +27,6 @@ package org.interworldtransport.cladosG;
 import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
 import static org.interworldtransport.cladosF.RealD.*;
-
-import java.util.stream.IntStream;
-
 import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.DivField;
@@ -119,7 +116,7 @@ public class MonadRealD extends MonadAbstract {
 		check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
 		if (isGZero(check1))
 			return false; // pM is nilpotent at power=2
-		RealD fstnzeroC = CladosFBuilder.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
+		RealD fstnzeroC = (RealD) CladosFBuilder.REALD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
 
 		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) { // Loop skipped if check1.SP() != 0
 			if (!isZero(pM.getCoeff(k))) {
@@ -312,9 +309,7 @@ public class MonadRealD extends MonadAbstract {
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = CladosFListBuilder.createRealD(getAlgebra().getBladeCount());
-		for (int k = 0; k < cM.length; k++)
-			cM[k] = CladosFBuilder.createRealD(getAlgebra().shareProtoNumber().getCardinal());
+		cM = (RealD[]) CladosFListBuilder.REALD.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
 		setGradeKey();
 	}
 
@@ -344,9 +339,7 @@ public class MonadRealD extends MonadAbstract {
 		setName(pMonadName);
 		setFrameName(pFrameName);
 
-		cM = CladosFListBuilder.createRealD(getAlgebra().getBladeCount());
-		for (int k = 0; k < cM.length; k++)
-			cM[k] = CladosFBuilder.createRealD(getAlgebra().shareProtoNumber().getCardinal());
+		cM = (RealD[]) CladosFListBuilder.REALD.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
 		setGradeKey();
 	}
 
@@ -501,7 +494,7 @@ public class MonadRealD extends MonadAbstract {
 	public MonadRealD dualLeft() {
 		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
 		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];// initialize results
-		IntStream.range(0, getAlgebra().getBladeCount()).forEach(j -> {
+		this.bladeStream().forEach(j -> {
 			int prd = (Math.abs(getAlgebra().getGProduct().getResult(tSpot, j)) - 1);
 			tNewCoeff[prd] = copyOf(cM[j]);
 			tNewCoeff[prd].scale(Double.valueOf(getAlgebra().getGProduct().getSign(tSpot, j)));
@@ -517,7 +510,7 @@ public class MonadRealD extends MonadAbstract {
 	public MonadRealD dualRight() {
 		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
 		RealD[] tNewCoeff = new RealD[getAlgebra().getBladeCount()];// initialize results
-		IntStream.range(0, getAlgebra().getBladeCount()).forEach(j -> {
+		this.bladeStream().forEach(j -> {
 			int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot)) - 1);
 			tNewCoeff[drp] = copyOf(cM[j]);
 			tNewCoeff[drp].scale(Double.valueOf(getAlgebra().getGProduct().getSign(j, tSpot)));
@@ -568,7 +561,7 @@ public class MonadRealD extends MonadAbstract {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		int[] tSpotProtect = getAlgebra().getGradeRange(pGrade);
-		IntStream.range(0, getAlgebra().getBladeCount()).filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
+		this.bladeStream().filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
 				.parallel().forEach(j -> {
 					cM[j].scale(Double.valueOf(0.0F));
 				});
@@ -591,7 +584,7 @@ public class MonadRealD extends MonadAbstract {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		int[] tSpot = getAlgebra().getGradeRange(pGrade);
-		IntStream.rangeClosed(tSpot[0], tSpot[1]).parallel().forEach(l -> cM[l].scale(Double.valueOf(0.0d)));
+		this.gradeSpanStream(tSpot).parallel().forEach(l -> cM[l].scale(Double.valueOf(0.0d)));
 		setGradeKey();
 		return this;
 	}
@@ -604,9 +597,9 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD invert() {
-		IntStream.range(0, getAlgebra().getGradeCount()).filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(j -> {
+		this.gradeStream().filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(j -> {
 			int[] tSpot = getAlgebra().getGradeRange((byte) j);
-			IntStream.rangeClosed(tSpot[0], tSpot[1]).forEach(l -> cM[l].scale(CladosConstant.MINUS_ONE_D));
+			this.gradeSpanStream(tSpot).forEach(l -> cM[l].scale(CladosConstant.MINUS_ONE_D));
 		});
 		return this;
 	}
@@ -624,7 +617,7 @@ public class MonadRealD extends MonadAbstract {
 	public boolean isGEqual(MonadRealD pM) {
 		if (!isReferenceMatch(this, pM))
 			return false;
-		return IntStream.range(0, getAlgebra().getBladeCount()).allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
+		return this.bladeStream().allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
 	}
 
 	/**
@@ -910,9 +903,9 @@ public class MonadRealD extends MonadAbstract {
 	 */
 	@Override
 	public MonadRealD reverse() {
-		IntStream.range(0, getAlgebra().getGradeCount()).filter(j -> (j % 4 > 1)).parallel().forEach(j -> {
+		this.gradeStream().filter(j -> (j % 4 > 1)).parallel().forEach(j -> {
 			int[] tSpot = getAlgebra().getGradeRange((byte) j);
-			IntStream.rangeClosed(tSpot[0], tSpot[1]).forEach(l -> cM[l].scale(CladosConstant.MINUS_ONE_D));
+			this.gradeSpanStream(tSpot).forEach(l -> cM[l].scale(CladosConstant.MINUS_ONE_D));
 		});
 		return this;
 	}
@@ -927,8 +920,8 @@ public class MonadRealD extends MonadAbstract {
 	 * @return MonadRealD
 	 */
 	public MonadRealD scale(RealD pScale) throws FieldBinaryException {
-		if (IntStream.range(0, getAlgebra().getBladeCount()).allMatch(j -> isTypeMatch(cM[j], pScale))) {
-			IntStream.range(0, getAlgebra().getBladeCount()).forEach(j -> {
+		if (this.bladeStream().allMatch(j -> isTypeMatch(cM[j], pScale))) {
+			this.bladeStream().forEach(j -> {
 				try {
 					cM[j].multiply(pScale);
 				} catch (FieldBinaryException e) {
@@ -960,7 +953,7 @@ public class MonadRealD extends MonadAbstract {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array passed in for coefficient copy is the wrong length");
-		cM = CladosFListBuilder.copyOf(ppC);
+		cM = (RealD[]) CladosFListBuilder.REALD.copyOf(ppC);
 		setGradeKey();
 	}
 
@@ -972,7 +965,7 @@ public class MonadRealD extends MonadAbstract {
 	 * @param ppC RealD[]
 	 */
 	private void setCoeffInternal(RealD[] ppC) {
-		cM = CladosFListBuilder.copyOf(ppC);
+		cM = (RealD[]) CladosFListBuilder.REALD.copyOf(ppC);
 		setGradeKey();
 	}
 
@@ -988,9 +981,9 @@ public class MonadRealD extends MonadAbstract {
 	public void setGradeKey() {
 		foundGrades = 0;
 		gradeKey = 0;
-		IntStream.range(0, getAlgebra().getGradeCount()).forEach(g -> {
+		this.gradeStream().forEach(g -> {
 			int[] tSpot = getAlgebra().getGradeRange((byte) g);
-			if (IntStream.rangeClosed(tSpot[0], tSpot[1]).filter(k -> !isZero(cM[k])).findAny().isPresent()) {
+			if (this.gradeSpanStream(tSpot).filter(k -> !isZero(cM[k])).findAny().isPresent()) {
 				foundGrades++;
 				gradeKey += Math.pow(10, g);
 			}

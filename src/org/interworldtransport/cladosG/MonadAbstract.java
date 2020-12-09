@@ -24,8 +24,10 @@
  */
 package org.interworldtransport.cladosG;
 
-import org.interworldtransport.cladosF.*;
-import org.interworldtransport.cladosGExceptions.*;
+import java.util.stream.IntStream;
+
+import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosGExceptions.CladosMonadException;
 
 /**
  * Many math objects within the cladosG package have a number of attributes in
@@ -141,6 +143,19 @@ public abstract class MonadAbstract {
 	protected boolean sparseFlag = true;
 
 	/**
+	 * This integer stream is OFTEN used internally in monads for calculations.
+	 * Rather than type it out in long form, it is aliases to this method.
+	 * 
+	 * NOTE that it is not forced to be parallel() here. Whether that makes sense is
+	 * decided by the method using it.
+	 * 
+	 * @return Integer stream ranging through all the blades of the algebra
+	 */
+	public IntStream bladeStream() {
+		return IntStream.range(0, getAlgebra().getBladeCount());
+	}
+
+	/**
 	 * This method causes all coefficients of a monad to be conjugated.
 	 * 
 	 * @return Monad after operation.
@@ -171,6 +186,24 @@ public abstract class MonadAbstract {
 	}
 
 	/**
+	 * Return the field Coefficients for this Monad. These coefficients are the
+	 * multipliers making linear combinations of the basis elements.
+	 * 
+	 * @return DivField[]
+	 */
+	public abstract DivField[] getCoeff();
+
+	/**
+	 * Return a field Coefficient for this Monad. These coefficients are the
+	 * multipliers making linear combinations of the basis elements.
+	 * 
+	 * @param i int This points at the coefficient at the equivalent tuple location.
+	 * 
+	 * @return DivField
+	 */
+	public abstract DivField getCoeff(int i);
+
+	/**
 	 * Return the name of the Reference Frame for this Monad
 	 * 
 	 * @return String
@@ -178,25 +211,6 @@ public abstract class MonadAbstract {
 	public String getFrameName() {
 		return frameName;
 	}
-	
-	/**
-	 * Return the field Coefficients for this Monad. These coefficients are the
-	 * multipliers making linear combinations of the basis elements.
-	 * 
-	 * @return DivField[]
-	 */
-	public abstract DivField[] getCoeff();
-	
-	/**
-	 * Return a field Coefficient for this Monad. These coefficients are the
-	 * multipliers making linear combinations of the basis elements.
-	 * 
-	 * @param i int This points at the coefficient at the equivalent tuple
-	 *           location.
-	 * 
-	 * @return DivField
-	 */
-	public abstract DivField getCoeff(int i);
 
 	/**
 	 * Return the grade key for the monad
@@ -233,6 +247,31 @@ public abstract class MonadAbstract {
 	 *         MonadAbtract
 	 */
 	public abstract MonadAbstract gradePart(byte pGrade);
+
+	/**
+	 * This integer stream is OFTEN used internally in monads for calculations.
+	 * Rather than type it out in long form, it is aliases to this method.
+	 * 
+	 * @return Integer stream ranging through all the grades of the algebra
+	 */
+	public IntStream gradeStream() {
+		return IntStream.range(0, getAlgebra().getGradeCount());
+	}
+
+	/**
+	 * This IntStream ranges across an integer index of blades of the same grade.
+	 * Which grade is decided elsewhere and then the gradeRange result is passed to
+	 * this method to get the integer stream.
+	 * 
+	 * @param pIn A two-cell array of integers that represent a span of blades of
+	 *            the same grade.
+	 * @return InStream of blade index integers covering a particular grade.
+	 */
+	public IntStream gradeSpanStream(int[] pIn) {
+		if (pIn.length == 2)
+			return IntStream.rangeClosed(pIn[0], pIn[1]);
+		return IntStream.empty();
+	}
 
 	/**
 	 * This method suppresses the grade in the Monad equal to the integer passed.
@@ -315,7 +354,7 @@ public abstract class MonadAbstract {
 		frameName = pRName;
 		getAlgebra().appendFrame(pRName);
 	}
-	
+
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.

@@ -105,16 +105,16 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
 		case REALF -> {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createRealF(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
 		}
 		case REALD -> {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createRealD(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
 		}
 		case COMPLEXF -> {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createComplexF(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
 		}
 		case COMPLEXD -> {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.createComplexD(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		}
 		default -> throw new IllegalArgumentException("Unexpected value as an Algebra mode: " + this);
 		}
@@ -151,16 +151,16 @@ public enum CladosGAlgebra { // All of these have implicit private constructors
 			throws BadSignatureException, GeneratorRangeException {
 		switch (this) {
 		case REALF -> {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.createRealF(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
 		}
 		case REALD -> {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.createRealD(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
 		}
 		case COMPLEXF -> {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.createComplexF(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
 		}
 		case COMPLEXD -> {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.createComplexD(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		}
 		default -> throw new IllegalArgumentException("Unexpected value as an Algebra mode: " + this);
 		}

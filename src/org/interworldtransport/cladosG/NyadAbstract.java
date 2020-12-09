@@ -94,17 +94,17 @@ public abstract class NyadAbstract {
 	 * algebras. Otherwise it should be false.
 	 */
 	protected boolean _strongFlag;
-	
+
 	/**
-	 * This array is the list of algebras used in the NyadComplexF. 
+	 * This array is the list of algebras used in the NyadComplexF.
 	 */
-	protected ArrayList<Algebra>	algebraList;
+	protected ArrayList<Algebra> algebraList;
 
 	/**
 	 * This String is the name the footPoint of the Reference Frame of the Monad
 	 */
 	protected Foot footPoint;
-	
+
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosG.Algebra;
 import org.interworldtransport.cladosG.CladosGAlgebra;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -17,7 +17,7 @@ class HeatAlgebraTest {
 	String fType = "CardinalUnit";
 	String ftName = "Foot Default";
 	String aName = "MotionAlgebra";
-	RealF coeff;
+	DivField coeff;
 	Algebra a0;
 	int loopLimit = 1;
 
@@ -27,7 +27,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen01() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+");
 			assertFalse(a0 == null);
@@ -36,7 +36,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen02() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++");
 			assertFalse(a0 == null);
@@ -45,7 +45,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen03() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++");
 			assertFalse(a0 == null);
@@ -54,7 +54,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen04() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++");
 			assertFalse(a0 == null);
@@ -63,7 +63,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen05() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++");
 			assertFalse(a0 == null);
@@ -72,7 +72,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen06() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++");
 			assertFalse(a0 == null);
@@ -81,7 +81,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen07() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++-+++");
 			assertFalse(a0 == null);
@@ -90,7 +90,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen08() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++-+++");
 			assertFalse(a0 == null);
@@ -99,7 +99,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen09() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++-+++");
 			assertFalse(a0 == null);
@@ -108,7 +108,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen10() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++-+++");
 			assertFalse(a0 == null);
@@ -117,7 +117,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen11() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++-+++-+++");
 			assertFalse(a0 == null);
@@ -126,7 +126,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen12() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++-+++-+++");
 			assertFalse(a0 == null);
@@ -135,7 +135,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen13() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++-+++-+++");
 			assertFalse(a0 == null);
@@ -144,7 +144,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen14() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		coeff = CladosFBuilder.createRealF(Cardinal.generate(fType));
+		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = (Algebra) CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++-+++-+++");
 			assertFalse(a0 == null);
