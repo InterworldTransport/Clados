@@ -39,7 +39,7 @@ class CoreMonadRealDTest {
 	MonadRealD tM9;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		cRD = new RealD[16];
 
 		Cardinal tSpot = Cardinal.generate(fType);

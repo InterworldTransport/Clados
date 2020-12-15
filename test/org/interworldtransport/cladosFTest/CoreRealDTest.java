@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RealDCoreTest {
+class CoreRealDTest {
 	public RealD tReal0;
 	public RealD tReal1;
 	public RealD tReal1n;
@@ -34,7 +34,7 @@ class RealDCoreTest {
 	public RealD[] tReals;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		tReal0 = RealD.newZERO("Test:RealD");
 		tReal1 = RealD.newONE("Test:RealD");
 		tReal1n = new RealD(tReal1.getCardinal(), -1f);

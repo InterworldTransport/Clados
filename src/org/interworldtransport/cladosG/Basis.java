@@ -27,14 +27,14 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
-import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
@@ -183,6 +183,8 @@ public final class Basis implements CanonicalBasis {
 	 */
 	private final byte gradeCount;
 
+	//private final TreeMap<Blade, Integer> gradeIndexMap;
+
 	/**
 	 * This list is used for tracking of where grades start and stop in a bladeList.
 	 * The difference from grade k to k+1 is binomial(GradeCount-1, k) =
@@ -233,38 +235,68 @@ public final class Basis implements CanonicalBasis {
 		// ------Initialize
 		gradeCount = (byte) (pGens + 1);
 		gradeList = new ArrayList<Integer>(gradeCount);
+		//gradeIndexMap = new TreeMap<>();
 		bladeList = new ArrayList<Blade>(1 << pGens);
 		keyIndexMap = new TreeMap<>();
 		// ------Build bladeList
 		if (pGens == 0) {
-			gradeList.add(Integer.valueOf(0));
 			bladeList.add(Blade.createBlade(pGens).get());
+			gradeList.add(Integer.valueOf(0));
+			//gradeIndexMap.put(bladeList.get(0), Integer.valueOf(0));
 			keyIndexMap.put(0L, 0);
 		} else if (pGens == 1) {
 			bladeList.add(Blade.createScalarBlade(Generator.E1));
 			gradeList.add(Integer.valueOf(0));
+			//gradeIndexMap.put(bladeList.get(0), Integer.valueOf(0));
 			keyIndexMap.put(0L, 0);
 			bladeList.add(Blade.createPScalarBlade(Generator.E1));
 			gradeList.add(Integer.valueOf(1));
+			//gradeIndexMap.put(bladeList.get(1), Integer.valueOf(1));
 			keyIndexMap.put(1L, 0);
 		} else {
 			EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, Generator.get(pGens));
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
 			for (EnumSet<Generator> pG : powerSet(offer))
 				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
-			sorted.iterator().forEachRemaining(b -> {
-				bladeList.add(b);
-				keyIndexMap.put(b.key(), Integer.valueOf(bladeList.indexOf(b) + 1));
-			}); // exploit already sorted.
+			sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
+				bladeList.add(blade); // causing bladeList to be in ascending (by key) order
+				keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
+				//gradeIndexMap.put(blade, blade.getGenerators().size());
+			});
+
+			// ------Build gradeList
+			gradeList.add(Integer.valueOf(0)); // First entry in gradeList is for scalar grade
+			gradeList.add(Integer.valueOf(1)); // Second entry in gradeList is for vector grade
+			IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
+				gradeList
+						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
+			}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
+			gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
 		}
-		// ------Build gradeList
-		gradeList.add(0); // Will be auto-boxed by JVM.
-		gradeList.add(1); // Will be auto-boxed by JVM.
-		IntStream.range(2, gradeCount - 1).forEachOrdered(i -> gradeList.add(
-				keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue().intValue() - 1));
-		// keyIndexMap uses bladeKey (which is known to a blade) to find bladeIndex name
-		// used by products.
-		gradeList.add(getBladeCount() - 1); // Just bladeCount - 1
+	}
+
+	/**
+	 * The stream returned contains blades that match the grade requested in the
+	 * parameter.
+	 * 
+	 * There are silent fail behaviors in this method. If the requested grade falls
+	 * outside the range expected in the basis, the returned stream will be empty.
+	 * This happens for negative grades and grades larger than the pscalar.
+	 * 
+	 * Otherwise, this method works simply filters what bladeStream() would produce
+	 * on blade.rank().
+	 */
+	@Override
+	public Stream<Blade> bladeOfGradeStream(byte pIn) {
+		if (pIn >= CladosConstant.SCALARGRADE & pIn <= gradeCount)
+			return bladeList.stream().filter(blade -> blade.rank() == pIn);
+		else
+			return null;
+	}
+
+	@Override
+	public Stream<Blade> bladeStream() {
+		return bladeList.stream();
 	}
 
 	@Override
@@ -298,40 +330,6 @@ public final class Basis implements CanonicalBasis {
 	}
 
 	/**
-	 * Return the row of shorts at p1 in the array holding the basis. One row is one
-	 * blade of an algebra.
-	 * 
-	 * NOTE this is a backwards compatibility method and really shouldn't be used
-	 * for anything serious in clados v2. It WILL go away fairly soon. Just get a
-	 * blade from the bladeList instead. (Nothing in clados uses this.)
-	 * 
-	 * @param p1 short This is the desired blade number within the basis.
-	 * 
-	 * @return short[] This is the returned blade.
-	 * @throws BladeOutOfRangeException This exception is thrown when the short
-	 *                                  integer index would result in an
-	 *                                  IndexOutOfRange exception on an array of
-	 *                                  blades.
-	 */
-	@Deprecated
-	public short[] getBlade(short p1) throws BladeOutOfRangeException {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			throw new BladeOutOfRangeException(null, "Requested Blade # {" + p1 + "} is not in basis");
-
-		short[] tBS = new short[gradeCount - 1]; // prepare the array to return
-		EnumSet<Generator> tG = bladeList.get(p1).getGenerators(); // new representation of blade
-
-		// Now convert new representation of blade to the old one
-		byte counter = (byte) (gradeCount - 1 - tG.size()); // find first non-zero slot to fill
-		Iterator<Generator> cursor = tG.iterator(); // and iterate through new representation
-		while (cursor.hasNext()) {
-			tBS[counter] = cursor.next().ord; // to fill the old representation being returned
-			counter++;
-		}
-		return tBS;
-	}
-
-	/**
 	 * Return the number of independent blades in the basis. This is the same as the
 	 * linear dimension of an algebra that uses this basis.
 	 * 
@@ -347,17 +345,20 @@ public final class Basis implements CanonicalBasis {
 	 * it is replaced by this one that returns the enumerated set of generators in
 	 * the requested blade.
 	 * 
+	 * BEWARE | This method used to throw an exception when the parameter was out of
+	 * range. Now it just returns an empty set of generators which will look like a
+	 * scalar blade to the unwary. This change allows for a possible silent fail
+	 * someone's code, but it also allows for non-exception handling approaches to
+	 * termination of loops and streams.
+	 * 
 	 * @param p1 integer pointing to the blade in the internal list
 	 * @return EnumSet of Generator representing the blade without the context
 	 *         necessary for knowing much about the enclosing space for the blade.
-	 * @throws BladeOutOfRangeException This exception is thrown when the integer
-	 *                                  index would result in an IndexOutOfRange
-	 *                                  exception on an array of blades.
 	 */
 	@Override
-	public EnumSet<Generator> getBladeSet(int p1) throws BladeOutOfRangeException {
+	public EnumSet<Generator> getBladeSet(int p1) {
 		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			throw new BladeOutOfRangeException(null, "Blade key requested {" + p1 + "} is not in the basis.");
+			return EnumSet.noneOf(Generator.class);
 		return bladeList.get(p1).getGenerators();
 	}
 
@@ -402,16 +403,16 @@ public final class Basis implements CanonicalBasis {
 	/**
 	 * Return the long at p1 in the EddingtonKey array.
 	 * 
+	 * IllegalArgumentException can be thrown if the requested blade is NOT between
+	 * 0 and bladeCount inclusive.
+	 * 
 	 * @param p1 short This is the desired key at p1 .
 	 * @return long
-	 * @throws BladeOutOfRangeException This exception is thrown if the requested
-	 *                                  blade is NOT between 0 and bladeCount
-	 *                                  inclusive.
 	 */
 	@Override
-	public long getKey(int p1) throws BladeOutOfRangeException {
+	public long getKey(int p1) {
 		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			throw new BladeOutOfRangeException(null, "Requested Blade # {" + p1 + "} is not in basis");
+			throw new IllegalArgumentException("Requested Blade # {" + p1 + "} is not in basis");
 		return bladeList.get(p1).key();
 	}
 
@@ -422,21 +423,6 @@ public final class Basis implements CanonicalBasis {
 	@Override
 	public TreeMap<Long, Integer> getKeyIndexMap() {
 		return keyIndexMap;
-	}
-
-	/**
-	 * Return the integer array holding the EddingtonKey's.
-	 * 
-	 * @return long[]
-	 */
-	@Deprecated
-	public long[] getKeys() {
-		long[] vKey = new long[getBladeCount()];
-		ArrayList<Long> keyList = new ArrayList<>(getBladeCount());
-		bladeList.stream().forEachOrdered(b -> keyList.add(b.key()));
-		for (Long l : keyList)
-			vKey[keyList.indexOf(l)] = l.longValue();
-		return vKey;
 	}
 
 	/**
@@ -453,6 +439,8 @@ public final class Basis implements CanonicalBasis {
 	 * Simple gettor method retrieves the Blade at the indexed position in the
 	 * Basis.
 	 * 
+	 * Note that a null can be returned from here if the index is out of range.
+	 * 
 	 * @param p1 integer index
 	 * @return Blade at the indexed position.
 	 */
@@ -464,8 +452,18 @@ public final class Basis implements CanonicalBasis {
 	}
 
 	@Override
+	public IntStream gradeStream() {
+		return IntStream.rangeClosed(0, gradeCount);
+	}
+
+	@Override
 	public int hashCode() {
 		return 137 + gradeCount;
+	}
+
+	@Override
+	public LongStream keyStream() {
+		return bladeList.stream().mapToLong(blade -> blade.key());
 	}
 
 	/**

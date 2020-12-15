@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ComplexDCoreTest {
+class CoreComplexDTest {
 	public ComplexD tComplex0;
 	public ComplexD tComplex1;
 	public ComplexD tComplex1n;
@@ -34,7 +34,7 @@ class ComplexDCoreTest {
 	public ComplexD[] tComplexs;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		tComplex0 = ComplexD.newZERO("Test:ComplexD");
 		tComplex1 = ComplexD.newONE("Test:ComplexD");
 		tComplex1n = new ComplexD(tComplex1.getCardinal(), -1f);

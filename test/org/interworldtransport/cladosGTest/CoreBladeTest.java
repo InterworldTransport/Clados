@@ -18,7 +18,7 @@ class CoreBladeTest {
 	private Blade tB43;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		tB0 = new Blade((byte) 0);
 		tB4 = new Blade((byte) 4);
 		tB4.add(g[0]).add(g[1]);

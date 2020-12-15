@@ -26,6 +26,7 @@ package org.interworldtransport.cladosG;
 
 import java.util.stream.IntStream;
 
+import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 
@@ -118,6 +119,14 @@ public abstract class MonadAbstract {
 	 * All clados objects are elements of some algebra. That algebra has a name.
 	 */
 	protected Algebra algebra;
+
+	/**
+	 * This is thh new coefficient 'array'. It's size should always match
+	 * bladeCount. It is keyed to the blades in a monad's basis.
+	 * It is fundamentally an IdentityHashMap with some frosting.
+	 */
+	protected Scale<? extends DivField> scales;
+
 	protected byte foundGrades;
 
 	/**
@@ -133,6 +142,12 @@ public abstract class MonadAbstract {
 	 * All objects of this class have a name independent of all other features.
 	 */
 	protected String name;
+
+	/**
+	 * This is just a flag specifying the field type one should expect for
+	 * coefficients of the monad.
+	 */
+	protected CladosField mode;
 
 	/**
 	 * This boolean is a flag used internally by multiplication methods to make

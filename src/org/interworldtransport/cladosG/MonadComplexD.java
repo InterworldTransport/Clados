@@ -29,6 +29,7 @@ import org.interworldtransport.cladosGExceptions.*;
 import static org.interworldtransport.cladosF.ComplexD.*;
 import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.ComplexD;
 
@@ -253,6 +254,7 @@ public class MonadComplexD extends MonadAbstract {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
+		mode = pM.mode;
 
 		cM = new ComplexD[getAlgebra().getBladeCount()];
 		setCoeffInternal(pM.getCoeff());
@@ -277,6 +279,7 @@ public class MonadComplexD extends MonadAbstract {
 		setName(pName);
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
+		mode = pM.mode;
 
 		cM = new ComplexD[getAlgebra().getBladeCount()];
 		setCoeff(pM.getCoeff());
@@ -308,6 +311,7 @@ public class MonadComplexD extends MonadAbstract {
 		setAlgebra(CladosGAlgebra.COMPLEXD.create(pF, pAlgebraName, pFootName, pSig));//proto is ComplexD
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.COMPLEXD;
 
 		cM = (ComplexD[]) CladosFListBuilder.COMPLEXD.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
 		setGradeKey();
@@ -338,6 +342,7 @@ public class MonadComplexD extends MonadAbstract {
 		setAlgebra(CladosGAlgebra.COMPLEXD.createWithFoot(pFoot, pF, pAlgebraName, pSig));
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.COMPLEXD;
 
 		cM = (ComplexD[]) CladosFListBuilder.COMPLEXD.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
 		setGradeKey();
@@ -420,6 +425,7 @@ public class MonadComplexD extends MonadAbstract {
 			throw new CladosMonadException(this, "Coefficient array size does not match bladecount for Signature.");
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.COMPLEXD;
 
 		cM = new ComplexD[getAlgebra().getBladeCount()];
 		setCoeff(pC);
@@ -447,6 +453,7 @@ public class MonadComplexD extends MonadAbstract {
 		setAlgebra(pAlgebra);
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.COMPLEXD;
 
 		cM = new ComplexD[getAlgebra().getBladeCount()];
 		setCoeff(pC);

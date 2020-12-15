@@ -14,7 +14,7 @@ class HeatBladeTest {
 	Blade a0;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		//Generator[] j = Arrays.copyOf(Generator.values(), 1);
 	}
 	

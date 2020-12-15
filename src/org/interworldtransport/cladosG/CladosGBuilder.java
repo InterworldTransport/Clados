@@ -48,6 +48,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	INSTANCE;
 
+	private CladosGBuilder() {
+		;
+	}
+	
 	/**
 	 * Tests the signature string to see if it contains the correct chars and no
 	 * more of them than can be supported.

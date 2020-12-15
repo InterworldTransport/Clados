@@ -22,7 +22,7 @@ class CoreBasisTest {
 	CanonicalBasis tBasis14;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		tBasis0 = new Basis((byte) 0);
 		tBasis4 = new Basis((byte) 4);
 		tBasis43 = new Basis((byte) 4);
@@ -33,9 +33,9 @@ class CoreBasisTest {
 	
 	@Test
 	public void testCachedBasis() throws GeneratorRangeException {
-		CanonicalBasis tB1 = CladosGBuilder.INSTANCE.createBasis((byte) 3);
+		CanonicalBasis tB1 = CladosGBuilder.createBasis((byte) 3);
 		assertTrue(CladosGCache.INSTANCE.getBasisListSize()>0);
-		CanonicalBasis tB2 = CladosGBuilder.INSTANCE.createBasis((byte) 3);
+		CanonicalBasis tB2 = CladosGBuilder.createBasis((byte) 3);
 		assertTrue(tB1 == tB2);
 	}
 

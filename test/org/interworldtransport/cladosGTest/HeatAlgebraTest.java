@@ -22,7 +22,7 @@ class HeatAlgebraTest {
 	int loopLimit = 1;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		coeff = CladosFBuilder.DIVFIELD.createZERO(Cardinal.generate(fType));
 	}
 

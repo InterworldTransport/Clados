@@ -80,7 +80,7 @@ public enum CladosFBuilder {
 		}
 		return test.get();
 	}
-
+	
 	/**
 	 * Method copies the incoming number into a distinct object ensuring the ==
 	 * operation fails but equals() does not.

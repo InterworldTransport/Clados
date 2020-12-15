@@ -22,14 +22,14 @@ class CoreGProductTest {
 	String pSig14 = "++-+++-+++-+++";
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 	}
 
 	@Test
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
-		CliffordProduct tGP1 = CladosGBuilder.INSTANCE.createGProduct(pSig3);
+		CliffordProduct tGP1 = CladosGBuilder.createGProduct(pSig3);
 		assertTrue(CladosGCache.INSTANCE.getGProductListSize()>0);
-		CliffordProduct tGP2 = CladosGBuilder.INSTANCE.createGProduct(pSig3);
+		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);
 		assertTrue(tGP1 == tGP2);
 	}
 	

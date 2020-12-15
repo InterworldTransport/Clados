@@ -266,21 +266,54 @@ public final class Blade implements Comparable<Blade> {
 		return rB.toString();
 	}
 
-	// protected final static Blade createPScalarBlade(byte pMaxGen, boolean
-	// pNoMatter) {
-	// Blade returnIt = new Blade(pMaxGen);
-	// if (pMaxGen == 0)
-	// returnIt.add(EnumSet.noneOf(Generator.class));
-	// if (pMaxGen > 0)
-	// returnIt.add(EnumSet.range(Generator.E1, Generator.get(pMaxGen)));
-
-	// return returnIt;
-	// }
-
+	/**
+	 * bitKey is the base-2 representation of the blade's generators.
+	 * 
+	 * For example... a blade using E2 will have +2 added to the bitKey because the
+	 * ordinal for E2 is 2 and the key builder method adds (1<<(E2.ord -1)) for this
+	 * generator. For E5 (ord=5) bitKey picks up a contribution of 2^4.
+	 */
 	private int bitKey = 0;
+
+	/**
+	 * This is the internal representation of the generators involved in the blade.
+	 * If a generator is found in the EnumSet, it is part of the blade.
+	 * 
+	 * For example, a set holding E1, E4, and E9 implies this is the E1,E4,E9 blade.
+	 */
 	private EnumSet<Generator> blade;
+
+	/**
+	 * This is the old key representing the blade that is sure to increase in a way
+	 * that ensures the correct sort order in comparisons between blades. This
+	 * sorting happens most often when constructing a basis.
+	 */
 	private long key = 0L;
+
+	/**
+	 * This is the maximum expected size of the internal EnumSet for the blade. It
+	 * is also the ordinal of the largest generator one expects to find in the
+	 * EnumSet.
+	 * 
+	 * Once set, this value should never change.
+	 */
 	private final byte maxGen; // This should be gradeCount-1 in a related basis
+
+	/**
+	 * This byte integer would be a single bit as it is never expected to be
+	 * anything other than +1 or -1. It represents whether the blade has been
+	 * inverted or not. Blades do NOT have a sense of magnitude, so this inversion
+	 * is ONLY about the order of the generators in the EnumSet.
+	 * 
+	 * When this is +1, the blade is assumed to be in a state where the EnumSet
+	 * represents the natural order of generators OR in a state where an even number
+	 * of transpositions have occurred (after all pairs of transpostions that would
+	 * cancel each other are removed) away from the natural order.
+	 * 
+	 * When this is -1, the blade is assumed to be in a state where the EnumSet
+	 * represents an odd number of transpositions (after canceling pairs are
+	 * removed) away from the natural order of the generators in the set.
+	 */
 	private byte sign = 1;
 
 	/**
@@ -404,11 +437,6 @@ public final class Blade implements Comparable<Blade> {
 		Stream.of(pDirs).forEach(g -> blade.add(g));
 		makeKey();
 	}
-
-	// protected Blade(byte pMaxGen, boolean pNoMatter) {
-	// blade = EnumSet.noneOf(Generator.class);
-	// maxGen = pMaxGen;
-	// }
 
 	/**
 	 * The unboxed byte represents a 'direction' in the blade to be added. It is
@@ -556,6 +584,8 @@ public final class Blade implements Comparable<Blade> {
 		Blade other = (Blade) obj;
 		if (key != other.key)
 			return false;
+		if (maxGen != other.maxGen)
+			return false;
 		if (sign != other.sign)
 			return false;
 		return true;
@@ -605,6 +635,16 @@ public final class Blade implements Comparable<Blade> {
 	 */
 	public EnumSet<Generator> getGenerators() {
 		return blade;
+	}
+
+	/**
+	 * This method reports the size of the EnumSet of generators that represents
+	 * this blade. This is the 'rank' of the blade.
+	 * 
+	 * @return byte integer number of generators involved in this blade.
+	 */
+	public byte rank() {
+		return (byte) blade.size();
 	}
 
 	@Override
@@ -720,11 +760,6 @@ public final class Blade implements Comparable<Blade> {
 			sign *= FLIP;
 		return this;
 	}
-
-	// public Blade setBasisIndex(int pI) {
-	// basisIndex = pI;
-	// return this;
-	// }
 
 	/**
 	 * A simple gettor for the sign of the blade

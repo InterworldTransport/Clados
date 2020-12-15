@@ -29,6 +29,7 @@ import org.interworldtransport.cladosFExceptions.*;
 import static org.interworldtransport.cladosF.RealF.*;
 import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.RealF;
 
@@ -253,6 +254,7 @@ public class MonadRealF extends MonadAbstract {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
+		mode = pM.mode;
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeffInternal(pM.getCoeff());
@@ -277,6 +279,7 @@ public class MonadRealF extends MonadAbstract {
 		setName(pName);
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
+		mode = pM.mode;
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pM.getCoeff());
@@ -308,6 +311,7 @@ public class MonadRealF extends MonadAbstract {
 		setAlgebra(CladosGAlgebra.REALF.create(pF, pAlgebraName, pFootName, pSig)); //proto is RealF
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.REALF;
 
 		cM = (RealF[]) CladosFListBuilder.REALF.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
 		setGradeKey();
@@ -338,6 +342,7 @@ public class MonadRealF extends MonadAbstract {
 		setAlgebra(CladosGAlgebra.REALF.createWithFoot(pFoot, pF, pAlgebraName, pSig));
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.REALF;
 
 		cM = (RealF[]) CladosFListBuilder.REALF.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
 		setGradeKey();
@@ -420,6 +425,7 @@ public class MonadRealF extends MonadAbstract {
 			throw new CladosMonadException(this, "Coefficient array size does not match bladecount of algebra.");
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.REALF;
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pC);
@@ -447,6 +453,7 @@ public class MonadRealF extends MonadAbstract {
 		setAlgebra(pAlgebra);
 		setName(pMonadName);
 		setFrameName(pFrameName);
+		mode = CladosField.REALF;
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pC);

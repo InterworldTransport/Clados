@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RealFCoreTest {
+class CoreRealFTest {
 	public RealF tReal0;
 	public RealF tReal1;
 	public RealF tReal1n;
@@ -34,7 +34,7 @@ class RealFCoreTest {
 	public RealF[] tReals;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		tReal0 = RealF.newZERO("Test:RealF");
 		tReal1 = RealF.newONE("Test:RealF");
 		tReal1n = new RealF(tReal1.getCardinal(), -1f);

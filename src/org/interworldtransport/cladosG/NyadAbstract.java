@@ -117,6 +117,8 @@ public abstract class NyadAbstract {
 	 * This array is the list of algebras used in the NyadComplexF.
 	 */
 	protected ArrayList<Algebra> algebraList;
+	
+	protected ArrayList<? extends MonadAbstract> mList;
 
 	/**
 	 * This is the Foot to which all the algebras of all monads should reference

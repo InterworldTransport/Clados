@@ -21,7 +21,7 @@ class CoreBladeDuetTest {
 	BladeDuet tBD;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		firstB = new Blade((byte) 4, g);
 		secondB = new Blade((byte) 4, i);
 		

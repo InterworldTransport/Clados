@@ -16,7 +16,7 @@ class CoreFootTest {
 	public Foot			tFoot2;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealD(fType,0.0);
 		tFoot = new Foot(fName, fType);

@@ -4,60 +4,60 @@ import static org.interworldtransport.cladosG.MonadAbstract.hasGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isMultiGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isUniGrade;
-import static org.interworldtransport.cladosG.MonadComplexD.isGZero;
-import static org.interworldtransport.cladosG.MonadComplexD.isIdempotent;
-import static org.interworldtransport.cladosG.MonadComplexD.isNilpotent;
-import static org.interworldtransport.cladosG.MonadComplexD.isReferenceMatch;
-import static org.interworldtransport.cladosG.MonadComplexD.isScaledIdempotent;
+import static org.interworldtransport.cladosG.MonadComplexF.isGZero;
+import static org.interworldtransport.cladosG.MonadComplexF.isIdempotent;
+import static org.interworldtransport.cladosG.MonadComplexF.isNilpotent;
+import static org.interworldtransport.cladosG.MonadComplexF.isReferenceMatch;
+import static org.interworldtransport.cladosG.MonadComplexF.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
-import org.interworldtransport.cladosG.MonadComplexD;
+import org.interworldtransport.cladosG.MonadComplexF;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CoreMonadComplexDTest {
-	String fType = "TestMonadComplexDs";
-	String mName = "Test MonadComplexD ";
+class CoreMonadComplexFTest {
+	String fType = "TestMonadComplexFs";
+	String mName = "Test MonadComplexF ";
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
-	ComplexD[] cRF;
-	MonadComplexD tM0;
-	MonadComplexD tM1;
-	MonadComplexD tM2;
-	MonadComplexD tM3;
-	MonadComplexD tM4;
-	MonadComplexD tM5;
-	MonadComplexD tM6;
-	MonadComplexD tM7;
-	MonadComplexD tM8;
-	MonadComplexD tM9;
+	ComplexF[] cRF;
+	MonadComplexF tM0;
+	MonadComplexF tM1;
+	MonadComplexF tM2;
+	MonadComplexF tM3;
+	MonadComplexF tM4;
+	MonadComplexF tM5;
+	MonadComplexF tM6;
+	MonadComplexF tM7;
+	MonadComplexF tM8;
+	MonadComplexF tM9;
 
 	@BeforeEach
-	void setUp() throws Exception {
-		cRF = new ComplexD[16];
-		Cardinal tSpot = Cardinal.generate("TestComplexDs");
+	public void setUp() throws Exception {
+		cRF = new ComplexF[16];
+		Cardinal tSpot = Cardinal.generate("TestComplexFs");
 		for (int k = 0; k < 16; k++)
-			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15 - k);
+			cRF[k] = new ComplexF(tSpot, (float) k, (float) 15 - k);
 
-		tM0 = new MonadComplexD("Test MonadComplexD 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
-				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
-		tM1 = new MonadComplexD("Test MonadComplexD 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
-				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
-		tM2 = new MonadComplexD("Test MonadComplexD 2", tM1);
-		tM3 = new MonadComplexD("Test MonadComplexD 3", tM1);
-		tM4 = new MonadComplexD(tM0);
-		tM5 = new MonadComplexD("Test MonadComplexD 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
-				new ComplexD(Cardinal.generate("Test Float 5"), 0d), "Unit PScalar");
-		tM6 = new MonadComplexD("Test MonadComplexD 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++",
+		tM0 = new MonadComplexF("Test MonadComplexF 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
+				new ComplexF(Cardinal.generate("Test Float 1"), 0f));
+		tM1 = new MonadComplexF("Test MonadComplexF 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
+				new ComplexF(Cardinal.generate("Test Float 1"), 0f));
+		tM2 = new MonadComplexF("Test MonadComplexF 2", tM1);
+		tM3 = new MonadComplexF("Test MonadComplexF 3", tM1);
+		tM4 = new MonadComplexF(tM0);
+		tM5 = new MonadComplexF("Test MonadComplexF 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
+				new ComplexF(Cardinal.generate("Test Float 5"), 0f), "Unit PScalar");
+		tM6 = new MonadComplexF("Test MonadComplexF 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++",
 				cRF);
-		tM7 = new MonadComplexD(tM6);
-		tM8 = new MonadComplexD(tM6);
+		tM7 = new MonadComplexF(tM6);
+		tM8 = new MonadComplexF(tM6);
 	}
 
 	@Test
@@ -88,18 +88,18 @@ class CoreMonadComplexDTest {
 	}
 
 	@Test
-	public void testUniMathOps() throws FieldBinaryException, CladosMonadException {
+	public void testUniMathOps() throws FieldBinaryException, FieldException, CladosMonadException {
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(ComplexD.copyZERO(tM5.getCoeff((short) 0)))));
+		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 
 		tM6.normalize();
-		if (ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0)))) {
-			assertTrue(ComplexD.isEqual(tM6.magnitude(), ComplexD.copyONE(tM7.getCoeff((short) 0))));
+		if (ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff((short) 0)))) {
+			assertTrue(ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff((short) 0))));
 		} else {
-			ComplexD tSpot = tM6.magnitude();
+			ComplexF tSpot = tM6.magnitude();
 			assertTrue(tSpot.getImg() == 0.0f);
 			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
 		}
@@ -111,9 +111,9 @@ class CoreMonadComplexDTest {
 	@Test
 	public void testBiMathOps1() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
 		tM6.add(tM7);
-		tM7.scale(new ComplexD(tM6.getCoeff((short) 0), 2.0f, 0.0f));
+		tM7.scale(new ComplexF(tM6.getCoeff((short) 0), 2.0f, 0.0f));
 		assertTrue(tM6.isGEqual(tM7));
-		tM6.subtract(tM7).subtract(tM7).scale(new ComplexD(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
+		tM6.subtract(tM7).subtract(tM7).scale(new ComplexF(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
 		assertTrue(tM6.isGEqual(tM7));
 
 	}
@@ -123,26 +123,26 @@ class CoreMonadComplexDTest {
 		tM8.gradePart((byte) 4).normalize();
 		// System.out.println(toXMLString(tM8));
 		tM6.multiplyLeft(tM8).dualLeft();
-		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		// System.out.println(toXMLString(tM6));
 		// System.out.println(toXMLString(tM7));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM6.multiplyRight(tM8).dualRight();
-		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM5.setCoeff(tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
 
 		tM6.multiplySymm(tM8);
-		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 
 		tM6.setCoeff(tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
-		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
+		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 	}

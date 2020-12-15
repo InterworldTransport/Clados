@@ -261,7 +261,7 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final NyadAbstract createWithMonad(MonadAbstract pM, String pName)
-			throws BadSignatureException, CladosMonadException, CladosNyadException {
+			throws CladosNyadException, CladosMonadException {
 		switch (this) {
 		case REALF -> {
 			if (pM instanceof MonadRealF)

@@ -1,6 +1,7 @@
 package org.interworldtransport.cladosGTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
@@ -10,6 +11,7 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,7 @@ class CoreAlgebraTest {
 	protected Algebra alg2;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealF(fType, 0.0f);
 		tFoot = new Foot(fName, fType);
