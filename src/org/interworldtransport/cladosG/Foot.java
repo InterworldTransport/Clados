@@ -220,19 +220,18 @@ public final class Foot {
 	 *             data
 	 * @return String formatted as XML containing information about the Foot
 	 */
-	public String toXMLString(String pind) {
-		String indent = "\t\t";
-		if (pind == null)
-			pind = "";
-		StringBuilder rB = new StringBuilder(indent + pind + "<Foot>\n");
-		rB.append(indent).append(pind).append("\t<Name>").append(getFootName()).append("</Name>\n");
+	public String toXMLString(String indent) {
+		if (indent == null)
+			indent = "\t\t";
+		StringBuilder rB = new StringBuilder(indent + "<Foot>\n");
+		rB.append(indent).append("\t<Name>").append(getFootName()).append("</Name>\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent).append(pind).append("\t<Cardinals number=\"").append(cardinalList.size()).append("\" >\n");
+		rB.append(indent).append("\t<Cardinals number=\"").append(cardinalList.size()).append("\" >\n");
 		for (Cardinal point : cardinalList)
-			rB.append(indent).append(pind).append("\t\t").append(point.toXMLString());
-		rB.append(indent).append(pind).append("\t</Cardinals>\n");
+			rB.append(indent).append(point.toXMLString("\t\t"));
+		rB.append(indent).append("\t</Cardinals>\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent).append(pind).append("</Foot>\n");
+		rB.append(indent).append("</Foot>\n");
 		return rB.toString();
 	}
 }

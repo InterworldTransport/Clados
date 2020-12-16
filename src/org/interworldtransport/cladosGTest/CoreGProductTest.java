@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class CoreGProductTest {
 	String pSig0 = "";
+	String pSig1 = "+";
 	String pSig2 = "-+";
 	String pSig3 = "+++";
 	String pSig4 = "-+++";
@@ -20,6 +21,7 @@ class CoreGProductTest {
 	String pSig10 = "+++-++++++";
 	String pSig12 = "-+++-+++-+++";
 	String pSig14 = "++-+++-+++-+++";
+	String pSig15 = "+++-+++-+++-+++";
 
 	@BeforeEach
 	public void setUp() throws Exception {
@@ -40,8 +42,27 @@ class CoreGProductTest {
 		assertTrue(tGP.signature().equals(""));
 		assertTrue(tGP.getGradeCount() == 1);
 		assertTrue(tGP.getBladeCount() == (1 << 0));
-
+		//System.out.println(tGP.toXMLString(""));
 		int tS = (1 << 0);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+	
+	@Test
+	public void test01s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig1);
+		assertTrue(tGP.signature().equals("+"));
+		assertTrue(tGP.getGradeCount() == 2);
+		assertTrue(tGP.getBladeCount() == (1 << 1));
+		//System.out.println(tGP.toXMLString(""));
+		int tS = (1 << 1);
 		int tSum = tS * (tS + 1) / 2;
 		for (int k = 0; k < tGP.getBladeCount(); k++) {
 			int[] tSpot = tGP.getResult(k);
@@ -60,7 +81,6 @@ class CoreGProductTest {
 		assertTrue(tGP.signature().equals("-+"));
 		assertTrue(tGP.getGradeCount() == 3);
 		assertTrue(tGP.getBladeCount() == (1 << 2));
-
 		int tS = (1 << 2);
 		int tSum = tS * (tS + 1) / 2;
 		for (int k = 0; k < tGP.getBladeCount(); k++) {
@@ -100,7 +120,7 @@ class CoreGProductTest {
 		//System.out.println(tGP.toXMLString(""));
 		assertTrue(tGP.signature().equals("-+++"));
 		assertTrue(tGP.getGradeCount() == 5);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 4));
+		assertTrue(tGP.getBladeCount() == (1<<4));
 
 		int tS = (int) Math.pow(2, 4);
 		int tSum = tS * (tS + 1) / 2;
@@ -119,7 +139,7 @@ class CoreGProductTest {
 		GProduct tGP = new GProduct(pSig8);
 		assertTrue(tGP.signature().equals("-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 9);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 8));
+		assertTrue(tGP.getBladeCount() == (1<<8));
 
 		int tS = (int) Math.pow(2, 8);
 		int tSum = tS * (tS + 1) / 2;
@@ -138,7 +158,7 @@ class CoreGProductTest {
 		GProduct tGP = new GProduct(pSig10);
 		assertTrue(tGP.signature().equals("+++-++++++"));
 		assertTrue(tGP.getGradeCount() == 11);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 10));
+		assertTrue(tGP.getBladeCount() == (1<<10));
 
 		int tS = (int) Math.pow(2, 10);
 		int tSum = tS * (tS + 1) / 2;
@@ -157,7 +177,7 @@ class CoreGProductTest {
 		GProduct tGP = new GProduct(pSig12);
 		assertTrue(tGP.signature().equals("-+++-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 13);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 12));
+		assertTrue(tGP.getBladeCount() == (1<<12));
 
 		int tS = (int) Math.pow(2, 12);
 		int tSum = tS * (tS + 1) / 2;
@@ -176,9 +196,28 @@ class CoreGProductTest {
 		GProduct tGP = new GProduct(pSig14);
 		assertTrue(tGP.signature().equals("++-+++-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 15);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 14));
+		assertTrue(tGP.getBladeCount() == (1<<14));
 
 		int tS = (int) Math.pow(2, 14);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+	
+	@Test
+	public void test15s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig15);
+		assertTrue(tGP.signature().equals("+++-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 16);
+		assertTrue(tGP.getBladeCount() == (1<<15));
+
+		int tS = (int) Math.pow(2, 15);
 		int tSum = tS * (tS + 1) / 2;
 		for (int k = 0; k < tGP.getBladeCount(); k++) {
 			int[] tSpot = tGP.getResult(k);

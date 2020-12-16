@@ -31,9 +31,9 @@ class CoreBladeDuetTest {
 
 	@Test
 	void testStatic() throws BladeCombinationException, GeneratorRangeException, BadSignatureException {
-		out = BladeDuet.reduce(firstB, secondB, sig);
+		out = BladeDuet.simplify(firstB, secondB, sig);
 		assertTrue(Blade.isNBlade(out, (byte) 1));
-		out = BladeDuet.reduce(firstB, firstB, sig);
+		out = BladeDuet.simplify(firstB, firstB, sig);
 		assertTrue(Blade.isScalar(out));
 	}
 

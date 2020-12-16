@@ -42,6 +42,7 @@ import org.interworldtransport.cladosGExceptions.BladeCombinationException;
  * @author Dr Alfred W Differ
  */
 public final class BladeDuet {
+		
 	/**
 	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet
 	 * list. It's actually two buckets of sorted generators that upon duplication
@@ -76,9 +77,9 @@ public final class BladeDuet {
 	 *                                   reduced form of it, but it could still be
 	 *                                   of the wrong size.
 	 */
-	public static final Blade reduce(Blade pB1, Blade pB2, byte[] sig) throws BladeCombinationException {
+	public static final Blade simplify(Blade pB1, Blade pB2, byte[] sig) {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);
-		return tBD.reduce(sig);
+		return tBD.simplify(sig);
 	}
 
 	private int bitKeyLeft, bitKeyRight = 0;
@@ -100,7 +101,7 @@ public final class BladeDuet {
 	public BladeDuet(Blade pB1, Blade pB2) {
 		assert (pB1.maxGenerator() == pB2.maxGenerator());
 		maxGen = pB1.maxGenerator();
-		assert (maxGen > 0);
+		// assert (maxGen > 0);
 		bladeDuet = new ArrayList<>(2 * maxGen);
 		pB1.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
 		sign = pB1.sign();
@@ -135,7 +136,7 @@ public final class BladeDuet {
 	 *             occur as generator pairs are removed from the internal dual list.
 	 * @return Blade [supporting stream approach]
 	 */
-	protected Blade reduce(byte[] pSig) {
+	protected Blade simplify(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
 		byte gen = 1;
 		while (andKey > 0) {
@@ -148,7 +149,7 @@ public final class BladeDuet {
 			gen++;
 			andKey = andKey >>> 1;
 		}
-		Blade returnIt = Blade.createBlade(Generator.get(maxGen));// new Blade(maxGen, true);
+		Blade returnIt = Blade.createBlade(maxGen); // Technically this can be null, but shouldn't happen.
 		bladeDuet.stream().forEach(g -> returnIt.add(g));
 		// returnIt has all the correct generators, but might have the wrong sign
 		andKey = bitKeyLeft & bitKeyRight;

@@ -24,8 +24,6 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.stream.IntStream;
-
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -94,36 +92,7 @@ public class GProduct implements CliffordProduct {
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
 	public GProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
-		if (!CliffordProduct.validateSignature(pSig))
-			throw new BadSignatureException(this, "Valid signature required.");
-		else if (!CanonicalBasis.validateSize(pSig.length()))
-			throw new GeneratorRangeException("Signature length unsupported");
-		// ------Init signature
-		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];
-		int m = 0;
-		for (char b : pSig.toCharArray()) {
-			switch (b) {
-			case '+' -> nSignature[m] = 1;
-			case '-' -> nSignature[m] = -1;
-			}
-			m++;
-		}
-		signature = pSig;
-		// ------Build CanonicalBasis
-		canonicalBasis = CladosGBuilder.createBasis((byte) pSig.length());
-		// ------Build Product Table
-		result = new int[getBladeCount()][getBladeCount()];
-		IntStream.range(0, getBladeCount()).parallel().forEach(j -> {
-			result[0][j] = (j + 1);
-			result[j][0] = (j + 1);
-		});
-		IntStream.range(1, getBladeCount()).parallel().forEach(p -> {
-			Blade bLeft = canonicalBasis.getSingleBlade(p);
-			IntStream.range(1, getBladeCount()).forEach(k -> {
-				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k))).reduce(nSignature);
-				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());// TA DA!
-			});
-		});
+		this(null, pSig);
 	}
 
 	/**
@@ -154,21 +123,15 @@ public class GProduct implements CliffordProduct {
 		}
 		signature = pSig;
 		// ------Get CanonicalBasis
-		if (pB != null)
-			canonicalBasis = pB;
-		else
-			canonicalBasis = CladosGBuilder.createBasis((byte) pSig.length());
+		canonicalBasis = (pB != null) ? pB : CladosGBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
-		IntStream.range(0, getBladeCount()).parallel().forEach(j -> {
-			result[0][j] = (j + 1);
-			result[j][0] = (j + 1);
-		});
-		IntStream.range(1, getBladeCount()).parallel().forEach(p -> {
-			Blade bLeft = canonicalBasis.getSingleBlade(p);
-			IntStream.range(1, getBladeCount()).forEach(k -> {
-				Blade tSpot = (new BladeDuet(bLeft, canonicalBasis.getSingleBlade(k))).reduce(nSignature);
-				result[p][k] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());// TA DA!
+		canonicalBasis.bladeStream().parallel().forEach(bladeLeft -> {
+			int row = canonicalBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
+			canonicalBasis.bladeStream().forEach(bladeRight -> {
+				int col = canonicalBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
+				Blade tSpot = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
+				result[row][col] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());
 			});
 		});
 	}
@@ -310,7 +273,7 @@ public class GProduct implements CliffordProduct {
 			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
 		rB.append(indent).append("\t<Signature>").append(signature()).append("</Signature>\n");
-		rB.append(getBasis().toXMLString(""));
+		rB.append(getBasis().toXMLString(indent + "\t"));
 		rB.append(indent).append("\t<ProductTable rows=\"").append(getBladeCount()).append("\">\n");
 		for (short k = 0; k < getBladeCount(); k++) // Appending rows
 		{

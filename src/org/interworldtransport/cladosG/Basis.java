@@ -235,24 +235,20 @@ public final class Basis implements CanonicalBasis {
 		// ------Initialize
 		gradeCount = (byte) (pGens + 1);
 		gradeList = new ArrayList<Integer>(gradeCount);
-		//gradeIndexMap = new TreeMap<>();
 		bladeList = new ArrayList<Blade>(1 << pGens);
 		keyIndexMap = new TreeMap<>();
 		// ------Build bladeList
 		if (pGens == 0) {
-			bladeList.add(Blade.createBlade(pGens).get());
+			bladeList.add(Blade.createBlade(pGens));
 			gradeList.add(Integer.valueOf(0));
-			//gradeIndexMap.put(bladeList.get(0), Integer.valueOf(0));
-			keyIndexMap.put(0L, 0);
+			keyIndexMap.put(0L, 1);
 		} else if (pGens == 1) {
 			bladeList.add(Blade.createScalarBlade(Generator.E1));
 			gradeList.add(Integer.valueOf(0));
-			//gradeIndexMap.put(bladeList.get(0), Integer.valueOf(0));
-			keyIndexMap.put(0L, 0);
+			keyIndexMap.put(0L, 1);
 			bladeList.add(Blade.createPScalarBlade(Generator.E1));
 			gradeList.add(Integer.valueOf(1));
-			//gradeIndexMap.put(bladeList.get(1), Integer.valueOf(1));
-			keyIndexMap.put(1L, 0);
+			keyIndexMap.put(1L, 2);
 		} else {
 			EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, Generator.get(pGens));
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
@@ -261,7 +257,6 @@ public final class Basis implements CanonicalBasis {
 			sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
 				bladeList.add(blade); // causing bladeList to be in ascending (by key) order
 				keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
-				//gradeIndexMap.put(blade, blade.getGenerators().size());
 			});
 
 			// ------Build gradeList

@@ -139,11 +139,14 @@ public final class Cardinal {
 	}
 
 	/**
-	 * Similar to a toString() mehtod, but it focuses upon an XML style output.
+	 * Similar to a toString() method, but it focuses upon an XML style output.
+	 * @param indent String to assist with human readability of XML output.
 	 * 
-	 * @return String XML compatible sub-unit for code relying on exportable Cardinals.
+	 * @return String XML compatible sub-unit for code relying on export-able Cardinals.
 	 */
-	public String toXMLString() {
-		return ("<Cardinal unit=\"" + unit + "\" />\n");
+	public String toXMLString(String indent) {
+		if (indent == null)
+			indent ="";
+		return (indent + "<Cardinal unit=\"" + unit + "\" />\n");
 	}
 }

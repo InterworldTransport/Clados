@@ -136,7 +136,7 @@ class CoreAlgebraTest {
 
 	@Test
 	public void testXMLOutput() {
-		String test = Algebra.toXMLString(alg1);
+		String test = Algebra.toXMLString(alg1, "");
 		assertTrue(test != null);
 	}
 

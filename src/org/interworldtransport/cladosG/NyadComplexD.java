@@ -24,7 +24,6 @@
  */
 package org.interworldtransport.cladosG;
 
-import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
 import static org.interworldtransport.cladosG.MonadComplexD.isReferenceMatch;
 
 import java.util.ArrayList;
@@ -275,24 +274,27 @@ public class NyadComplexD extends NyadAbstract {
 	 * Display XML string that represents the Nyad
 	 * 
 	 * @param pN NyadComplexD This is the nyad to be converted to XML.
+	 * @param indent String of tab characters to assist with human readability.
 	 * 
 	 * @return String
 	 */
-	public static String toXMLFullString(NyadComplexD pN) {
-		StringBuilder rB = new StringBuilder("\t<Nyad order=\"" + pN.getNyadOrder() + "\" ");
+	public static String toXMLFullString(NyadComplexD pN, String indent) {
+		if (indent == null)
+			indent = "\t";
+		StringBuilder rB = new StringBuilder(indent + "<Nyad order=\"" + pN.getNyadOrder() + "\" ");
 		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
-		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
-		rB.append(pN.getFoot().toXMLString(""));
-		rB.append("\t\t<AlgebraList>\n");
+		rB.append(indent + "\t<Name>" + pN.getName() + "</Name>\n");
+		rB.append(pN.getFoot().toXMLString(indent+"\t"));
+		rB.append(indent + "\t<AlgebraList>\n");
 		for (Algebra point : pN.getAlgebraList())
-			rB.append("\t\t\t<Algebra>\n" + "\t\t\t\t<Name>" + point.getAlgebraName() + "</Name>\n"
-					+ "\t\t\t</Algebra>\n");
-		rB.append("\t\t</AlgebraList>\n");
-		rB.append("\t\t<MonadList>\n");
+			rB.append(indent + "\t\t<Algebra>\n" + "\t\t\t\t<Name>" + point.getAlgebraName() + "</Name>\n" + indent
+					+ "\t\t</Algebra>\n");
+		rB.append(indent + "\t</AlgebraList>\n");
+		rB.append(indent + "\t<MonadList>\n");
 		for (MonadComplexD tSpot : pN.getMonadList())
-			rB.append(MonadComplexD.toXMLFullString(tSpot));
-		rB.append("\t\t</MonadList>\n");
-		rB.append("\t</Nyad>\n");
+			rB.append(MonadComplexD.toXMLFullString(tSpot, indent+"\t\t"));
+		rB.append(indent + "\t</MonadList>\n");
+		rB.append(indent + "</Nyad>\n");
 		return rB.toString();
 	}
 
@@ -300,19 +302,22 @@ public class NyadComplexD extends NyadAbstract {
 	 * Display XML string that represents the Nyad
 	 * 
 	 * @param pN NyadComplexD This is the nyad to be converted to XML.
+	 * @param indent String of tab characters to assist with human readability.
 	 * 
 	 * @return String
 	 */
-	public static String toXMLString(NyadComplexD pN) {
-		StringBuilder rB = new StringBuilder("<Nyad order=\"" + pN.getNyadOrder() + "\" ");
+	public static String toXMLString(NyadComplexD pN, String indent) {
+		if (indent == null)
+			indent = "\t";
+		StringBuilder rB = new StringBuilder(indent+"<Nyad order=\"" + pN.getNyadOrder() + "\" ");
 		rB.append("algorder=\"" + pN.getNyadAlgebraOrder() + "\" >\n");
-		rB.append("\t\t<Name>" + pN.getName() + "</Name>\n");
-		rB.append(pN.getFoot().toXMLString(""));
-		rB.append("\t<MonadList>\n");
+		rB.append(indent+"\t<Name>" + pN.getName() + "</Name>\n");
+		rB.append(pN.getFoot().toXMLString(indent + "\t"));
+		rB.append(indent + "\t<MonadList>\n");
 		for (MonadComplexD tSpot : pN.getMonadList())
-			rB.append(MonadComplexD.toXMLString(tSpot));
-		rB.append("\t</MonadList>\n");
-		rB.append("</Nyad>\n");
+			rB.append(MonadComplexD.toXMLString(tSpot, indent + "\t\t"));
+		rB.append(indent + "\t</MonadList>\n");
+		rB.append(indent + "</Nyad>\n");
 		return rB.toString();
 	}
 
@@ -626,7 +631,7 @@ public class NyadComplexD extends NyadAbstract {
 	public int findNextAlgebra(Algebra pAlg, int pStart) {
 		if (getMonadList().size() < pStart)
 			return -1;
-		for (int j = pStart; j < getMonadList().size(); j++)
+		for (int j = pStart + 1; j < getMonadList().size(); j++)
 			if (pAlg.equals(getMonadList(j).getAlgebra()))
 				return j;
 		return -1;
@@ -704,8 +709,10 @@ public class NyadComplexD extends NyadAbstract {
 			return 0;
 		if (pAlg == null)
 			return 0;
-		int found = 0;
-		int test = 0;
+		int found = 1;
+		int test = findAlgebra(pAlg);
+		if (test == -1)
+			found--;
 		while (test >= 0) {
 			test = findNextAlgebra(pAlg, test);
 			if (test >= 0)
@@ -724,24 +731,20 @@ public class NyadComplexD extends NyadAbstract {
 	 */
 	public boolean isPScalarAt(Algebra pAlg) {
 		boolean test = false; // Assume test fails
-		if (getMonadList().size() <= 0)
-			return false; // No monads? Fails.
-		int maxGrade = pAlg.getGradeCount() - 1; // find pAlg's max grade
-		int j = 0;
-		int tSpot = 0;
-		while (j < getMonadList().size()) // loop through monads
-		{
-			tSpot = findNextAlgebra(pAlg, j); // find a monad using pAlg
-			if (tSpot < 0)
-				break; // none found? break out of loop
-			else if (!isGrade(getMonadList(tSpot), maxGrade))
-				return false; // found and not pscalar? Fails.
-			else {
-				test = true; // found and IS pscalar? test=true because one was found.
-				j = tSpot + 1; // increment loop var to where Alg match was found
-			}
-		} // loop all done
-		return test; // if test is true, no non-pscalar(s) found at pAlg, but pscalar WAS found.
+		if (getNyadOrder() > 0 | pAlg != null) {
+			int maxGrade = pAlg.getGradeCount() - 1; // find pAlg's max grade
+			int tSpot = findAlgebra(pAlg);
+			while (tSpot >= 0) { // loop through monads with that algebra
+				if (MonadAbstract.isGrade(getMonadList(tSpot), maxGrade)) {
+					test = true; // found and IS scalar? test=true because one was found.
+					tSpot = findNextAlgebra(pAlg, tSpot++); // find a monad using pAlg
+				} else {
+					test = false;
+					break; // found and not scalar? Fails.
+				}
+			} // loop all done
+		}
+		return test; // if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
 	}
 
 	/**
@@ -761,23 +764,18 @@ public class NyadComplexD extends NyadAbstract {
 	 */
 	public boolean isScalarAt(Algebra pAlg) {
 		boolean test = false; // Assume test fails
-		if (getMonadList().size() <= 0)
-			return false; // No monads? Fails.
-
-		int j = 0;
-		int tSpot = 0;
-		while (j < getMonadList().size()) // loop through monads
-		{
-			tSpot = findNextAlgebra(pAlg, j); // find a monad using pAlg
-			if (tSpot < 0)
-				break; // none found? break out of loop
-			else if (!isGrade(getMonadList(tSpot), 0))
-				return false; // found and not scalar? Fails.
-			else {
-				test = true; // found and IS scalar? test=true because one was found.
-				j = tSpot + 1; // increment loop var to where Alg match was found
-			}
-		} // loop all done
+		if (getNyadOrder() > 0 | pAlg != null) {
+			int tSpot = findAlgebra(pAlg);
+			while (tSpot >= 0) { // loop through monads with that algebra
+				if (MonadAbstract.isGrade(getMonadList(tSpot), 0)) {
+					test = true; // found and IS scalar? test=true because one was found.
+					tSpot = findNextAlgebra(pAlg, tSpot++); // find a monad using pAlg
+				} else {
+					test = false;
+					break; // found and not scalar? Fails.
+				}
+			} // loop all done
+		}
 		return test; // if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
 	}
 
@@ -838,7 +836,6 @@ public class NyadComplexD extends NyadAbstract {
 				resetAlgebraList(monadList);
 			}
 		}
-
 		return this;
 	}
 

@@ -74,24 +74,22 @@ public final class Blade implements Comparable<Blade> {
 	 * Deliver a blade of the size specified by the byte integer.
 	 * 
 	 * A check is made of the parameter that could fail resulting in no blade being
-	 * returned. That's why an Optional of Blade is returned.
+	 * returned. That's why an Optional of Blade is returned. That check is made
+	 * deeper in with the constructor, though.
 	 * 
 	 * @param pMaxGen This is the byte integer representation of the largest
 	 *                genertor that will be used in this blade being created.
-	 * @return Optional Blade is returned. If Blade was constructed it is contained
-	 *         within the Optional.
+	 * @return Blade is returned. 
 	 */
-	public final static Optional<Blade> createBlade(byte pMaxGen) {
-		if (CanonicalBasis.validateSize(pMaxGen)) {
-			Blade returnIt;
-			try {
-				returnIt = new Blade(pMaxGen);
-			} catch (GeneratorRangeException e) {
-				returnIt = null;
-			}
-			return Optional.of(returnIt);
+	public final static Blade createBlade(byte pMaxGen) {
+		Blade returnIt;
+		try {
+			returnIt = new Blade(pMaxGen);
+		} catch (GeneratorRangeException e) {
+			returnIt = null;
 		}
-		return Optional.of(null);
+		return returnIt;
+
 	}
 
 	/**
@@ -230,7 +228,7 @@ public final class Blade implements Comparable<Blade> {
 		rB.append(indent).append("<Blade key=\"").append(blade.key()).append("\" bitKey=\"0b").append(blade.bitKey())
 				.append("\" sign=\"").append(blade.sign()).append("\" generators=\"");
 
-		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.ord + ","));
+		blade.getGenerators().stream().forEachOrdered(gen -> rB.append(gen.ord).append(","));
 
 		if (blade.getGenerators().size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
@@ -258,7 +256,7 @@ public final class Blade implements Comparable<Blade> {
 				.append(Integer.toBinaryString(blade.bitKey())).append("\" sign=\"").append(blade.sign())
 				.append("\" generators=\"");
 
-		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString() + ","));
+		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString()).append(","));
 
 		if (blade.getGenerators().size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
@@ -334,20 +332,6 @@ public final class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * Simplest constructor that establishes a Blade by naming directly the largest
-	 * generator that will ever be used within it. This sets the internal size
-	 * without having to validate an integer passed in to determine if it is in the
-	 * supported range because Generator enumeration is assumed ALL supported.
-	 * 
-	 * @param pMaxGen Generator that is the largest of the possible directions that
-	 *                might appear in this blade.
-	 */
-	public Blade(Generator pMaxGen) {
-		blade = EnumSet.noneOf(Generator.class);
-		maxGen = pMaxGen.ord;
-	}
-
-	/**
 	 * This is a minimal constructor that establishes the blade's future
 	 * expectations regarding how many generators it might have to add to the set.
 	 * 
@@ -367,31 +351,6 @@ public final class Blade implements Comparable<Blade> {
 			throw new GeneratorRangeException("Unsupported Size for Blade " + pMaxGen);
 		blade = EnumSet.noneOf(Generator.class);
 		maxGen = pMaxGen;
-	}
-
-	/**
-	 * This is a maximal constructor that establishes the blade's future maxGen
-	 * expectations AND provides the byte integer array of directions to load into
-	 * the ArrayList. These bytes need not be sorted since this constructor uses the
-	 * add() method which will handle sorting.
-	 * 
-	 * @param pMaxGen byte integer for the number of possible directions that might
-	 *                appear in this blade.
-	 * @param pDirs   byte array containing directions to append to the blade.
-	 * @throws GeneratorRangeException This can happen a few different ways, but the
-	 *                                 typical one involves making blades with more
-	 *                                 than 14 directions. The current maximum is 14
-	 *                                 because a Basis internal array is indexed on
-	 *                                 byte integers. If 15 generators were
-	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for byte
-	 *                                 integers.
-	 */
-	public Blade(byte pMaxGen, byte[] pDirs) throws GeneratorRangeException {
-		this(pMaxGen);
-		for (byte tS : pDirs)
-			blade.add(Generator.get(tS));
-		makeKey();
 	}
 
 	/**
@@ -418,6 +377,31 @@ public final class Blade implements Comparable<Blade> {
 
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGen
+	 * expectations AND provides the byte integer array of directions to load into
+	 * the ArrayList. These bytes need not be sorted since this constructor uses the
+	 * add() method which will handle sorting.
+	 * 
+	 * @param pMaxGen byte integer for the number of possible directions that might
+	 *                appear in this blade.
+	 * @param pDirs   byte array containing directions to append to the blade.
+	 * @throws GeneratorRangeException This can happen a few different ways, but the
+	 *                                 typical one involves making blades with more
+	 *                                 than 14 directions. The current maximum is 14
+	 *                                 because a Basis internal array is indexed on
+	 *                                 byte integers. If 15 generators were
+	 *                                 expected, the basis would need a row index
+	 *                                 from 0 to 2^15 which is one too many for byte
+	 *                                 integers.
+	 */
+	//public Blade(byte pMaxGen, byte[] pDirs) throws GeneratorRangeException {
+	//	this(pMaxGen);
+	//	for (byte tS : pDirs)
+	//		blade.add(Generator.get(tS));
+	//	makeKey();
+	//}
+
+	/**
+	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
 	 * 
 	 * @param pMaxGen byte integer for the number of possible directions that might
@@ -439,6 +423,20 @@ public final class Blade implements Comparable<Blade> {
 	}
 
 	/**
+	 * Simplest constructor that establishes a Blade by naming directly the largest
+	 * generator that will ever be used within it. This sets the internal size
+	 * without having to validate an integer passed in to determine if it is in the
+	 * supported range because Generator enumeration is assumed ALL supported.
+	 * 
+	 * @param pMaxGen Generator that is the largest of the possible directions that
+	 *                might appear in this blade.
+	 */
+	public Blade(Generator pMaxGen) {
+		blade = EnumSet.noneOf(Generator.class);
+		maxGen = pMaxGen.ord;
+	}
+
+	/**
 	 * The unboxed byte represents a 'direction' in the blade to be added. It is
 	 * immediately boxed and delivered to the similarly named method for handling.
 	 * When that method returns the new blade list, this one finishes by returning
@@ -449,10 +447,10 @@ public final class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See add(Byte pS)
 	 */
-	public Blade add(byte pS) throws GeneratorRangeException {
-		add(Byte.valueOf(pS));
-		return this;
-	}
+	//public Blade add(byte pS) throws GeneratorRangeException {
+	//	add(Byte.valueOf(pS));
+	//	return this;
+	//}
 
 	/**
 	 * The boxed byte represents a 'direction' in the blade to be added. It is first
@@ -469,17 +467,17 @@ public final class Blade implements Comparable<Blade> {
 	 *                                 trying to add 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	public Blade add(Byte pS) throws GeneratorRangeException {
-		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
-			throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-		else if (isPScalar(this) | pS.byteValue() > maxGen)
-			return this;
-		else {
-			if (blade.add(Generator.get(pS.byteValue())))
-				makeKey();
-			return this;
-		}
-	}
+	//public Blade add(Byte pS) throws GeneratorRangeException {
+	//	if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
+	//		throw new GeneratorRangeException("Index out of Range as a generator for blade.");
+	//	else if (isPScalar(this) | pS.byteValue() > maxGen)
+	//		return this;
+	//	else {
+	//		if (blade.add(Generator.get(pS.byteValue())))
+	//			makeKey();
+	//		return this;
+	//	}
+	//}
 
 	/**
 	 * This 'add' method assumes an entire enumerated set of generators has been
@@ -549,16 +547,6 @@ public final class Blade implements Comparable<Blade> {
 	 */
 	public int bitKey() {
 		return bitKey;
-	}
-
-	/**
-	 * This is a gettor for the maximum generator that can be placed in this blade.
-	 * 
-	 * @return byte integer that would be the ordinal of the largest Generator that
-	 *         could be placed in this blade.
-	 */
-	public byte maxGenerator() {
-		return maxGen;
 	}
 
 	/**
@@ -637,16 +625,6 @@ public final class Blade implements Comparable<Blade> {
 		return blade;
 	}
 
-	/**
-	 * This method reports the size of the EnumSet of generators that represents
-	 * this blade. This is the 'rank' of the blade.
-	 * 
-	 * @return byte integer number of generators involved in this blade.
-	 */
-	public byte rank() {
-		return (byte) blade.size();
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -667,6 +645,26 @@ public final class Blade implements Comparable<Blade> {
 	}
 
 	/**
+	 * This is a gettor for the maximum generator that can be placed in this blade.
+	 * 
+	 * @return byte integer that would be the ordinal of the largest Generator that
+	 *         could be placed in this blade.
+	 */
+	public byte maxGenerator() {
+		return maxGen;
+	}
+
+	/**
+	 * This method reports the size of the EnumSet of generators that represents
+	 * this blade. This is the 'rank' of the blade.
+	 * 
+	 * @return byte integer number of generators involved in this blade.
+	 */
+	public byte rank() {
+		return (byte) blade.size();
+	}
+
+	/**
 	 * The unboxed byte represents a 'direction' in the blade to be removed. It is
 	 * immediately boxed and delivered to the similarly named method for handling.
 	 * When that method returns the new blade list, this one finishes by returning
@@ -677,9 +675,9 @@ public final class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
-	public Blade remove(byte pS) throws GeneratorRangeException {
-		return remove(Byte.valueOf(pS));
-	}
+	//public Blade remove(byte pS) throws GeneratorRangeException {
+	//	return remove(Byte.valueOf(pS));
+	//}
 
 	/**
 	 * The boxed byte represents a 'direction' in the blade to be removed. It is
@@ -695,13 +693,13 @@ public final class Blade implements Comparable<Blade> {
 	 *                                 example, trying to remove 22 or -5 will cause
 	 *                                 this exception to be thrown.
 	 */
-	public Blade remove(Byte pS) throws GeneratorRangeException {
-		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
-			throw new GeneratorRangeException("Unsupported Generator for Blade.");
-		else if (blade.remove(Generator.get(pS.byteValue())))
-			makeKey();
-		return this;
-	}
+	//public Blade remove(Byte pS) throws GeneratorRangeException {
+	//	if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
+	//		throw new GeneratorRangeException("Unsupported Generator for Blade.");
+	//	else if (blade.remove(Generator.get(pS.byteValue())))
+	//		makeKey();
+	//	return this;
+	//}
 
 	/**
 	 * This 'remove' method assumes an entire enumerated set of generators has been

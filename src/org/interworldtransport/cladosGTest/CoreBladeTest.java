@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosG.Blade;
 import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,13 +53,13 @@ class CoreBladeTest {
 		assertTrue(tB10.getGenerators().size() == 10);
 		assertTrue(tB15.getGenerators().size() == 14);
 
-		tB15.remove((byte) 12);
+		tB15.remove(Generator.EC);
 		assertTrue(tB15.getGenerators().size() == 13);
 
-		tB15.add((byte) 10); // generator already there, so silently ignore the add.
+		tB15.add(Generator.EA); // generator already there, so silently ignore the add.
 		assertTrue(tB15.getGenerators().size() == 13);
 
-		tB15.add(Byte.valueOf((byte) 12));
+		tB15.add(Generator.EC);
 		assertTrue(tB15.getGenerators().size() == 14);
 
 	}
@@ -77,15 +76,6 @@ class CoreBladeTest {
 		assertTrue(newtB10.equals(tB10));
 	}
 
-	@Test
-	public void testLowGeneratorLimit() throws GeneratorRangeException {
-		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 0));
-	}
-
-	@Test
-	public void testHighGeneratorLimit() throws GeneratorRangeException {
-		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 16));
-	}
 
 	//@Test
 	//public void testXMLOutput() throws GeneratorRangeException {

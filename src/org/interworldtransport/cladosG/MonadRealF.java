@@ -190,51 +190,57 @@ public class MonadRealF extends MonadAbstract {
 	 * Display XML string that represents the Monad
 	 * 
 	 * @param pM MonadRealF This is the monad to be converted to XML.
+	 * @param indent String of tab characters to assign with human readability
 	 * 
 	 * @return String
 	 */
-	public static String toXMLString(MonadRealF pM) {
-		StringBuilder rB = new StringBuilder("\t\t\t<Monad ");
+	public static String toXMLString(MonadRealF pM, String indent) {
+		if (indent == null)
+			indent = "\t\t\t";
+		StringBuilder rB = new StringBuilder(indent + "<Monad ");
 		rB.append("algebra=\"").append(pM.getAlgebra().getAlgebraName()).append("\" ");
 		rB.append("frame=\"").append(pM.getFrameName()).append("\" ");
 		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
 		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
 		rB.append(">\n");
 
-		rB.append("\t\t\t\t<Name>").append(pM.getName()).append("</Name>\n");
-		rB.append("\t\t\t\t<Coefficients number=\"").append(pM.getCoeff().length).append("\" gradeKey=\"")
+		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
+		rB.append(indent + "\t<Coefficients number=\"").append(pM.getCoeff().length).append("\" gradeKey=\"")
 				.append(pM.getGradeKey()).append("\">\n");
 		for (int k = 0; k < pM.getCoeff().length; k++)
-			rB.append("\t\t\t\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
+			rB.append(indent + "\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
 
-		rB.append("\t\t\t\t</Coefficients>\n");
-		rB.append("\t\t\t</Monad>\n");
+		rB.append(indent + "\t</Coefficients>\n");
+		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
 
 	/**
 	 * Display XML string that represents the Monad
 	 * 
-	 * @param pM MonadRealF This is the monad to be converted to XML.
+	 * @param pM     MonadRealF This is the monad to be converted to XML.
+	 * @param indent String of tab characters to assign with human readability
 	 * 
 	 * @return String
 	 */
-	public static String toXMLFullString(MonadRealF pM) {
-		StringBuilder rB = new StringBuilder("\t\t\t<Monad ");
+	public static String toXMLFullString(MonadRealF pM, String indent) {
+		if (indent == null)
+			indent = "\t\t\t";
+		StringBuilder rB = new StringBuilder(indent + "<Monad ");
 		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
 		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
 		rB.append(">\n");
-		rB.append("\t\t\t\t<Name>").append(pM.getName()).append("</Name>\n");
-		rB.append(Algebra.toXMLString(pM.getAlgebra()));
-		rB.append("\t\t\t\t<Frame>\"").append(pM.getFrameName()).append("\"</Frame>\n");
-		rB.append("\t\t\t\t<Coefficients number=\"").append(pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey())
-				.append("\">\n");
-		
-		for (int k = 0; k < pM.getCoeff().length; k++)
-			rB.append("\t\t\t\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
+		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
+		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
+		rB.append(indent + "\t<Frame>\"").append(pM.getFrameName()).append("\"</Frame>\n");
+		rB.append(indent + "\t<Coefficients number=\"")
+				.append(pM.getCoeff().length + "\" gradeKey=\"" + pM.getGradeKey()).append("\">\n");
 
-		rB.append("\t\t\t\t</Coefficients>\n");
-		rB.append("\t\t\t</Monad>\n");
+		for (int k = 0; k < pM.getCoeff().length; k++)
+			rB.append(indent + "\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
+
+		rB.append(indent + "\t</Coefficients>\n");
+		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
 

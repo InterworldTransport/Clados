@@ -119,8 +119,9 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @param pA Algebra to be exported as XML data
 	 * @return String formatted as XML containing information about the Algebra
 	 */
-	public final static String toXMLString(Algebra pA) {
-		String indent = "\t\t\t\t";
+	public final static String toXMLString(Algebra pA, String indent) {
+		if (indent == null)
+			indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
 		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
 		rB.append(indent).append("\t").append(pA.protoNumber.toXMLString()).append("\n");
@@ -131,8 +132,8 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 					.append(tip).append("\" />\n");
 		rB.append(indent).append("\t</Frames>\n");
 		// -----------------------------------------------------------------------
-		rB.append(pA.getFoot().toXMLString("\t\t\t"));
-		rB.append(pA.getGProduct().toXMLString(""));
+		rB.append(pA.getFoot().toXMLString(indent + "\t"));
+		rB.append(pA.getGProduct().toXMLString(indent + "\t"));
 		rB.append(indent).append("</Algebra>\n");
 		return rB.toString();
 	}
