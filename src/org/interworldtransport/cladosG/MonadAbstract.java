@@ -25,6 +25,7 @@
 package org.interworldtransport.cladosG;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
@@ -120,34 +121,34 @@ public abstract class MonadAbstract {
 	 */
 	protected Algebra algebra;
 
-	/**
-	 * This is thh new coefficient 'array'. It's size should always match
-	 * bladeCount. It is keyed to the blades in a monad's basis.
-	 * It is fundamentally an IdentityHashMap with some frosting.
-	 */
-	protected Scale<? extends DivField> scales;
-
 	protected byte foundGrades;
 
 	/**
 	 * This String is the name of the Reference Frame of the Monad
 	 */
 	protected String frameName;
+
 	/**
 	 * This long holds a key that shows which grades are present in the monad. The
 	 * key is a sum over powers of 10 with the grade as the exponent.
 	 */
 	protected long gradeKey;
 	/**
+	 * This is just a flag specifying the field type one should expect for
+	 * coefficients of the monad.
+	 */
+	protected CladosField mode;
+	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
 	protected String name;
 
 	/**
-	 * This is just a flag specifying the field type one should expect for
-	 * coefficients of the monad.
+	 * This is the new coefficient 'array'. It's size should always match
+	 * bladeCount. It is keyed to the blades in a monad's basis.
+	 * It is fundamentally an IdentityHashMap with some frosting.
 	 */
-	protected CladosField mode;
+	protected Scale<? extends DivField> scales;
 
 	/**
 	 * This boolean is a flag used internally by multiplication methods to make
@@ -158,6 +159,15 @@ public abstract class MonadAbstract {
 	protected boolean sparseFlag = true;
 
 	/**
+	 * This method returns the actual blades the underlying basis as a stream.
+	 * 
+	 * @return Stream of Blades in the underlying CanonicalBasis
+	 */
+	public Stream<Blade> bladeStream() {
+		return algebra.getGBasis().bladeStream();
+	}
+	
+	/**
 	 * This integer stream is OFTEN used internally in monads for calculations.
 	 * Rather than type it out in long form, it is aliases to this method.
 	 * 
@@ -166,7 +176,7 @@ public abstract class MonadAbstract {
 	 * 
 	 * @return Integer stream ranging through all the blades of the algebra
 	 */
-	public IntStream bladeStream() {
+	public IntStream bladeIntStream() {
 		return IntStream.range(0, getAlgebra().getBladeCount());
 	}
 
@@ -264,16 +274,6 @@ public abstract class MonadAbstract {
 	public abstract MonadAbstract gradePart(byte pGrade);
 
 	/**
-	 * This integer stream is OFTEN used internally in monads for calculations.
-	 * Rather than type it out in long form, it is aliases to this method.
-	 * 
-	 * @return Integer stream ranging through all the grades of the algebra
-	 */
-	public IntStream gradeStream() {
-		return IntStream.range(0, getAlgebra().getGradeCount());
-	}
-
-	/**
 	 * This IntStream ranges across an integer index of blades of the same grade.
 	 * Which grade is decided elsewhere and then the gradeRange result is passed to
 	 * this method to get the integer stream.
@@ -286,6 +286,16 @@ public abstract class MonadAbstract {
 		if (pIn.length == 2)
 			return IntStream.rangeClosed(pIn[0], pIn[1]);
 		return IntStream.empty();
+	}
+
+	/**
+	 * This integer stream is OFTEN used internally in monads for calculations.
+	 * Rather than type it out in long form, it is aliases to this method.
+	 * 
+	 * @return Integer stream ranging through all the grades of the algebra
+	 */
+	public IntStream gradeStream() {
+		return IntStream.range(0, getAlgebra().getGradeCount());
 	}
 
 	/**

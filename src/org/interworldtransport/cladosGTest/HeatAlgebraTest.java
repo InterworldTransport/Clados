@@ -68,7 +68,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen06() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		for (int m = 0; m < loopLimit; m++) {
+		for (int m = 0; m < 100; m++) {
 			a0 = CladosGAlgebra.REALF.create(coeff, aName, ftName, "++-+++");
 			assertFalse(a0 == null);
 		}
@@ -76,7 +76,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen07() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		for (int m = 0; m < loopLimit; m++) {
+		for (int m = 0; m < 100; m++) {
 			a0 = CladosGAlgebra.REALF.create(coeff, aName, ftName, "+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -84,7 +84,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen08() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		for (int m = 0; m < loopLimit; m++) {
+		for (int m = 0; m < 100; m++) {
 			a0 = CladosGAlgebra.REALF.create(coeff, aName, ftName, "-+++-+++");
 			assertFalse(a0 == null);
 		}
@@ -92,7 +92,7 @@ class HeatAlgebraTest {
 
 	@Test
 	public void testGen09() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
-		for (int m = 0; m < loopLimit; m++) {
+		for (int m = 0; m < 100; m++) {
 			a0 = CladosGAlgebra.REALF.create(coeff, aName, ftName, "+-+++-+++");
 			assertFalse(a0 == null);
 		}

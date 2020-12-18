@@ -12,9 +12,12 @@ import static org.interworldtransport.cladosG.MonadRealF.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
+import org.interworldtransport.cladosG.CladosConstant;
+import org.interworldtransport.cladosG.MonadAbstract;
 import org.interworldtransport.cladosG.MonadRealF;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -44,11 +47,7 @@ class CoreMonadRealFTest {
 
 		Cardinal tSpot = Cardinal.generate(fType);
 
-		for (int k = 0; k < 16; k++) {
-			cRF[k] = new RealF(tSpot, (float) k);
-			assertTrue(cRF[k] != null);
-			assertTrue(cRF[k].getCardinal().equals(tSpot));
-		}
+		cRF = (RealF[]) CladosFListBuilder.REALF.createONE(tSpot, cRF.length);
 
 		tM0 = new MonadRealF(mName + "0", aName, "Foot Default Frame", "Test Foot 0", "-+++",
 				new RealF(Cardinal.generate("Test Float 1"), 0f));
@@ -119,17 +118,9 @@ class CoreMonadRealFTest {
 		assertTrue(isGZero(tM5.scale(RealF.copyZERO(tM5.getCoeff((short) 0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
-
-//		tM6.normalize();
-
-//		System.out.println(toXMLString(tM6));
-//		System.out.println(tM6.magnitude().toXMLString());
-//		System.out.println(RealF.copyONE(tM7.getCoeff((short) 0)).toXMLString());
-		// assertTrue(isEqual(tM6.normalize().magnitude(),
-		// RealF.copyONE(tM7.getCoeff((short) 0))));
-
+		assertTrue(RealF.isEqual(tM6.normalize().magnitude(), RealF.copyONE(tM7.getCoeff(0))));
 		assertTrue(hasGrade(tM6, 2));
-		assertFalse(hasGrade(tM7, 0));
+		assertTrue(MonadAbstract.hasGrade(tM7, 0));
 	}
 
 	@Test
@@ -137,7 +128,10 @@ class CoreMonadRealFTest {
 		tM6.add(tM7);
 		tM7.scale(new RealF(tM6.getCoeff((short) 0), 2.0f));
 		assertTrue(tM6.isGEqual(tM7));
-		tM6.subtract(tM7).subtract(tM7).scale(new RealF(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
+		tM6.subtract(tM7).subtract(tM7);
+		
+		tM6.scale(new RealF(tM7.getAlgebra().shareCardinal(), CladosConstant.MINUS_ONE_F));
+		//System.out.println(MonadRealF.toXMLString(tM6, ""));
 		assertTrue(tM6.isGEqual(tM7));
 
 	}
@@ -148,23 +142,23 @@ class CoreMonadRealFTest {
 
 		tM8.gradePart((byte) 4).normalize();
 		tM6.multiplyLeft(tM8).dualLeft();
-		tM6.scale(new RealF(tM6.getCoeff((short) 0), -1f));
+		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), CladosConstant.MINUS_ONE_F));
 		assertTrue(tM6.isGEqual(tM7));
 		
 		tM6.multiplyRight(tM8).dualRight();
-		tM6.scale(new RealF(tM6.getCoeff((short) 0), -1f));
+		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), CladosConstant.MINUS_ONE_F));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM5.setCoeff(tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
 
 		tM6.multiplySymm(tM8);
-		tM6.scale(new RealF(tM6.getCoeff((short) 0), -1f));
+		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), -1f));
 		assertFalse(tM6.isGEqual(tM7));
 
 		tM6.setCoeff(tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
-		tM6.scale(new RealF(tM6.getCoeff((short) 0), -1f));
+		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), -1f));
 		assertFalse(tM6.isGEqual(tM7));
 	}
 
@@ -177,5 +171,10 @@ class CoreMonadRealFTest {
 		assertFalse(newOne.equals(null));
 		assertFalse(isReferenceMatch(tM0, newOne));
 	}
-
+/*	
+	@Test
+	public void testXMLOutput() {
+		System.out.println(MonadRealF.toXMLString(tM6, ""));
+	}
+*/
 }

@@ -183,7 +183,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	private final byte gradeCount;
 
-	//private final TreeMap<Blade, Integer> gradeIndexMap;
+	// private final TreeMap<Blade, Integer> gradeIndexMap;
 
 	/**
 	 * This list is used for tracking of where grades start and stop in a bladeList.
@@ -421,6 +421,16 @@ public final class Basis implements CanonicalBasis {
 	}
 
 	/**
+	 * This is a short-hand method for getSingleBlade('last'). It just returns the
+	 * last blade in the basis.
+	 * 
+	 * @return Blade that is the last in the basis
+	 */
+	public Blade getPScalarBlade() {
+		return bladeList.get(getBladeCount() - 1);
+	}
+
+	/**
 	 * This is a special version of getGradeStart() that finds the highest grade.
 	 * 
 	 * @return int Index within the basis where pscalar grade starts.
@@ -428,6 +438,16 @@ public final class Basis implements CanonicalBasis {
 	@Override
 	public int getPScalarStart() {
 		return gradeList.get(gradeCount);
+	}
+
+	/**
+	 * This is a short-hand method for getSingleBlade(0). It just returns the first
+	 * blade in the basis.
+	 * 
+	 * @return Blade that is the first in the basis
+	 */
+	public Blade getScalarBlade() {
+		return bladeList.get(0);
 	}
 
 	/**

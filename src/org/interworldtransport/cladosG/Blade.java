@@ -62,7 +62,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  *
  */
-public final class Blade implements Comparable<Blade> {
+public class Blade implements Comparable<Blade> {
 	/**
 	 * Nothing fancy here. Just giving a name to -1 for use when flipping signs when
 	 * generators are transposed. This is to make it clear WHY a sign flip occurs.

@@ -24,7 +24,6 @@
  */
 package org.interworldtransport.cladosF;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,289 +59,57 @@ public enum CladosFListBuilder {
 	 * operation fails but equals() does not.
 	 * 
 	 * @param pField CladosField enumeration hint for DivField child to be created.
-	 * @param pCD    ArrayList of DivField Numbers to be copied.
-	 * @return ArrayList of Numbers holds constructed copies of incoming numbers
+	 * @param pD     List of DivField Numbers to be copied.
+	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static ArrayList<DivField> copyOf(CladosField pField, ArrayList<DivField> pCD) {
-		ArrayList<DivField> tSpot = new ArrayList<DivField>(pCD.size());
+	public final static <T extends DivField & Divisible> List<T> copyOf(CladosField pField, List<T> pD) {
 		switch (pField) {
-		case REALF:
-			for (int j = 0; j < pCD.size(); j++)
-				tSpot.add(RealF.copyOf((RealF) pCD.get(j)));
-			return tSpot;
-		case REALD:
-			for (int j = 0; j < pCD.size(); j++)
-				tSpot.add(RealD.copyOf((RealD) pCD.get(j)));
-			return tSpot;
-		case COMPLEXF:
-			for (int j = 0; j < pCD.size(); j++)
-				tSpot.add(ComplexF.copyOf((ComplexF) pCD.get(j)));
-			return tSpot;
-		case COMPLEXD:
-			for (int j = 0; j < pCD.size(); j++)
-				tSpot.add(ComplexD.copyOf((ComplexD) pCD.get(j)));
-			return tSpot;
-		default:
+		case REALF -> {
+			return CladosFListBuilder.REALF.copyListOf(pD);
+		}
+		case REALD -> {
+			return CladosFListBuilder.REALD.copyListOf(pD);
+		}
+		case COMPLEXF -> {
+			return CladosFListBuilder.COMPLEXF.copyListOf(pD);
+		}
+		case COMPLEXD -> {
+			return CladosFListBuilder.COMPLEXD.copyListOf(pD);
+		}
+		default -> {
 			return null;
+		}
 		}
 	}
 
 	/**
-	 * This method returns an array of numbers using the offered Cardinal.
+	 * Method copies the incoming numbers into a distinct objects ensuring the ==
+	 * operation fails but equals() does not.
 	 * 
-	 * @param pC    Cardinal to re-use
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexD's all set to ONE
+	 * @param pField CladosField enumeration hint for DivField child to be created.
+	 * @param pCD    List of DivField Numbers to be copied.
+	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static ComplexD[] createComplexDONE(Cardinal pC, int pSize) {
-		ComplexD[] tSpot = new ComplexD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexD.newONE(pC);
-		return tSpot;
+	@SuppressWarnings("unchecked")
+	public final static <T extends DivField & Divisible> T[] copyOf(CladosField pField, T[] pD) {
+		switch (pField) {
+		case REALF -> {
+			return (T[]) CladosFListBuilder.REALF.copyOf(pD);
+		}
+		case REALD -> {
+			return (T[]) CladosFListBuilder.REALD.copyOf(pD);
+		}
+		case COMPLEXF -> {
+			return (T[]) CladosFListBuilder.COMPLEXF.copyOf(pD);
+		}
+		case COMPLEXD -> {
+			return (T[]) CladosFListBuilder.COMPLEXD.copyOf(pD);
+		}
+		default -> {
+			return null;
+		}
+		}
 	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexD's all set to ONE
-	 */
-	public final static ComplexD[] createComplexDONE(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		ComplexD[] tSpot = new ComplexD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexD.newONE(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pC    Cardinal to re-use.
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexD's all set to ZERO
-	 */
-	public final static ComplexD[] createComplexDZERO(Cardinal pC, int pSize) {
-		ComplexD[] tSpot = new ComplexD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexD.newZERO(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexD's all set to ZERO.
-	 */
-	public final static ComplexD[] createComplexDZERO(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		ComplexD[] tSpot = new ComplexD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexD.newZERO(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * @param pC    Cardinal to re-use
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexF's all set to ONE
-	 */
-	public final static ComplexF[] createComplexFONE(Cardinal pC, int pSize) {
-		ComplexF[] tSpot = new ComplexF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexF.newONE(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexF's all set to ONE
-	 */
-	public final static ComplexF[] createComplexFONE(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		ComplexF[] tSpot = new ComplexF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexF.newONE(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pC    Cardinal to re-use.
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexF's all set to ZERO
-	 */
-	public final static ComplexF[] createComplexFZERO(Cardinal pC, int pSize) {
-		ComplexF[] tSpot = new ComplexF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexF.newZERO(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of ComplexF's all set to ZERO.
-	 */
-	public final static ComplexF[] createComplexFZERO(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		ComplexF[] tSpot = new ComplexF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = ComplexF.newZERO(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * @param pC    Cardinal to re-use
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealD's all set to ONE
-	 */
-	public final static RealD[] createRealDONE(Cardinal pC, int pSize) {
-		RealD[] tSpot = new RealD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealD.newONE(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealD's all set to ONE
-	 */
-	public final static RealD[] createRealDONE(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		RealD[] tSpot = new RealD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealD.newONE(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pC    Cardinal to re-use.
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealD's all set to ZERO
-	 */
-	public final static RealD[] createRealDZERO(Cardinal pC, int pSize) {
-		RealD[] tSpot = new RealD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealD.newZERO(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealD's all set to ZERO.
-	 */
-	public final static RealD[] createRealDZERO(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		RealD[] tSpot = new RealD[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealD.newZERO(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * @param pC    Cardinal to re-use
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealF's all set to ONE
-	 */
-	public final static RealF[] createRealFONE(Cardinal pC, int pSize) {
-		RealF[] tSpot = new RealF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealF.newONE(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealF's all set to ONE
-	 */
-	public final static RealF[] createRealFONE(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		RealF[] tSpot = new RealF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealF.newONE(tC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pC    Cardinal to re-use.
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealF's all set to ZERO
-	 */
-	public final static RealF[] createRealFZERO(Cardinal pC, int pSize) {
-		RealF[] tSpot = new RealF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealF.newZERO(pC);
-		return tSpot;
-	}
-
-	/**
-	 * This method returns an array of numbers using newly generated Cardinal.
-	 * 
-	 * No Cardinal caching occurs.
-	 * 
-	 * @param pS    String name for Cardinal to generate
-	 * @param pSize Size of the array of numbers to be returned
-	 * @return Array of RealF's all set to ZERO.
-	 */
-	public final static RealF[] createRealFZERO(String pS, int pSize) {
-		Cardinal tC = Cardinal.generate(pS);
-		RealF[] tSpot = new RealF[pSize];
-		for (int j = 0; j < pSize; j++)
-			tSpot[j] = RealF.newZERO(tC);
-		return tSpot;
-	}
-	//
 
 	/**
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
@@ -352,31 +119,32 @@ public enum CladosFListBuilder {
 	 * @return List of DivField children Newly constructed copies of incoming
 	 *         numbers
 	 */
-	public <T> List<? extends DivField> copyListOf(List<? extends DivField> pDV) {
+	@SuppressWarnings("unchecked")
+	public <T extends DivField & Divisible> List<T> copyListOf(List<T> pDV) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
 				tSpot[j] = RealF.copyOf((RealF) pDV.get(j));
-			return List.of(tSpot);
+			return (List<T>) List.of(tSpot);
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
 				tSpot[j] = RealD.copyOf((RealD) pDV.get(j));
-			return List.of(tSpot);
+			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
 				tSpot[j] = ComplexF.copyOf((ComplexF) pDV.get(j));
-			return List.of(tSpot);
+			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
 				tSpot[j] = ComplexD.copyOf((ComplexD) pDV.get(j));
-			return List.of(tSpot);
+			return (List<T>) List.of(tSpot);
 		}
 		default -> {
 			return null;
@@ -391,7 +159,7 @@ public enum CladosFListBuilder {
 	 * @param pDV Array of Numbers to be copied.
 	 * @return DivField[] Newly constructed copies of incoming numbers
 	 */
-	public <T> DivField[] copyOf(T[] pDV) {
+	public <T extends DivField & Divisible> DivField[] copyOf(T[] pDV) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pDV.length];
@@ -428,33 +196,102 @@ public enum CladosFListBuilder {
 	 * 
 	 * @param pCard The cardinal to re-use in all DivField child objects
 	 * @param pSize The size of the array to create.
-	 * @return List of DivField children set to ZERO using incoming cardinal.
+	 * @return DivField[] Newly constructed ZEROS using incoming cardinal.
 	 */
-	public <T> List<? extends DivField> createListOf(Cardinal pCard, int pSize) {
+	public DivField[] create(Cardinal pCard, int pSize) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (RealF) CladosFBuilder.REALF.createZERO(pCard);
-			return List.of(tSpot);
+			return tSpot;
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (RealD) CladosFBuilder.REALD.createZERO(pCard);
-			return List.of(tSpot);
+			return tSpot;
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pCard);
-			return List.of(tSpot);
+			return tSpot;
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pCard);
-			return List.of(tSpot);
+			return tSpot;
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * This method returns an array of numbers using the default Cardinal.
+	 * 
+	 * @param pSize The size oF the array to create.
+	 * @return DivField[] Newly constructed ZEROS with default cardinals.
+	 */
+	public DivField[] create(int pSize) {
+		switch (this) {
+		case REALF -> {
+			Cardinal def = Cardinal.generate(CladosField.REALF);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		case REALD -> {
+			Cardinal def = Cardinal.generate(CladosField.REALD);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		case COMPLEXF -> {
+			Cardinal def = Cardinal.generate(CladosField.COMPLEXF);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		case COMPLEXD -> {
+			Cardinal def = Cardinal.generate(CladosField.COMPLEXD);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * This method returns an array of numbers using the default Cardinal.
+	 * 
+	 * @param pS    The String name for a new cardinal to use in DivField children
+	 * @param pSize The size oF the array to create.
+	 * @return DivField[] Newly constructed ZEROS with default cardinals.
+	 */
+	public DivField[] create(String pS, int pSize) {
+		switch (this) {
+		case REALF -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		case REALD -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		case COMPLEXF -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
+		}
+		case COMPLEXD -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return create(def, pSize);
 		}
 		default -> {
 			return null;
@@ -467,32 +304,141 @@ public enum CladosFListBuilder {
 	 * 
 	 * @param pCard The cardinal to re-use in all DivField child objects
 	 * @param pSize The size of the array to create.
-	 * @return DivField[] Newly constructed ZEROS using incoming cardinal.
+	 * @return List of DivField children set to ZERO using incoming cardinal.
 	 */
-	public <T> DivField[] create(Cardinal pCard, int pSize) {
+	@SuppressWarnings("unchecked")
+	public <T extends DivField & Divisible> List<T> createListOf(Cardinal pCard, int pSize) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (RealF) CladosFBuilder.REALF.createZERO(pCard);
-			return tSpot;
+			return (List<T>) List.of(tSpot);
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (RealD) CladosFBuilder.REALD.createZERO(pCard);
-			return tSpot;
+			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pCard);
-			return tSpot;
+			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pSize];
 			for (int j = 0; j < pSize; j++)
 				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pCard);
+			return (List<T>) List.of(tSpot);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * This method returns an array of numbers using the default Cardinal.
+	 * 
+	 * @param pSize The size oF the array to create.
+	 * @return List of DivField children as ZEROS with default cardinals.
+	 */
+	public <T extends DivField & Divisible> List<T> createListOf(int pSize) {
+		switch (this) {
+		case REALF -> {
+			Cardinal def = Cardinal.generate(CladosField.REALF);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		case REALD -> {
+			Cardinal def = Cardinal.generate(CladosField.REALD);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		case COMPLEXF -> {
+			Cardinal def = Cardinal.generate(CladosField.COMPLEXF);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		case COMPLEXD -> {
+			Cardinal def = Cardinal.generate(CladosField.COMPLEXD);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * This method returns an array of numbers using the default Cardinal.
+	 * 
+	 * @param pS    String name of a new cardinal to use in all DivField children
+	 * @param pSize The size oF the array to create.
+	 * @return List of DivField children as ZEROS with default cardinals.
+	 */
+	public <T extends DivField & Divisible> List<T> createListOf(String pS, int pSize) {
+		switch (this) {
+		case REALF -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		case REALD -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		case COMPLEXF -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		case COMPLEXD -> {
+			Cardinal def = Cardinal.generate(pS);
+			CladosFCache.INSTANCE.appendCardinal(def);
+			return createListOf(def, pSize);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * This method returns an array of numbers using the offered Cardinal.
+	 * 
+	 * @param pCard The cardinal to re-use in all DivField child objects
+	 * @param pSize The size of the array to create.
+	 * @return DivField[] Newly constructed ONEs using incoming cardinal.
+	 */
+	public DivField[] createONE(Cardinal pCard, int pSize) {
+		switch (this) {
+		case REALF -> {
+			RealF[] tSpot = new RealF[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (RealF) CladosFBuilder.REALF.createONE(pCard);
+			return tSpot;
+		}
+		case REALD -> {
+			RealD[] tSpot = new RealD[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (RealD) CladosFBuilder.REALD.createONE(pCard);
+			return tSpot;
+		}
+		case COMPLEXF -> {
+			ComplexF[] tSpot = new ComplexF[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createONE(pCard);
+			return tSpot;
+		}
+		case COMPLEXD -> {
+			ComplexD[] tSpot = new ComplexD[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createONE(pCard);
 			return tSpot;
 		}
 		default -> {
@@ -502,33 +448,44 @@ public enum CladosFListBuilder {
 	}
 
 	/**
-	 * This method returns an array of numbers using the default Cardinal.
+	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
-	 * @param pCard The cardinal to re-use in all DivField child objects
-	 * @param pSize The size oF the array to create.
-	 * @return List of DivField children as ZEROS with default cardinals.
+	 * @param pSize The size of the array to create.
+	 * @return DivField[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public <T> List<? extends DivField> createList(int pSize) {
+	public DivField[] createONE(int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(CladosField.REALF);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			RealF[] tSpot = new RealF[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (RealF) CladosFBuilder.REALF.createONE(def);
+			return tSpot;
 		}
 		case REALD -> {
 			Cardinal def = Cardinal.generate(CladosField.REALD);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			RealD[] tSpot = new RealD[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (RealD) CladosFBuilder.REALD.createONE(def);
+			return tSpot;
 		}
 		case COMPLEXF -> {
 			Cardinal def = Cardinal.generate(CladosField.COMPLEXF);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			ComplexF[] tSpot = new ComplexF[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createONE(def);
+			return tSpot;
 		}
 		case COMPLEXD -> {
 			Cardinal def = Cardinal.generate(CladosField.COMPLEXD);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			ComplexD[] tSpot = new ComplexD[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createONE(def);
+			return tSpot;
 		}
 		default -> {
 			return null;
@@ -537,33 +494,45 @@ public enum CladosFListBuilder {
 	}
 
 	/**
-	 * This method returns an array of numbers using the default Cardinal.
+	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
-	 * @param pCard The cardinal to re-use in all DivField child objects
-	 * @param pSize The size oF the array to create.
-	 * @return DivField[] Newly constructed ZEROS with default cardinals.
+	 * @param pS    String name for new cardinal to use in DivField children.
+	 * @param pSize The size of the array to create.
+	 * @return DivField[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public <T> DivField[] create(int pSize) {
+	public DivField[] createONE(String pS, int pSize) {
 		switch (this) {
 		case REALF -> {
-			Cardinal def = Cardinal.generate(CladosField.REALF);
+			Cardinal def = Cardinal.generate(pS);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
+			RealF[] tSpot = new RealF[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (RealF) CladosFBuilder.REALF.createONE(def);
+			return tSpot;
 		}
 		case REALD -> {
-			Cardinal def = Cardinal.generate(CladosField.REALD);
+			Cardinal def = Cardinal.generate(pS);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
+			RealD[] tSpot = new RealD[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (RealD) CladosFBuilder.REALD.createONE(def);
+			return tSpot;
 		}
 		case COMPLEXF -> {
-			Cardinal def = Cardinal.generate(CladosField.COMPLEXF);
+			Cardinal def = Cardinal.generate(pS);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
+			ComplexF[] tSpot = new ComplexF[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createONE(def);
+			return tSpot;
 		}
 		case COMPLEXD -> {
-			Cardinal def = Cardinal.generate(CladosField.COMPLEXD);
+			Cardinal def = Cardinal.generate(pS);
 			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
+			ComplexD[] tSpot = new ComplexD[pSize];
+			for (int j = 0; j < pSize; j++)
+				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createONE(def);
+			return tSpot;
 		}
 		default -> {
 			return null;

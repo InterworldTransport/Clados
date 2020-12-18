@@ -27,6 +27,7 @@ package org.interworldtransport.cladosG;
 import org.interworldtransport.cladosGExceptions.*;
 import org.interworldtransport.cladosFExceptions.*;
 import static org.interworldtransport.cladosF.RealF.*;
+
 import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.CladosField;
@@ -211,6 +212,7 @@ public class MonadRealF extends MonadAbstract {
 			rB.append(indent + "\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
 
 		rB.append(indent + "\t</Coefficients>\n");
+		rB.append(indent).append(pM.scales.toXMLString("\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -240,6 +242,7 @@ public class MonadRealF extends MonadAbstract {
 			rB.append(indent + "\t\t").append(pM.getCoeff()[k].toXMLString()).append("\n");
 
 		rB.append(indent + "\t</Coefficients>\n");
+		rB.append(indent).append(pM.scales.toXMLString("\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -264,6 +267,11 @@ public class MonadRealF extends MonadAbstract {
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeffInternal(pM.getCoeff());
+		
+		scales = new Scale<RealF>(CladosField.REALF,this.getAlgebra().getGBasis());
+		scales.setCardinal(getAlgebra().shareCardinal());
+		scales.setCoefficientMap(pM.scales.getMap());
+		
 		setGradeKey();
 	}
 
@@ -289,6 +297,11 @@ public class MonadRealF extends MonadAbstract {
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pM.getCoeff());
+
+		scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis());
+		scales.setCardinal(getAlgebra().shareCardinal());
+		scales.setCoefficientMap(pM.scales.getMap());
+
 		setGradeKey();
 	}
 
@@ -320,6 +333,11 @@ public class MonadRealF extends MonadAbstract {
 		mode = CladosField.REALF;
 
 		cM = (RealF[]) CladosFListBuilder.REALF.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
+		
+		scales = new Scale<RealF>(CladosField.REALF,this.getAlgebra().getGBasis());
+		scales.setCardinal(getAlgebra().shareCardinal());
+		scales.zeroAll();
+		
 		setGradeKey();
 	}
 
@@ -351,6 +369,11 @@ public class MonadRealF extends MonadAbstract {
 		mode = CladosField.REALF;
 
 		cM = (RealF[]) CladosFListBuilder.REALF.create(getAlgebra().shareCardinal(), getAlgebra().getBladeCount());
+		
+		scales = new Scale<RealF>(CladosField.REALF,this.getAlgebra().getGBasis());
+		scales.setCardinal(getAlgebra().shareCardinal());
+		scales.zeroAll();
+		
 		setGradeKey();
 	}
 
@@ -400,6 +423,10 @@ public class MonadRealF extends MonadAbstract {
 					.scale(CladosConstant.MINUS_ONE_F);
 			}
 		} // failure to find matching special case defaults ZERO monad by doing nothing.
+		
+		// TODO scales object already exists, so set it as we did cM above.
+		
+		
 		setGradeKey();
 	}
 
@@ -435,6 +462,11 @@ public class MonadRealF extends MonadAbstract {
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pC);
+		
+		scales = new Scale<RealF>(CladosField.REALF,this.getAlgebra().getGBasis());
+		scales.setCardinal(getAlgebra().shareCardinal());
+		scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), pC));
+		
 		setGradeKey();
 	}
 
@@ -463,6 +495,11 @@ public class MonadRealF extends MonadAbstract {
 
 		cM = new RealF[getAlgebra().getBladeCount()];
 		setCoeff(pC);
+		
+		scales = new Scale<RealF>(CladosField.REALF,this.getAlgebra().getGBasis());
+		scales.setCardinal(getAlgebra().shareCardinal());
+		scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), pC));
+		
 		setGradeKey();
 	}
 
@@ -485,6 +522,14 @@ public class MonadRealF extends MonadAbstract {
 
 		for (int i = 0; i < getAlgebra().getBladeCount(); i++)
 			cM[i].add(pM.getCoeff(i));
+		
+		bladeStream().forEach(blade -> {
+			try {
+				scales.get(blade).add(pM.scales.get(blade));
+			} catch (FieldBinaryException e) {
+				throw new IllegalArgumentException("Can't add when cardinals don't match.");
+			}
+		});
 
 		setGradeKey();
 		return this;
@@ -507,7 +552,7 @@ public class MonadRealF extends MonadAbstract {
 	public MonadRealF dualLeft() {
 		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
 		RealF[] tNewCoeff = new RealF[getAlgebra().getBladeCount()]; // initialize results
-		this.bladeStream().forEach(j -> {
+		this.bladeIntStream().forEach(j -> {
 			int prd = (Math.abs(getAlgebra().getGProduct().getResult(tSpot, j)) - 1);
 			tNewCoeff[prd] = copyOf(cM[j]);
 			tNewCoeff[prd].scale(Float.valueOf(getAlgebra().getGProduct().getSign(tSpot, j)));
@@ -523,7 +568,7 @@ public class MonadRealF extends MonadAbstract {
 	public MonadRealF dualRight() {
 		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
 		RealF[] tNewCoeff = new RealF[getAlgebra().getBladeCount()];// initialize results
-		this.bladeStream().forEach(j -> {
+		this.bladeIntStream().forEach(j -> {
 			int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot)) - 1);
 			tNewCoeff[drp] = copyOf(cM[j]);
 			tNewCoeff[drp].scale(Float.valueOf(getAlgebra().getGProduct().getSign(j, tSpot)));
@@ -574,7 +619,7 @@ public class MonadRealF extends MonadAbstract {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		int[] tSpotProtect = getAlgebra().getGradeRange(pGrade);
-		this.bladeStream().filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
+		this.bladeIntStream().filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
 				.parallel().forEach(j -> {
 					cM[j].scale(Float.valueOf(0.0F));
 				});
@@ -630,7 +675,9 @@ public class MonadRealF extends MonadAbstract {
 	public boolean isGEqual(MonadRealF pM) {
 		if (!isReferenceMatch(this, pM))
 			return false;
-		return this.bladeStream().allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
+		//return getAlgebra().getGBasis().bladeStream()
+		//		.allMatch(blade -> RealF.isEqual((RealF) scales.get(blade), (RealF) pM.scales.get(blade)));
+		return this.bladeIntStream().allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
 	}
 
 	/**
@@ -699,7 +746,8 @@ public class MonadRealF extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		RealF[] tNewCoeff = CladosFListBuilder.createRealFZERO(cM[0].getCardinal(), getAlgebra().getBladeCount());
+		RealF[] tNewCoeff = (RealF[]) CladosFListBuilder.REALF.create(cM[0].getCardinal(),
+				getAlgebra().getBladeCount());
 
 		if (sparseFlag) {
 			/*
@@ -780,7 +828,8 @@ public class MonadRealF extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		RealF[] tNewCoeff = CladosFListBuilder.createRealFZERO(cM[0].getCardinal(), getAlgebra().getBladeCount());
+		RealF[] tNewCoeff = (RealF[]) CladosFListBuilder.REALF.create(cM[0].getCardinal(),
+				getAlgebra().getBladeCount());
 
 		if (sparseFlag) {
 			/*
@@ -933,14 +982,15 @@ public class MonadRealF extends MonadAbstract {
 	 * @return MonadRealF
 	 */
 	public MonadRealF scale(RealF pScale) throws FieldBinaryException {
-		if (this.bladeStream().allMatch(j -> isTypeMatch(cM[j], pScale))) {
-			this.bladeStream().forEach(j -> {
+		if (this.bladeIntStream().allMatch(j -> isTypeMatch(cM[j], pScale))) {
+			this.bladeIntStream().forEach(j -> {
 				try {
 					cM[j].multiply(pScale);
 				} catch (FieldBinaryException e) {
 					;
 				}
 			});
+			scales.scale(pScale);
 			setGradeKey();
 			return this;
 		} else {
@@ -1074,6 +1124,14 @@ public class MonadRealF extends MonadAbstract {
 
 		for (int i = 0; i < getAlgebra().getBladeCount(); i++)
 			cM[i].subtract(pM.getCoeff(i));
+		
+		bladeStream().forEach(blade -> {
+			try {
+				scales.get(blade).subtract(pM.scales.get(blade));
+			} catch (FieldBinaryException e) {
+				throw new IllegalArgumentException("Can't subtract when cardinals don't match.");
+			}
+		});
 
 		setGradeKey();
 		return this;

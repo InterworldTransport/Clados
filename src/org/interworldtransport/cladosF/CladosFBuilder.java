@@ -80,7 +80,7 @@ public enum CladosFBuilder {
 		}
 		return test.get();
 	}
-	
+
 	/**
 	 * Method copies the incoming number into a distinct object ensuring the ==
 	 * operation fails but equals() does not.
@@ -94,16 +94,16 @@ public enum CladosFBuilder {
 	public <T extends DivField> DivField copyOf(T pDiv) {
 		switch (this) {
 		case REALF -> {
-			return RealF.copyOf((RealF) pDiv);
+			return new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal()); // RealF.copyOf((RealF) pDiv);
 		}
 		case REALD -> {
-			return RealD.copyOf((RealD) pDiv);
+			return new RealD(pDiv.getCardinal(), ((RealD) pDiv).getReal());// RealD.copyOf((RealD) pDiv);
 		}
 		case COMPLEXF -> {
-			return ComplexF.copyOf((ComplexF) pDiv);
+			return new ComplexF(pDiv.getCardinal(), ((ComplexF) pDiv).getReal());// ComplexF.copyOf((ComplexF) pDiv);
 		}
 		case COMPLEXD -> {
-			return ComplexD.copyOf((ComplexD) pDiv);
+			return new ComplexD(pDiv.getCardinal(), ((ComplexD) pDiv).getReal());// ComplexD.copyOf((ComplexD) pDiv);
 		}
 		default -> {
 			return null;
@@ -135,6 +135,33 @@ public enum CladosFBuilder {
 		case COMPLEXD -> {
 			Cardinal toCache = createCardinal(pS);
 			return ComplexD.newONE(toCache);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * Method creates a new number object with a real value set to ONE using the
+	 * offered Cardinal.
+	 * 
+	 * @param pCard Cardinal to use in construction
+	 * @return DivField child number created
+	 */
+	public <T> DivField createONE(Cardinal pCard) {
+		switch (this) {
+		case REALF -> {
+			return RealF.newONE(pCard);
+		}
+		case REALD -> {
+			return RealD.newONE(pCard);
+		}
+		case COMPLEXF -> {
+			return ComplexF.newONE(pCard);
+		}
+		case COMPLEXD -> {
+			return ComplexD.newONE(pCard);
 		}
 		default -> {
 			return null;

@@ -496,7 +496,7 @@ public class MonadComplexF extends MonadAbstract {
 	 */
 	@Override
 	public MonadComplexF conjugate() {
-		this.bladeStream().parallel().forEach(k -> cM[k].conjugate());
+		this.bladeIntStream().parallel().forEach(k -> cM[k].conjugate());
 		return this;
 	}
 
@@ -507,7 +507,7 @@ public class MonadComplexF extends MonadAbstract {
 	public MonadComplexF dualLeft() {
 		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
 		ComplexF[] tNewCoeff = new ComplexF[getAlgebra().getBladeCount()];// initialize results
-		this.bladeStream().forEach(j -> {
+		this.bladeIntStream().forEach(j -> {
 			int prd = (Math.abs(getAlgebra().getGProduct().getResult(tSpot, j)) - 1);
 			tNewCoeff[prd] = copyOf(cM[j]);
 			tNewCoeff[prd].scale(Float.valueOf(getAlgebra().getGProduct().getSign(tSpot, j)));
@@ -523,7 +523,7 @@ public class MonadComplexF extends MonadAbstract {
 	public MonadComplexF dualRight() {
 		int tSpot = getAlgebra().getGProduct().getBladeCount()-1; // tSpot points at the PScalar blade
 		ComplexF[] tNewCoeff = new ComplexF[getAlgebra().getBladeCount()];// initialize results
-		this.bladeStream().forEach(j -> {
+		this.bladeIntStream().forEach(j -> {
 			int drp = (Math.abs(getAlgebra().getGProduct().getResult(j, tSpot)) - 1);
 			tNewCoeff[drp] = copyOf(cM[j]);
 			tNewCoeff[drp].scale(Float.valueOf(getAlgebra().getGProduct().getSign(j, tSpot)));
@@ -574,7 +574,7 @@ public class MonadComplexF extends MonadAbstract {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		int[] tSpotProtect = getAlgebra().getGradeRange(pGrade);
-		this.bladeStream().filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
+		this.bladeIntStream().filter(j -> (j < tSpotProtect[0] | j > tSpotProtect[1]))
 				.parallel().forEach(j -> {
 					cM[j].scale(Float.valueOf(0.0F));
 				});
@@ -630,7 +630,7 @@ public class MonadComplexF extends MonadAbstract {
 	public boolean isGEqual(MonadComplexF pM) {
 		if (!isReferenceMatch(this, pM))
 			return false;
-		return this.bladeStream().allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
+		return this.bladeIntStream().allMatch(i -> (isEqual(cM[i], pM.getCoeff(i))));
 	}
 
 	/**
@@ -699,7 +699,8 @@ public class MonadComplexF extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		ComplexF[] tNewCoeff = CladosFListBuilder.createComplexFZERO(cM[0].getCardinal(), getAlgebra().getBladeCount());
+		ComplexF[] tNewCoeff = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(cM[0].getCardinal(),
+				getAlgebra().getBladeCount());
 
 		if (sparseFlag) {
 			/*
@@ -780,7 +781,8 @@ public class MonadComplexF extends MonadAbstract {
 		else if (isGZero(pM))
 			return pM;// equally obvious
 
-		ComplexF[] tNewCoeff = CladosFListBuilder.createComplexFZERO(cM[0].getCardinal(), getAlgebra().getBladeCount());
+		ComplexF[] tNewCoeff = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(cM[0].getCardinal(),
+				getAlgebra().getBladeCount());
 
 		if (sparseFlag) {
 			/*
@@ -933,8 +935,8 @@ public class MonadComplexF extends MonadAbstract {
 	 * @return MonadComplexF
 	 */
 	public MonadComplexF scale(ComplexF pScale) throws FieldBinaryException {
-		if (this.bladeStream().allMatch(j -> isTypeMatch(cM[j], pScale))) {
-			this.bladeStream().forEach(j -> {
+		if (this.bladeIntStream().allMatch(j -> isTypeMatch(cM[j], pScale))) {
+			this.bladeIntStream().forEach(j -> {
 				try {
 					cM[j].multiply(pScale);
 				} catch (FieldBinaryException e) {
