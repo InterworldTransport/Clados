@@ -100,10 +100,10 @@ public enum CladosFBuilder {
 			return new RealD(pDiv.getCardinal(), ((RealD) pDiv).getReal());// RealD.copyOf((RealD) pDiv);
 		}
 		case COMPLEXF -> {
-			return new ComplexF(pDiv.getCardinal(), ((ComplexF) pDiv).getReal());// ComplexF.copyOf((ComplexF) pDiv);
+			return new ComplexF(pDiv.getCardinal(), ((ComplexF) pDiv).getReal(), ((ComplexF) pDiv).getImg());// ComplexF.copyOf((ComplexF) pDiv);
 		}
 		case COMPLEXD -> {
-			return new ComplexD(pDiv.getCardinal(), ((ComplexD) pDiv).getReal());// ComplexD.copyOf((ComplexD) pDiv);
+			return new ComplexD(pDiv.getCardinal(), ((ComplexD) pDiv).getReal(), ((ComplexD) pDiv).getImg());// ComplexD.copyOf((ComplexD) pDiv);
 		}
 		default -> {
 			return null;

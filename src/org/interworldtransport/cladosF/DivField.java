@@ -51,7 +51,7 @@ public class DivField {
 	public static final boolean isTypeMatch(DivField pE, DivField pF) {
 		if (pE._card == null && pF._card == null)
 			return true;
-		return pE._card == pF._card;
+		return pE._card.getUnit() == pF._card.getUnit();
 	}
 
 	/**

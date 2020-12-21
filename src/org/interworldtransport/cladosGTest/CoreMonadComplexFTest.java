@@ -1,6 +1,5 @@
 package org.interworldtransport.cladosGTest;
 
-import static org.interworldtransport.cladosG.MonadAbstract.hasGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isMultiGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isUniGrade;
@@ -12,9 +11,12 @@ import static org.interworldtransport.cladosG.MonadComplexF.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
+import org.interworldtransport.cladosG.CladosConstant;
+import org.interworldtransport.cladosG.MonadAbstract;
 import org.interworldtransport.cladosG.MonadComplexF;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -42,8 +44,7 @@ class CoreMonadComplexFTest {
 	public void setUp() throws Exception {
 		cRF = new ComplexF[16];
 		Cardinal tSpot = Cardinal.generate("TestComplexFs");
-		for (int k = 0; k < 16; k++)
-			cRF[k] = new ComplexF(tSpot, (float) k, (float) 15 - k);
+		cRF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(tSpot, cRF.length);
 
 		tM0 = new MonadComplexF("Test MonadComplexF 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
 				new ComplexF(Cardinal.generate("Test Float 1"), 0f));
@@ -54,10 +55,34 @@ class CoreMonadComplexFTest {
 		tM4 = new MonadComplexF(tM0);
 		tM5 = new MonadComplexF("Test MonadComplexF 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
 				new ComplexF(Cardinal.generate("Test Float 5"), 0f), "Unit PScalar");
-		tM6 = new MonadComplexF("Test MonadComplexF 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++",
-				cRF);
-		tM7 = new MonadComplexF(tM6);
-		tM8 = new MonadComplexF(tM6);
+		tM6 = new MonadComplexF("Test MonadComplexF 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM7 = new MonadComplexF(mName + "7", tM6);
+		tM8 = new MonadComplexF(mName + "8", tM6);
+		tM9 = new MonadComplexF(mName + "9", tM2);
+		
+		ComplexF tAdj = new ComplexF(tM9.getAlgebra().shareCardinal(), 0.0f);
+		ComplexF[] tFix = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(tAdj.getCardinal(), 16);
+		tFix[1] = new ComplexF(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f, 0.0f);
+		tFix[4] = ComplexF.copyOf(tFix[1]);
+		tM9.setCoeff(tFix); 
+	}
+	
+	@Test
+	public void testMultiplication() throws FieldBinaryException, CladosMonadBinaryException {
+		assert(tM1.getAlgebra() == tM2.getAlgebra());
+		assert(tM2.getAlgebra() == tM9.getAlgebra());
+		//System.out.println(MonadRealF.toXMLString(tM2, ""));
+		//System.out.println(MonadRealF.toXMLString(tM9, ""));
+		//tM9.multiplyLeft(tM2);
+		//assertTrue(MonadRealF.isGZero(tM2));
+		
+		MonadComplexF check1 = new MonadComplexF(tM9);
+		assertTrue(tM9.isGEqual(check1));
+		//System.out.println(MonadRealF.toXMLString(check1, ""));
+		check1.multiplyLeft(tM9);
+		//System.out.println(MonadRealF.toXMLString(check1, ""));
+		assert(MonadComplexF.isGZero(check1));
+		
 	}
 
 	@Test
@@ -76,9 +101,34 @@ class CoreMonadComplexFTest {
 		assertFalse(isIdempotent(tM5));
 		assertTrue(isIdempotent(tM4));
 		assertTrue(isScaledIdempotent(tM4));
+		assertTrue(isGrade(tM6.gradePart((byte) 0), 0));
+		assertTrue(isGrade(tM5.gradePart((byte) 4), tM5.getAlgebra().getGradeCount() - 1));
 		assertTrue(isNilpotent(tM2, 2));
-		assertTrue(isGrade(tM6.SP(), 0));
-		assertTrue(isGrade(tM5.PSP(), tM5.getAlgebra().getGradeCount() - 1));
+		assertFalse(isGZero(tM9));		
+		assertTrue(isNilpotent(tM9, 2));
+		assertFalse(isNilpotent(tM9, 1));
+		assertFalse(isIdempotent(tM9));
+	}
+
+	@Test
+	public void testUniMathOps() throws FieldBinaryException, FieldException, CladosMonadException {
+		assertTrue(tM4.isGEqual(tM0.dualLeft()));
+		assertTrue(tM4.isGEqual(tM0.dualRight()));
+		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO(tM5.getCoeff(0)))));
+		assertTrue(tM6.invert().invert().isGEqual(tM7));
+		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
+
+		tM6.normalize();
+		if (ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff(0)))) {
+			assertTrue(ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff(0))));
+		} else {
+			ComplexF tSpot = tM6.magnitude();
+			assertTrue(tSpot.getImg() == 0.0f);
+			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
+		}
+
+		assertTrue(MonadAbstract.hasGrade(tM6, 2));
+		assertTrue(MonadAbstract.hasGrade(tM7, 0));
 	}
 
 	@Test
@@ -86,28 +136,7 @@ class CoreMonadComplexFTest {
 		assertTrue(tM1.isGEqual(tM3));
 		assertTrue(tM1.isGEqual(tM2));
 	}
-
-	@Test
-	public void testUniMathOps() throws FieldBinaryException, FieldException, CladosMonadException {
-		assertTrue(tM4.isGEqual(tM0.dualLeft()));
-		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO(tM5.getCoeff((short) 0)))));
-		assertTrue(tM6.invert().invert().isGEqual(tM7));
-		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
-
-		tM6.normalize();
-		if (ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff((short) 0)))) {
-			assertTrue(ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff((short) 0))));
-		} else {
-			ComplexF tSpot = tM6.magnitude();
-			assertTrue(tSpot.getImg() == 0.0f);
-			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
-		}
-
-		assertTrue(hasGrade(tM6, 2));
-		assertTrue(hasGrade(tM7, 0));
-	}
-
+	
 	@Test
 	public void testBiMathOps1() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
 		tM6.add(tM7);

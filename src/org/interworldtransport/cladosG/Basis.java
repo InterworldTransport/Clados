@@ -420,12 +420,7 @@ public final class Basis implements CanonicalBasis {
 		return keyIndexMap;
 	}
 
-	/**
-	 * This is a short-hand method for getSingleBlade('last'). It just returns the
-	 * last blade in the basis.
-	 * 
-	 * @return Blade that is the last in the basis
-	 */
+	@Override
 	public Blade getPScalarBlade() {
 		return bladeList.get(getBladeCount() - 1);
 	}
@@ -440,12 +435,7 @@ public final class Basis implements CanonicalBasis {
 		return gradeList.get(gradeCount);
 	}
 
-	/**
-	 * This is a short-hand method for getSingleBlade(0). It just returns the first
-	 * blade in the basis.
-	 * 
-	 * @return Blade that is the first in the basis
-	 */
+	@Override
 	public Blade getScalarBlade() {
 		return bladeList.get(0);
 	}

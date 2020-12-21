@@ -68,6 +68,14 @@ public final class CladosConstant {
 	 */
 	public final static Double MINUS_ONE_D = Double.valueOf(-1.0d);
 	/**
+	 * Alias for +1 to help readability elsewhere. Java's Float doesn't have it.
+	 */
+	public final static Float PLUS_ONE_F = Float.valueOf(1.0f);
+	/**
+	 * Alias for +1 to help readability elsewhere. Java's Double doesn't have it.
+	 */
+	public final static Double PLUS_ONE_D = Double.valueOf(1.0d);
+	/**
 	 * This is just an alias for 0.5f
 	 */
 	public final static Float BY2_F = Float.valueOf(1/2);

@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
  */
 public class CoreNyadRealFTest {
 	Algebra alg1, alg2;
-	final String aName = "Motion Algebra";
-	final String aName2 = "Property Algebra";
+	final String aName = "MotionAlgebra";
+	final String aName2 = "PropertyAlgebra";
 	final Cardinal charge = CladosFBuilder.createCardinal("q/dV");
 	final String footName = "YouAreHere";
 	final String frameName = "inertial";
@@ -115,6 +115,7 @@ public class CoreNyadRealFTest {
 		property.getCoeff(0).setReal(1.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		property.dualLeft();
+		//System.out.println(NyadRealF.toXMLString(thing1, ""));
 		assertTrue(thing1.isPScalarAt(property.getAlgebra()));
 	}
 	
@@ -175,7 +176,7 @@ public class CoreNyadRealFTest {
 		thing1.appendMonad(property);
 		String printIt = NyadRealF.toXMLString(thing1, "");
 		assertTrue(printIt != null);
-		System.out.println(printIt);
+		//System.out.println(printIt);
 	}
 
 }

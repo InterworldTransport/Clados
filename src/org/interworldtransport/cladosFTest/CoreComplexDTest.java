@@ -73,7 +73,8 @@ class CoreComplexDTest {
 
 	@Test
 	public void testIsTypeMatch() {
-		assertFalse(isTypeMatch(tComplex0, tComplex1));
+		assertTrue(isTypeMatch(tComplex0, tComplex1));
+		assertFalse(tComplex0.getCardinal() == tComplex1.getCardinal());
 	}
 
 	@Test
@@ -172,7 +173,7 @@ class CoreComplexDTest {
 		assertTrue(isEqual(tComplex1.divide(tComplex1n), tComplex1n));
 		assertFalse(isEqual(tComplex1.divide(tComplex1n), tComplex1n));
 	}
-
+/*
 	@Test
 	public void testCopyFromSQModuliSum() throws FieldBinaryException {
 		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.isNaN(ComplexD.copyFromSQModuliSum(tComplexs)));
@@ -182,5 +183,5 @@ class CoreComplexDTest {
 	public void testCopyFromModuliSum() throws FieldBinaryException {
 		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.isNaN(ComplexD.copyFromModuliSum(tComplexs)));
 	}
-
+*/
 }

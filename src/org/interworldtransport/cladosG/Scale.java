@@ -1,3 +1,4 @@
+
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
@@ -29,17 +30,11 @@ import static org.interworldtransport.cladosF.DivField.isTypeMatch;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.DivField;
-import org.interworldtransport.cladosF.Divisible;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.*;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
+import org.interworldtransport.cladosFExceptions.FieldException;
 
 /**
  * This class is definitely a work in progress. It is intended to replace an
@@ -51,11 +46,11 @@ import org.interworldtransport.cladosFExceptions.FieldBinaryException;
  */
 public class Scale<D extends DivField & Divisible> {
 	/**
-	 * When entries appear in the internal list, they should all share the same
+	 * When entries appear in the internal map, they should all share the same
 	 * cardinal. That cardinal is referenced here.
 	 */
 	private Cardinal card;
-	private CanonicalBasis gBasis;
+	private final CanonicalBasis gBasis;
 	private IdentityHashMap<Blade, DivField> map;
 
 	/**
@@ -66,18 +61,19 @@ public class Scale<D extends DivField & Divisible> {
 	private CladosField mode;
 
 	/**
-	 * Slightly more than the default constructor where we also set the expected
-	 * maximum size for efficient hashing.
+	 * This is the constructor to use when one does not have the actual map ready,
+	 * but will provide it later.
 	 * 
 	 * @param pMode CladosField enumeration so we know what kind of DivField to
 	 *              expect from get()
 	 * @param pB    Basis to which the blades used in the internal map belong.
+	 * @param pCard Incoming Cardinal to reference here.
 	 */
-	public Scale(CladosField pMode, CanonicalBasis pB) {
+	public Scale(CladosField pMode, CanonicalBasis pB, Cardinal pCard) {
 		map = new IdentityHashMap<>(pB.getBladeCount());
 		mode = pMode;
 		gBasis = pB;
-		card = Cardinal.generate(mode);
+		card = pCard;
 		zeroAll();
 	}
 
@@ -92,20 +88,37 @@ public class Scale<D extends DivField & Divisible> {
 		mode = pMode;
 		gBasis = pB;
 		map.putAll(pInMap);
-		card = map.get(gBasis.getSingleBlade(0)).getCardinal(); // gets scalar part cardinal
+		card = map.get(gBasis.getScalarBlade()).getCardinal(); // gets scalar part cardinal
 		assert (pInMap.keySet().size() == pB.getBladeCount());
 	}
 
 	/**
+	 * This is the compliment of a blade stream involving the scaling factors
+	 * 'multiplied' by blades in the sense of a division field over a vector space.
+	 * When forming a linear combination of blades to make a 'vector', these are the
+	 * 'numbers' that scale each direction.
 	 * 
+	 * @return Stream of DivField children that are the coefficients represented as
+	 *         values in the internal map.
+	 */
+	@SuppressWarnings("unchecked")
+	public Stream<D> coefficientStream() {
+		return (Stream<D>) map.values().stream();
+	}
+
+	/**
+	 * This method conjugates all the values in the internal map, but leaves the
+	 * blades of the algebra untouched.
 	 * 
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> conjugate() {
 		gBasis.bladeStream().parallel().forEach(blade -> {
 			switch (mode) {
-			case REALF -> ;
-			case REALD -> ;
+			case REALF -> {
+			}
+			case REALD -> {
+			}
 			case COMPLEXF -> ((ComplexF) map.get(blade)).conjugate();
 			case COMPLEXD -> ((ComplexD) map.get(blade)).conjugate();
 			}
@@ -124,6 +137,15 @@ public class Scale<D extends DivField & Divisible> {
 	@SuppressWarnings("unchecked")
 	public D get(Blade pB) {
 		return (D) map.get(pB);
+	}
+
+	/**
+	 * Simple gettor method for the Cardinal associated with this object.
+	 * 
+	 * @return Cardinal in use in this.
+	 */
+	public Cardinal getCardinal() {
+		return card;
 	}
 
 	/**
@@ -179,59 +201,118 @@ public class Scale<D extends DivField & Divisible> {
 	}
 
 	/**
+	 * This method imitates the 'get()' method in a map, but specializes in the
+	 * pscalar blade key.
+	 * 
+	 * @return A DivField child related to the pscalar blade
+	 */
+	@SuppressWarnings("unchecked")
+	public D getPScalar() {
+		return (D) map.get(gBasis.getPScalarBlade());
+	}
+
+	/**
+	 * This method imitates the 'get()' method in a map, but specializes in the
+	 * scalar blade key.
+	 * 
+	 * @return A DivField child related to the scalar blade
+	 */
+	@SuppressWarnings("unchecked")
+	public D getScalar() {
+		return (D) map.get(gBasis.getScalarBlade());
+	}
+
+	/**
 	 * This method inverts all generators in each blade and works out the sign
 	 * implications for the values in the internal map. No typeMismatch can occur.
 	 * 
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> invert() {
-		gBasis.gradeStream()
-			.filter(j -> (Integer.lowestOneBit(j) == 1))
-			.parallel()
-			.forEach(grade -> {
-				gBasis.bladeOfGradeStream((byte) grade)
-					.forEach(blade -> {
-						switch (mode) {
-						case REALF -> ((RealF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-						case REALD -> ((RealD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-						case COMPLEXF -> ((ComplexF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-						case COMPLEXD -> ((ComplexD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-						}
-					});
+		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(grade -> {
+			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
+				switch (mode) {
+				case REALF -> ((RealF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+				case REALD -> ((RealD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+				case COMPLEXF -> ((ComplexF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+				case COMPLEXD -> ((ComplexD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+				}
+			});
 		});
 		return this;
 	}
 
 	/**
-	 * 
+	 * Return the magnitude of the values in the map as though they were a vector in
+	 * a vector space.
 	 * 
 	 * @return DivField child containing magnitude of this.
+	 * @throws FieldBinaryException This exception is possible because magnitudes
+	 *                              are build from sqMagnitudes. That means there is
+	 *                              an intermediate multiplication steps that could
+	 *                              cause a FieldBinaryException, but never should.
+	 *                              If this exception gets thrown here there is
+	 *                              something seriously amiss with magnitude() and
+	 *                              sqMagnitude().
 	 */
-	public D magnitude() {
-		// TODO construct 'magnitude' of this and return it as a DivField child
-		return null;
+	@SuppressWarnings("unchecked")
+	public D magnitude() throws FieldBinaryException {
+		switch (mode) {
+		case REALF -> {
+			return (D) RealF.copyFromModuliSum(map.values().toArray(new RealF[gBasis.getBladeCount()]));
+		}
+		case REALD -> {
+			return (D) RealD.copyFromModuliSum(map.values().toArray(new RealD[gBasis.getBladeCount()]));
+		}
+		case COMPLEXF -> {
+			return (D) ComplexF.copyFromModuliSum(map.values().toArray(new ComplexF[gBasis.getBladeCount()]));
+		}
+		case COMPLEXD -> {
+			return (D) ComplexD.copyFromModuliSum(map.values().toArray(new ComplexD[gBasis.getBladeCount()]));
+		}
+		default -> {
+			return null;
+		}
+		}
 	}
 
 	/**
 	 * 
+	 * 
+	 * @throws FieldException       This happens when normalizing something that has
+	 *                              a zero magnitudes.
+	 * @throws FieldBinaryException This happens when normalizing something with
+	 *                              cardinal conflicted values.
 	 */
-	public void normalize() {
-		// TODO normalize the values in this
+	public void normalize() throws FieldBinaryException, FieldException {
+		switch (mode) {
+		case REALF -> {
+			this.scale((RealF.copyFromModuliSum(map.values().toArray(new RealF[gBasis.getBladeCount()]))).invert());
+		}
+		case REALD -> {
+			this.scale((RealD.copyFromModuliSum(map.values().toArray(new RealD[gBasis.getBladeCount()]))).invert());
+		}
+		case COMPLEXF -> {
+			this.scale(
+					(ComplexF.copyFromModuliSum(map.values().toArray(new ComplexF[gBasis.getBladeCount()]))).invert());
+		}
+		case COMPLEXD -> {
+			this.scale(
+					(ComplexD.copyFromModuliSum(map.values().toArray(new ComplexD[gBasis.getBladeCount()]))).invert());
+		}
+		}
 	}
 
 	/**
 	 * Put a key/value pair into the internal map of coefficients. A Blade acts as
-	 * key. A DivField child acts as coefficient
+	 * key. A DivField child acts as coefficient.
 	 * 
 	 * @param pB Blade acting as key in the internal map
 	 * @param pD DivField child acting as the coefficient.
 	 * @return Scale object. Just this object after modification if it occurs.
 	 */
 	public <T extends DivField & Divisible> Scale<D> put(Blade pB, T pD) {
-		if (pB != null & pD != null) {
-			if (pD.getClass().getName().toUpperCase() == mode.toString().toUpperCase())
-				map.put(pB, pD);
-		}
+		map.put(pB, pD);
 		return this;
 	}
 
@@ -331,6 +412,40 @@ public class Scale<D extends DivField & Divisible> {
 	}
 
 	/**
+	 * Return the magnitude squared of the values in the map as though they were a
+	 * vector in a vector space.
+	 * 
+	 * @return DivField child containing magnitude of this.
+	 * @throws FieldBinaryException This exception is possible because magnitudes
+	 *                              are build from sqMagnitudes. That means there is
+	 *                              an intermediate multiplication steps that could
+	 *                              cause a FieldBinaryException, but never should.
+	 *                              If this exception gets thrown here there is
+	 *                              something seriously amiss with magnitude() and
+	 *                              sqMagnitude().
+	 */
+	@SuppressWarnings("unchecked")
+	public D sqMagnitude() throws FieldBinaryException {
+		switch (mode) {
+		case REALF -> {
+			return (D) RealF.copyFromSQModuliSum(map.values().toArray(new RealF[gBasis.getBladeCount()]));
+		}
+		case REALD -> {
+			return (D) RealD.copyFromSQModuliSum(map.values().toArray(new RealD[gBasis.getBladeCount()]));
+		}
+		case COMPLEXF -> {
+			return (D) ComplexF.copyFromSQModuliSum(map.values().toArray(new ComplexF[gBasis.getBladeCount()]));
+		}
+		case COMPLEXD -> {
+			return (D) ComplexD.copyFromSQModuliSum(map.values().toArray(new ComplexD[gBasis.getBladeCount()]));
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * 
@@ -356,15 +471,9 @@ public class Scale<D extends DivField & Divisible> {
 	/**
 	 * @return deliver the internal coefficients as the internal map.
 	 */
-	protected IdentityHashMap<Blade, DivField> getMap() {
-		return map;
-	}
-
-	/**
-	 * @param pB A basis against which these coefficients have meaning
-	 */
-	protected void setBasis(CanonicalBasis pB) {
-		gBasis = pB;
+	@SuppressWarnings("unchecked")
+	protected <T extends DivField & Divisible> Map<Blade, T> getMap() {
+		return (Map<Blade, T>) map;
 	}
 
 	/**
@@ -418,7 +527,7 @@ public class Scale<D extends DivField & Divisible> {
 	 *                                  to ensure all blades are covered because Map
 	 *                                  doesn't allow duplicate keys.
 	 */
-	protected Scale<D> setCoefficientMap(Map<Blade, DivField> pInMap) {
+	protected Scale<D> setCoefficientMap(Map<Blade, D> pInMap) {
 		if (pInMap.size() != gBasis.getBladeCount())
 			throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
 		switch (mode) {
@@ -518,22 +627,22 @@ public class Scale<D extends DivField & Divisible> {
 		switch (mode) {
 		case REALF -> {
 			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosField.REALF.createZERO(card));
+				map.put(b, (D) CladosFBuilder.REALF.createZERO(card));
 			});
 		}
 		case REALD -> {
 			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosField.REALD.createZERO(card));
+				map.put(b, (D) CladosFBuilder.REALD.createZERO(card));
 			});
 		}
 		case COMPLEXF -> {
 			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosField.COMPLEXF.createZERO(card));
+				map.put(b, (D) CladosFBuilder.COMPLEXF.createZERO(card));
 			});
 		}
 		case COMPLEXD -> {
 			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosField.COMPLEXD.createZERO(card));
+				map.put(b, (D) CladosFBuilder.COMPLEXD.createZERO(card));
 			});
 		}
 		}

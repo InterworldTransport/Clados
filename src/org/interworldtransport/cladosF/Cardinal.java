@@ -85,7 +85,7 @@ public final class Cardinal {
 		return new Cardinal(pT);
 	}
 
-	private String unit;
+	private final String unit;
 
 	private Cardinal(CladosField pT) {
 		unit = pT.name();
@@ -134,9 +134,9 @@ public final class Cardinal {
 	 * 
 	 * @param pUnit String This string names the 'unit type' represented by the Cardinal
 	 */
-	public void setUnit(String pUnit) {
-		unit = pUnit;
-	}
+	//public void setUnit(String pUnit) {
+	//	unit = pUnit;
+	//}
 
 	/**
 	 * Similar to a toString() method, but it focuses upon an XML style output.

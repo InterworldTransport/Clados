@@ -253,6 +253,10 @@ public abstract class MonadAbstract {
 	public String getName() {
 		return name;
 	}
+	
+	public Scale<? extends DivField> getScales() {
+		return scales;
+	}
 
 	/**
 	 * This method returns the sparse flag of the monad in case someone wants to
@@ -340,20 +344,12 @@ public abstract class MonadAbstract {
 	public abstract MonadAbstract normalize() throws CladosMonadException;
 
 	/**
-	 * This method is a concession to the old notation for the Scalar Part of a
-	 * monad. It calls the gradePart method with the maximum grade specified to
-	 * keep.
-	 * 
-	 * @return MonadAbstract but in practice always be a child of MonadAbtract
-	 */
-	public abstract MonadAbstract PSP();
-
-	/**
 	 * This method is a concession to the old notation for the PScalar Part of a
 	 * monad. It returns the pscalar part coefficient.
 	 * 
 	 * @return DivField but in practice it is always a child of DivField
 	 */
+	@Deprecated
 	public abstract DivField PSPc();
 
 	/**
@@ -397,20 +393,11 @@ public abstract class MonadAbstract {
 
 	/**
 	 * This method is a concession to the old notation for the Scalar Part of a
-	 * monad. It calls the gradePart method with a zero for the specified grade to
-	 * keep.
-	 * 
-	 * @return MonadAbstract but in practice it will always be a child of
-	 *         MonadAbtract
-	 */
-	public abstract MonadAbstract SP();
-
-	/**
-	 * This method is a concession to the old notation for the Scalar Part of a
 	 * monad. It returns the scalar part coefficient.
 	 * 
 	 * @return DivField but in practice it is always a child of DivField
 	 */
+	@Deprecated
 	public abstract DivField SPc();
 
 	/**

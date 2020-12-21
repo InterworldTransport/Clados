@@ -170,11 +170,27 @@ public interface CanonicalBasis {
 	public abstract TreeMap<Long, Integer> getKeyIndexMap();
 
 	/**
+	 * This is a short-hand method for getSingleBlade('last'). It just returns the
+	 * last blade in the basis.
+	 * 
+	 * @return Blade that is the last in the basis
+	 */
+	public abstract Blade getPScalarBlade();
+	
+	/**
 	 * This is a special version of getGradeStart() that finds the highest grade.
 	 * 
 	 * @return int Index within the basis where pscalar grade starts.
 	 */
 	public abstract int getPScalarStart();
+	
+	/**
+	 * This is a short-hand method for getSingleBlade(0). It just returns the first
+	 * blade in the basis.
+	 * 
+	 * @return Blade that is the first in the basis
+	 */
+	public abstract Blade getScalarBlade();
 
 	/**
 	 * Simple gettor method retrieves the Blade at the indexed position in the

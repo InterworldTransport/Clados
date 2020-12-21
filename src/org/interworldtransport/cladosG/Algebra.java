@@ -117,6 +117,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * security concerns related to Java serialization of objects.
 	 * 
 	 * @param pA Algebra to be exported as XML data
+	 * @param indent String of tab characters to assist with human readability of output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
 	public final static String toXMLString(Algebra pA, String indent) {
