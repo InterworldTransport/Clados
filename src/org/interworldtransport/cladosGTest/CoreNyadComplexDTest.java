@@ -112,7 +112,7 @@ public class CoreNyadComplexDTest {
 		thing1.appendMonad(property);
 		assertTrue(thing1.isScalarAt(motion.getAlgebra()));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		property.getCoeff(0).setReal(1.0f);
+		((ComplexD) property.getCoeff(0)).setReal(1.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		property.dualLeft();
 		assertTrue(thing1.isPScalarAt(property.getAlgebra()));
@@ -122,12 +122,12 @@ public class CoreNyadComplexDTest {
 	void testScalingAt() throws CladosNyadException, CladosMonadException, FieldBinaryException{
 		thing1 = (NyadComplexD) CladosGNyad.COMPLEXD.createWithMonad(motion, "");
 		thing1.appendMonad(property);
-		property.getCoeff(0).setReal(16.0f);
+		((ComplexD) property.getCoeff(0)).setReal(16.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		
 		thing1.scale(thing1.findMonad(property), ComplexD.newONE(charge).scale(16.0f));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		assertTrue(property.getCoeff(0).getReal() == 256.0f);
+		assertTrue(((ComplexD) property.getCoeff(0)).getReal() == 256.0f);
 	}
 
 	@Test

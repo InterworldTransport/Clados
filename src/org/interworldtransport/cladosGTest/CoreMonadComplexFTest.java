@@ -15,7 +15,6 @@ import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
-import org.interworldtransport.cladosG.CladosConstant;
 import org.interworldtransport.cladosG.MonadAbstract;
 import org.interworldtransport.cladosG.MonadComplexF;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
@@ -114,15 +113,15 @@ class CoreMonadComplexFTest {
 	public void testUniMathOps() throws FieldBinaryException, FieldException, CladosMonadException {
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO(tM5.getCoeff(0)))));
+		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO((ComplexF) tM5.getCoeff(0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 
 		tM6.normalize();
-		if (ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff(0)))) {
-			assertTrue(ComplexF.isEqual(tM6.magnitude(), ComplexF.copyONE(tM7.getCoeff(0))));
+		if (ComplexF.isEqual((ComplexF) tM6.magnitude(), ComplexF.copyONE((ComplexF) tM7.getCoeff(0)))) {
+			assertTrue(ComplexF.isEqual((ComplexF) tM6.magnitude(), ComplexF.copyONE((ComplexF) tM7.getCoeff(0))));
 		} else {
-			ComplexF tSpot = tM6.magnitude();
+			ComplexF tSpot = (ComplexF) tM6.magnitude();
 			assertTrue(tSpot.getImg() == 0.0f);
 			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
 		}
@@ -161,7 +160,7 @@ class CoreMonadComplexFTest {
 		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		assertTrue(tM6.isGEqual(tM7));
 
-		tM5.setCoeff(tM6.getCoeff());
+		tM5.setCoeff((ComplexF[]) tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
 
 		tM6.multiplySymm(tM8);
@@ -169,7 +168,7 @@ class CoreMonadComplexFTest {
 		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 
-		tM6.setCoeff(tM7.getCoeff());
+		tM6.setCoeff((ComplexF[]) tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
 		tM6.scale(new ComplexF(tM6.getCoeff((short) 0), -1f, 0f));
 		// System.out.println(toXMLString(tM6));

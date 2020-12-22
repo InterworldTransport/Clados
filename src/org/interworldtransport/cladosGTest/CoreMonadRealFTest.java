@@ -115,11 +115,11 @@ class CoreMonadRealFTest {
 		tM0.dualLeft();
 		assertTrue(tM4.isGEqual(tM0));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(RealF.copyZERO(tM5.getCoeff(0)))));
+		assertTrue(isGZero(tM5.scale(RealF.copyZERO((RealF) tM5.getCoeff(0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 		
-		assertTrue(RealF.isEqual(tM6.normalize().magnitude(), RealF.copyONE(tM7.getCoeff(0))));
+		assertTrue(RealF.isEqual((RealF) tM6.normalize().magnitude(), RealF.copyONE((RealF) tM7.getCoeff(0))));
 		
 		assertTrue(MonadAbstract.hasGrade(tM6, 2));
 		assertTrue(MonadAbstract.hasGrade(tM7, 0));
@@ -155,14 +155,14 @@ class CoreMonadRealFTest {
 		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), CladosConstant.MINUS_ONE_F));
 		assertTrue(tM6.isGEqual(tM7));
 
-		tM5.setCoeff(tM6.getCoeff());
+		tM5.setCoeff((RealF[]) tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
 
 		tM6.multiplySymm(tM8);
 		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), CladosConstant.MINUS_ONE_F));
 		assertFalse(tM6.isGEqual(tM7));
 
-		tM6.setCoeff(tM7.getCoeff());
+		tM6.setCoeff((RealF[]) tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
 		tM6.scale(new RealF(tM6.getAlgebra().shareProtoNumber(), CladosConstant.MINUS_ONE_F));
 		assertFalse(tM6.isGEqual(tM7));
@@ -173,7 +173,7 @@ class CoreMonadRealFTest {
 		for (short m = 0; m < tM0.getCoeff().length; m++)
 			assertFalse(tM0.getCoeff(m).equals(null));
 
-		MonadRealF newOne = new MonadRealF("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getCoeff());
+		MonadRealF newOne = new MonadRealF("newName", tM0.getAlgebra(), "unimportantFrameName", (RealF[]) tM0.getCoeff());
 		assertFalse(newOne.equals(null));
 		assertFalse(isReferenceMatch(tM0, newOne));
 	}

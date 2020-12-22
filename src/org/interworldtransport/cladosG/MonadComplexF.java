@@ -24,10 +24,7 @@
  */
 package org.interworldtransport.cladosG;
 
-import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
-import static org.interworldtransport.cladosF.ComplexF.*;
-import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
@@ -72,9 +69,9 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return boolean
 	 */
-	public static boolean isGZero(MonadComplexF pM) {
-		return (pM.getGradeKey() == 1 & isZero(pM.getCoeff(0)));
-	}
+//	public static boolean isGZero(MonadComplexF pM) {
+//		return (pM.getGradeKey() == 1 & isZero(pM.getCoeff(0)));
+//	}
 
 	/**
 	 * Return true if the Monad an idempotent
@@ -87,11 +84,11 @@ public class MonadComplexF extends MonadAbstract {
 	 *                              multiply two fields used by the monad to be
 	 *                              checked.
 	 */
-	public static boolean isIdempotent(MonadComplexF pM) throws FieldBinaryException, CladosMonadException {
-		if (isGZero(pM))
-			return true;
-		return ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(pM)).multiplyLeft(pM).isGEqual(pM);
-	}
+//	public static boolean isIdempotent(MonadComplexF pM) throws FieldBinaryException, CladosMonadException {
+//		if (isGZero(pM))
+//			return true;
+//		return ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(pM)).multiplyLeft(pM).isGEqual(pM);
+//	}
 
 	/**
 	 * Return true if the Monad is a multiple of an idempotent
@@ -103,32 +100,32 @@ public class MonadComplexF extends MonadAbstract {
 	 * @throws FieldException       This exception is thrown when the method can't
 	 *                              copy the field used by the monad to be checked.
 	 */
-	public static boolean isScaledIdempotent(MonadComplexF pM) throws CladosMonadException, FieldException {
-		if (isIdempotent(pM))
-			return true;
-
-		// Find the first non-zero coefficient of pM^2, invert it, rescale pM by it and
-		// that to see if it
-		// is an idempotent that way. If it is, then pM is an idempotent multiple.
-
-		int k = 1;
-		MonadComplexF check1 = (MonadComplexF) CladosGMonad.COMPLEXF.copyOf(pM);
-		check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-		if (isGZero(check1))
-			return false; // pM is nilpotent at power=2
-		ComplexF fstnzeroC = (ComplexF) CladosFBuilder.COMPLEXF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
-
-		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) { // Loop skipped if check1.SP() != 0
-			if (!isZero(pM.getCoeff(k))) {
-				fstnzeroC = copyOf(pM.getCoeff(k)); // Grab a copy of it instead
-				break; // Good enough. Move on.
-			}
-			k++; // If next coeff is zero, look at next next
-		}
-		check1 = ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(pM)).scale(fstnzeroC.invert());
-		// No risk of inverting a zero. Caught at top
-		return isIdempotent(check1);
-	}
+//	public static boolean isScaledIdempotent(MonadComplexF pM) throws CladosMonadException, FieldException {
+//		if (isIdempotent(pM))
+//			return true;
+//
+//		// Find the first non-zero coefficient of pM^2, invert it, rescale pM by it and
+//		// that to see if it
+//		// is an idempotent that way. If it is, then pM is an idempotent multiple.
+//
+//		int k = 1;
+//		MonadComplexF check1 = (MonadComplexF) CladosGMonad.COMPLEXF.copyOf(pM);
+//		check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
+//		if (isGZero(check1))
+//			return false; // pM is nilpotent at power=2
+//		ComplexF fstnzeroC = (ComplexF) CladosFBuilder.COMPLEXF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
+//
+//		while (isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) { // Loop skipped if check1.SP() != 0
+//			if (!ComplexF.isZero((ComplexF) pM.getCoeff(k))) {
+//				fstnzeroC = ComplexF.copyOf((ComplexF) pM.getCoeff(k)); // Grab a copy of it instead
+//				break; // Good enough. Move on.
+//			}
+//			k++; // If next coeff is zero, look at next next
+//		}
+//		check1 = (MonadComplexF) (CladosGMonad.COMPLEXF.copyOf(pM)).scale(fstnzeroC.invert());
+//		// No risk of inverting a zero. Caught at top
+//		return isIdempotent(check1);
+//	}
 
 	/**
 	 * Return true if the Monad is nilpotent at a particular integer power.
@@ -142,19 +139,19 @@ public class MonadComplexF extends MonadAbstract {
 	 *                              multiply two fields used by the monad to be
 	 *                              checked.
 	 */
-	public static boolean isNilpotent(MonadComplexF pM, int pPower) throws FieldBinaryException, CladosMonadException {
-		if (isGZero(pM))
-			return true;
-
-		MonadComplexF check1 = new MonadComplexF(pM);
-		while (pPower > 1) {
-			check1.multiplyLeft(pM);
-			if (isGZero(check1))
-				return true;
-			pPower--;
-		}
-		return false;
-	}
+//	public static boolean isNilpotent(MonadComplexF pM, int pPower) throws FieldBinaryException, CladosMonadException {
+//		if (isGZero(pM))
+//			return true;
+//
+//		MonadComplexF check1 = new MonadComplexF(pM);
+//		while (pPower > 1) {
+//			check1.multiplyLeft(pM);
+//			if (isGZero(check1))
+//				return true;
+//			pPower--;
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Return true if the Monad shares the same Reference frame as the passed Monad.
@@ -166,24 +163,24 @@ public class MonadComplexF extends MonadAbstract {
 	 * @param pN MonadAbstract
 	 * @return boolean
 	 */
-	public static boolean isReferenceMatch(MonadComplexF pM, MonadComplexF pN) {
-		// The algebras must actually be the same object to match.
-		if ((pM.getAlgebra() != (pN.getAlgebra())))
-			return false;
-
-		// The frame names must match too
-		else if (!pM.getFrameName().equals(pN.getFrameName()))
-			return false;
-
-		// There is a possibility that the coefficients are of different field
-		// types but that is unlikely if the algebras match. The problem is that
-		// someone can write new coefficients and break the consistency with the
-		// Algebra's protonumber.
-		else if (!pM.getCoeff(0).getCardinal().equals(pN.getCoeff(0).getCardinal()))
-			return false;
-
-		return true;
-	}
+//	public static boolean isReferenceMatch(MonadComplexF pM, MonadComplexF pN) {
+//		// The algebras must actually be the same object to match.
+//		if ((pM.getAlgebra() != (pN.getAlgebra())))
+//			return false;
+//
+//		// The frame names must match too
+//		else if (!pM.getFrameName().equals(pN.getFrameName()))
+//			return false;
+//
+//		// There is a possibility that the coefficients are of different field
+//		// types but that is unlikely if the algebras match. The problem is that
+//		// someone can write new coefficients and break the consistency with the
+//		// Algebra's protonumber.
+//		else if (!pM.getCoeff(0).getCardinal().equals(pN.getCoeff(0).getCardinal()))
+//			return false;
+//
+//		return true;
+//	}
 
 	/**
 	 * Display XML string that represents the Monad
@@ -193,20 +190,20 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return String
 	 */
-	public static String toXMLString(MonadComplexF pM, String indent) {
-		if (indent == null)
-			indent = "\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("algebra=\"").append(pM.getAlgebra().getAlgebraName()).append("\" ");
-		rB.append("frame=\"").append(pM.getFrameName()).append("\" ");
-		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
-		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
-		rB.append(">\n");
-		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
-		rB.append(indent).append(pM.scales.toXMLString("\t"));
-		rB.append(indent + "</Monad>\n");
-		return rB.toString();
-	}
+//	public static String toXMLString(MonadComplexF pM, String indent) {
+//		if (indent == null)
+//			indent = "\t\t\t";
+//		StringBuilder rB = new StringBuilder(indent + "<Monad ");
+//		rB.append("algebra=\"").append(pM.getAlgebra().getAlgebraName()).append("\" ");
+//		rB.append("frame=\"").append(pM.getFrameName()).append("\" ");
+//		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
+//		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
+//		rB.append(">\n");
+//		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
+//		rB.append(indent).append(pM.scales.toXMLString("\t"));
+//		rB.append(indent + "</Monad>\n");
+//		return rB.toString();
+//	}
 
 	/**
 	 * Display XML string that represents the Monad
@@ -216,20 +213,20 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return String
 	 */
-	public static String toXMLFullString(MonadComplexF pM, String indent) {
-		if (indent == null)
-			indent = "\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
-		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
-		rB.append(">\n");
-		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
-		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
-		rB.append(indent + "\t<Frame>\"").append(pM.getFrameName()).append("\"</Frame>\n");
-		rB.append(indent).append(pM.scales.toXMLString("\t"));
-		rB.append(indent + "</Monad>\n");
-		return rB.toString();
-	}
+//	public static String toXMLFullString(MonadComplexF pM, String indent) {
+//		if (indent == null)
+//			indent = "\t\t\t";
+//		StringBuilder rB = new StringBuilder(indent + "<Monad ");
+//		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
+//		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
+//		rB.append(">\n");
+//		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
+//		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
+//		rB.append(indent + "\t<Frame>\"").append(pM.getFrameName()).append("\"</Frame>\n");
+//		rB.append(indent).append(pM.scales.toXMLString("\t"));
+//		rB.append(indent + "</Monad>\n");
+//		return rB.toString();
+//	}
 
 	/**
 	 * This array holds the coefficients of the Monad.
@@ -454,83 +451,83 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return MonadComplexF
 	 */
-	public MonadComplexF add(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
-		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Can't add when frames don't match.", pM);
-		bladeStream().parallel().forEach(blade -> {
-			try {
-				scales.get(blade).add(pM.scales.get(blade));
-			} catch (FieldBinaryException e) {
-				throw new IllegalArgumentException("Can't add when cardinals don't match.");
-			}
-		});
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF add(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
+//		if (!isReferenceMatch(this, pM))
+//			throw new CladosMonadBinaryException(this, "Can't add when frames don't match.", pM);
+//		bladeStream().parallel().forEach(blade -> {
+//			try {
+//				scales.get(blade).add(pM.scales.get(blade));
+//			} catch (FieldBinaryException e) {
+//				throw new IllegalArgumentException("Can't add when cardinals don't match.");
+//			}
+//		});
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * This method conjugates all the coefficients, but leaves the generators of the
 	 * algebra untouched
 	 */
-	@Override
-	public MonadComplexF conjugate() {
-		scales.conjugate();
-		return this;
-	}
+	//@Override
+	//public MonadComplexF conjugate() {
+	//	scales.conjugate();
+	//	return this;
+	//}
 
 	/**
 	 * The Monad is turned into its Dual with lefttside multiplication by pscalar.
 	 */
-	@Override
-	public MonadComplexF dualLeft() {
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
-		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
-		getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
-				.forEach(e -> {
-					int col = tBasis.find(e.getKey()) - 1;
-					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-					try {
-						ComplexF tAgg = ((ComplexF) CladosFBuilder.COMPLEXF.copyOf((ComplexF) e.getValue()))
-								.scale(Float.valueOf(tProd.getSign(row, col)))
-								.add(newScales.get(bMult));
-						newScales.put(bMult, tAgg);
-					} catch (FieldBinaryException e1) {
-						throw new IllegalArgumentException("Left dual fails DivField reference match.");
-					}
-				});
-		scales = newScales;
-		setGradeKey();
-		return this;
-	}
+//	@Override
+//	public MonadComplexF dualLeft() {
+//		CliffordProduct tProd = getAlgebra().getGProduct();
+//		CanonicalBasis tBasis = getAlgebra().getGBasis();
+//		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
+//		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
+//		getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
+//				.forEach(e -> {
+//					int col = tBasis.find(e.getKey()) - 1;
+//					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
+//					try {
+//						ComplexF tAgg = ((ComplexF) CladosFBuilder.COMPLEXF.copyOf((ComplexF) e.getValue()))
+//								.scale(Float.valueOf(tProd.getSign(row, col)))
+//								.add(newScales.get(bMult));
+//						newScales.put(bMult, tAgg);
+//					} catch (FieldBinaryException e1) {
+//						throw new IllegalArgumentException("Left dual fails DivField reference match.");
+//					}
+//				});
+//		scales = newScales;
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * The Monad is turned into its Dual with rightside multiplication by pscalar.
 	 */
-	@Override
-	public MonadComplexF dualRight() {
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		int row = tProd.getBladeCount() - 1; // row points at the PScalar blade
-		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
-		getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
-				.forEach(e -> {
-					int col = tBasis.find(e.getKey()) - 1;
-					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-					try {
-						ComplexF tAgg = ((ComplexF) CladosFBuilder.COMPLEXF.copyOf((ComplexF) e.getValue()))
-								.scale(Float.valueOf(tProd.getSign(col, row)))
-								.add(newScales.get(bMult));
-						newScales.put(bMult, tAgg);
-					} catch (FieldBinaryException e1) {
-						throw new IllegalArgumentException("Right dual fails DivField reference match.");
-					}
-				});
-		scales = newScales;
-		setGradeKey();
-		return this;
-	}
+//	@Override
+//	public MonadComplexF dualRight() {
+//		CliffordProduct tProd = getAlgebra().getGProduct();
+//		CanonicalBasis tBasis = getAlgebra().getGBasis();
+//		int row = tProd.getBladeCount() - 1; // row points at the PScalar blade
+//		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
+//		getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
+//				.forEach(e -> {
+//					int col = tBasis.find(e.getKey()) - 1;
+//					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
+//					try {
+//						ComplexF tAgg = ((ComplexF) CladosFBuilder.COMPLEXF.copyOf((ComplexF) e.getValue()))
+//								.scale(Float.valueOf(tProd.getSign(col, row)))
+//								.add(newScales.get(bMult));
+//						newScales.put(bMult, tAgg);
+//					} catch (FieldBinaryException e1) {
+//						throw new IllegalArgumentException("Right dual fails DivField reference match.");
+//					}
+//				});
+//		scales = newScales;
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Return the field Coefficients for this Monad. These coefficients are the
@@ -538,10 +535,10 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return ComplexF[]
 	 */
-	@Override
-	public ComplexF[] getCoeff() {
-		return (ComplexF[]) scales.getCoefficients();
-	}
+//	@Override
+//	public ComplexF[] getCoeff() {
+//		return (ComplexF[]) scales.getCoefficients();
+//	}
 
 	/**
 	 * Return a field Coefficient for this Monad. These coefficients are the
@@ -551,12 +548,12 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return ComplexF
 	 */
-	@Override
-	public ComplexF getCoeff(int i) {
-		if (i >= 0 & i < getAlgebra().getBladeCount())
-			return (ComplexF) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
-		return null;
-	}
+//	@Override
+//	public ComplexF getCoeff(int i) {
+//		if (i >= 0 & i < getAlgebra().getBladeCount())
+//			return (ComplexF) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
+//		return null;
+//	}
 
 	/**
 	 * This method suppresses all grades in the Monad not equal to the integer
@@ -568,14 +565,14 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @param pGrade byte
 	 */
-	@Override
-	public MonadComplexF gradePart(byte pGrade) {
-		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
-			return this;
-		scales.zeroAllButGrade(pGrade);
-		setGradeKey();
-		return this;
-	}
+//	@Override
+//	public MonadComplexF gradePart(byte pGrade) {
+//		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
+//			return this;
+//		scales.zeroAllButGrade(pGrade);
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * This method suppresses the grade in the Monad equal to the integer passed.
@@ -587,14 +584,14 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @param pGrade byte
 	 */
-	@Override
-	public MonadComplexF gradeSuppress(byte pGrade) {
-		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
-			return this;
-		scales.zeroAtGrade(pGrade);
-		setGradeKey();
-		return this;
-	}
+//	@Override
+//	public MonadComplexF gradeSuppress(byte pGrade) {
+//		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
+//			return this;
+//		scales.zeroAtGrade(pGrade);
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Mirror the sense of all geometry generators in the Monad. This operation
@@ -602,11 +599,11 @@ public class MonadComplexF extends MonadAbstract {
 	 * Active Invert: All odd grades switch signs, so those coefficients are
 	 * altered.
 	 */
-	@Override
-	public MonadComplexF invert() {
-		scales.invert();
-		return this;
-	}
+	//@Override
+//	public MonadComplexF invert() {
+//		scales.invert();
+//		return this;
+//	}
 
 	/**
 	 * This method does a deep check for the equality of two monads. It is not meant
@@ -618,11 +615,11 @@ public class MonadComplexF extends MonadAbstract {
 	 * @param pM MonadAbstract
 	 * @return boolean
 	 */
-	public boolean isGEqual(MonadComplexF pM) {
-		if (!isReferenceMatch(this, pM))
-			return false;
-		return bladeStream().allMatch(blade -> ComplexF.isEqual((ComplexF) scales.get(blade), (ComplexF) pM.scales.get(blade)));
-	}
+//	public boolean isGEqual(MonadComplexF pM) {
+//		if (!isReferenceMatch(this, pM))
+//			return false;
+//		return bladeStream().allMatch(blade -> ComplexF.isEqual((ComplexF) scales.get(blade), (ComplexF) pM.scales.get(blade)));
+//	}
 
 	/**
 	 * Return the magnitude of the Monad
@@ -636,14 +633,14 @@ public class MonadComplexF extends MonadAbstract {
 	 *                              something seriously amiss with magnitude() and
 	 *                              sqMagnitude().
 	 */
-	@Override
-	public ComplexF magnitude() throws CladosMonadException {
-		try {
-			return (ComplexF) scales.magnitude();
-		} catch (FieldBinaryException e) {
-			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
-		}
-	}
+//	@Override
+//	public ComplexF magnitude() throws CladosMonadException {
+//		try {
+//			return (ComplexF) scales.magnitude();
+//		} catch (FieldBinaryException e) {
+//			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
+//		}
+//	}
 
 	/**
 	 * Monad antisymmetric multiplication: 1/2(pM this - this pM) This operation is
@@ -656,15 +653,15 @@ public class MonadComplexF extends MonadAbstract {
 	 *                                    match test fails with the two monads
 	 * @throws CladosMonadException 
 	 */
-	public MonadComplexF multiplyAntisymm(MonadComplexF pM) throws FieldBinaryException, CladosMonadException {
-		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
-
-		MonadComplexF halfTwo = ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(this)).multiplyRight(pM);
-		multiplyLeft(pM).subtract(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF multiplyAntisymm(MonadComplexF pM) throws FieldBinaryException, CladosMonadException {
+//		if (!isReferenceMatch(this, pM))
+//			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
+//
+//		MonadComplexF halfTwo = ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(this)).multiplyRight(pM);
+//		multiplyLeft(pM).subtract(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Monad leftside multiplication: (pM this) This operation is allowed when the
@@ -678,78 +675,78 @@ public class MonadComplexF extends MonadAbstract {
 	 *                                    match test fails with the two monads
 	 * @return MonadComplexF
 	 */
-	public MonadComplexF multiplyLeft(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
-		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Left multiply fails reference match.", pM);
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
-
-		if (sparseFlag) {
-			/*
-			 * Use gradeKey (a base 10 representation of grades present) to find the
-			 * non-zero grades. For example: gradeKey=101 means the monad is a sum of
-			 * bivector and scalar because 10^2+10^0 = 101.
-			 * 
-			 * In a sparse monad, the gradeKey will have few 1's, making looping on all
-			 * blades less optimal. Instead, we parse gradeKey and loop through the blades
-			 * for grades that could be non-ZERO.
-			 */
-			long slideKey = gradeKey;
-			byte logKey = (byte) Math.log10(slideKey);
-
-			// logKey is the highest grade with non-zero blades
-			// tSpot will point at the blades of that grade
-			while (logKey >= 0) {
-				tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexF.isZero((ComplexF) getScales().get(blade)))
-						.parallel().forEach(blade -> {
-							int col = tBasis.find(blade) - 1;
-							pM.getScales().getMap().entrySet().stream()
-									.filter(f -> !ComplexF.isZero((ComplexF) f.getValue())).forEach(f -> {
-										int row = tBasis.find(f.getKey()) - 1;
-										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-										try {
-											ComplexF tAgg = ComplexF
-													.multiply((ComplexF) getScales().get(blade), (ComplexF) f.getValue())
-													.scale(Float.valueOf(tProd.getSign(row, col)))
-													.add(newScales.get(bMult));
-											newScales.put(bMult, tAgg);
-										} catch (FieldBinaryException e) {
-											throw new IllegalArgumentException(
-													"Left multiply fails DivField reference match.");
-										}
-									});
-						});
-				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
-				if (slideKey == 0)
-					break; //we've processed all grades including scalar.
-				logKey = (byte) Math.log10(slideKey); //if zero it will be the last in loop
-			}
-			scales = newScales;
-		} else { // loop through ALL the blades in 'this' individually.
-			getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
-								.forEach(f -> {
-									int row = tBasis.find(f.getKey()) - 1;
-									Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-									try {
-										ComplexF tAgg = ComplexF.multiply((ComplexF) e.getValue(), (ComplexF) f.getValue())
-												.scale(Float.valueOf(tProd.getSign(row, col)))
-												.add(newScales.get(bMult));
-										newScales.put(bMult, tAgg);
-									} catch (FieldBinaryException e1) {
-										throw new IllegalArgumentException(
-												"Left multiply fails DivField reference match.");
-									}
-								});
-					});
-			scales = newScales;
-		}
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF multiplyLeft(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
+//		if (!isReferenceMatch(this, pM))
+//			throw new CladosMonadBinaryException(this, "Left multiply fails reference match.", pM);
+//		CliffordProduct tProd = getAlgebra().getGProduct();
+//		CanonicalBasis tBasis = getAlgebra().getGBasis();
+//		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
+//
+//		if (sparseFlag) {
+//			/*
+//			 * Use gradeKey (a base 10 representation of grades present) to find the
+//			 * non-zero grades. For example: gradeKey=101 means the monad is a sum of
+//			 * bivector and scalar because 10^2+10^0 = 101.
+//			 * 
+//			 * In a sparse monad, the gradeKey will have few 1's, making looping on all
+//			 * blades less optimal. Instead, we parse gradeKey and loop through the blades
+//			 * for grades that could be non-ZERO.
+//			 */
+//			long slideKey = gradeKey;
+//			byte logKey = (byte) Math.log10(slideKey);
+//
+//			// logKey is the highest grade with non-zero blades
+//			// tSpot will point at the blades of that grade
+//			while (logKey >= 0) {
+//				tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexF.isZero((ComplexF) getScales().get(blade)))
+//						.parallel().forEach(blade -> {
+//							int col = tBasis.find(blade) - 1;
+//							pM.getScales().getMap().entrySet().stream()
+//									.filter(f -> !ComplexF.isZero((ComplexF) f.getValue())).forEach(f -> {
+//										int row = tBasis.find(f.getKey()) - 1;
+//										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
+//										try {
+//											ComplexF tAgg = ComplexF
+//													.multiply((ComplexF) getScales().get(blade), (ComplexF) f.getValue())
+//													.scale(Float.valueOf(tProd.getSign(row, col)))
+//													.add(newScales.get(bMult));
+//											newScales.put(bMult, tAgg);
+//										} catch (FieldBinaryException e) {
+//											throw new IllegalArgumentException(
+//													"Left multiply fails DivField reference match.");
+//										}
+//									});
+//						});
+//				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
+//				if (slideKey == 0)
+//					break; //we've processed all grades including scalar.
+//				logKey = (byte) Math.log10(slideKey); //if zero it will be the last in loop
+//			}
+//			scales = newScales;
+//		} else { // loop through ALL the blades in 'this' individually.
+//			getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
+//					.forEach(e -> {
+//						int col = tBasis.find(e.getKey()) - 1;
+//						pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
+//								.forEach(f -> {
+//									int row = tBasis.find(f.getKey()) - 1;
+//									Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
+//									try {
+//										ComplexF tAgg = ComplexF.multiply((ComplexF) e.getValue(), (ComplexF) f.getValue())
+//												.scale(Float.valueOf(tProd.getSign(row, col)))
+//												.add(newScales.get(bMult));
+//										newScales.put(bMult, tAgg);
+//									} catch (FieldBinaryException e1) {
+//										throw new IllegalArgumentException(
+//												"Left multiply fails DivField reference match.");
+//									}
+//								});
+//					});
+//			scales = newScales;
+//		}
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Monad rightside multiplication: (pM this) This operation is allowed when the
@@ -763,78 +760,78 @@ public class MonadComplexF extends MonadAbstract {
 	 *                                    match test fails with the two monads
 	 * @return MonadComplexF
 	 */
-	public MonadComplexF multiplyRight(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
-		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
-			throw new CladosMonadBinaryException(this, "Right multiply fails reference match.", pM);
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
-
-		if (sparseFlag) {
-			/*
-			 * Use gradeKey (a base 10 representation of grades present) to find the
-			 * non-zero grades. For example: gradeKey=101 means the monad is a sum of
-			 * bivector and scalar because 10^2+10^0 = 101.
-			 * 
-			 * In a sparse monad, the gradeKey will have few 1's, making looping on all
-			 * blades less optimal. Instead, we parse gradeKey and loop through the blades
-			 * for grades that could be non-ZERO.
-			 */
-			long slideKey = gradeKey;
-			byte logKey = (byte) Math.log10(slideKey);
-
-			// logKey is the highest grade with non-zero blades
-			// tSpot will point at the blades of that grade
-			while (logKey >= 0.0D) {
-				tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexF.isZero((ComplexF) getScales().get(blade)))
-						.parallel().forEach(blade -> {
-							int col = tBasis.find(blade) - 1;
-							pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
-									.forEach(f -> {
-										int row = tBasis.find(f.getKey()) - 1;
-										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-										try {
-											ComplexF tAgg = ComplexF
-													.multiply((ComplexF) getScales().get(blade), (ComplexF) f.getValue())
-													.scale(Float.valueOf(tProd.getSign(col, row)))
-													.add(newScales.get(bMult));
-											newScales.put(bMult, tAgg);
-										} catch (FieldBinaryException e) {
-											throw new IllegalArgumentException(
-													"Right multiply fails DivField reference match.");
-										}
-									});
-						});
-				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
-				if (slideKey == 0)
-					break; // we've processed all grades including scalar.
-				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
-			}
-			scales = newScales;
-		} else { // loop through ALL the blades in 'this' individually.
-			getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						pM.scales.getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
-								.forEach(f -> {
-									int row = tBasis.find(f.getKey()) - 1;
-									Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-									try {
-										ComplexF tAgg = ComplexF.multiply((ComplexF) e.getValue(), (ComplexF) f.getValue())
-												.scale(Float.valueOf(tProd.getSign(col, row)))
-												.add(newScales.get(bMult));
-										newScales.put(bMult, tAgg);
-									} catch (FieldBinaryException e1) {
-										throw new IllegalArgumentException(
-												"Right multiply fails DivField reference match.");
-									}
-								});
-					});
-			scales = newScales;
-		}
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF multiplyRight(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
+//		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
+//			throw new CladosMonadBinaryException(this, "Right multiply fails reference match.", pM);
+//		CliffordProduct tProd = getAlgebra().getGProduct();
+//		CanonicalBasis tBasis = getAlgebra().getGBasis();
+//		Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
+//
+//		if (sparseFlag) {
+//			/*
+//			 * Use gradeKey (a base 10 representation of grades present) to find the
+//			 * non-zero grades. For example: gradeKey=101 means the monad is a sum of
+//			 * bivector and scalar because 10^2+10^0 = 101.
+//			 * 
+//			 * In a sparse monad, the gradeKey will have few 1's, making looping on all
+//			 * blades less optimal. Instead, we parse gradeKey and loop through the blades
+//			 * for grades that could be non-ZERO.
+//			 */
+//			long slideKey = gradeKey;
+//			byte logKey = (byte) Math.log10(slideKey);
+//
+//			// logKey is the highest grade with non-zero blades
+//			// tSpot will point at the blades of that grade
+//			while (logKey >= 0.0D) {
+//				tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexF.isZero((ComplexF) getScales().get(blade)))
+//						.parallel().forEach(blade -> {
+//							int col = tBasis.find(blade) - 1;
+//							pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
+//									.forEach(f -> {
+//										int row = tBasis.find(f.getKey()) - 1;
+//										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
+//										try {
+//											ComplexF tAgg = ComplexF
+//													.multiply((ComplexF) getScales().get(blade), (ComplexF) f.getValue())
+//													.scale(Float.valueOf(tProd.getSign(col, row)))
+//													.add(newScales.get(bMult));
+//											newScales.put(bMult, tAgg);
+//										} catch (FieldBinaryException e) {
+//											throw new IllegalArgumentException(
+//													"Right multiply fails DivField reference match.");
+//										}
+//									});
+//						});
+//				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
+//				if (slideKey == 0)
+//					break; // we've processed all grades including scalar.
+//				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
+//			}
+//			scales = newScales;
+//		} else { // loop through ALL the blades in 'this' individually.
+//			getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
+//					.forEach(e -> {
+//						int col = tBasis.find(e.getKey()) - 1;
+//						pM.scales.getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
+//								.forEach(f -> {
+//									int row = tBasis.find(f.getKey()) - 1;
+//									Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
+//									try {
+//										ComplexF tAgg = ComplexF.multiply((ComplexF) e.getValue(), (ComplexF) f.getValue())
+//												.scale(Float.valueOf(tProd.getSign(col, row)))
+//												.add(newScales.get(bMult));
+//										newScales.put(bMult, tAgg);
+//									} catch (FieldBinaryException e1) {
+//										throw new IllegalArgumentException(
+//												"Right multiply fails DivField reference match.");
+//									}
+//								});
+//					});
+//			scales = newScales;
+//		}
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Monad symmetric multiplication: 1/2(pM this + this pM) This operation is
@@ -847,15 +844,15 @@ public class MonadComplexF extends MonadAbstract {
 	 *                                    match test fails with the two monads
 	 * @throws CladosMonadException 
 	 */
-	public MonadComplexF multiplySymm(MonadComplexF pM) throws FieldBinaryException, CladosMonadException {
-		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
-
-		MonadComplexF halfTwo = ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(this)).multiplyRight(pM);
-		multiplyLeft(pM).add(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF multiplySymm(MonadComplexF pM) throws FieldBinaryException, CladosMonadException {
+//		if (!isReferenceMatch(this, pM))
+//			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
+//
+//		MonadComplexF halfTwo = ((MonadComplexF) CladosGMonad.COMPLEXF.copyOf(this)).multiplyRight(pM);
+//		multiplyLeft(pM).add(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Normalize the monad. A <b>CladosMonadException</b> is thrown if the Monad has
@@ -864,18 +861,18 @@ public class MonadComplexF extends MonadAbstract {
 	 * @throws CladosMonadException This exception is thrown when normalizing a zero
 	 *                              or field conflicted monad is tried.
 	 */
-	@Override
-	public MonadComplexF normalize() throws CladosMonadException {
-		if (gradeKey == 0L & ComplexF.isZero((ComplexF) scales.getScalar()))
-			throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
-		try {
-			scales.normalize();
-		} catch (FieldException e) {
-			throw new CladosMonadException(this,
-					"Normalizing a zero magnitude or Field conflicted Monad isn't possible");
-		}
-		return this;
-	}
+//	@Override
+//	public MonadComplexF normalize() throws CladosMonadException {
+//		if (gradeKey == 0L & ComplexF.isZero((ComplexF) scales.getScalar()))
+//			throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
+//		try {
+//			scales.normalize();
+//		} catch (FieldException e) {
+//			throw new CladosMonadException(this,
+//					"Normalizing a zero magnitude or Field conflicted Monad isn't possible");
+//		}
+//		return this;
+//	}
 
 	/**
 	 * This method is a concession to the old notation for the Pseudo Scalar Part of
@@ -883,10 +880,10 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return ComplexF
 	 */
-	@Override
-	public ComplexF PSPc() {
-		return (ComplexF) scales.getPScalar();
-	}
+//	@Override
+//	public ComplexF PSPc() {
+//		return (ComplexF) scales.getPScalar();
+//	}
 
 	/**
 	 * Reverse the multiplication order of all geometry generators in the Monad.
@@ -894,11 +891,11 @@ public class MonadComplexF extends MonadAbstract {
 	 * the permutation, so the easiest thing to do is to change the coefficients
 	 * instead.
 	 */
-	@Override
-	public MonadComplexF reverse() {
-		scales.reverse();
-		return this;
-	}
+//	@Override
+//	public MonadComplexF reverse() {
+//		scales.reverse();
+//		return this;
+//	}
 
 	/**
 	 * Monad Scaling: (this * real number) Only the Monad coefficients are scaled by
@@ -909,11 +906,11 @@ public class MonadComplexF extends MonadAbstract {
 	 *                              fails a field match with the coefficients.
 	 * @return MonadComplexF
 	 */
-	public MonadComplexF scale(ComplexF pScale) throws FieldBinaryException {
-		scales.scale(pScale);
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF scale(ComplexF pScale) throws FieldBinaryException {
+//		scales.scale(pScale);
+//		setGradeKey();
+//		return this;
+//	}
 
 	/**
 	 * Reset the Coefficient array used for this Monad. Use of this method is
@@ -929,13 +926,13 @@ public class MonadComplexF extends MonadAbstract {
 	 * @throws CladosMonadException This exception is thrown when the array offered
 	 *                              for coordinates is of the wrong length.
 	 */
-	public void setCoeff(ComplexF[] ppC) throws CladosMonadException {
-		if (ppC.length != getAlgebra().getBladeCount())
-			throw new CladosMonadException(this,
-					"Coefficient array passed in for coefficient copy is the wrong length");
-		scales.setCoefficientArray((ComplexF[]) CladosFListBuilder.COMPLEXF.copyOf(ppC));
-		setGradeKey();
-	}
+//	public void setCoeff(ComplexF[] ppC) throws CladosMonadException {
+//		if (ppC.length != getAlgebra().getBladeCount())
+//			throw new CladosMonadException(this,
+//					"Coefficient array passed in for coefficient copy is the wrong length");
+//		scales.setCoefficientArray((ComplexF[]) CladosFListBuilder.COMPLEXF.copyOf(ppC));
+//		setGradeKey();
+//	}
 
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
@@ -945,26 +942,26 @@ public class MonadComplexF extends MonadAbstract {
 	 * loop that fills gradeKey is a grade detector, so if foundGrade is less than
 	 * or equal to half gradeCount, sparseFlag is set to true and false otherwise.
 	 */
-	@Override
-	public void setGradeKey() {
-		foundGrades = 0;
-		gradeKey = 0;
-		gradeStream().forEach(grade -> {
-			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-					.filter(blade -> !ComplexF.isZero((ComplexF) scales.get(blade))).findAny().isPresent()) {
-				foundGrades++;
-				gradeKey += Math.pow(10, grade);
-			}
-		});
-		if (gradeKey == 0) {
-			foundGrades++;
-			gradeKey++;
-		}
-		if (foundGrades < getAlgebra().getGradeCount() / 2)
-			sparseFlag = true;
-		else
-			sparseFlag = false;
-	}
+//	@Override
+//	public void setGradeKey() {
+//		foundGrades = 0;
+//		gradeKey = 0;
+//		gradeStream().forEach(grade -> {
+//			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
+//					.filter(blade -> !ComplexF.isZero((ComplexF) scales.get(blade))).findAny().isPresent()) {
+//				foundGrades++;
+//				gradeKey += Math.pow(10, grade);
+//			}
+//		});
+//		if (gradeKey == 0) {
+//			foundGrades++;
+//			gradeKey++;
+//		}
+//		if (foundGrades < getAlgebra().getGradeCount() / 2)
+//			sparseFlag = true;
+//		else
+//			sparseFlag = false;
+//	}
 
 	/**
 	 * This method is a concession to the old notation for the Scalar Part of a
@@ -972,10 +969,10 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return ComplexF
 	 */
-	@Override
-	public ComplexF SPc() {
-		return (ComplexF) scales.getScalar();
-	}
+//	@Override
+//	public ComplexF SPc() {
+//		return (ComplexF) scales.getScalar();
+//	}
 
 	/**
 	 * Return the magnitude squared of the Monad
@@ -989,14 +986,14 @@ public class MonadComplexF extends MonadAbstract {
 	 *                              coefficients.
 	 * @return ComplexF
 	 */
-	@Override
-	public ComplexF sqMagnitude() throws CladosMonadException {
-		try {
-			return (ComplexF) scales.sqMagnitude();
-		} catch (FieldBinaryException e) {
-			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
-		}
-	}
+//	@Override
+//	public ComplexF sqMagnitude() throws CladosMonadException {
+//		try {
+//			return (ComplexF) scales.sqMagnitude();
+//		} catch (FieldBinaryException e) {
+//			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
+//		}
+//	}
 
 	/**
 	 * Monad Subtraction: (this - pM) This operation is allowed when the two monads
@@ -1011,17 +1008,17 @@ public class MonadComplexF extends MonadAbstract {
 	 * 
 	 * @return MonadComplexF
 	 */
-	public MonadComplexF subtract(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
-		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Can't subtract without a reference match.", pM);
-		bladeStream().parallel().forEach(blade -> {
-			try {
-				scales.get(blade).subtract(pM.scales.get(blade));
-			} catch (FieldBinaryException e) {
-				throw new IllegalArgumentException("Can't subtract when cardinals don't match.");
-			}
-		});
-		setGradeKey();
-		return this;
-	}
+//	public MonadComplexF subtract(MonadComplexF pM) throws FieldBinaryException, CladosMonadBinaryException {
+//		if (!isReferenceMatch(this, pM))
+//			throw new CladosMonadBinaryException(this, "Can't subtract without a reference match.", pM);
+//		bladeStream().parallel().forEach(blade -> {
+//			try {
+//				scales.get(blade).subtract(pM.scales.get(blade));
+//			} catch (FieldBinaryException e) {
+//				throw new IllegalArgumentException("Can't subtract when cardinals don't match.");
+//			}
+//		});
+//		setGradeKey();
+//		return this;
+//	}
 }

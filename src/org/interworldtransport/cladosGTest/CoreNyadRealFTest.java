@@ -112,7 +112,7 @@ public class CoreNyadRealFTest {
 		thing1.appendMonad(property);
 		assertTrue(thing1.isScalarAt(motion.getAlgebra()));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		property.getCoeff(0).setReal(1.0f);
+		((RealF) property.getCoeff(0)).setReal(1.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		property.dualLeft();
 		//System.out.println(NyadRealF.toXMLString(thing1, ""));
@@ -123,12 +123,12 @@ public class CoreNyadRealFTest {
 	void testScalingAt() throws CladosNyadException, CladosMonadException, FieldBinaryException{
 		thing1 = (NyadRealF) CladosGNyad.REALF.createWithMonad(motion, "");
 		thing1.appendMonad(property);
-		property.getCoeff(0).setReal(16.0f);
+		((RealF) property.getCoeff(0)).setReal(16.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		
 		thing1.scale(thing1.findMonad(property), RealF.newONE(charge).scale(16.0f));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		assertTrue(property.getCoeff(0).getReal() == 256.0f);
+		assertTrue(((RealF) property.getCoeff(0)).getReal() == 256.0f);
 	}
 
 	@Test
