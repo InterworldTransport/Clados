@@ -9,10 +9,9 @@ import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosG.Algebra;
 import org.interworldtransport.cladosG.CladosGBuilder;
-import org.interworldtransport.cladosG.CladosGMonad;
 import org.interworldtransport.cladosG.CladosGNyad;
 import org.interworldtransport.cladosG.Foot;
-import org.interworldtransport.cladosG.MonadAbstract;
+import org.interworldtransport.cladosG.Monad;
 import org.interworldtransport.cladosG.NyadComplexF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -34,7 +33,7 @@ public class CoreNyadComplexFTest {
 	final String frameName = "inertial";
 	final String mNameQ = "ChargeDensity";
 	final String mNameU = "4-Velocity";
-	MonadAbstract motion, property;
+	Monad motion, property;
 	final String sig4D = "-+++";
 	final Cardinal speed = CladosFBuilder.createCardinal("c=1");
 	NyadComplexF thing1, thing2;
@@ -49,10 +48,10 @@ public class CoreNyadComplexFTest {
 		Foot here = CladosGBuilder.createFootLike(footName, speed);
 		here.appendCardinal(charge);
 
-		motion = CladosGMonad.INSTANCE.createWithFoot(CladosFBuilder.COMPLEXF.createZERO(speed), here, mNameU,
+		motion = CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(speed), here, mNameU,
 				aName, frameName, sig4D);
 
-		property = CladosGMonad.INSTANCE.createWithFoot(CladosFBuilder.COMPLEXF.createZERO(charge), here, mNameQ,
+		property = CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(charge), here, mNameQ,
 				aName2, frameName, sig4D);
 
 	}

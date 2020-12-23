@@ -18,7 +18,7 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
-import org.interworldtransport.cladosG.MonadAbstract;
+import org.interworldtransport.cladosG.Monad;
 /**
  * This class is designed to be the top of the CladosG exception family.  
  * All instances of descendants are assumed to originate from geometric objects
@@ -35,7 +35,7 @@ public class CladosMonadException extends Exception
 /**
  * The source Monad is the originator of the Exception.
  */
-    private MonadAbstract  Source;
+    private Monad  Source;
 /**
  * The source message is the reason given by the originating Monad for the exception.
  */
@@ -48,7 +48,7 @@ public class CladosMonadException extends Exception
  * @param pMessage	
  * 				String
  */
-    public CladosMonadException(MonadAbstract pSource, String pMessage)
+    public CladosMonadException(Monad pSource, String pMessage)
     {
     	super();
     	SourceMessage=pMessage;
@@ -57,9 +57,9 @@ public class CladosMonadException extends Exception
 /**
  * This method delivers a reference to the Monad that originated the Exception
  * 
- * @return MonadAbstract
+ * @return Monad
  */
-    public MonadAbstract  getSourceMonad()
+    public Monad  getSourceMonad()
     {
     	return Source;
     }

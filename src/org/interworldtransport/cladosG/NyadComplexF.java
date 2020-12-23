@@ -24,7 +24,7 @@
  */
 package org.interworldtransport.cladosG;
 
-import static org.interworldtransport.cladosG.MonadAbstract.isReferenceMatch;
+import static org.interworldtransport.cladosG.Monad.isReferenceMatch;
 
 import java.util.ArrayList;
 
@@ -90,14 +90,14 @@ public class NyadComplexF extends NyadAbstract {
 
 		// Now check the monad lists.
 		boolean forwardCheck = false;
-		for (MonadAbstract tSpot : pTs.getMonadList()) {
+		for (Monad tSpot : pTs.getMonadList()) {
 			// Start with the assumption that there is no matching algebra
 			// in the second nyad for the Monad in tSpot
 			forwardCheck = false;
 			// Get the Algebra for tSpot
 			Algebra tSpotAlg1 = tSpot.getAlgebra();
 			// Now loop through the second nyad looking for an algebra match
-			for (MonadAbstract tSpot2 : pN.getMonadList()) {
+			for (Monad tSpot2 : pN.getMonadList()) {
 				if (tSpotAlg1 == tSpot2.getAlgebra()) {
 					// ah ha! Found an algebra match in tSpot2
 					forwardCheck = true;
@@ -124,14 +124,14 @@ public class NyadComplexF extends NyadAbstract {
 		// against the first list.
 
 		boolean backwardCheck = false;
-		for (MonadAbstract tSpot : pN.getMonadList()) {
+		for (Monad tSpot : pN.getMonadList()) {
 			// Start with the assumption that there is no matching algebra
 			// in the second nyad for the Monad in tSpot
 			backwardCheck = false;
 			// Get the Algebra for tSpot
 			Algebra tSpotAlg1 = tSpot.getAlgebra();
 			// Now loop through the second nyad looking for an algebra match
-			for (MonadAbstract tSpot2 : pTs.getMonadList()) {
+			for (Monad tSpot2 : pTs.getMonadList()) {
 				if (tSpotAlg1 == tSpot2.getAlgebra()) {
 					// ah ha! Found an algebra match in tSpot2
 					backwardCheck = true;
@@ -185,9 +185,9 @@ public class NyadComplexF extends NyadAbstract {
 		// Now we start into the Monad lists.
 
 		boolean check = false;
-		for (MonadAbstract tSpot : pTs.getMonadList()) {
+		for (Monad tSpot : pTs.getMonadList()) {
 			check = false;
-			for (MonadAbstract tSpot2 : pN.getMonadList()) {
+			for (Monad tSpot2 : pN.getMonadList()) {
 				if (tSpot.getAlgebra().equals(tSpot2.getAlgebra())) {
 					check = true; // this is a temporary truth. More to check
 					if (!isReferenceMatch(tSpot, tSpot2))
@@ -205,9 +205,9 @@ public class NyadComplexF extends NyadAbstract {
 		// Now for reverse order.
 
 		check = false;
-		for (MonadAbstract tSpot : pN.getMonadList()) {
+		for (Monad tSpot : pN.getMonadList()) {
 			check = false;
-			for (MonadAbstract tSpot2 : pTs.getMonadList()) {
+			for (Monad tSpot2 : pTs.getMonadList()) {
 				if (tSpot.getAlgebra().equals(tSpot2.getAlgebra())) {
 					check = true; // this is a temporary truth. More to check
 					if (!isReferenceMatch(tSpot, tSpot2))
@@ -251,9 +251,9 @@ public class NyadComplexF extends NyadAbstract {
 		// counterpart in other. If they are a reference match, move on. If
 		// not return a false result.
 
-		for (MonadAbstract tSpot : pTs.getMonadList()) {
+		for (Monad tSpot : pTs.getMonadList()) {
 			Algebra tAlg1 = tSpot.getAlgebra();
-			for (MonadAbstract tSpot2 : pN.getMonadList()) {
+			for (Monad tSpot2 : pN.getMonadList()) {
 				if (tAlg1.equals(tSpot2.getAlgebra())) {
 					if (!isReferenceMatch(tSpot, tSpot2))
 						return false;
@@ -291,8 +291,8 @@ public class NyadComplexF extends NyadAbstract {
 					+ "\t\t</Algebra>\n");
 		rB.append(indent + "\t</AlgebraList>\n");
 		rB.append(indent + "\t<MonadList>\n");
-		for (MonadAbstract tSpot : pN.getMonadList())
-			rB.append(MonadAbstract.toXMLFullString(tSpot, indent+"\t\t"));
+		for (Monad tSpot : pN.getMonadList())
+			rB.append(Monad.toXMLFullString(tSpot, indent+"\t\t"));
 		rB.append(indent + "\t</MonadList>\n");
 		rB.append(indent + "</Nyad>\n");
 		return rB.toString();
@@ -314,8 +314,8 @@ public class NyadComplexF extends NyadAbstract {
 		rB.append(indent+"\t<Name>" + pN.getName() + "</Name>\n");
 		rB.append(pN.getFoot().toXMLString(indent + "\t"));
 		rB.append(indent + "\t<MonadList>\n");
-		for (MonadAbstract tSpot : pN.getMonadList())
-			rB.append(MonadAbstract.toXMLString(tSpot, indent + "\t\t"));
+		for (Monad tSpot : pN.getMonadList())
+			rB.append(Monad.toXMLString(tSpot, indent + "\t\t"));
 		rB.append(indent + "\t</MonadList>\n");
 		rB.append(indent + "</Nyad>\n");
 		return rB.toString();
@@ -325,7 +325,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * This array is the list of Monads that makes up the NyadComplexF. It will be
 	 * tied to the footPoint members of each Monad as keys.
 	 */
-	protected ArrayList<MonadAbstract> monadList;
+	protected ArrayList<Monad> monadList;
 
 	/**
 	 * Simple copy constructor of a Nyad. The passed NyadComplexF will be copied in
@@ -349,7 +349,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * Foot, however, will be used exactly as is either way.
 	 * 
 	 * @param pName String
-	 * @param pM    MonadAbstract
+	 * @param pM    Monad
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
@@ -357,11 +357,11 @@ public class NyadComplexF extends NyadAbstract {
 	 *                              there is something malformed about the monad
 	 *                              being used/copied.
 	 */
-	public NyadComplexF(String pName, MonadAbstract pM, boolean pCopy)
+	public NyadComplexF(String pName, Monad pM, boolean pCopy)
 			throws CladosNyadException, CladosMonadException {
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
-		monadList = new ArrayList<MonadAbstract>(1);
+		monadList = new ArrayList<Monad>(1);
 		algebraList = new ArrayList<Algebra>(1);
 		if (pCopy)
 			appendMonadCopy(pM);
@@ -394,13 +394,13 @@ public class NyadComplexF extends NyadAbstract {
 		setName(pName);
 		setFoot(pN.getFoot());
 		if (pN.getMonadList() != null) {
-			monadList = new ArrayList<MonadAbstract>(pN.getMonadList().size());
+			monadList = new ArrayList<Monad>(pN.getMonadList().size());
 			algebraList = new ArrayList<Algebra>(pN.getAlgebraList().size());
 			if (pCopy)
-				for (MonadAbstract tSpot : pN.getMonadList())
+				for (Monad tSpot : pN.getMonadList())
 					appendMonadCopy(tSpot);
 			else
-				for (MonadAbstract tSpot : pN.getMonadList())
+				for (Monad tSpot : pN.getMonadList())
 					appendMonad(tSpot);
 		}
 	}
@@ -409,14 +409,14 @@ public class NyadComplexF extends NyadAbstract {
 	 * Add another Monad to the list of monads in this nyad. This method re-uses the
 	 * Monad offered as a parameter, so the NyadRealF DOES reference it.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * 
 	 * @throws CladosNyadException This exception is thrown if the foot of the new
 	 *                             monad fails to match
 	 * 
 	 * @return NyadComplexF
 	 */
-	public NyadComplexF appendMonad(MonadAbstract pM) throws CladosNyadException {
+	public NyadComplexF appendMonad(Monad pM) throws CladosNyadException {
 		// This method works if the foot of pM matches the foot of this nyad
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
 			throw new CladosNyadException(this, "Monads is a nyad should share a Foot");
@@ -433,7 +433,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * new copy of the Monad offered as a parameter, so the NyadComplexF does not
 	 * wind up referencing the passed Monad.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @return NyadComplexF
 	 * @throws CladosNyadException  This exception is thrown if the foot of the new
 	 *                              monad fails to match
@@ -441,7 +441,7 @@ public class NyadComplexF extends NyadAbstract {
 	 *                              there is something malformed about the monad
 	 *                              being copied.
 	 */
-	public NyadComplexF appendMonadCopy(MonadAbstract pM) throws CladosNyadException, CladosMonadException {
+	public NyadComplexF appendMonadCopy(Monad pM) throws CladosNyadException, CladosMonadException {
 		// This method works if the foot of pM matches the foot of this nyad
 		// The footPoint objects must match.
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
@@ -449,7 +449,7 @@ public class NyadComplexF extends NyadAbstract {
 
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
-		monadList.add((MonadAbstract) CladosGMonad.INSTANCE.copyOf(pM));
+		monadList.add((Monad) CladosGBuilder.copyOfMonad(pM));
 		resetAlgebraList(monadList);
 		return this;
 	}
@@ -468,8 +468,8 @@ public class NyadComplexF extends NyadAbstract {
 	 * @throws CladosMonadException
 	 */
 	public void compressAntiSymm(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
-		MonadAbstract tempLeft = monadList.get(pInto);
-		MonadAbstract tempRight = monadList.get(pFrom);
+		Monad tempLeft = monadList.get(pInto);
+		Monad tempRight = monadList.get(pFrom);
 
 		tempRight.setAlgebra(tempLeft.getAlgebra());
 		tempLeft.multiplyAntisymm(tempRight);
@@ -492,8 +492,8 @@ public class NyadComplexF extends NyadAbstract {
 	 * @throws CladosMonadException
 	 */
 	public void compressSymm(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
-		MonadAbstract tempLeft = monadList.get(pInto);
-		MonadAbstract tempRight = monadList.get(pFrom);
+		Monad tempLeft = monadList.get(pInto);
+		Monad tempRight = monadList.get(pFrom);
 
 		tempRight.setAlgebra(tempLeft.getAlgebra());
 		tempLeft.multiplySymm(tempRight);
@@ -533,8 +533,8 @@ public class NyadComplexF extends NyadAbstract {
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
 		Cardinal tCard = (pCard == null) ? CladosFBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
 				: CladosFBuilder.createCardinal(pCard);
-		MonadAbstract tM = (MonadAbstract) CladosGMonad.INSTANCE
-				.createWithFoot(CladosFBuilder.DIVFIELD.createZERO(tCard), getFoot(), pName, pAlgebra, pFrame, pSig);
+		Monad tM = (Monad) CladosGBuilder.createMonadWithFoot(CladosFBuilder.DIVFIELD.createZERO(tCard),
+				getFoot(), pName, pAlgebra, pFrame, pSig);
 		appendMonad(tM);
 		return this;
 	}
@@ -545,7 +545,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return NyadComplexF
 	 */
 	public NyadComplexF dualLeft() {
-		for (MonadAbstract tSpot : monadList)
+		for (Monad tSpot : monadList)
 			tSpot.dualLeft();
 		return this;
 	}
@@ -556,7 +556,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return NyadComplexF
 	 */
 	public NyadComplexF dualRight() {
-		for (MonadAbstract tSpot : monadList)
+		for (Monad tSpot : monadList)
 			tSpot.dualRight();
 		return this;
 	}
@@ -570,7 +570,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return int
 	 */
 	public int findAlgebra(Algebra pAlg) {
-		for (MonadAbstract pM : getMonadList())
+		for (Monad pM : getMonadList())
 			if (pAlg.equals(pM.getAlgebra()))
 				return monadList.indexOf(pM);
 		return -1;
@@ -585,7 +585,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return boolean
 	 */
 	public int findFrame(String pFrame) {
-		for (MonadAbstract pM : getMonadList())
+		for (Monad pM : getMonadList())
 			if (pFrame.equals(pM.getFrameName()))
 				return monadList.indexOf(pM);
 		return -1;
@@ -595,11 +595,11 @@ public class NyadComplexF extends NyadAbstract {
 	 * Return the index for monad within the nyad if found.
 	 * 
 	 * @param pN  NyadComplexF
-	 * @param pIn MonadAbstract
+	 * @param pIn Monad
 	 * @return int
 	 */
-	public int findMonad(MonadAbstract pIn) {
-		for (MonadAbstract pM : getMonadList())
+	public int findMonad(Monad pIn) {
+		for (Monad pM : getMonadList())
 			if (pIn == pM)
 				return monadList.indexOf(pM);
 		return -1;
@@ -613,7 +613,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return int
 	 */
 	public int findName(String pName) {
-		for (MonadAbstract pM : getMonadList())
+		for (Monad pM : getMonadList())
 			if (pName.equals(pM.getName()))
 				return monadList.indexOf(pM);
 		return -1;
@@ -642,7 +642,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * 
 	 * @return ArrayList (of Monads)
 	 */
-	public ArrayList<MonadAbstract> getMonadList() {
+	public ArrayList<Monad> getMonadList() {
 		return monadList;
 	}
 
@@ -650,9 +650,9 @@ public class NyadComplexF extends NyadAbstract {
 	 * Return the element of the array of Monads at the jth index.
 	 * 
 	 * @param pj int
-	 * @return MonadAbstract
+	 * @return Monad
 	 */
-	public MonadAbstract getMonadList(int pj) {
+	public Monad getMonadList(int pj) {
 		return monadList.get(pj);
 	}
 
@@ -674,7 +674,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return boolean
 	 */
 	public boolean hasFrame(String pFrame) {
-		for (MonadAbstract pM : getMonadList())
+		for (Monad pM : getMonadList())
 			if (pFrame.equals(pM.getFrameName()))
 				return true;
 		return false;
@@ -688,7 +688,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return boolean
 	 */
 	public boolean hasName(String pName) {
-		for (MonadAbstract pM : getMonadList())
+		for (Monad pM : getMonadList())
 			if (pName.equals(pM.getName()))
 				return true;
 		return false;
@@ -735,7 +735,7 @@ public class NyadComplexF extends NyadAbstract {
 			int maxGrade = pAlg.getGradeCount() - 1; // find pAlg's max grade
 			int tSpot = findAlgebra(pAlg);
 			while (tSpot >= 0) { // loop through monads with that algebra
-				if (MonadAbstract.isGrade(getMonadList(tSpot), maxGrade)) {
+				if (Monad.isGrade(getMonadList(tSpot), maxGrade)) {
 					test = true; // found and IS scalar? test=true because one was found.
 					tSpot = findNextAlgebra(pAlg, tSpot++); // find a monad using pAlg
 				} else {
@@ -767,7 +767,7 @@ public class NyadComplexF extends NyadAbstract {
 		if (getNyadOrder() > 0 | pAlg != null) {
 			int tSpot = findAlgebra(pAlg);
 			while (tSpot >= 0) { // loop through monads with that algebra
-				if (MonadAbstract.isGrade(getMonadList(tSpot), 0)) {
+				if (Monad.isGrade(getMonadList(tSpot), 0)) {
 					test = true; // found and IS scalar? test=true because one was found.
 					tSpot = findNextAlgebra(pAlg, tSpot++); // find a monad using pAlg
 				} else {
@@ -792,7 +792,7 @@ public class NyadComplexF extends NyadAbstract {
 	public NyadComplexF pop(int key) {
 		int limit = monadList.size();
 		if (key > 0 && key < limit) {
-			MonadAbstract temp = monadList.remove(key - 1);
+			Monad temp = monadList.remove(key - 1);
 			monadList.add(key, temp);
 		}
 		return this;
@@ -810,7 +810,7 @@ public class NyadComplexF extends NyadAbstract {
 	public NyadComplexF push(int key) {
 		int limit = monadList.size();
 		if (key >= 0 && key < limit - 1) {
-			MonadAbstract temp = monadList.remove(key);
+			Monad temp = monadList.remove(key);
 			monadList.add(key + 1, temp);
 		}
 		return this;
@@ -825,7 +825,7 @@ public class NyadComplexF extends NyadAbstract {
 	 * @return NyadComplexF
 	 */
 	public NyadComplexF removeMonad(int pthisone) throws CladosNyadException {
-		MonadAbstract test = null;
+		Monad test = null;
 		try {
 			test = monadList.remove(pthisone);
 		} catch (IndexOutOfBoundsException e) {
@@ -842,12 +842,12 @@ public class NyadComplexF extends NyadAbstract {
 	/**
 	 * Remove a Monad on the list of monads in this nyad.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosNyadException This exception is thrown when the monad to be
 	 *                             removed can't be found.
 	 * @return NyadComplexF
 	 */
-	public NyadComplexF removeMonad(MonadAbstract pM) throws CladosNyadException {
+	public NyadComplexF removeMonad(Monad pM) throws CladosNyadException {
 		int testfind = monadList.indexOf(pM);
 		if (testfind < 0)
 			throw new CladosNyadException(this, "Can't find the Monad to remove.");
@@ -881,10 +881,10 @@ public class NyadComplexF extends NyadAbstract {
 	 * 
 	 * @param pML ArrayList Contains the list of monads for the nyad
 	 */
-	protected void setMonadList(ArrayList<MonadAbstract> pML) {
+	protected void setMonadList(ArrayList<Monad> pML) {
 		if (pML == null)
 			monadList = null;
 		else
-			monadList = new ArrayList<MonadAbstract>(pML);
+			monadList = new ArrayList<Monad>(pML);
 	}
 }

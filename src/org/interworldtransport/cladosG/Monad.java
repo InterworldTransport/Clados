@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.MonadAbstract<br>
+ * ---org.interworldtransport.cladosG.Monad<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.MonadAbstract<br>
+ * ---org.interworldtransport.cladosG.Monad<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -53,15 +53,15 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class MonadAbstract {
+public class Monad {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
 	 * 
-	 * @param pM     MonadAbstract
+	 * @param pM     Monad
 	 * @param pGrade int
 	 * @return boolean
 	 */
-	public static boolean hasGrade(MonadAbstract pM, int pGrade) {
+	public static boolean hasGrade(Monad pM, int pGrade) {
 		if (pM.getGradeKey() == 1 & pGrade == 0)
 			return true;
 
@@ -76,11 +76,11 @@ public class MonadAbstract {
 	 * Return a boolean if the grade being checked is the grade of the Monad. False
 	 * is returned otherwise.
 	 * 
-	 * @param pM     MonadAbstract
+	 * @param pM     Monad
 	 * @param pGrade int
 	 * @return boolean
 	 */
-	public static boolean isGrade(MonadAbstract pM, int pGrade) {
+	public static boolean isGrade(Monad pM, int pGrade) {
 		if (Math.pow(10, pGrade) == pM.getGradeKey())
 			return true;
 
@@ -94,7 +94,7 @@ public class MonadAbstract {
 	 * 
 	 * @return boolean
 	 */
-	public static boolean isGZero(MonadAbstract pM) {
+	public static boolean isGZero(Monad pM) {
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
 			return (pM.getGradeKey() == 1 & ComplexD.isZero((ComplexD) pM.getCoeff(0)));
@@ -118,17 +118,17 @@ public class MonadAbstract {
 	 * Return true if the Monad an idempotent
 	 * 
 	 * @return boolean
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosMonadException This exception is thrown when the method can't
 	 *                              create a copy of the monad to be checked.
 	 * @throws FieldBinaryException This exception is thrown when the method can't
 	 *                              multiply two fields used by the monad to be
 	 *                              checked.
 	 */
-	public static boolean isIdempotent(MonadAbstract pM) throws FieldBinaryException, CladosMonadException {
+	public static boolean isIdempotent(Monad pM) throws FieldBinaryException, CladosMonadException {
 		if (isGZero(pM))
 			return true;
-		return CladosGMonad.INSTANCE.copyOf(pM).multiplyLeft(pM).isGEqual(pM);
+		return CladosGBuilder.copyOfMonad(pM).multiplyLeft(pM).isGEqual(pM);
 	}
 	
 	/**
@@ -143,20 +143,20 @@ public class MonadAbstract {
 	 * 3. Return false.
 	 * 
 	 * @return boolean
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosMonadException This exception is thrown when the method can't
 	 *                              create a copy of the monad to be checked.
 	 * @throws FieldException       This exception is thrown when the method can't
 	 *                              copy the field used by the monad to be checked.
 	 */
-	public static boolean isScaledIdempotent(MonadAbstract pM) throws CladosMonadException, FieldException {
+	public static boolean isScaledIdempotent(Monad pM) throws CladosMonadException, FieldException {
 		if (isIdempotent(pM))
 			return true;
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
-			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
+			Monad check1 = CladosGBuilder.copyOfMonad(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
+			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
 			ComplexD fstnzeroC = (ComplexD) CladosFBuilder.COMPLEXD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
 			int k = 1;// skipping over check1.SP() != 0
 			while (ComplexD.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
@@ -166,13 +166,13 @@ public class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		case COMPLEXF -> {
-			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
+			Monad check1 = CladosGBuilder.copyOfMonad(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
+			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
 			ComplexF fstnzeroC = (ComplexF) CladosFBuilder.COMPLEXF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
 			int k = 1;// skipping over check1.SP() != 0
 			while (ComplexF.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
@@ -182,13 +182,13 @@ public class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		case REALD -> {
-			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
+			Monad check1 = CladosGBuilder.copyOfMonad(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
+			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
 			RealD fstnzeroC = (RealD) CladosFBuilder.REALD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
 			int k = 1;// skipping over check1.SP() != 0
 			while (RealD.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
@@ -198,13 +198,13 @@ public class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		case REALF -> {
-			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
+			Monad check1 = CladosGBuilder.copyOfMonad(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
+			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
 			RealF fstnzeroC = (RealF) CladosFBuilder.REALF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
 			int k = 1;// skipping over check1.SP() != 0
 			while (RealF.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
@@ -214,7 +214,7 @@ public class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		default -> {
@@ -229,7 +229,7 @@ public class MonadAbstract {
 	 * Return true if the Monad is nilpotent at a particular integer power.
 	 * 
 	 * @return boolean
-	 * @param pM     MonadAbstract The monad to be tested
+	 * @param pM     Monad The monad to be tested
 	 * @param pPower int The integer power to test
 	 * @throws CladosMonadException This exception is thrown when the method can't
 	 *                              create a copy of the monad to be checked.
@@ -237,10 +237,10 @@ public class MonadAbstract {
 	 *                              multiply two fields used by the monad to be
 	 *                              checked.
 	 */
-	public static boolean isNilpotent(MonadAbstract pM, int pPower) throws FieldBinaryException, CladosMonadException {
+	public static boolean isNilpotent(Monad pM, int pPower) throws FieldBinaryException, CladosMonadException {
 		if (isGZero(pM))
 			return true;
-		MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
+		Monad check1 = CladosGBuilder.copyOfMonad(pM);
 		while (pPower > 1) {
 			check1.multiplyLeft(pM);
 			if (isGZero(check1))
@@ -261,7 +261,7 @@ public class MonadAbstract {
 	 * 
 	 * @return boolean
 	 */
-	public static boolean isMultiGrade(MonadAbstract pM) {
+	public static boolean isMultiGrade(Monad pM) {
 		if (pM.getGradeKey() != 0) {
 			double temp = Math.log10(pM.getGradeKey());
 			if (Math.floor(temp) == temp)
@@ -278,11 +278,11 @@ public class MonadAbstract {
 	 * equality. No check is made for equality between Mnames and Coeffs and the
 	 * product Table
 	 * 
-	 * @param pM MonadAbstract
-	 * @param pN MonadAbstract
+	 * @param pM Monad
+	 * @param pN Monad
 	 * @return boolean
 	 */
-	public static boolean isReferenceMatch(MonadAbstract pM, MonadAbstract pN) {
+	public static boolean isReferenceMatch(Monad pM, Monad pN) {
 		// The algebras must actually be the same object to match.
 		if ((pM.getAlgebra() != (pN.getAlgebra())))
 			return false;
@@ -310,7 +310,7 @@ public class MonadAbstract {
 	 * 
 	 * @return boolean
 	 */
-	public static boolean isUniGrade(MonadAbstract pM) {
+	public static boolean isUniGrade(Monad pM) {
 		if (pM.getGradeKey() != 0) {
 			double temp = Math.log10(pM.getGradeKey());
 			if (Math.floor(temp) == temp)
@@ -329,7 +329,7 @@ public class MonadAbstract {
 	 * 
 	 * @return String
 	 */
-	public static String toXMLFullString(MonadAbstract pM, String indent) {
+	public static String toXMLFullString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Monad ");
@@ -347,12 +347,12 @@ public class MonadAbstract {
 	/**
 	 * Display XML string that represents the Monad
 	 * 
-	 * @param pM     MonadAbstract This is the monad to be converted to XML.
+	 * @param pM     Monad This is the monad to be converted to XML.
 	 * @param indent String of tab characters to assign with human readability
 	 * 
 	 * @return String
 	 */
-	public static String toXMLString(MonadAbstract pM, String indent) {
+	public static String toXMLString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Monad ");
@@ -414,9 +414,9 @@ public class MonadAbstract {
 	 * This contructor is used most often to get around operations that alter a
 	 * Monad when the developer does not wish it to be altered.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 */
-	public MonadAbstract(MonadAbstract pM) {
+	public Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
@@ -451,13 +451,13 @@ public class MonadAbstract {
 	 * generate new Monads based on an old one.
 	 * 
 	 * @param pName String
-	 * @param pM    MonadAbstract
+	 * @param pM    Monad
 	 * @throws CladosMonadException  This exception is thrown if there is an issue
 	 *                               with the coefficients offered. The issues could
 	 *                               involve null coefficients or a coefficient
 	 *                               array of the wrong size.
 	 */
-	public MonadAbstract(String pName, MonadAbstract pM) throws CladosMonadException {
+	public Monad(String pName, Monad pM) throws CladosMonadException {
 		this(pM);
 		setName(pName);
 	}
@@ -482,7 +482,7 @@ public class MonadAbstract {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF) 
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF) 
 					throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
 		
@@ -499,25 +499,25 @@ public class MonadAbstract {
 		
 		switch (mode) {
 		case COMPLEXD -> {
-			setAlgebra(CladosGAlgebra.COMPLEXD.create(pF, pAlgebraName, pFootName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			setAlgebra(CladosGAlgebra.COMPLEXF.create(pF, pAlgebraName, pFootName, pSig)); 
+			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig)); 
 			setFrameName(pFrameName);
 			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALD -> {
-			setAlgebra(CladosGAlgebra.REALD.create(pF, pAlgebraName, pFootName, pSig)); 
+			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig)); 
 			setFrameName(pFrameName);
 			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALF -> {
-			setAlgebra(CladosGAlgebra.REALF.create(pF, pAlgebraName, pFootName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
@@ -545,7 +545,7 @@ public class MonadAbstract {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
 		
@@ -562,25 +562,25 @@ public class MonadAbstract {
 		
 		switch (mode) {
 		case COMPLEXD -> {
-			setAlgebra(CladosGAlgebra.COMPLEXD.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			setAlgebra(CladosGAlgebra.COMPLEXF.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALD -> {
-			setAlgebra(CladosGAlgebra.REALD.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALF -> {
-			setAlgebra(CladosGAlgebra.REALF.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
@@ -617,7 +617,7 @@ public class MonadAbstract {
 	 *                                  might if someone tinkers with the case in an
 	 *                                  unsafe way.
 	 */
-	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF, String pSpecial)
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already. Now handle the special cases.
@@ -679,7 +679,7 @@ public class MonadAbstract {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField[] pC) 
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField[] pC) 
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		if (pC == null | pC[0] == null)
 			throw new CladosMonadException(this, "Missing coefficients.");
@@ -701,28 +701,28 @@ public class MonadAbstract {
 		
 		switch (mode) {
 		case COMPLEXD -> {
-			setAlgebra(CladosGAlgebra.COMPLEXD.create(pC[0], pAlgebraName, pFootName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pC[0].getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexD[]) pC));
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			setAlgebra(CladosGAlgebra.COMPLEXF.create(pC[0], pAlgebraName, pFootName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pC[0].getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexF[]) pC));
 			setGradeKey();
 		}
 		case REALD -> {
-			setAlgebra(CladosGAlgebra.REALD.create(pC[0], pAlgebraName, pFootName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pC[0].getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealD[]) pC));
 			setGradeKey();
 		}
 		case REALF -> {
-			setAlgebra(CladosGAlgebra.REALF.create(pC[0], pAlgebraName, pFootName, pSig));
+			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
 			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pC[0].getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealF[]) pC));
@@ -744,7 +744,7 @@ public class MonadAbstract {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public MonadAbstract(String pMonadName, Algebra pAlgebra, String pFrameName, DivField[] pC) 
+	public Monad(String pMonadName, Algebra pAlgebra, String pFrameName, DivField[] pC) 
 			throws CladosMonadException {
 		if (pC.length != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
@@ -807,13 +807,13 @@ public class MonadAbstract {
 	 * Monad Addition: (this + pM) This operation is allowed when the two monads use
 	 * the same field and satisfy the Reference Matching test.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosMonadBinaryException This exception is thrown when the monads
 	 *                                    fail a reference match.
-	 * @return MonadAbstract
+	 * @return Monad
 	 */
-	public MonadAbstract add(MonadAbstract pM) throws CladosMonadBinaryException {
-		if (!MonadAbstract.isReferenceMatch(this, pM))
+	public Monad add(Monad pM) throws CladosMonadBinaryException {
+		if (!Monad.isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Can't add when frames don't match.", pM);
 		bladeStream().parallel().forEach(blade -> {
 			try {
@@ -853,7 +853,7 @@ public class MonadAbstract {
 	 * 
 	 * @return Monad after operation.
 	 */
-	public MonadAbstract conjugate() {
+	public Monad conjugate() {
 		scales.conjugate();
 		return this;
 	}
@@ -863,7 +863,7 @@ public class MonadAbstract {
 	 * 
 	 * @return Monad after operation.
 	 */
-	public MonadAbstract dualLeft() {
+	public Monad dualLeft() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
@@ -953,7 +953,7 @@ public class MonadAbstract {
 	 * 
 	 * @return Monad after operation.
 	 */
-	public MonadAbstract dualRight() {
+	public Monad dualRight() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
@@ -1156,10 +1156,10 @@ public class MonadAbstract {
 	 * This method suppresses grades in the Monad not equal to the integer passed.
 	 * 
 	 * @param pGrade byte integer of the grade TO KEEP.
-	 * @return MonadAbstract but in practice it will always be a child of
+	 * @return Monad but in practice it will always be a child of
 	 *         MonadAbtract
 	 */
-	public MonadAbstract gradePart(byte pGrade) {
+	public Monad gradePart(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		scales.zeroAllButGrade(pGrade);
@@ -1196,10 +1196,10 @@ public class MonadAbstract {
 	 * This method suppresses the grade in the Monad equal to the integer passed.
 	 * 
 	 * @param pGrade byte integer of the grade TO SUPPRESS.
-	 * @return MonadAbstract but in practice it will always be a child of
+	 * @return Monad but in practice it will always be a child of
 	 *         MonadAbtract
 	 */
-	public MonadAbstract gradeSuppress(byte pGrade) {
+	public Monad gradeSuppress(byte pGrade) {
 		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
 			return this;
 		scales.zeroAtGrade(pGrade);
@@ -1210,10 +1210,10 @@ public class MonadAbstract {
 	/**
 	 * Mirror the sense of all geometry generators in the Monad.
 	 * 
-	 * @return MonadAbstract but in practice it will always be a child of
+	 * @return Monad but in practice it will always be a child of
 	 *         MonadAbtract
 	 */
-	public MonadAbstract invert() {
+	public Monad invert() {
 		scales.invert();
 		return this;
 	}
@@ -1229,11 +1229,11 @@ public class MonadAbstract {
 	 * happen in the future, but thought will have to be given to how to override
 	 * the hashing method too.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @return boolean
 	 */
-	public boolean isGEqual(MonadAbstract pM) {
-		if (!MonadAbstract.isReferenceMatch(this, pM))
+	public boolean isGEqual(Monad pM) {
+		if (!Monad.isReferenceMatch(this, pM))
 			return false;
 		switch (scales.getMode()) {
 		case COMPLEXD -> {
@@ -1300,16 +1300,16 @@ public class MonadAbstract {
 	 * allowed when the two monads use the same field and satisfy the Reference
 	 * Matching test.
 	 * 
-	 * @param pM MonadAbstract
-	 * @return MonadAbstract
+	 * @param pM Monad
+	 * @return Monad
 	 * @throws FieldBinaryException This exception is thrown when the field match
 	 *                              test fails with the two monads
 	 * @throws CladosMonadException
 	 */
-	public MonadAbstract multiplyAntisymm(MonadAbstract pM) throws FieldBinaryException, CladosMonadException {
+	public Monad multiplyAntisymm(Monad pM) throws FieldBinaryException, CladosMonadException {
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
-		MonadAbstract halfTwo = CladosGMonad.INSTANCE.copyOf(this).multiplyRight(pM);
+		Monad halfTwo = CladosGBuilder.copyOfMonad(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
 			multiplyLeft(pM).subtract(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
@@ -1352,16 +1352,16 @@ public class MonadAbstract {
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosMonadBinaryException This exception is thrown when the
 	 *                                    reference match test fails with the two
 	 *                                    monads
 	 * @throws FieldBinaryException       This exception is thrown when the field
 	 *                                    match test fails with the two monads
-	 * @return MonadAbstract
+	 * @return Monad
 	 */
-	public MonadAbstract multiplyLeft(MonadAbstract pM) throws FieldBinaryException, CladosMonadBinaryException {
-		if (!MonadAbstract.isReferenceMatch(this, pM))
+	public Monad multiplyLeft(Monad pM) throws FieldBinaryException, CladosMonadBinaryException {
+		if (!Monad.isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Left multiply fails reference match.", pM);
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
@@ -1612,15 +1612,15 @@ public class MonadAbstract {
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosMonadBinaryException This exception is thrown when the
 	 *                                    reference match test fails with the two
 	 *                                    monads
 	 * @throws FieldBinaryException       This exception is thrown when the field
 	 *                                    match test fails with the two monads
-	 * @return MonadAbstract
+	 * @return Monad
 	 */
-	public MonadAbstract multiplyRight(MonadAbstract pM) throws FieldBinaryException, CladosMonadBinaryException {
+	public Monad multiplyRight(Monad pM) throws FieldBinaryException, CladosMonadBinaryException {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new CladosMonadBinaryException(this, "Right multiply fails reference match.", pM);
 		CliffordProduct tProd = getAlgebra().getGProduct();
@@ -1848,16 +1848,16 @@ public class MonadAbstract {
 	 * allowed when the two monads use the same field and satisfy the Reference
 	 * Matching test.
 	 * 
-	 * @param pM MonadAbstract
-	 * @return MonadAbstract
+	 * @param pM Monad
+	 * @return Monad
 	 * @throws FieldBinaryException This exception is thrown when the field match
 	 *                              test fails with the two monads
 	 * @throws CladosMonadException
 	 */
-	public MonadAbstract multiplySymm(MonadAbstract pM) throws FieldBinaryException, CladosMonadException {
+	public Monad multiplySymm(Monad pM) throws FieldBinaryException, CladosMonadException {
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
-		MonadAbstract halfTwo = CladosGMonad.INSTANCE.copyOf(this).multiplyRight(pM);
+		Monad halfTwo = CladosGBuilder.copyOfMonad(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
 			multiplyLeft(pM).add(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
@@ -1880,12 +1880,12 @@ public class MonadAbstract {
 	 * Normalize the monad. A <b>CladosMonadException</b> is thrown if the Monad has
 	 * a zero magnitude.
 	 * 
-	 * @return MonadAbstract but in practice it will always be a child of
+	 * @return Monad but in practice it will always be a child of
 	 *         MonadAbtract
 	 * @throws CladosMonadException This exception is thrown when normalizing a zero
 	 *                              or field conflicted monad is tried.
 	 */
-	public MonadAbstract normalize() throws CladosMonadException {
+	public Monad normalize() throws CladosMonadException {
 		switch (scales.getMode()) {
 		case COMPLEXD -> {
 			if (gradeKey == 0L & ComplexD.isZero((ComplexD) scales.getScalar()))
@@ -1930,10 +1930,10 @@ public class MonadAbstract {
 	 * the permutation, so the easiest thing to do is to change the coefficients
 	 * instead.
 	 * 
-	 * @return MonadAbstract but in practice it will always be a child of
+	 * @return Monad but in practice it will always be a child of
 	 *         MonadAbtract
 	 */
-	public MonadAbstract reverse() {
+	public Monad reverse() {
 		scales.reverse();
 		return this;
 	}
@@ -1953,9 +1953,9 @@ public class MonadAbstract {
 	 * components won't get used in real number multiplication.
 	 * 
 	 * @param pScale DivField to use for scaling the monad
-	 * @return MonadAbstract after the scaling is complete.
+	 * @return Monad after the scaling is complete.
 	 */
-	public MonadAbstract scale(DivField pScale) {
+	public Monad scale(DivField pScale) {
 
 		switch (scales.getMode()) {
 		case COMPLEXD -> {
@@ -2142,13 +2142,13 @@ public class MonadAbstract {
 	 * Monad Subtraction: (this - pM) This operation is allowed when the two monads
 	 * use the same field and satisfy the Reference Matching test.
 	 * 
-	 * @param pM MonadAbstract
+	 * @param pM Monad
 	 * @throws CladosMonadBinaryException This exception is thrown when the monads
 	 *                                    fail a reference match.
-	 * @return MonadAbstract
+	 * @return Monad
 	 */
-	public MonadAbstract subtract(MonadAbstract pM) throws CladosMonadBinaryException {
-		if (!MonadAbstract.isReferenceMatch(this, pM))
+	public Monad subtract(Monad pM) throws CladosMonadBinaryException {
+		if (!Monad.isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Can't subtract without a reference match.", pM);
 		bladeStream().parallel().forEach(blade -> {
 			try {
@@ -2194,7 +2194,7 @@ public class MonadAbstract {
 	 * 
 	 * @param pGrades short The parameter is the gradeCount for the monad. It is
 	 *                passed into this method rather than looked up in order to
-	 *                allow this method to reside in the MonadAbstract class. If it
+	 *                allow this method to reside in the Monad class. If it
 	 *                were in one of the child monad classes, it would work just as
 	 *                well, but it would have to know the child algebra class too in
 	 *                order to avoid DivField confusion. Since a monad can be sparse

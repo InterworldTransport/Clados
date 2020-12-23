@@ -18,7 +18,7 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
-import org.interworldtransport.cladosG.MonadAbstract;
+import org.interworldtransport.cladosG.Monad;
 /**
  * This class is designed to be near the top of the Clados exception family. 
  * All instances of descendants are assumed to originate from geometric objects
@@ -36,18 +36,18 @@ public class CladosMonadBinaryException extends CladosMonadException
  * This is the second object involved in the Exception if the operation
  * is a binary operation.
  */
-    private MonadAbstract  Second;
+    private Monad  Second;
 /**
  * This method is the constructor for exceptions involving two Monads.
  * 
  * @param pSource
- * 			MonadAbstract
+ * 			Monad
  * @param pMessage
  * 			String
  * @param pSecond
- * 			MonadAbstract
+ * 			Monad
  */
-    public CladosMonadBinaryException(MonadAbstract pSource, String pMessage, MonadAbstract pSecond)
+    public CladosMonadBinaryException(Monad pSource, String pMessage, Monad pSecond)
     {
        	super(pSource, pMessage);
        	Second=pSecond;
@@ -56,9 +56,9 @@ public class CladosMonadBinaryException extends CladosMonadException
  * This method delivers a reference to the extra Monad involved in 
  * the exception.
  * 
- * @return MonadAbstract
+ * @return Monad
  */
-    public MonadAbstract  getSecondMonad()
+    public Monad  getSecondMonad()
     {
       	return Second;
     }

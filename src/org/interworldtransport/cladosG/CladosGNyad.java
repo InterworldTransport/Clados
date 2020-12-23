@@ -216,7 +216,7 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract createWithMonadCopy(MonadAbstract pM, String pName)
+	public final NyadAbstract createWithMonadCopy(Monad pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
 		switch (pM.mode) {
 		case REALF -> {
@@ -248,7 +248,7 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract createWithMonad(MonadAbstract pM, String pName)
+	public final NyadAbstract createWithMonad(Monad pM, String pName)
 			throws CladosNyadException, CladosMonadException {
 		switch (pM.mode) {
 		case REALF -> {

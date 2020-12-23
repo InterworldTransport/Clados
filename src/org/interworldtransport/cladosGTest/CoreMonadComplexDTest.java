@@ -1,13 +1,13 @@
 package org.interworldtransport.cladosGTest;
 
-import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
-import static org.interworldtransport.cladosG.MonadAbstract.isMultiGrade;
-import static org.interworldtransport.cladosG.MonadAbstract.isUniGrade;
-import static org.interworldtransport.cladosG.MonadAbstract.isGZero;
-import static org.interworldtransport.cladosG.MonadAbstract.isIdempotent;
-import static org.interworldtransport.cladosG.MonadAbstract.isNilpotent;
-import static org.interworldtransport.cladosG.MonadAbstract.isReferenceMatch;
-import static org.interworldtransport.cladosG.MonadAbstract.isScaledIdempotent;
+import static org.interworldtransport.cladosG.Monad.isGrade;
+import static org.interworldtransport.cladosG.Monad.isMultiGrade;
+import static org.interworldtransport.cladosG.Monad.isUniGrade;
+import static org.interworldtransport.cladosG.Monad.isGZero;
+import static org.interworldtransport.cladosG.Monad.isIdempotent;
+import static org.interworldtransport.cladosG.Monad.isNilpotent;
+import static org.interworldtransport.cladosG.Monad.isReferenceMatch;
+import static org.interworldtransport.cladosG.Monad.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
@@ -15,7 +15,7 @@ import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
-import org.interworldtransport.cladosG.MonadAbstract;
+import org.interworldtransport.cladosG.Monad;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,16 +27,16 @@ class CoreMonadComplexDTest {
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
 	ComplexD[] cRF;
-	MonadAbstract tM0;
-	MonadAbstract tM1;
-	MonadAbstract tM2;
-	MonadAbstract tM3;
-	MonadAbstract tM4;
-	MonadAbstract tM5;
-	MonadAbstract tM6;
-	MonadAbstract tM7;
-	MonadAbstract tM8;
-	MonadAbstract tM9;
+	Monad tM0;
+	Monad tM1;
+	Monad tM2;
+	Monad tM3;
+	Monad tM4;
+	Monad tM5;
+	Monad tM6;
+	Monad tM7;
+	Monad tM8;
+	Monad tM9;
 
 	@BeforeEach
 	public void setUp() throws Exception {
@@ -45,19 +45,19 @@ class CoreMonadComplexDTest {
 		for (int k = 0; k < 16; k++)
 			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15 - k);
 
-		tM0 = new MonadAbstract("Test MonadAbstract 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
+		tM0 = new Monad("Test Monad 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
 				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
-		tM1 = new MonadAbstract("Test MonadAbstract 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
+		tM1 = new Monad("Test Monad 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
 				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
-		tM2 = new MonadAbstract("Test MonadAbstract 2", tM1);
-		tM3 = new MonadAbstract("Test MonadAbstract 3", tM1);
-		tM4 = new MonadAbstract(tM0);
-		tM5 = new MonadAbstract("Test MonadAbstract 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
+		tM2 = new Monad("Test Monad 2", tM1);
+		tM3 = new Monad("Test Monad 3", tM1);
+		tM4 = new Monad(tM0);
+		tM5 = new Monad("Test Monad 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
 				new ComplexD(Cardinal.generate("Test Float 5"), 0d), "Unit PScalar");
-		tM6 = new MonadAbstract("Test MonadAbstract 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF);
-		tM7 = new MonadAbstract(mName + "7", tM6);
-		tM8 = new MonadAbstract(mName + "8", tM6);
-		tM9 = new MonadAbstract(mName + "9", tM2);
+		tM6 = new Monad("Test Monad 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM7 = new Monad(mName + "7", tM6);
+		tM8 = new Monad(mName + "8", tM6);
+		tM9 = new Monad(mName + "9", tM2);
 		
 		ComplexD tAdj = new ComplexD(tM9.getAlgebra().shareCardinal(), 0.0f);
 		ComplexD[] tFix = (ComplexD[]) CladosFListBuilder.COMPLEXD.create(tAdj.getCardinal(), 16);
@@ -75,12 +75,12 @@ class CoreMonadComplexDTest {
 		//tM9.multiplyLeft(tM2);
 		//assertTrue(MonadRealF.isGZero(tM2));
 		
-		MonadAbstract check1 = new MonadAbstract(tM9);
+		Monad check1 = new Monad(tM9);
 		assertTrue(tM9.isGEqual(check1));
 		//System.out.println(MonadRealF.toXMLString(check1, ""));
 		check1.multiplyLeft(tM9);
 		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		assert(MonadAbstract.isGZero(check1));
+		assert(Monad.isGZero(check1));
 		
 	}
 
@@ -126,8 +126,8 @@ class CoreMonadComplexDTest {
 			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
 		}
 
-		assertTrue(MonadAbstract.hasGrade(tM6, 2));
-		assertTrue(MonadAbstract.hasGrade(tM7, 0));
+		assertTrue(Monad.hasGrade(tM6, 2));
+		assertTrue(Monad.hasGrade(tM7, 0));
 	}
 
 	@Test

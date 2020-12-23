@@ -49,19 +49,19 @@ public enum CladosField {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	REALF("RealF"),
+	REALF("org.interworldtransport.cladosF.RealF"),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	REALD("RealD"),
+	REALD("org.interworldtransport.cladosF.RealD"),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXF("ComplexF"),
+	COMPLEXF("org.interworldtransport.cladosF.ComplexF"),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXD("ComplexD");
+	COMPLEXD("org.interworldtransport.cladosF.ComplexD");
 
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular DivField

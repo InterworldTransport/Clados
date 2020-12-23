@@ -118,7 +118,7 @@ public abstract class NyadAbstract {
 	 */
 	protected ArrayList<Algebra> algebraList;
 	
-	protected ArrayList<? extends MonadAbstract> mList;
+	protected ArrayList<? extends Monad> mList;
 
 	/**
 	 * This is the Foot to which all the algebras of all monads should reference
@@ -194,10 +194,10 @@ public abstract class NyadAbstract {
 		Name = name;
 	}
 
-	protected <T extends MonadAbstract> void resetAlgebraList(ArrayList<T> pMLIn) {
+	protected <T extends Monad> void resetAlgebraList(ArrayList<T> pMLIn) {
 		algebraList.clear();
 		algebraList.ensureCapacity(pMLIn.size());
-		for (MonadAbstract point : pMLIn)
+		for (Monad point : pMLIn)
 			if (!algebraList.contains(point.getAlgebra()))
 				algebraList.add(point.getAlgebra());
 		// 1 <= algebraList.size() <= monadList.size()

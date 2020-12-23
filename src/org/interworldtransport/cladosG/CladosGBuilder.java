@@ -27,10 +27,17 @@ package org.interworldtransport.cladosG;
 import java.util.Optional;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFCache;
+import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * This builder gets basic information and constructs many Clados Geometry
@@ -47,39 +54,6 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
 	INSTANCE;
-
-	private CladosGBuilder() {
-		;
-	}
-	
-	/**
-	 * Tests the signature string to see if it contains the correct chars and no
-	 * more of them than can be supported.
-	 * 
-	 * This method just calls the method of the same name in the CliffordProduct
-	 * interface. It is here for convenience.
-	 * 
-	 * @param pSig String signature to be tested
-	 * @return TRUE if string is composed of '+' and '-' chars, but not too many.
-	 *         FALSE otherwise.
-	 */
-	public final static boolean validateSignature(String pSig) {
-		return CliffordProduct.validateSignature(pSig);
-	}
-
-	/**
-	 * Tests the byte integer of generators to be used to see if it can be
-	 * supported.
-	 * 
-	 * This method just calls the method of the same name in the CanonicalBasis
-	 * interface. It is here for convenience.
-	 * 
-	 * @param pGen byte integer of number of generators for the test
-	 * @return TRUE if integer is in the supported range. FALSE otherwise.
-	 */
-	public final static boolean validateSize(byte pGen) {
-		return CanonicalBasis.validateSize(pGen);
-	}
 
 	/**
 	 * Cleans the signature string to ensure it passes the validateSignature() test.
@@ -105,6 +79,18 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			return tSpot.toString();
 		}
 	}
+	
+	/**
+	 * Algebra Constructor #1 covered with this
+	 * 
+	 * @param pA    The Algebra to be copied.
+	 * @param pName A String for the new algebra's name.
+	 * @return Algebra
+	 */
+	public static final Algebra copyOfAlgebra(Algebra pA, String pName) {
+		return new Algebra(pName, pA);
+
+	}
 
 	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
@@ -116,6 +102,134 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public final static Foot copyOfFoot(Foot pF, int pSpot) {
 		return createFootLike(pF.getFootName(), pF, pSpot);
+	}
+
+	/**
+	 * Monad Constructor #1 covered with this method
+	 * 
+	 * @param pA The monad to be copied. USE A CONCRETE Monad here or nada.
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 */
+	public static final Monad copyOfMonad(Monad pA) throws CladosMonadException {
+		return new Monad(pA);
+	}
+
+	/**
+	 * Monad Constructor #2 covered with this method
+	 * 
+	 * @param pA    The monad to be copied. USE A CONCRETE Monad here or nada.
+	 * @param pName A String for the new monad's name.
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 */
+	public static final Monad copyOfMonad(Monad pA, String pName) throws CladosMonadException {
+		return new Monad(pName, pA);
+	}
+
+	/**
+	 * Algebra Constructor #5 covered with this
+	 * 
+	 * @param pNumber The DivField to be re-used.
+	 * @param pName   A String for the new algebra's name.
+	 * @param pFTName A String to name a new Foot.
+	 * @param pSig    A String for the new algebra's signature.
+	 * @return Algebra
+	 * @throws BadSignatureException   Thrown by an algebra constructor if the pSig
+	 *                                 parameter is malformed
+	 * @throws GeneratorRangeException Thrown by an algebra constructor if the pSig
+	 *                                 parameter is too long
+	 */
+	public static final Algebra createAlgebra(DivField pNumber, String pName, String pFTName, String pSig)
+			throws BadSignatureException, GeneratorRangeException {
+		if (pNumber instanceof RealF) {
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
+		} else if (pNumber instanceof RealD) {
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
+		} else if (pNumber instanceof ComplexF) {
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
+		} else if (pNumber instanceof ComplexD) {
+			return new Algebra(pName, pFTName, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
+		} else {
+			throw new IllegalArgumentException("Unexpected value as an Algebra mode | "+pNumber.toXMLString());
+		}
+	}
+
+	/**
+	 * Algebra Constructor #3 covered with this
+	 * 
+	 * @param pF    A Foot to be referenced so a new one is NOT created.
+	 * @param pCard The Cardinal to be re-used.
+	 * @param pName A String for the new algebra's name.
+	 * @param pSig  A String for the new algebra's signature.
+	 * @return Algebra
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 */
+	public static final Algebra createAlgebraWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
+			throws BadSignatureException, GeneratorRangeException {
+		return new Algebra(pName, pF, pCard, pSig);
+	}
+
+	/**
+	 * Algebra Constructor #4 covered with this
+	 * 
+	 * @param pF      A Foot to be referenced so a new one is NOT created.
+	 * @param pNumber The DivField to be re-used.
+	 * @param pName   A String for the new algebra's name.
+	 * @param pSig    A String for the new algebra's signature.
+	 * @return Algebra
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 */
+	public static final Algebra createAlgebraWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
+			throws BadSignatureException, GeneratorRangeException {
+		if (pNumber instanceof RealF) {
+			return new Algebra(pName, pF, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
+		} else if (pNumber instanceof RealD) {
+			return new Algebra(pName, pF, pSig, CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
+		} else if (pNumber instanceof ComplexF) {
+			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
+		} else if (pNumber instanceof ComplexD) {
+			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
+		} else {
+			throw new IllegalArgumentException("Unexpected DivField child for Algebra mode | "+pNumber.toXMLString());
+		}
+	}
+
+	/**
+	 * Algebra Constructor #2 covered with this method
+	 * 
+	 * @param pF    A Foot to be referenced so a new one is NOT created.
+	 * @param pCard The Cardinal to be re-used.
+	 * @param pGP   The GProduct to be re-used.
+	 * @param pName A String for the new algebra's name.
+	 * @return Algebra
+	 */
+	public static final Algebra createAlgebraWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
+		return new Algebra(pName, pF, pCard, pGP);
+	}
+
+	/**
+	 * This method creates a basis and caches it.
+	 * 
+	 * @param pGen integer number of generators to use in constructing the basis.
+	 * @return CanonicalBasis constructed
+	 * @throws GeneratorRangeException This can be thrown by the constructors on
+	 *                                 which this method depends. Nothing special in
+	 *                                 this method will throw them, so look to the
+	 *                                 CanonicalBasis and see why it complains.
+	 */
+	public final static CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
+		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen);
+		if (tB.isPresent())
+			return tB.get();
+		else {
+			CanonicalBasis tSpot = Basis.using(pGen);
+			CladosGCache.INSTANCE.appendBasis(tSpot);
+			return tSpot;
+		}
+
 	}
 
 	/**
@@ -145,7 +259,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public final static Foot createFootLike(String pName, Cardinal pCard) {
 		return Foot.buildAsType(pName, pCard);
 	}
-
+	
 	/**
 	 * This method creates a new Foot object using the Cardinal offered.
 	 * 
@@ -156,7 +270,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public final static Foot createFootLike(String pName, DivField pDiv) {
 		return createFootLike(pName, pDiv.getCardinal());
 	}
-
+	
 	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated but the Foot has a new name too.
@@ -168,28 +282,6 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public final static Foot createFootLike(String pName, Foot pF, int pSpot) {
 		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
-	}
-
-	/**
-	 * This method creates a basis and caches it.
-	 * 
-	 * @param pGen integer number of generators to use in constructing the basis.
-	 * @return CanonicalBasis constructed
-	 * @throws GeneratorRangeException This can be thrown by the constructors on
-	 *                                 which this method depends. Nothing special in
-	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
-	 */
-	public final static CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen);
-		if (tB.isPresent())
-			return tB.get();
-		else {
-			CanonicalBasis tSpot = Basis.using(pGen);
-			CladosGCache.INSTANCE.appendBasis(tSpot);
-			return tSpot;
-		}
-
 	}
 
 	/**
@@ -259,5 +351,137 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			}
 			return tSpot2;
 		}
+	}
+	
+
+	/**
+	 * Monad Constructor #5 covered with this method
+	 * 
+	 * @param pNumber  The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pName    A String for the new monad's name.
+	 * @param pAName   A String for the new algebra's name.
+	 * @param pFrame   A String for the new frame name.
+	 * @param pFoot    A String to name a new Foot.
+	 * @param pSig     A String for the new algebra's signature.
+	 * @param pSpecial A String for special handling constructor. ex: "Zero", "One"
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws BadSignatureException    Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException     Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException  Thrown if the pSig parameter is too long
+	 * @throws GradeOutOfRangeException Thrown on an internal error if special case
+	 *                                  handler glitches
+	 */
+	public static final Monad createMonadSpecial(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
+			String pSig, String pSpecial)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
+		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber, pSpecial);
+	}
+	
+
+	/**
+	 * Monad Constructor #7 covered with this method
+	 * 
+	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
+	 * @param pName   A String for the new monad's name.
+	 * @param pFrame  A String for the new frame name.
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 */
+	public static final Monad createMonadWithAlgebra(DivField[] pNumber, Algebra pA, String pName, String pFrame)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		return new Monad(pName, pA, pFrame, pNumber);
+	}
+
+	/**
+	 * Monad Constructor #6 covered with this method
+	 * 
+	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pName   A String for the new monad's name.
+	 * @param pAName  A String for the new algebra's name.
+	 * @param pFrame  A String for the new frame name.
+	 * @param pFoot   A String to name a new Foot.
+	 * @param pSig    A String for the new algebra's signature.
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 */
+	public static final Monad createMonadWithCoeffs(DivField[] pNumber, String pName, String pAName, String pFrame,
+			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
+	}
+
+	/**
+	 * Monad Constructor #4 covered with this method
+	 * 
+	 * @param pNumber The DivField to be re-used.
+	 * @param pFt     A Foot to be referenced so a new one is NOT created.
+	 * @param pName   A String for the new monad's name.
+	 * @param pAName  A String for the new algebra's name.
+	 * @param pFrame  A String for the new frame name.
+	 * @param pSig    A String for the new algebra's signature.
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 */
+	public static final Monad createMonadWithFoot(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
+			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		return new Monad(pName, pAName, pFrame, pFt, pSig, pNumber);
+	}
+
+	/**
+	 * Monad Constructor #3 covered with this method
+	 * 
+	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pName   A String for the new monad's name.
+	 * @param pAName  A String for the new algebra's name.
+	 * @param pFrame  A String for the new frame name.
+	 * @param pFoot   A String to name a new Foot.
+	 * @param pSig    A String for the new algebra's signature.
+	 * @return Monad (Cast this as the concrete monad to be used)
+	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
+	 */
+	public static final Monad createMonadZero(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
+			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
+	}
+
+	/**
+	 * Tests the byte integer of generators to be used to see if it can be
+	 * supported.
+	 * 
+	 * This method just calls the method of the same name in the CanonicalBasis
+	 * interface. It is here for convenience.
+	 * 
+	 * @param pGen byte integer of number of generators for the test
+	 * @return TRUE if integer is in the supported range. FALSE otherwise.
+	 */
+	public final static boolean validateBasisSize(byte pGen) {
+		return CanonicalBasis.validateSize(pGen);
+	}
+
+	/**
+	 * Tests the signature string to see if it contains the correct chars and no
+	 * more of them than can be supported.
+	 * 
+	 * This method just calls the method of the same name in the CliffordProduct
+	 * interface. It is here for convenience.
+	 * 
+	 * @param pSig String signature to be tested
+	 * @return TRUE if string is composed of '+' and '-' chars, but not too many.
+	 *         FALSE otherwise.
+	 */
+	public final static boolean validateSignature(String pSig) {
+		return CliffordProduct.validateSignature(pSig);
+	}
+
+	private CladosGBuilder() {
+		;
 	}
 }
