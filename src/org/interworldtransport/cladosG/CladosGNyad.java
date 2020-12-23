@@ -36,7 +36,7 @@ import org.interworldtransport.cladosGExceptions.CladosNyadException;
  * returned.
  * <p>
  * This enumeration has non-static methods for each instance, but they don't
- * cause a state change. CladosGMonad HAS NO INTERNAL STATE to change at this
+ * cause a state change. CladosGNyad HAS NO INTERNAL STATE to change at this
  * time.
  * <p>
  * 
@@ -218,30 +218,18 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 */
 	public final NyadAbstract createWithMonadCopy(MonadAbstract pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
-		switch (this) {
+		switch (pM.mode) {
 		case REALF -> {
-			if (pM instanceof MonadRealF)
-				return new NyadRealF(pName, (MonadRealF) pM, true);
-			else
-				return null;
+			return new NyadRealF(pName, pM, true);
 		}
 		case REALD -> {
-			if (pM instanceof MonadRealD)
-				return new NyadRealD(pName, (MonadRealD) pM, true);
-			else
-				return null;
+			return new NyadRealD(pName, pM, true);
 		}
 		case COMPLEXF -> {
-			if (pM instanceof MonadComplexF)
-				return new NyadComplexF(pName, (MonadComplexF) pM, true);
-			else
-				return null;
+			return new NyadComplexF(pName, pM, true);
 		}
 		case COMPLEXD -> {
-			if (pM instanceof MonadComplexD)
-				return new NyadComplexD(pName, (MonadComplexD) pM, true);
-			else
-				return null;
+			return new NyadComplexD(pName, pM, true);
 		}
 		default -> {
 			return null;
@@ -262,30 +250,18 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 */
 	public final NyadAbstract createWithMonad(MonadAbstract pM, String pName)
 			throws CladosNyadException, CladosMonadException {
-		switch (this) {
+		switch (pM.mode) {
 		case REALF -> {
-			if (pM instanceof MonadRealF)
-				return new NyadRealF(pName, (MonadRealF) pM, false);
-			else
-				return null;
+				return new NyadRealF(pName, pM, false);
 		}
 		case REALD -> {
-			if (pM instanceof MonadRealD)
-				return new NyadRealD(pName, (MonadRealD) pM, false);
-			else
-				return null;
+				return new NyadRealD(pName, pM, false);
 		}
 		case COMPLEXF -> {
-			if (pM instanceof MonadComplexF)
-				return new NyadComplexF(pName, (MonadComplexF) pM, false);
-			else
-				return null;
+				return new NyadComplexF(pName, pM, false);
 		}
 		case COMPLEXD -> {
-			if (pM instanceof MonadComplexD)
-				return new NyadComplexD(pName, (MonadComplexD) pM, false);
-			else
-				return null;
+				return new NyadComplexD(pName, pM, false);
 		}
 		default -> {
 			return null;

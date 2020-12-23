@@ -37,8 +37,11 @@ import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * Many math objects within the cladosG package have a number of attributes in
@@ -50,7 +53,7 @@ import org.interworldtransport.cladosGExceptions.CladosMonadException;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public abstract class MonadAbstract {
+public class MonadAbstract {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
 	 * 
@@ -125,24 +128,7 @@ public abstract class MonadAbstract {
 	public static boolean isIdempotent(MonadAbstract pM) throws FieldBinaryException, CladosMonadException {
 		if (isGZero(pM))
 			return true;
-		switch (pM.getScales().getMode()) {
-		case COMPLEXD -> {
-			return CladosGMonad.COMPLEXD.copyOf(pM).multiplyLeft(pM).isGEqual(pM);
-		}
-		case COMPLEXF -> {
-			return CladosGMonad.COMPLEXF.copyOf(pM).multiplyLeft(pM).isGEqual(pM);
-		}
-		case REALD -> {
-			return CladosGMonad.REALD.copyOf(pM).multiplyLeft(pM).isGEqual(pM);
-		}
-		case REALF -> {
-			return CladosGMonad.REALF.copyOf(pM).multiplyLeft(pM).isGEqual(pM);
-		}
-		default -> {
-			return false;
-		}
-
-		}
+		return CladosGMonad.INSTANCE.copyOf(pM).multiplyLeft(pM).isGEqual(pM);
 	}
 	
 	/**
@@ -168,7 +154,7 @@ public abstract class MonadAbstract {
 			return true;
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
-			MonadAbstract check1 = CladosGMonad.COMPLEXD.copyOf(pM);
+			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
 			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
 			ComplexD fstnzeroC = (ComplexD) CladosFBuilder.COMPLEXD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
@@ -180,11 +166,11 @@ public abstract class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.COMPLEXD.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		case COMPLEXF -> {
-			MonadAbstract check1 = CladosGMonad.COMPLEXF.copyOf(pM);
+			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
 			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
 			ComplexF fstnzeroC = (ComplexF) CladosFBuilder.COMPLEXF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
@@ -196,11 +182,11 @@ public abstract class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.COMPLEXF.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		case REALD -> {
-			MonadAbstract check1 = CladosGMonad.REALD.copyOf(pM);
+			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
 			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
 			RealD fstnzeroC = (RealD) CladosFBuilder.REALD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
@@ -212,11 +198,11 @@ public abstract class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.REALD.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		case REALF -> {
-			MonadAbstract check1 = CladosGMonad.REALF.copyOf(pM);
+			MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
 			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
 			if (MonadAbstract.isGZero(check1)) return false; // pM is nilpotent at power=2
 			RealF fstnzeroC = (RealF) CladosFBuilder.REALF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
@@ -228,7 +214,7 @@ public abstract class MonadAbstract {
 				}
 				k++; // If next coeff is zero, look at next next
 			}
-			check1 = CladosGMonad.REALF.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
+			check1 = CladosGMonad.INSTANCE.copyOf(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
 			return isIdempotent(check1);
 		}
 		default -> {
@@ -254,44 +240,12 @@ public abstract class MonadAbstract {
 	public static boolean isNilpotent(MonadAbstract pM, int pPower) throws FieldBinaryException, CladosMonadException {
 		if (isGZero(pM))
 			return true;
-		
-		switch (pM.getScales().getMode()) {
-		case COMPLEXD -> {
-			MonadAbstract check1 = CladosGMonad.COMPLEXD.copyOf(pM);
-			while (pPower > 1) {
-				check1.multiplyLeft(pM);
-				if (isGZero(check1))
-					return true;
-				pPower--;
-			}
-		}
-		case COMPLEXF -> {
-			MonadAbstract check1 = CladosGMonad.COMPLEXF.copyOf(pM);
-			while (pPower > 1) {
-				check1.multiplyLeft(pM);
-				if (isGZero(check1))
-					return true;
-				pPower--;
-			}
-		}
-		case REALD -> {
-			MonadAbstract check1 = CladosGMonad.REALD.copyOf(pM);
-			while (pPower > 1) {
-				check1.multiplyLeft(pM);
-				if (isGZero(check1))
-					return true;
-				pPower--;
-			}
-		}
-		case REALF -> {
-			MonadAbstract check1 = CladosGMonad.REALF.copyOf(pM);
-			while (pPower > 1) {
-				check1.multiplyLeft(pM);
-				if (isGZero(check1))
-					return true;
-				pPower--;
-			}
-		}
+		MonadAbstract check1 = CladosGMonad.INSTANCE.copyOf(pM);
+		while (pPower > 1) {
+			check1.multiplyLeft(pM);
+			if (isGZero(check1))
+				return true;
+			pPower--;
 		}
 		return false;
 	}
@@ -454,6 +408,400 @@ public abstract class MonadAbstract {
 	 * generic algorithm.
 	 */
 	protected boolean sparseFlag = true;
+	
+	/**
+	 * Simple copy constructor of Monad. Passed Monad will be copied in all details.
+	 * This contructor is used most often to get around operations that alter a
+	 * Monad when the developer does not wish it to be altered.
+	 * 
+	 * @param pM MonadAbstract
+	 */
+	public MonadAbstract(MonadAbstract pM) {
+		setName(pM.getName());
+		setAlgebra(pM.getAlgebra());
+		setFrameName(pM.getFrameName());
+		mode = pM.mode;
+		switch (mode) {
+		case COMPLEXD -> {
+			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales.setCoefficientMap(pM.scales.getMap());
+			setGradeKey();
+		}
+		case COMPLEXF -> {
+			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales.setCoefficientMap(pM.scales.getMap());
+			setGradeKey();
+		}
+		case REALD -> {
+			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales.setCoefficientMap(pM.scales.getMap());
+			setGradeKey();
+		}
+		case REALF -> {
+			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales.setCoefficientMap(pM.scales.getMap());
+			setGradeKey();
+		}
+		}
+	}
+	
+	/**
+	 * Main copy constructor of Monad. Passed Monad will be copied in all details
+	 * except its name. This constructor is used most often as a starting point to
+	 * generate new Monads based on an old one.
+	 * 
+	 * @param pName String
+	 * @param pM    MonadAbstract
+	 * @throws CladosMonadException  This exception is thrown if there is an issue
+	 *                               with the coefficients offered. The issues could
+	 *                               involve null coefficients or a coefficient
+	 *                               array of the wrong size.
+	 */
+	public MonadAbstract(String pName, MonadAbstract pM) throws CladosMonadException {
+		this(pM);
+		setName(pName);
+	}
+	
+	/**
+	 * Special constructor of Monad with most information passed in. This one will
+	 * create the default 'Zero' Monad.
+	 * 
+	 * @param pMonadName   String
+	 * @param pAlgebraName String
+	 * @param pFrameName   String
+	 * @param pFootName    String
+	 * @param pSig         String
+	 * @param pF           DivField Used to construct number
+	 * @throws BadSignatureException   This exception is thrown if the signature
+	 *                                 string offered is rejected.
+	 * @throws CladosMonadException    This exception is thrown if there is an issue
+	 *                                 with the coefficients offered. The issues
+	 *                                 could involve null coefficients or a
+	 *                                 coefficient array of the wrong size.
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 */
+	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF) 
+					throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		setName(pMonadName);
+		
+		if (pF instanceof RealF)
+			mode = CladosField.REALF;
+		else if (pF instanceof RealD)
+			mode = CladosField.REALD;
+		else if (pF instanceof ComplexF)
+			mode = CladosField.COMPLEXF;
+		else if (pF instanceof ComplexD)
+			mode = CladosField.COMPLEXD;
+		else 
+			throw new IllegalArgumentException("Offered Number must be a child of CladosF/DivField");
+		
+		switch (mode) {
+		case COMPLEXD -> {
+			setAlgebra(CladosGAlgebra.COMPLEXD.create(pF, pAlgebraName, pFootName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		case COMPLEXF -> {
+			setAlgebra(CladosGAlgebra.COMPLEXF.create(pF, pAlgebraName, pFootName, pSig)); 
+			setFrameName(pFrameName);
+			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		case REALD -> {
+			setAlgebra(CladosGAlgebra.REALD.create(pF, pAlgebraName, pFootName, pSig)); 
+			setFrameName(pFrameName);
+			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		case REALF -> {
+			setAlgebra(CladosGAlgebra.REALF.create(pF, pAlgebraName, pFootName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		}
+	}
+	
+	/**
+	 * Special constructor of Monad with most information passed in. This one will
+	 * create a default 'Zero' Monad while re-using the Foot of another.
+	 * 
+	 * @param pMonadName   String
+	 * @param pAlgebraName String
+	 * @param pFrameName   String
+	 * @param pFoot        Foot
+	 * @param pSig         String
+	 * @param pF           RealF
+	 * @throws BadSignatureException   This exception is thrown if the signature
+	 *                                 string offered is rejected.
+	 * @throws CladosMonadException    This exception is thrown if there is an issue
+	 *                                 with the coefficients offered. The issues
+	 *                                 could involve null coefficients or a
+	 *                                 coefficient array of the wrong size.
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 */
+	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		setName(pMonadName);
+		
+		if (pF instanceof RealF)
+			mode = CladosField.REALF;
+		else if (pF instanceof RealD)
+			mode = CladosField.REALD;
+		else if (pF instanceof ComplexF)
+			mode = CladosField.COMPLEXF;
+		else if (pF instanceof ComplexD)
+			mode = CladosField.COMPLEXD;
+		else 
+			throw new IllegalArgumentException("Offered Number must be a child of CladosF/DivField");
+		
+		switch (mode) {
+		case COMPLEXD -> {
+			setAlgebra(CladosGAlgebra.COMPLEXD.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		case COMPLEXF -> {
+			setAlgebra(CladosGAlgebra.COMPLEXF.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		case REALD -> {
+			setAlgebra(CladosGAlgebra.REALD.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		case REALF -> {
+			setAlgebra(CladosGAlgebra.REALF.createWithFoot(pFoot, pF, pAlgebraName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			setGradeKey();
+		}
+		}
+	}
+	
+	/**
+	 * Special constructor of Monad with most information passed in. 'Special Case'
+	 * strings determine the coefficients automatically. 'Unit Scalar' and 'Unit
+	 * PScalar' are recognized special cases. All unrecognized strings create a
+	 * 'Zero' Monad by default.
+	 * 
+	 * @param pMonadName   String
+	 * @param pAlgebraName String
+	 * @param pFrameName   String
+	 * @param pFootName    String
+	 * @param pSig         String
+	 * @param pF           RealF
+	 * @param pSpecial     String
+	 * @throws BadSignatureException    This exception is thrown if the signature
+	 *                                  string offered is rejected.
+	 * @throws CladosMonadException     This exception is thrown if there is an
+	 *                                  issue with the coefficients offered the
+	 *                                  default constructor. The issues could
+	 *                                  involve null coefficients or a coefficient
+	 *                                  array of the wrong size.
+	 * @throws GeneratorRangeException  This exception is thrown when the integer
+	 *                                  number of generators for the basis is out of
+	 *                                  the supported range. {0, 1, 2, ..., 14}
+	 * @throws GradeOutOfRangeException This method is thrown if the special case
+	 *                                  handler has issues with the grade implied in
+	 *                                  the case. It really shouldn't happen, but
+	 *                                  might if someone tinkers with the case in an
+	 *                                  unsafe way.
+	 */
+	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF, String pSpecial)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
+		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
+		// Default ZERO Monad is constructed already. Now handle the special cases.
+		if (CladosConstant.MONAD_SPECIAL_CASES.contains(pSpecial)) {
+			switch (mode) {
+			case COMPLEXD -> {
+				switch (pSpecial) {
+				case "Unit Scalar" -> ((ComplexD) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -Scalar" -> ((ComplexD) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				case "Unit PScalar" -> ((ComplexD) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -PScalar" -> ((ComplexD) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				}
+			}
+			case COMPLEXF -> {
+				switch (pSpecial) {
+				case "Unit Scalar" -> ((ComplexF) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -Scalar" -> ((ComplexF) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				case "Unit PScalar" -> ((ComplexF) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -PScalar" -> ((ComplexF) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				}
+			}
+			case REALD -> {
+				switch (pSpecial) {
+				case "Unit Scalar" -> ((RealD) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -Scalar" -> ((RealD) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				case "Unit PScalar" -> ((RealD) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -PScalar" -> ((RealD) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				}
+			}
+			case REALF -> {
+				switch (pSpecial) {
+				case "Unit Scalar" -> ((RealF) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -Scalar" -> ((RealF) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				case "Unit PScalar" -> ((RealF) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
+				case "Unit -PScalar" -> ((RealF) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				}
+			}
+			}
+		} // failure to find matching special case defaults to ZERO monad by doing nothing.
+		setGradeKey();
+	}
+	
+	/**
+	 * Main constructor of Monad with all information passed in.
+	 * 
+	 * @param pMonadName   String
+	 * @param pAlgebraName String
+	 * @param pFrameName   String
+	 * @param pFootName    String
+	 * @param pSig         String
+	 * @param pC           DivField[]
+	 * @throws BadSignatureException   This exception is thrown if the signature
+	 *                                 string offered is rejected.
+	 * @throws CladosMonadException    This exception is thrown if there is an issue
+	 *                                 with the coefficients offered. The issues
+	 *                                 could involve null coefficients or a
+	 *                                 coefficient array of the wrong size.
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 */
+	public MonadAbstract(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField[] pC) 
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		if (pC == null | pC[0] == null)
+			throw new CladosMonadException(this, "Missing coefficients.");
+		else if (pC.length != (1 << pSig.length()))
+			throw new CladosMonadException(this, "Coefficient array size will not match bladecount of algebra.");
+		
+		setName(pMonadName);
+		
+		if (pC[0] instanceof RealF)
+			mode = CladosField.REALF;
+		else if (pC[0] instanceof RealD)
+			mode = CladosField.REALD;
+		else if (pC[0] instanceof ComplexF)
+			mode = CladosField.COMPLEXF;
+		else if (pC[0] instanceof ComplexD)
+			mode = CladosField.COMPLEXD;
+		else 
+			throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/DivField");
+		
+		switch (mode) {
+		case COMPLEXD -> {
+			setAlgebra(CladosGAlgebra.COMPLEXD.create(pC[0], pAlgebraName, pFootName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexD[]) pC));
+			setGradeKey();
+		}
+		case COMPLEXF -> {
+			setAlgebra(CladosGAlgebra.COMPLEXF.create(pC[0], pAlgebraName, pFootName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexF[]) pC));
+			setGradeKey();
+		}
+		case REALD -> {
+			setAlgebra(CladosGAlgebra.REALD.create(pC[0], pAlgebraName, pFootName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealD[]) pC));
+			setGradeKey();
+		}
+		case REALF -> {
+			setAlgebra(CladosGAlgebra.REALF.create(pC[0], pAlgebraName, pFootName, pSig));
+			setFrameName(pFrameName);
+			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealF[]) pC));
+			setGradeKey();
+		}
+		}
+	}
+	
+	/**
+	 * Main constructor of Monad with pre-constructed objects not already part of
+	 * another Monad.
+	 * 
+	 * @param pMonadName String
+	 * @param pAlgebra   Algebra
+	 * @param pFrameName String
+	 * @param pC         DivField[]
+	 * @throws CladosMonadException This exception is thrown if there is an issue
+	 *                              with the coefficients offered. The issues could
+	 *                              involve null coefficients or a coefficient array
+	 *                              of the wrong size.
+	 */
+	public MonadAbstract(String pMonadName, Algebra pAlgebra, String pFrameName, DivField[] pC) 
+			throws CladosMonadException {
+		if (pC.length != pAlgebra.getBladeCount())
+			throw new CladosMonadException(this,
+					"Coefficient array size does not match bladecount from offered Algebra.");
+		
+		setName(pMonadName);
+		setAlgebra(pAlgebra);
+		setFrameName(pFrameName);
+		
+		if (pAlgebra.shareProtoNumber() instanceof DivField) {
+			if (pC[0] instanceof RealF)
+				mode = CladosField.REALF;
+			else if (pC[0] instanceof RealD)
+				mode = CladosField.REALD;
+			else if (pC[0] instanceof ComplexF)
+				mode = CladosField.COMPLEXF;
+			else if (pC[0] instanceof ComplexD)
+				mode = CladosField.COMPLEXD;
+			else 
+				throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/DivField");
+		}
+		else {
+			if (pAlgebra.shareProtoNumber() instanceof RealF)
+				mode = CladosField.REALF;
+			else if (pAlgebra.shareProtoNumber() instanceof RealD)
+				mode = CladosField.REALD;
+			else if (pAlgebra.shareProtoNumber() instanceof ComplexF)
+				mode = CladosField.COMPLEXF;
+			else if (pAlgebra.shareProtoNumber() instanceof ComplexD)
+				mode = CladosField.COMPLEXD;
+			else 
+				throw new IllegalArgumentException("Algebra's protonumber must be a child of CladosF/DivField");
+		}
+
+		switch (mode) {
+		case COMPLEXD -> {
+			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexD[]) pC));
+			setGradeKey();
+		}
+		case COMPLEXF -> {
+			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexF[]) pC));
+			setGradeKey();
+		}
+		case REALD -> {
+			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealD[]) pC));
+			setGradeKey();
+		}
+		case REALF -> {
+			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealF[]) pC));
+			setGradeKey();
+		}
+		}
+	}
 	
 	/**
 	 * Monad Addition: (this + pM) This operation is allowed when the two monads use
@@ -961,21 +1309,18 @@ public abstract class MonadAbstract {
 	public MonadAbstract multiplyAntisymm(MonadAbstract pM) throws FieldBinaryException, CladosMonadException {
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
+		MonadAbstract halfTwo = CladosGMonad.INSTANCE.copyOf(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
-			MonadAbstract halfTwo = CladosGMonad.COMPLEXD.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).subtract(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
 		}
 		case COMPLEXF -> {
-			MonadAbstract halfTwo = CladosGMonad.COMPLEXF.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).subtract(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
 		}
 		case REALD -> {
-			MonadAbstract halfTwo = CladosGMonad.REALD.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).subtract(halfTwo).scale(RealD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
 		}
 		case REALF -> {
-			MonadAbstract halfTwo = CladosGMonad.REALF.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).subtract(halfTwo).scale(RealF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
 		}
 		}
@@ -1073,6 +1418,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		case COMPLEXF -> {
 			Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
@@ -1125,6 +1471,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		case REALD -> {
 			Scale<RealD> newScales = new Scale<RealD>(CladosField.REALD, tBasis, scales.getCardinal()).zeroAll();
@@ -1177,6 +1524,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		case REALF -> {
 			Scale<RealF> newScales = new Scale<RealF>(CladosField.REALF, tBasis, scales.getCardinal()).zeroAll();
@@ -1229,6 +1577,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		default -> {
 			// Do NOTHING
@@ -1236,7 +1585,6 @@ public abstract class MonadAbstract {
 		}
 		
 		}
-		setGradeKey();
 		return this;
 	}
 	
@@ -1329,6 +1677,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		case COMPLEXF -> {
 			Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
@@ -1380,6 +1729,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		case REALD -> {
 			Scale<RealD> newScales = new Scale<RealD>(CladosField.REALD, tBasis, scales.getCardinal()).zeroAll();
@@ -1431,6 +1781,7 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		case REALF -> {
 			Scale<RealF> newScales = new Scale<RealF>(CladosField.REALF, tBasis, scales.getCardinal()).zeroAll();
@@ -1482,13 +1833,13 @@ public abstract class MonadAbstract {
 						});
 			}
 			scales = newScales;
+			setGradeKey();
 		}
 		default -> {
 			// Do NOTHING
 			return this;
 		}
 		}
-		setGradeKey();
 		return this;
 	}
 	
@@ -1506,21 +1857,18 @@ public abstract class MonadAbstract {
 	public MonadAbstract multiplySymm(MonadAbstract pM) throws FieldBinaryException, CladosMonadException {
 		if (!isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
+		MonadAbstract halfTwo = CladosGMonad.INSTANCE.copyOf(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
-			MonadAbstract halfTwo = CladosGMonad.COMPLEXD.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).add(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
 		}
 		case COMPLEXF -> {
-			MonadAbstract halfTwo = CladosGMonad.COMPLEXF.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).add(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
 		}
 		case REALD -> {
-			MonadAbstract halfTwo = CladosGMonad.REALD.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).add(halfTwo).scale(RealD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
 		}
 		case REALF -> {
-			MonadAbstract halfTwo = CladosGMonad.REALF.copyOf(this).multiplyRight(pM);
 			multiplyLeft(pM).add(halfTwo).scale(RealF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
 		}
 		}

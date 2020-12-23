@@ -12,7 +12,7 @@ import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosG.CladosGMonad;
 import org.interworldtransport.cladosG.CladosGNyad;
 import org.interworldtransport.cladosG.Foot;
-import org.interworldtransport.cladosG.MonadRealD;
+import org.interworldtransport.cladosG.MonadAbstract;
 import org.interworldtransport.cladosG.NyadRealD;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -34,7 +34,7 @@ public class CoreNyadRealDTest {
 	final String frameName = "inertial";
 	final String mNameQ = "ChargeDensity";
 	final String mNameU = "4-Velocity";
-	MonadRealD motion, property;
+	MonadAbstract motion, property;
 	final String sig4D = "-+++";
 	final Cardinal speed = CladosFBuilder.createCardinal("c=1");
 	NyadRealD thing1, thing2;
@@ -49,10 +49,10 @@ public class CoreNyadRealDTest {
 		Foot here = CladosGBuilder.createFootLike(footName, speed);
 		here.appendCardinal(charge);
 
-		motion = (MonadRealD) CladosGMonad.REALD.createWithFoot(CladosFBuilder.REALD.createZERO(speed), here, mNameU,
+		motion = CladosGMonad.INSTANCE.createWithFoot(CladosFBuilder.REALD.createZERO(speed), here, mNameU,
 				aName, frameName, sig4D);
 
-		property = (MonadRealD) CladosGMonad.REALD.createWithFoot(CladosFBuilder.REALD.createZERO(charge), here, mNameQ,
+		property = CladosGMonad.INSTANCE.createWithFoot(CladosFBuilder.REALD.createZERO(charge), here, mNameQ,
 				aName2, frameName, sig4D);
 
 	}

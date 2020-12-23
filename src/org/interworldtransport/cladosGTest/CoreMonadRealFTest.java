@@ -3,11 +3,11 @@ package org.interworldtransport.cladosGTest;
 import static org.interworldtransport.cladosG.MonadAbstract.isGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isMultiGrade;
 import static org.interworldtransport.cladosG.MonadAbstract.isUniGrade;
-import static org.interworldtransport.cladosG.MonadRealF.isGZero;
-import static org.interworldtransport.cladosG.MonadRealF.isIdempotent;
-import static org.interworldtransport.cladosG.MonadRealF.isNilpotent;
-import static org.interworldtransport.cladosG.MonadRealF.isReferenceMatch;
-import static org.interworldtransport.cladosG.MonadRealF.isScaledIdempotent;
+import static org.interworldtransport.cladosG.MonadAbstract.isGZero;
+import static org.interworldtransport.cladosG.MonadAbstract.isIdempotent;
+import static org.interworldtransport.cladosG.MonadAbstract.isNilpotent;
+import static org.interworldtransport.cladosG.MonadAbstract.isReferenceMatch;
+import static org.interworldtransport.cladosG.MonadAbstract.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
@@ -17,7 +17,6 @@ import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosG.CladosConstant;
 import org.interworldtransport.cladosG.MonadAbstract;
-import org.interworldtransport.cladosG.MonadRealF;
 import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,16 +28,16 @@ class CoreMonadRealFTest {
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
 	RealF[] cRF;
-	MonadRealF tM0;
-	MonadRealF tM1;
-	MonadRealF tM2;
-	MonadRealF tM3;
-	MonadRealF tM4;
-	MonadRealF tM5;
-	MonadRealF tM6;
-	MonadRealF tM7;
-	MonadRealF tM8;
-	MonadRealF tM9;
+	MonadAbstract tM0;
+	MonadAbstract tM1;
+	MonadAbstract tM2;
+	MonadAbstract tM3;
+	MonadAbstract tM4;
+	MonadAbstract tM5;
+	MonadAbstract tM6;
+	MonadAbstract tM7;
+	MonadAbstract tM8;
+	MonadAbstract tM9;
 
 	@BeforeEach
 	public void setUp() throws Exception {
@@ -46,19 +45,19 @@ class CoreMonadRealFTest {
 		Cardinal tSpot = Cardinal.generate(fType);
 		cRF = (RealF[]) CladosFListBuilder.REALF.createONE(tSpot, cRF.length);
 
-		tM0 = new MonadRealF(mName + "0", aName, "Foot Default Frame", "Test Foot 0", "-+++",
+		tM0 = new MonadAbstract(mName + "0", aName, "Foot Default Frame", "Test Foot 0", "-+++",
 				new RealF(Cardinal.generate("Test Float 1"), 0f));
-		tM1 = new MonadRealF(mName + "1", aName2, "Foot Default Frame", "Test Foot 1", "-+++",
+		tM1 = new MonadAbstract(mName + "1", aName2, "Foot Default Frame", "Test Foot 1", "-+++",
 				new RealF(Cardinal.generate("Test Float 1"), 0f));
-		tM2 = new MonadRealF(mName + "2", tM1);
-		tM3 = new MonadRealF(mName + "3", tM1);
-		tM4 = new MonadRealF(tM0);
-		tM5 = new MonadRealF(mName + "5", aName, "Foot Default Frame", "Test Foot 5", "-+++",
+		tM2 = new MonadAbstract(mName + "2", tM1);
+		tM3 = new MonadAbstract(mName + "3", tM1);
+		tM4 = new MonadAbstract(tM0);
+		tM5 = new MonadAbstract(mName + "5", aName, "Foot Default Frame", "Test Foot 5", "-+++",
 				new RealF(Cardinal.generate("Test Float 5"), 0f), "Unit PScalar");
-		tM6 = new MonadRealF(mName + "6", aName2, "Foot Default Frame", "Test Foot 6", "-+++", cRF);
-		tM7 = new MonadRealF(mName + "7", tM6);
-		tM8 = new MonadRealF(mName + "8", tM6);
-		tM9 = new MonadRealF(mName + "9", tM2);
+		tM6 = new MonadAbstract(mName + "6", aName2, "Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM7 = new MonadAbstract(mName + "7", tM6);
+		tM8 = new MonadAbstract(mName + "8", tM6);
+		tM9 = new MonadAbstract(mName + "9", tM2);
 		
 		RealF tAdj = new RealF(tM9.getAlgebra().shareCardinal(), 0.0f);
 		RealF[] tFix = (RealF[]) CladosFListBuilder.REALF.create(tAdj.getCardinal(), 16);
@@ -76,12 +75,12 @@ class CoreMonadRealFTest {
 		//tM9.multiplyLeft(tM2);
 		//assertTrue(MonadRealF.isGZero(tM2));
 		
-		MonadRealF check1 = new MonadRealF(tM9);
+		MonadAbstract check1 = new MonadAbstract(tM9);
 		assertTrue(tM9.isGEqual(check1));
 		//System.out.println(MonadRealF.toXMLString(check1, ""));
 		check1.multiplyLeft(tM9);
 		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		assert(MonadRealF.isGZero(check1));
+		assert(MonadAbstract.isGZero(check1));
 		
 	}
 
@@ -172,8 +171,8 @@ class CoreMonadRealFTest {
 	public void testNewConstructor() throws CladosMonadException {
 		for (short m = 0; m < tM0.getCoeff().length; m++)
 			assertFalse(tM0.getCoeff(m).equals(null));
-
-		MonadRealF newOne = new MonadRealF("newName", tM0.getAlgebra(), "unimportantFrameName", (RealF[]) tM0.getCoeff());
+		//System.out.println(MonadAbstract.toXMLFullString(tM0, ""));
+		MonadAbstract newOne = new MonadAbstract("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getCoeff());
 		assertFalse(newOne.equals(null));
 		assertFalse(isReferenceMatch(tM0, newOne));
 	}

@@ -49,19 +49,19 @@ public enum CladosField {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	REALF,
+	REALF("RealF"),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	REALD,
+	REALD("RealD"),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXF,
+	COMPLEXF("ComplexF"),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXD;
+	COMPLEXD("ComplexD");
 
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular DivField
@@ -265,5 +265,11 @@ public enum CladosField {
 		default:
 			return null;
 		}
+	}
+	
+	protected final String name;
+	
+	private CladosField(String pIn) {
+		name = pIn;
 	}
 }
