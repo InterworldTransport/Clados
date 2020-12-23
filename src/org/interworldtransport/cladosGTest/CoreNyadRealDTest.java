@@ -175,7 +175,7 @@ public class CoreNyadRealDTest {
 		thing1.appendMonad(property);
 		String printIt = NyadRealD.toXMLString(thing1, "");
 		assertTrue(printIt != null);
-		System.out.println(printIt);
+		//System.out.println(printIt);
 	}
 
 }

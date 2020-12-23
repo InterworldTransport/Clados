@@ -175,7 +175,7 @@ public class CoreNyadComplexDTest {
 		thing1.appendMonad(property);
 		String printIt = NyadComplexD.toXMLString(thing1, "");
 		assertTrue(printIt != null);
-		System.out.println(printIt);
+		//System.out.println(printIt);
 	}
 
 }

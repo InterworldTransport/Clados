@@ -103,7 +103,7 @@ class CoreMonadComplexFTest {
 		assertTrue(isGrade(tM5.gradePart((byte) 4), tM5.getAlgebra().getGradeCount() - 1));
 		assertTrue(isNilpotent(tM2, 2));
 		assertFalse(isGZero(tM9));	
-		System.out.println(MonadAbstract.toXMLString(tM9, ""));
+		//System.out.println(MonadAbstract.toXMLString(tM9, ""));
 		assertTrue(isNilpotent(tM9, 2));
 		assertFalse(isNilpotent(tM9, 1));
 		assertFalse(isIdempotent(tM9));
