@@ -163,7 +163,7 @@ public class CoreNyadComplexDTest {
 	void testXMLFullOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = (NyadComplexD) CladosGNyad.COMPLEXD.createWithMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = NyadComplexD.toXMLFullString(thing1, "");
+		String printIt = thing1.toXMLFullString("");
 		assertTrue(printIt != null);
 		//System.out.println(printIt);
 	}
@@ -172,7 +172,7 @@ public class CoreNyadComplexDTest {
 	void testXMLShortOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = (NyadComplexD) CladosGNyad.COMPLEXD.createWithMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = NyadComplexD.toXMLString(thing1, "");
+		String printIt = thing1.toXMLFullString("");
 		assertTrue(printIt != null);
 		//System.out.println(printIt);
 	}

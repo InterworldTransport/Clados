@@ -163,7 +163,7 @@ public class CoreNyadRealDTest {
 	void testXMLFullOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = (NyadRealD) CladosGNyad.REALD.createWithMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = NyadRealD.toXMLFullString(thing1, "");
+		String printIt = thing1.toXMLFullString("");
 		assertTrue(printIt != null);
 		//System.out.println(printIt);
 	}
@@ -172,7 +172,7 @@ public class CoreNyadRealDTest {
 	void testXMLShortOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = (NyadRealD) CladosGNyad.REALD.createWithMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = NyadRealD.toXMLString(thing1, "");
+		String printIt = thing1.toXMLFullString("");
 		assertTrue(printIt != null);
 		//System.out.println(printIt);
 	}

@@ -115,12 +115,12 @@ public class Scale<D extends DivField & Divisible> {
 	public Scale<D> conjugate() {
 		gBasis.bladeStream().parallel().forEach(blade -> {
 			switch (mode) {
-			case REALF -> {
-			}
-			case REALD -> {
-			}
-			case COMPLEXF -> ((ComplexF) map.get(blade)).conjugate();
-			case COMPLEXD -> ((ComplexD) map.get(blade)).conjugate();
+			case REALF:
+			case REALD:
+				break; // Do nothing for real numbers
+			case COMPLEXF:
+			case COMPLEXD:
+				((Divisible) map.get(blade)).conjugate();
 			}
 		});
 		return this;
@@ -232,14 +232,102 @@ public class Scale<D extends DivField & Divisible> {
 		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(grade -> {
 			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
 				switch (mode) {
-				case REALF -> ((RealF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-				case REALD -> ((RealD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-				case COMPLEXF -> ((ComplexF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-				case COMPLEXD -> ((ComplexD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+				case REALF:
+				case COMPLEXF:
+					((Divisible) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+					break;
+				case REALD:
+				case COMPLEXD:
+					((Divisible) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
 				}
 			});
 		});
 		return this;
+	}
+
+	/**
+	 * This is a short hand method to reduce checking in other classes to simply
+	 * asking the question regarding the value rather than handle all the various
+	 * DivField children separately.
+	 * 
+	 * @param pB
+	 * @return boolean True if the related value evaluates as ZERO in whatever
+	 *         number style it is.
+	 */
+	public boolean isZeroAt(Blade pB) {
+		switch (mode) {
+		case COMPLEXD -> {
+			return ComplexD.isZero((ComplexD) map.get(pB));
+		}
+		case COMPLEXF -> {
+			return ComplexF.isZero((ComplexF) map.get(pB));
+		}
+		case REALD -> {
+			return RealD.isZero((RealD) map.get(pB));
+		}
+		case REALF -> {
+			return RealF.isZero((RealF) map.get(pB));
+		}
+		default -> {
+			return false;
+		}
+		}
+	}
+
+	/**
+	 * This is a short hand method to reduce checking in other classes to simply
+	 * asking this one rather than handle all the various DivField children
+	 * separately.
+	 * 
+	 * @return boolean True if the pscalar value evaluates as ZERO in whatever
+	 *         number style it is.
+	 */
+	public boolean isPScalarZero() {
+		switch (mode) {
+		case COMPLEXD -> {
+			return ComplexD.isZero((ComplexD) getPScalar());
+		}
+		case COMPLEXF -> {
+			return ComplexF.isZero((ComplexF) getPScalar());
+		}
+		case REALD -> {
+			return RealD.isZero((RealD) getPScalar());
+		}
+		case REALF -> {
+			return RealF.isZero((RealF) getPScalar());
+		}
+		default -> {
+			return false;
+		}
+		}
+	}
+
+	/**
+	 * This is a short hand method to reduce checking in other classes to simply
+	 * asking this one rather than handle all the various DivField children
+	 * separately.
+	 * 
+	 * @return boolean True if the scalar value evaluates as ZERO in whatever number
+	 *         style it is.
+	 */
+	public boolean isScalarZero() {
+		switch (mode) {
+		case COMPLEXD -> {
+			return ComplexD.isZero((ComplexD) getScalar());
+		}
+		case COMPLEXF -> {
+			return ComplexF.isZero((ComplexF) getScalar());
+		}
+		case REALD -> {
+			return RealD.isZero((RealD) getScalar());
+		}
+		case REALF -> {
+			return RealF.isZero((RealF) getScalar());
+		}
+		default -> {
+			return false;
+		}
+		}
 	}
 
 	/**
@@ -259,16 +347,16 @@ public class Scale<D extends DivField & Divisible> {
 	public D magnitude() throws FieldBinaryException {
 		switch (mode) {
 		case REALF -> {
-			return (D) RealF.copyFromModuliSum(map.values().toArray(new RealF[gBasis.getBladeCount()]));
+			return (D) RealF.copyFromModuliSum(map.values().toArray(RealF[]::new));
 		}
 		case REALD -> {
-			return (D) RealD.copyFromModuliSum(map.values().toArray(new RealD[gBasis.getBladeCount()]));
+			return (D) RealD.copyFromModuliSum(map.values().toArray(RealD[]::new));
 		}
 		case COMPLEXF -> {
-			return (D) ComplexF.copyFromModuliSum(map.values().toArray(new ComplexF[gBasis.getBladeCount()]));
+			return (D) ComplexF.copyFromModuliSum(map.values().toArray(ComplexF[]::new));
 		}
 		case COMPLEXD -> {
-			return (D) ComplexD.copyFromModuliSum(map.values().toArray(new ComplexD[gBasis.getBladeCount()]));
+			return (D) ComplexD.copyFromModuliSum(map.values().toArray(ComplexD[]::new));
 		}
 		default -> {
 			return null;
@@ -277,29 +365,24 @@ public class Scale<D extends DivField & Divisible> {
 	}
 
 	/**
-	 * 
+	 * This method normalizes the coefficients as if they were a vector in 2^N
+	 * vector space described by the implied basis from the monad. It's pretty
+	 * simple, though. Just add up the squares of the numbers and then take the
+	 * square root to determine the magnitude and then invert that to scale the
+	 * original numbers.
 	 * 
 	 * @throws FieldException       This happens when normalizing something that has
-	 *                              a zero magnitudes.
+	 *                              a zero magnitudes. The exception is thrown by
+	 *                              the invert() method and passed along here.
 	 * @throws FieldBinaryException This happens when normalizing something with
 	 *                              cardinal conflicted values.
 	 */
 	public void normalize() throws FieldBinaryException, FieldException {
 		switch (mode) {
-		case REALF -> {
-			this.scale((RealF.copyFromModuliSum(map.values().toArray(new RealF[gBasis.getBladeCount()]))).invert());
-		}
-		case REALD -> {
-			this.scale((RealD.copyFromModuliSum(map.values().toArray(new RealD[gBasis.getBladeCount()]))).invert());
-		}
-		case COMPLEXF -> {
-			this.scale(
-					(ComplexF.copyFromModuliSum(map.values().toArray(new ComplexF[gBasis.getBladeCount()]))).invert());
-		}
-		case COMPLEXD -> {
-			this.scale(
-					(ComplexD.copyFromModuliSum(map.values().toArray(new ComplexD[gBasis.getBladeCount()]))).invert());
-		}
+		case REALF -> this.scale((RealF.copyFromModuliSum(map.values().toArray(RealF[]::new))).invert());
+		case REALD -> this.scale((RealD.copyFromModuliSum(map.values().toArray(RealD[]::new))).invert());
+		case COMPLEXF -> this.scale((ComplexF.copyFromModuliSum(map.values().toArray(ComplexF[]::new))).invert());
+		case COMPLEXD -> this.scale((ComplexD.copyFromModuliSum(map.values().toArray(ComplexD[]::new))).invert());
 		}
 	}
 
@@ -326,15 +409,8 @@ public class Scale<D extends DivField & Divisible> {
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> remove(Blade pB) {
-		if (pB != null) {
-			if (map.containsKey(pB))
-				switch (mode) {
-				case REALF -> map.put(pB, RealF.copyZERO((RealF) map.get(pB)));
-				case REALD -> map.put(pB, RealD.copyZERO((RealD) map.get(pB)));
-				case COMPLEXF -> map.put(pB, ComplexF.copyZERO((ComplexF) map.get(pB)));
-				case COMPLEXD -> map.put(pB, ComplexD.copyZERO((ComplexD) map.get(pB)));
-				}
-		}
+		if (pB != null & map.containsKey(pB))
+			map.put(pB, CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
 		return this;
 	}
 
@@ -349,10 +425,13 @@ public class Scale<D extends DivField & Divisible> {
 		gBasis.gradeStream().filter(j -> (j % 4 > 1)).parallel().forEach(grade -> {
 			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
 				switch (mode) {
-				case REALF -> ((RealF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-				case REALD -> ((RealD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-				case COMPLEXF -> ((ComplexF) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-				case COMPLEXD -> ((ComplexD) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+				case REALF:
+				case COMPLEXF:
+					((Divisible) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+					break;
+				case REALD:
+				case COMPLEXD:
+					((Divisible) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
 				}
 			});
 		});
@@ -369,44 +448,13 @@ public class Scale<D extends DivField & Divisible> {
 	 */
 	public <T extends DivField & Divisible> Scale<D> scale(T pIn) {
 		if (map.values().stream().allMatch(div -> isTypeMatch(div, pIn))) {
-			switch (mode) {
-			case REALF -> {
-				map.values().parallelStream().forEach(div -> {
-					try {
-						((RealF) div).multiply(pIn);
-					} catch (FieldBinaryException e) {
-						throw new IllegalArgumentException("Can't scale when cardinals don't match.");
-					}
-				});
-			}
-			case REALD -> {
-				map.values().parallelStream().forEach(div -> {
-					try {
-						((RealD) div).multiply(pIn);
-					} catch (FieldBinaryException e) {
-						throw new IllegalArgumentException("Can't scale when cardinals don't match.");
-					}
-				});
-			}
-			case COMPLEXF -> {
-				map.values().parallelStream().forEach(div -> {
-					try {
-						((ComplexF) div).multiply(pIn);
-					} catch (FieldBinaryException e) {
-						throw new IllegalArgumentException("Can't scale when cardinals don't match.");
-					}
-				});
-			}
-			case COMPLEXD -> {
-				map.values().parallelStream().forEach(div -> {
-					try {
-						((ComplexD) div).multiply(pIn);
-					} catch (FieldBinaryException e) {
-						throw new IllegalArgumentException("Can't scale when cardinals don't match.");
-					}
-				});
-			}
-			}
+			map.values().parallelStream().forEach(div -> {
+				try {
+					((Divisible) div).multiply(pIn);
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Can't scale with mismatched cardinal.");
+				}
+			});
 		}
 		return this;
 	}
@@ -428,16 +476,16 @@ public class Scale<D extends DivField & Divisible> {
 	public D sqMagnitude() throws FieldBinaryException {
 		switch (mode) {
 		case REALF -> {
-			return (D) RealF.copyFromSQModuliSum(map.values().toArray(new RealF[gBasis.getBladeCount()]));
+			return (D) RealF.copyFromSQModuliSum(map.values().toArray(RealF[]::new));
 		}
 		case REALD -> {
-			return (D) RealD.copyFromSQModuliSum(map.values().toArray(new RealD[gBasis.getBladeCount()]));
+			return (D) RealD.copyFromSQModuliSum(map.values().toArray(RealD[]::new));
 		}
 		case COMPLEXF -> {
-			return (D) ComplexF.copyFromSQModuliSum(map.values().toArray(new ComplexF[gBasis.getBladeCount()]));
+			return (D) ComplexF.copyFromSQModuliSum(map.values().toArray(ComplexF[]::new));
 		}
 		case COMPLEXD -> {
-			return (D) ComplexD.copyFromSQModuliSum(map.values().toArray(new ComplexD[gBasis.getBladeCount()]));
+			return (D) ComplexD.copyFromSQModuliSum(map.values().toArray(ComplexD[]::new));
 		}
 		default -> {
 			return null;
@@ -530,28 +578,10 @@ public class Scale<D extends DivField & Divisible> {
 	protected Scale<D> setCoefficientMap(Map<Blade, D> pInMap) {
 		if (pInMap.size() != gBasis.getBladeCount())
 			throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
-		switch (mode) {
-		case REALF -> {
-			Map<Blade, RealF> mapCopy = pInMap.entrySet().parallelStream()
-					.collect(Collectors.toMap(e -> e.getKey(), e -> RealF.copyOf((RealF) e.getValue())));
-			map.putAll(mapCopy);
-		}
-		case REALD -> {
-			Map<Blade, RealD> mapCopy = pInMap.entrySet().parallelStream()
-					.collect(Collectors.toMap(e -> e.getKey(), e -> RealD.copyOf((RealD) e.getValue())));
-			map.putAll(mapCopy);
-		}
-		case COMPLEXF -> {
-			Map<Blade, ComplexF> mapCopy = pInMap.entrySet().parallelStream()
-					.collect(Collectors.toMap(e -> e.getKey(), e -> ComplexF.copyOf((ComplexF) e.getValue())));
-			map.putAll(mapCopy);
-		}
-		case COMPLEXD -> {
-			Map<Blade, ComplexD> mapCopy = pInMap.entrySet().parallelStream()
-					.collect(Collectors.toMap(e -> e.getKey(), e -> ComplexD.copyOf((ComplexD) e.getValue())));
-			map.putAll(mapCopy);
-		}
-		}
+
+		Map<Blade, D> mapCopy = pInMap.entrySet().parallelStream()
+				.collect(Collectors.toMap(e -> e.getKey(), e -> CladosFBuilder.copyOf((D) e.getValue())));
+		map.putAll(mapCopy);
 		return this;
 	}
 
@@ -624,28 +654,9 @@ public class Scale<D extends DivField & Divisible> {
 	 */
 	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAll() {
-		switch (mode) {
-		case REALF -> {
-			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosFBuilder.REALF.createZERO(card));
-			});
-		}
-		case REALD -> {
-			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosFBuilder.REALD.createZERO(card));
-			});
-		}
-		case COMPLEXF -> {
-			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosFBuilder.COMPLEXF.createZERO(card));
-			});
-		}
-		case COMPLEXD -> {
-			gBasis.bladeStream().forEach(b -> {
-				map.put(b, (D) CladosFBuilder.COMPLEXD.createZERO(card));
-			});
-		}
-		}
+		gBasis.bladeStream().forEach(b -> {
+			map.put(b, (D) CladosFBuilder.createZERO(mode, card));
+		});
 		return this;
 	}
 
@@ -667,37 +678,13 @@ public class Scale<D extends DivField & Divisible> {
 	 * @param pGrade byte integer naming the grade to be preserved
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
-	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAllButGrade(byte pGrade) {
 		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
 
-		switch (mode) {
-		case REALF -> {
-			D tSpot = (D) CladosFBuilder.REALF.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.REALF.copyOf(tSpot));
-			});
-		}
-		case REALD -> {
-			D tSpot = (D) CladosFBuilder.REALD.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.REALD.copyOf(tSpot));
-			});
-		}
-		case COMPLEXF -> {
-			D tSpot = (D) CladosFBuilder.COMPLEXF.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.COMPLEXF.copyOf(tSpot));
-			});
-		}
-		case COMPLEXD -> {
-			D tSpot = (D) CladosFBuilder.COMPLEXD.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.COMPLEXD.copyOf(tSpot));
-			});
-		}
-		}
+		gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
+			map.put(blade, (CladosFBuilder.createZERO(mode, card)));
+		});
 		return this;
 	}
 
@@ -719,38 +706,13 @@ public class Scale<D extends DivField & Divisible> {
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
-	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAtGrade(byte pGrade) {
 		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
 
-		switch (mode) {
-		case REALF -> {
-			D tSpot = (D) CladosFBuilder.REALF.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.REALF.copyOf(tSpot));
-			});
-		}
-		case REALD -> {
-			D tSpot = (D) CladosFBuilder.REALD.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.REALD.copyOf(tSpot));
-			});
-		}
-		case COMPLEXF -> {
-			D tSpot = (D) CladosFBuilder.COMPLEXF.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.COMPLEXF.copyOf(tSpot));
-			});
-		}
-		case COMPLEXD -> {
-			D tSpot = (D) CladosFBuilder.COMPLEXD.createZERO(card);
-			gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-				map.put(blade, (D) CladosFBuilder.COMPLEXD.copyOf(tSpot));
-			});
-		}
-		}
-
+		gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
+			map.put(blade, CladosFBuilder.createZERO(mode, card));
+		});
 		return this;
 	}
 }

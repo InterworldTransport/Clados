@@ -70,18 +70,14 @@ class CoreMonadRealDTest {
 	public void testMultiplication() throws FieldBinaryException, CladosMonadBinaryException {
 		assert(tM1.getAlgebra() == tM2.getAlgebra());
 		assert(tM2.getAlgebra() == tM9.getAlgebra());
-		//System.out.println(MonadRealF.toXMLString(tM2, ""));
-		//System.out.println(MonadRealF.toXMLString(tM9, ""));
-		//tM9.multiplyLeft(tM2);
-		//assertTrue(MonadRealF.isGZero(tM2));
 		
-		Monad check1 = new Monad(tM9);
-		assertTrue(tM9.isGEqual(check1));
-		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		check1.multiplyLeft(tM9);
-		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		assert(Monad.isGZero(check1));
-		
+		for (short m = 0; m < 100; m++) {
+			//System.out.println("RealD | " + m);
+			Monad check1 = new Monad(tM9);
+			assertTrue(tM9.isGEqual(check1));
+			check1.multiplyLeft(tM9);
+			assert (Monad.isGZero(check1));
+		}
 	}
 
 	@Test

@@ -45,9 +45,9 @@ class CoreMonadComplexFTest {
 		cRF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(tSpot, cRF.length);
 
 		tM0 = new Monad("Test MonadComplexF 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
-				new ComplexF(Cardinal.generate("Test Float 1"), 0f));
+				new ComplexF(Cardinal.generate("Test Float 1"), 0f, 0f));
 		tM1 = new Monad("Test MonadComplexF 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
-				new ComplexF(Cardinal.generate("Test Float 1"), 0f));
+				new ComplexF(Cardinal.generate("Test Float 1"), 0f, 0f));
 		tM2 = new Monad("Test MonadComplexF 2", tM1);
 		tM3 = new Monad("Test MonadComplexF 3", tM1);
 		tM4 = new Monad(tM0);
@@ -69,18 +69,14 @@ class CoreMonadComplexFTest {
 	public void testMultiplication() throws FieldBinaryException, CladosMonadBinaryException {
 		assert(tM1.getAlgebra() == tM2.getAlgebra());
 		assert(tM2.getAlgebra() == tM9.getAlgebra());
-		//System.out.println(MonadRealF.toXMLString(tM2, ""));
 		
-		//tM9.multiplyLeft(tM2);
-		//assertTrue(MonadRealF.isGZero(tM2));
-		
-		Monad check1 = new Monad(tM9);
-		assertTrue(tM9.isGEqual(check1));
-		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		check1.multiplyLeft(tM9);
-		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		assert(Monad.isGZero(check1));
-		
+		for (short m = 0; m < 100; m++) {
+			//System.out.println("ComplexF | " + m);
+			Monad check1 = new Monad(tM9);
+			assertTrue(tM9.isGEqual(check1));
+			check1.multiplyLeft(tM9);
+			assert (Monad.isGZero(check1));
+		}
 	}
 
 	@Test

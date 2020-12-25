@@ -24,6 +24,7 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -33,6 +34,7 @@ import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.Divisible;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
@@ -95,23 +97,7 @@ public class Monad {
 	 * @return boolean
 	 */
 	public static boolean isGZero(Monad pM) {
-		switch (pM.getScales().getMode()) {
-		case COMPLEXD -> {
-			return (pM.getGradeKey() == 1 & ComplexD.isZero((ComplexD) pM.getCoeff(0)));
-		}
-		case COMPLEXF -> {
-			return (pM.getGradeKey() == 1 & ComplexF.isZero((ComplexF) pM.getCoeff(0)));
-		}
-		case REALD -> {
-			return (pM.getGradeKey() == 1 & RealD.isZero((RealD) pM.getCoeff(0)));
-		}
-		case REALF -> {
-			return (pM.getGradeKey() == 1 & RealF.isZero((RealF) pM.getCoeff(0)));
-		}
-		default -> {
-			return false;
-		}
-		}
+		return (pM.getGradeKey() == 1 & pM.getScales().isScalarZero());
 	}
 
 	/**
@@ -149,80 +135,18 @@ public class Monad {
 	 * @throws FieldException       This exception is thrown when the method can't
 	 *                              copy the field used by the monad to be checked.
 	 */
-	public static boolean isScaledIdempotent(Monad pM) throws CladosMonadException, FieldException {
-		if (isIdempotent(pM))
-			return true;
-		switch (pM.getScales().getMode()) {
-		case COMPLEXD -> {
-			Monad check1 = CladosGBuilder.copyOfMonad(pM);
-			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
-			ComplexD fstnzeroC = (ComplexD) CladosFBuilder.COMPLEXD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
-			int k = 1;// skipping over check1.SP() != 0
-			while (ComplexD.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
-				if (!ComplexD.isZero((ComplexD) pM.getCoeff(k))) {
-					fstnzeroC = ComplexD.copyOf((ComplexD) pM.getCoeff(k)); // Grab a copy of it instead
-					break; // Good enough. Move on.
-				}
-				k++; // If next coeff is zero, look at next next
-			}
-			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
-			return isIdempotent(check1);
-		}
-		case COMPLEXF -> {
-			Monad check1 = CladosGBuilder.copyOfMonad(pM);
-			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
-			ComplexF fstnzeroC = (ComplexF) CladosFBuilder.COMPLEXF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
-			int k = 1;// skipping over check1.SP() != 0
-			while (ComplexF.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
-				if (!ComplexF.isZero((ComplexF) pM.getCoeff(k))) {
-					fstnzeroC = ComplexF.copyOf((ComplexF) pM.getCoeff(k)); // Grab a copy of it instead
-					break; // Good enough. Move on.
-				}
-				k++; // If next coeff is zero, look at next next
-			}
-			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
-			return isIdempotent(check1);
-		}
-		case REALD -> {
-			Monad check1 = CladosGBuilder.copyOfMonad(pM);
-			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
-			RealD fstnzeroC = (RealD) CladosFBuilder.REALD.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
-			int k = 1;// skipping over check1.SP() != 0
-			while (RealD.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
-				if (!RealD.isZero((RealD) pM.getCoeff(k))) {
-					fstnzeroC = RealD.copyOf((RealD) pM.getCoeff(k)); // Grab a copy of it instead
-					break; // Good enough. Move on.
-				}
-				k++; // If next coeff is zero, look at next next
-			}
-			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
-			return isIdempotent(check1);
-		}
-		case REALF -> {
-			Monad check1 = CladosGBuilder.copyOfMonad(pM);
-			check1.multiplyLeft(pM); // We now have check1 = pM ^ 2
-			if (Monad.isGZero(check1)) return false; // pM is nilpotent at power=2
-			RealF fstnzeroC = (RealF) CladosFBuilder.REALF.copyOf(pM.getCoeff(0)); // Grab copy of Scalar part
-			int k = 1;// skipping over check1.SP() != 0
-			while (RealF.isZero(fstnzeroC) & k <= pM.getAlgebra().getBladeCount() - 1) {
-				if (!RealF.isZero((RealF) pM.getCoeff(k))) {
-					fstnzeroC = RealF.copyOf((RealF) pM.getCoeff(k)); // Grab a copy of it instead
-					break; // Good enough. Move on.
-				}
-				k++; // If next coeff is zero, look at next next
-			}
-			check1 = CladosGBuilder.copyOfMonad(pM).scale(fstnzeroC.invert()); // No risk of inverting a zero.
-			return isIdempotent(check1);
-		}
-		default -> {
+	@SuppressWarnings("unchecked")
+	public static <T extends DivField & Divisible> boolean isScaledIdempotent(Monad pM) throws CladosMonadException, FieldException {
+		if (isIdempotent(pM)) return true;
+		if (Monad.isNilpotent(pM, 2)) return false;
+		
+		Optional<Blade> first = pM.bladeStream().filter(blade -> !pM.getScales().isZeroAt(blade)).sequential()
+				.findFirst();
+		if (first.isPresent()) {
+			return isIdempotent(CladosGBuilder.copyOfMonad(pM)
+					.scale((T) CladosFBuilder.copyOf(pM.getScales().get(first.get())).invert()));
+		} else
 			return false;
-		}
-		}
-		
-		
 	}
 	
 	/**
@@ -249,7 +173,6 @@ public class Monad {
 		}
 		return false;
 	}
-	
 
 	/**
 	 * Return true if more than one blade is present in the Monad. This method makes
@@ -388,7 +311,7 @@ public class Monad {
 	 * This is just a flag specifying the field type one should expect for
 	 * coefficients of the monad.
 	 */
-	protected CladosField mode;
+	protected final CladosField mode;
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
@@ -423,22 +346,22 @@ public class Monad {
 		mode = pM.mode;
 		switch (mode) {
 		case COMPLEXD -> {
-			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
 			scales.setCoefficientMap(pM.scales.getMap());
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
 			scales.setCoefficientMap(pM.scales.getMap());
 			setGradeKey();
 		}
 		case REALD -> {
-			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
 			scales.setCoefficientMap(pM.scales.getMap());
 			setGradeKey();
 		}
 		case REALF -> {
-			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
+			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
 			scales.setCoefficientMap(pM.scales.getMap());
 			setGradeKey();
 		}
@@ -501,25 +424,25 @@ public class Monad {
 		case COMPLEXD -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case COMPLEXF -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig)); 
 			setFrameName(pFrameName);
-			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALD -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig)); 
 			setFrameName(pFrameName);
-			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALF -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		}
@@ -564,25 +487,25 @@ public class Monad {
 		case COMPLEXD -> {
 			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case COMPLEXF -> {
 			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALD -> {
 			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALF -> {
 			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		}
@@ -703,29 +626,29 @@ public class Monad {
 		case COMPLEXD -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexD[]) pC));
+			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexD[]) pC));
 			setGradeKey();
 		}
 		case COMPLEXF -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexF[]) pC));
+			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexF[]) pC));
 			setGradeKey();
 		}
 		case REALD -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealD[]) pC));
+			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealD[]) pC));
 			setGradeKey();
 		}
 		case REALF -> {
 			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
 			setFrameName(pFrameName);
-			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealF[]) pC));
+			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealF[]) pC));
 			setGradeKey();
 		}
 		}
@@ -781,23 +704,23 @@ public class Monad {
 
 		switch (mode) {
 		case COMPLEXD -> {
-			scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexD[]) pC));
+			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexD[]) pC));
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (ComplexF[]) pC));
+			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexF[]) pC));
 			setGradeKey();
 		}
 		case REALD -> {
-			scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealD[]) pC));
+			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealD[]) pC));
 			setGradeKey();
 		}
 		case REALF -> {
-			scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(scales.getMode(), (RealF[]) pC));
+			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealF[]) pC));
 			setGradeKey();
 		}
 		}
@@ -827,19 +750,6 @@ public class Monad {
 	}
 
 	/**
-	 * This integer stream is OFTEN used internally in monads for calculations.
-	 * Rather than type it out in long form, it is aliases to this method.
-	 * 
-	 * NOTE that it is not forced to be parallel() here. Whether that makes sense is
-	 * decided by the method using it.
-	 * 
-	 * @return Integer stream ranging through all the blades of the algebra
-	 */
-	public IntStream bladeIntStream() {
-		return IntStream.range(0, getAlgebra().getBladeCount());
-	}
-
-	/**
 	 * This method returns the actual blades the underlying basis as a stream.
 	 * 
 	 * @return Stream of Blades in the underlying CanonicalBasis
@@ -863,175 +773,45 @@ public class Monad {
 	 * 
 	 * @return Monad after operation.
 	 */
-	public Monad dualLeft() {
+	@SuppressWarnings("unchecked")
+	public <T extends DivField & Divisible> Monad dualLeft() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
 		
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			Scale<ComplexD> newScales = new Scale<ComplexD>(CladosField.COMPLEXD, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !ComplexD.isZero((ComplexD) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-						try {
-							ComplexD tAgg = ((ComplexD) CladosFBuilder.COMPLEXD.copyOf((ComplexD) e.getValue()))
-									.scale(Double.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Left dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		case COMPLEXF -> {
-			Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-						try {
-							ComplexF tAgg = ((ComplexF) CladosFBuilder.COMPLEXF.copyOf((ComplexF) e.getValue()))
-									.scale(Float.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Left dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		case REALD -> {
-			Scale<RealD> newScales = new Scale<RealD>(CladosField.REALD, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !RealD.isZero((RealD) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-						try {
-							RealD tAgg = ((RealD) CladosFBuilder.REALD.copyOf((RealD) e.getValue()))
-									.scale(Double.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Left dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		case REALF -> {
-			Scale<RealF> newScales = new Scale<RealF>(CladosField.REALF, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !RealF.isZero((RealF) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-						try {
-							RealF tAgg = ((RealF) CladosFBuilder.REALF.copyOf((RealF) e.getValue()))
-									.scale(Float.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Left dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		default -> {
-			// Do NOTHING
-			return this;
-		}
-		}
+		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
+		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
+		bladeStream().filter(blade -> !getScales().isZeroAt(blade)).parallel().forEach(blade -> {
+			int col = tBasis.find(blade) - 1; // col points at a non-zero blade
+			Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
+			newScales.put(bMult,
+					(T) CladosFBuilder.copyOf(getScales().get(blade)).scale(Double.valueOf(tProd.getSign(row, col))));
+		});
+		scales = newScales;
+		
 		setGradeKey();
 		return this;
 	}
-	
-	
 
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
 	 * 
 	 * @return Monad after operation.
 	 */
-	public Monad dualRight() {
+	@SuppressWarnings("unchecked")
+	public  <T extends DivField & Divisible> Monad dualRight() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
 		
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			Scale<ComplexD> newScales = new Scale<ComplexD>(CladosField.COMPLEXD, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !ComplexD.isZero((ComplexD) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-						try {
-							ComplexD tAgg = ((ComplexD) CladosFBuilder.COMPLEXD.copyOf((ComplexD) e.getValue()))
-									.scale(Double.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Right dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		case COMPLEXF -> {
-			Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-						try {
-							ComplexF tAgg = ((ComplexF) CladosFBuilder.COMPLEXF.copyOf((ComplexF) e.getValue()))
-									.scale(Float.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Right dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		case REALD -> {
-			Scale<RealD> newScales = new Scale<RealD>(CladosField.REALD, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !RealD.isZero((RealD) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-						try {
-							RealD tAgg = ((RealD) CladosFBuilder.REALD.copyOf((RealD) e.getValue()))
-									.scale(Double.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Right dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		case REALF -> {
-			Scale<RealF> newScales = new Scale<RealF>(CladosField.REALF, tBasis, scales.getCardinal()).zeroAll();
-			getScales().getMap().entrySet().stream().filter(e -> !RealF.isZero((RealF) e.getValue())).parallel()
-					.forEach(e -> {
-						int col = tBasis.find(e.getKey()) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-						try {
-							RealF tAgg = ((RealF) CladosFBuilder.REALF.copyOf((RealF) e.getValue()))
-									.scale(Float.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
-						} catch (FieldBinaryException e1) {
-							throw new IllegalArgumentException("Right dual fails DivField reference match.");
-						}
-					});
-			scales = newScales;
-		}
-		default -> {
-			// Do NOTHING
-			return this;
-		}
-		}
+		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
+		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
+		bladeStream().filter(blade -> !getScales().isZeroAt(blade)).parallel().forEach(blade -> {
+			int col = tBasis.find(blade) - 1; // col points at a non-zero blade
+			Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
+			newScales.put(bMult,
+					(T) CladosFBuilder.copyOf(getScales().get(blade)).scale(Double.valueOf(tProd.getSign(col, row))));
+		});
+		scales = newScales;
+		
 		setGradeKey();
 		return this;
 	}
@@ -1051,25 +831,9 @@ public class Monad {
 	 * 
 	 * @return DivField[]
 	 */
-	public DivField[] getCoeff() {
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			return (ComplexD[]) scales.getCoefficients();
-		}
-		case COMPLEXF -> {
-			return (ComplexF[]) scales.getCoefficients();
-		}
-		case REALD -> {
-			return (RealD[]) scales.getCoefficients();
-		}
-		case REALF -> {
-			return (RealF[]) scales.getCoefficients();
-		}
-		default -> {
-			return null;
-		}
-
-		}
+	@SuppressWarnings("unchecked")
+	public  <T extends DivField> T[] getCoeff() {
+		return (T[]) scales.getCoefficients();
 	}
 
 	/**
@@ -1080,28 +844,10 @@ public class Monad {
 	 * 
 	 * @return DivField
 	 */
-	public DivField getCoeff(int i) {
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			if (i >= 0 & i < getAlgebra().getBladeCount())
-				return (ComplexD) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
-		}
-		case COMPLEXF -> {
-			if (i >= 0 & i < getAlgebra().getBladeCount())
-				return (ComplexF) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
-		}
-		case REALD -> {
-			if (i >= 0 & i < getAlgebra().getBladeCount())
-				return (RealD) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
-		}
-		case REALF -> {
-			if (i >= 0 & i < getAlgebra().getBladeCount())
-				return (RealF) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
-		}
-		default -> {
-			return null;
-		}
-		}
+	@SuppressWarnings("unchecked")
+	public <T extends DivField> T getCoeff(int i) {
+		if (i >= 0 & i < getAlgebra().getBladeCount())
+			return (T) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
 		return null;
 	}
 
@@ -1123,6 +869,10 @@ public class Monad {
 		return gradeKey;
 	}
 
+//	public CladosField getMode() {
+//		return mode;
+//	}
+	
 	/**
 	 * 
 	 * @return String Contains the name of the Monad.
@@ -1165,21 +915,6 @@ public class Monad {
 		scales.zeroAllButGrade(pGrade);
 		setGradeKey();
 		return this;
-	}
-
-	/**
-	 * This IntStream ranges across an integer index of blades of the same grade.
-	 * Which grade is decided elsewhere and then the gradeRange result is passed to
-	 * this method to get the integer stream.
-	 * 
-	 * @param pIn A two-cell array of integers that represent a span of blades of
-	 *            the same grade.
-	 * @return InStream of blade index integers covering a particular grade.
-	 */
-	public IntStream gradeSpanStream(int[] pIn) {
-		if (pIn.length == 2)
-			return IntStream.rangeClosed(pIn[0], pIn[1]);
-		return IntStream.empty();
 	}
 
 	/**
@@ -1256,7 +991,6 @@ public class Monad {
 			return false;
 		}
 		}
-
 	}
 
 	/**
@@ -1271,25 +1005,10 @@ public class Monad {
 	 *                              the object referred to in a list of
 	 *                              coefficients.
 	 */
-	public DivField magnitude() throws CladosMonadException {
+	@SuppressWarnings("unchecked")
+	public <T extends DivField> T magnitude() throws CladosMonadException {
 		try {
-			switch (scales.getMode()) {
-			case COMPLEXD -> {
-				return (ComplexD) scales.magnitude();
-			}
-			case COMPLEXF -> {
-				return (ComplexF) scales.magnitude();
-			}
-			case REALD -> {
-				return (RealD) scales.magnitude();
-			}
-			case REALF -> {
-				return (RealF) scales.magnitude();
-			}
-			default -> {
-				return null;
-			}
-			}
+			return (T) scales.magnitude();
 		} catch (FieldBinaryException e) {
 			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
 		}
@@ -1360,23 +1079,23 @@ public class Monad {
 	 *                                    match test fails with the two monads
 	 * @return Monad
 	 */
-	public Monad multiplyLeft(Monad pM) throws FieldBinaryException, CladosMonadBinaryException {
+	public <T extends DivField & Divisible> Monad multiplyLeft(Monad pM) throws FieldBinaryException, CladosMonadBinaryException {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Left multiply fails reference match.", pM);
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		
+
+		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		switch (scales.getMode()) {
 		case COMPLEXD -> {
-			Scale<ComplexD> newScales = new Scale<ComplexD>(CladosField.COMPLEXD, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
 				while (logKey >= 0) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexD.isZero((ComplexD) getScales().get(blade))).parallel()
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
 							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream()
+								pM.getScales().getMap().entrySet().parallelStream()
 										.filter(f -> !ComplexD.isZero((ComplexD) f.getValue())).forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis
@@ -1398,10 +1117,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				} // while loop completion -> all grades in 'this' processed
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !ComplexD.isZero((ComplexD) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !ComplexD.isZero((ComplexD) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexD.isZero((ComplexD) f.getValue()))
+							pM.getScales().getMap().entrySet().parallelStream().filter(f -> !ComplexD.isZero((ComplexD) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
@@ -1421,15 +1140,14 @@ public class Monad {
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
 				while (logKey >= 0) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexF.isZero((ComplexF) getScales().get(blade))).parallel()
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
 							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream()
+								pM.getScales().getMap().entrySet().parallelStream()
 										.filter(f -> !ComplexF.isZero((ComplexF) f.getValue())).forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis
@@ -1451,10 +1169,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				} // while loop completion -> all grades in 'this' processed
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
+							pM.getScales().getMap().entrySet().parallelStream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
@@ -1474,15 +1192,14 @@ public class Monad {
 			setGradeKey();
 		}
 		case REALD -> {
-			Scale<RealD> newScales = new Scale<RealD>(CladosField.REALD, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
 				while (logKey >= 0) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !RealD.isZero((RealD) getScales().get(blade))).parallel()
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
 							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream()
+								pM.getScales().getMap().entrySet().parallelStream()
 										.filter(f -> !RealD.isZero((RealD) f.getValue())).forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis
@@ -1504,10 +1221,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				} // while loop completion -> all grades in 'this' processed
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !RealD.isZero((RealD) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !RealD.isZero((RealD) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.getScales().getMap().entrySet().stream().filter(f -> !RealD.isZero((RealD) f.getValue()))
+							pM.getScales().getMap().entrySet().parallelStream().filter(f -> !RealD.isZero((RealD) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
@@ -1527,15 +1244,14 @@ public class Monad {
 			setGradeKey();
 		}
 		case REALF -> {
-			Scale<RealF> newScales = new Scale<RealF>(CladosField.REALF, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
 				while (logKey >= 0) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !RealF.isZero((RealF) getScales().get(blade))).parallel()
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
 							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream()
+								pM.getScales().getMap().entrySet().parallelStream()
 										.filter(f -> !RealF.isZero((RealF) f.getValue())).forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis
@@ -1557,10 +1273,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				} // while loop completion -> all grades in 'this' processed
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !RealF.isZero((RealF) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !RealF.isZero((RealF) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.getScales().getMap().entrySet().stream().filter(f -> !RealF.isZero((RealF) f.getValue()))
+							pM.getScales().getMap().entrySet().parallelStream().filter(f -> !RealF.isZero((RealF) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
@@ -1620,23 +1336,23 @@ public class Monad {
 	 *                                    match test fails with the two monads
 	 * @return Monad
 	 */
-	public Monad multiplyRight(Monad pM) throws FieldBinaryException, CladosMonadBinaryException {
+	public <T extends DivField & Divisible> Monad multiplyRight(Monad pM) throws FieldBinaryException, CladosMonadBinaryException {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new CladosMonadBinaryException(this, "Right multiply fails reference match.", pM);
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
-		
+
+		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		switch (scales.getMode()) {
 		case COMPLEXD -> {
-			Scale<ComplexD> newScales = new Scale<ComplexD>(CladosField.COMPLEXD, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey);// logKey is the highest grade with non-zero blades
 				while (logKey >= 0.0D) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexD.isZero((ComplexD) getScales().get(blade)))
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
 							.parallel().forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexD.isZero((ComplexD) f.getValue()))
+								pM.getScales().getMap().entrySet().parallelStream().filter(f -> !ComplexD.isZero((ComplexD) f.getValue()))
 										.forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1657,10 +1373,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				}
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !ComplexD.isZero((ComplexD) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !ComplexD.isZero((ComplexD) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.scales.getMap().entrySet().stream().filter(f -> !ComplexD.isZero((ComplexD) f.getValue()))
+							pM.scales.getMap().entrySet().parallelStream().filter(f -> !ComplexD.isZero((ComplexD) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1680,15 +1396,14 @@ public class Monad {
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			Scale<ComplexF> newScales = new Scale<ComplexF>(CladosField.COMPLEXF, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey);// logKey is the highest grade with non-zero blades
 				while (logKey >= 0.0D) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !ComplexF.isZero((ComplexF) getScales().get(blade)))
-							.parallel().forEach(blade -> {
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
+							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
+								pM.getScales().getMap().entrySet().parallelStream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
 										.forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1709,10 +1424,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				}
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !ComplexF.isZero((ComplexF) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.scales.getMap().entrySet().stream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
+							pM.scales.getMap().entrySet().parallelStream().filter(f -> !ComplexF.isZero((ComplexF) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1732,15 +1447,14 @@ public class Monad {
 			setGradeKey();
 		}
 		case REALD -> {
-			Scale<RealD> newScales = new Scale<RealD>(CladosField.REALD, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey);// logKey is the highest grade with non-zero blades
 				while (logKey >= 0.0D) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !RealD.isZero((RealD) getScales().get(blade)))
-							.parallel().forEach(blade -> {
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
+							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream().filter(f -> !RealD.isZero((RealD) f.getValue()))
+								pM.getScales().getMap().entrySet().parallelStream().filter(f -> !RealD.isZero((RealD) f.getValue()))
 										.forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1761,10 +1475,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				}
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !RealD.isZero((RealD) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !RealD.isZero((RealD) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.scales.getMap().entrySet().stream().filter(f -> !RealD.isZero((RealD) f.getValue()))
+							pM.scales.getMap().entrySet().parallelStream().filter(f -> !RealD.isZero((RealD) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1784,15 +1498,14 @@ public class Monad {
 			setGradeKey();
 		}
 		case REALF -> {
-			Scale<RealF> newScales = new Scale<RealF>(CladosField.REALF, tBasis, scales.getCardinal()).zeroAll();
 			if (sparseFlag) {
 				long slideKey = gradeKey;
 				byte logKey = (byte) Math.log10(slideKey);// logKey is the highest grade with non-zero blades
 				while (logKey >= 0.0D) {
-					tBasis.bladeOfGradeStream(logKey).filter(blade -> !RealF.isZero((RealF) getScales().get(blade)))
-							.parallel().forEach(blade -> {
+					tBasis.bladeOfGradeStream(logKey).filter(blade -> !getScales().isZeroAt(blade))//.parallel()
+							.forEach(blade -> {
 								int col = tBasis.find(blade) - 1;
-								pM.getScales().getMap().entrySet().stream().filter(f -> !RealF.isZero((RealF) f.getValue()))
+								pM.getScales().getMap().entrySet().parallelStream().filter(f -> !RealF.isZero((RealF) f.getValue()))
 										.forEach(f -> {
 											int row = tBasis.find(f.getKey()) - 1;
 											Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1813,10 +1526,10 @@ public class Monad {
 					logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 				}
 			} else { // loop through ALL the blades in 'this' individually.
-				getScales().getMap().entrySet().stream().filter(e -> !RealF.isZero((RealF) e.getValue())).parallel()
+				getScales().getMap().entrySet().stream().filter(e -> !RealF.isZero((RealF) e.getValue()))//.parallel()
 						.forEach(e -> {
 							int col = tBasis.find(e.getKey()) - 1;
-							pM.scales.getMap().entrySet().stream().filter(f -> !RealF.isZero((RealF) f.getValue()))
+							pM.scales.getMap().entrySet().parallelStream().filter(f -> !RealF.isZero((RealF) f.getValue()))
 									.forEach(f -> {
 										int row = tBasis.find(f.getKey()) - 1;
 										Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
@@ -1886,24 +1599,8 @@ public class Monad {
 	 *                              or field conflicted monad is tried.
 	 */
 	public Monad normalize() throws CladosMonadException {
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			if (gradeKey == 0L & ComplexD.isZero((ComplexD) scales.getScalar()))
-				throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
-		}
-		case COMPLEXF -> {
-			if (gradeKey == 0L & ComplexF.isZero((ComplexF) scales.getScalar()))
-				throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
-		}
-		case REALD -> {
-			if (gradeKey == 0L & RealD.isZero((RealD) scales.getScalar()))
-				throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
-		}
-		case REALF -> {
-			if (gradeKey == 0L & RealF.isZero((RealF) scales.getScalar()))
-				throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
-		}
-		}
+		if (gradeKey == 0L & scales.isScalarZero())
+			throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
 		try {
 			scales.normalize();
 		} catch (FieldException e) {
@@ -1955,22 +1652,8 @@ public class Monad {
 	 * @param pScale DivField to use for scaling the monad
 	 * @return Monad after the scaling is complete.
 	 */
-	public Monad scale(DivField pScale) {
-
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			scales.scale((ComplexD) pScale);
-		}
-		case COMPLEXF -> {
-			scales.scale((ComplexF) pScale);
-		}
-		case REALD -> {
-			scales.scale((RealD) pScale);
-		}
-		case REALF -> {
-			scales.scale((RealF) pScale);
-		}
-		}
+	public <T extends DivField & Divisible> Monad scale(T pScale) {
+		scales.scale((T) pScale);
 		setGradeKey();
 		return this;
 	}
@@ -1985,29 +1668,18 @@ public class Monad {
 	 * Caution is advised if this method is used while frequent reuse should be
 	 * considered bad form.
 	 * 
-	 * @param ppC DivField[]
+	 * @param <T> DivField child
+	 * @param ppC DivField child array
+	 * @return Monad after setting the coefficients to the offered array.
 	 * @throws CladosMonadException This exception is thrown when the array offered
 	 *                              for coordinates is of the wrong length.
 	 */
-	public void setCoeff(DivField[] ppC) throws CladosMonadException {
+	public <T extends DivField & Divisible> Monad setCoeff(T[] ppC) throws CladosMonadException {
 		if (ppC.length != getAlgebra().getBladeCount())
-			throw new CladosMonadException(this,
-					"Coefficient array passed in for coefficient copy is the wrong length");
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			scales.setCoefficientArray((ComplexD[]) CladosFListBuilder.COMPLEXD.copyOf((ComplexD[]) ppC));
-		}
-		case COMPLEXF -> {
-			scales.setCoefficientArray((ComplexF[]) CladosFListBuilder.COMPLEXF.copyOf((ComplexF[]) ppC));
-		}
-		case REALD -> {
-			scales.setCoefficientArray((RealD[]) CladosFListBuilder.REALD.copyOf((RealD[]) ppC));
-		}
-		case REALF -> {
-			scales.setCoefficientArray((RealF[]) CladosFListBuilder.REALF.copyOf((RealF[]) ppC));
-		}
-		}
+			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
+		scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (T[]) ppC));
 		setGradeKey();
+		return this;
 	}
 
 	/**
@@ -2034,52 +1706,22 @@ public class Monad {
 	public void setGradeKey() {
 		foundGrades = 0;
 		gradeKey = 0;
-		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			gradeStream().forEach(grade -> {
-				if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-						.filter(blade -> !ComplexD.isZero((ComplexD) scales.get(blade))).findAny().isPresent()) {
-					foundGrades++;
-					gradeKey += Math.pow(10, grade);
-				}
-			});
-		}
-		case COMPLEXF -> {
-			gradeStream().forEach(grade -> {
-				if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-						.filter(blade -> !ComplexF.isZero((ComplexF) scales.get(blade))).findAny().isPresent()) {
-					foundGrades++;
-					gradeKey += Math.pow(10, grade);
-				}
-			});
-		}
-		case REALD -> {
-			gradeStream().forEach(grade -> {
-				if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-						.filter(blade -> !RealD.isZero((RealD) scales.get(blade))).findAny().isPresent()) {
-					foundGrades++;
-					gradeKey += Math.pow(10, grade);
-				}
-			});
-		}
-		case REALF -> {
-			gradeStream().forEach(grade -> {
-				if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-						.filter(blade -> !RealF.isZero((RealF) scales.get(blade))).findAny().isPresent()) {
-					foundGrades++;
-					gradeKey += Math.pow(10, grade);
-				}
-			});
-		}
-		}
+
+		gradeStream().forEach(grade -> {
+			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
+					.filter(blade -> !getScales().isZeroAt(blade)).parallel()
+					.findAny()
+					.isPresent()) {
+						foundGrades++;
+						gradeKey += Math.pow(10, grade);
+					}
+		});
+
 		if (gradeKey == 0) {
 			foundGrades++;
 			gradeKey++;
 		}
-		if (foundGrades < getAlgebra().getGradeCount() / 2)
-			sparseFlag = true;
-		else
-			sparseFlag = false;
+		sparseFlag = (foundGrades < getAlgebra().getGradeCount() / 2) ? true : false;
 	}
 
 	/**
@@ -2114,25 +1756,10 @@ public class Monad {
 	 *                              the object referred to in a list of
 	 *                              coefficients.
 	 */
-	public DivField sqMagnitude() throws CladosMonadException {
+	@SuppressWarnings("unchecked")
+	public <T extends DivField> T sqMagnitude() throws CladosMonadException {
 		try {
-			switch (scales.getMode()) {
-			case COMPLEXD -> {
-				return (ComplexD) scales.sqMagnitude();
-			}
-			case COMPLEXF -> {
-				return (ComplexF) scales.sqMagnitude();
-			}
-			case REALD -> {
-				return (RealD) scales.sqMagnitude();
-			}
-			case REALF -> {
-				return (RealF) scales.sqMagnitude();
-			}
-			default -> {
-				return null;
-			}
-			}
+			return (T) scales.sqMagnitude();
 		} catch (FieldBinaryException e) {
 			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
 		}
@@ -2201,7 +1828,7 @@ public class Monad {
 	 *                or not independent of the DivField used, the method is placed
 	 *                here in the abstract parent.
 	 */
-	protected void setSparseFlag(short pGrades) {
+	protected void setSparseFlag(byte pGrades) {
 		long slideKey = gradeKey;
 		byte logSlide = (byte) Math.log10(slideKey); // highest grade found
 		foundGrades = 0; // This will be the number of grades found in the key.

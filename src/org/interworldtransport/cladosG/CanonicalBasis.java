@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * computational short-cuts for product tables having to deal with very large
  * vector spaces.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public interface CanonicalBasis {

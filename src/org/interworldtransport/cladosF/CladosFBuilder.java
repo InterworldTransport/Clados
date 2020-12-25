@@ -55,11 +55,11 @@ public enum CladosFBuilder {
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
-	REALF,
+	REALF;
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
-	DIVFIELD;
+	//DIVFIELD;
 
 	/**
 	 * Method creates a new Cardinal using the string provided IF one by that name
@@ -80,6 +80,71 @@ public enum CladosFBuilder {
 		}
 		return test.get();
 	}
+	
+
+	/**
+	 * Method creates a new number object with a real value set to ZERO using the
+	 * string provided to define and cache a Cardinal.
+	 * 
+	 * @param pMode 
+	 * @param pCard Cardinal to be re-used.
+	 * @return DivField child number created
+	 */
+	public final static DivField createZERO(CladosField pMode, Cardinal pCard) {
+		switch (pMode) {
+		case REALF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALF.createZERO(pCard);
+		}
+		case REALD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALD.createZERO(pCard);
+		}
+		case COMPLEXF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXF.createZERO(pCard);
+		}
+		case COMPLEXD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXD.createZERO(pCard);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+	
+	/**
+	 * Method creates a new number object with a real value set to ONE using the
+	 * string provided to define and cache a Cardinal.
+	 * 
+	 * @param pMode 
+	 * @param pCard Cardinal to be re-used.
+	 * @return DivField child number created
+	 */
+	public final static DivField createONE(CladosField pMode, Cardinal pCard) {
+		switch (pMode) {
+		case REALF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALF.createONE(pCard);
+		}
+		case REALD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALD.createONE(pCard);
+		}
+		case COMPLEXF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXF.createONE(pCard);
+		}
+		case COMPLEXD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXD.createONE(pCard);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
 
 	/**
 	 * Method copies the incoming number into a distinct object ensuring the ==
@@ -91,23 +156,18 @@ public enum CladosFBuilder {
 	 * @param pDiv A DivField child number to be copied
 	 * @return DivField child number created
 	 */
-	public <T extends DivField> DivField copyOf(T pDiv) {
-		switch (this) {
-		case REALF -> {
-			return new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal()); // RealF.copyOf((RealF) pDiv);
-		}
-		case REALD -> {
-			return new RealD(pDiv.getCardinal(), ((RealD) pDiv).getReal());// RealD.copyOf((RealD) pDiv);
-		}
-		case COMPLEXF -> {
-			return new ComplexF(pDiv.getCardinal(), ((ComplexF) pDiv).getReal(), ((ComplexF) pDiv).getImg());// ComplexF.copyOf((ComplexF) pDiv);
-		}
-		case COMPLEXD -> {
-			return new ComplexD(pDiv.getCardinal(), ((ComplexD) pDiv).getReal(), ((ComplexD) pDiv).getImg());// ComplexD.copyOf((ComplexD) pDiv);
-		}
-		default -> {
+	@SuppressWarnings("unchecked")
+	public final static <T extends DivField & Divisible> T copyOf(T pDiv) {
+		if (pDiv instanceof RealF) {
+			return (T) new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal());
+		} else if (pDiv instanceof RealD) {
+			return (T) new RealD(pDiv.getCardinal(), ((RealD) pDiv).getReal());
+		} else if (pDiv instanceof ComplexF) {
+			return (T) new ComplexF(pDiv.getCardinal(), ((ComplexF) pDiv).getReal(), ((ComplexF) pDiv).getImg());
+		} else if (pDiv instanceof ComplexD) {
+			return (T) new ComplexD(pDiv.getCardinal(), ((ComplexD) pDiv).getReal(), ((ComplexD) pDiv).getImg());
+		} else {
 			return null;
-		}
 		}
 	}
 
@@ -118,7 +178,7 @@ public enum CladosFBuilder {
 	 * @param pS String name for the associated Cardinal
 	 * @return DivField child number created
 	 */
-	public <T> DivField createONE(String pS) {
+	public DivField createONE(String pS) {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(pS);
@@ -149,7 +209,7 @@ public enum CladosFBuilder {
 	 * @param pCard Cardinal to use in construction
 	 * @return DivField child number created
 	 */
-	public <T> DivField createONE(Cardinal pCard) {
+	public DivField createONE(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
 			return RealF.newONE(pCard);
@@ -172,15 +232,10 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a number as distinct ZERO object using default cardinal name.
 	 * 
-	 * NOTE there is an odd exceptional case here. There is also the option to
-	 * create a DivField directly. That particular object doesn't have any 'number'
-	 * within it. It just captures these sense of 'number' as described in CladosF.
-	 * At present, it is only used for testing purposes.
-	 * 
 	 * @param pCard Cardinal to be re-used.
 	 * @return DivField child number created
 	 */
-	public <T> DivField createZERO() {
+	public DivField createZERO() {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(CladosField.REALF.name());
@@ -198,10 +253,6 @@ public enum CladosFBuilder {
 			Cardinal toCache = createCardinal(CladosField.COMPLEXD.name());
 			return ComplexD.newZERO(toCache);
 		}
-		case DIVFIELD -> {
-			Cardinal toCache = createCardinal("divfield");
-			return new DivField(toCache);
-		}
 		default -> {
 			return null;
 		}
@@ -212,15 +263,10 @@ public enum CladosFBuilder {
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * NOTE there is an odd exceptional case here. There is also the option to
-	 * create a DivField directly. That particular object doesn't have any 'number'
-	 * within it. It just captures these sense of 'number' as described in CladosF.
-	 * At present, it is only used for testing purposes.
-	 * 
 	 * @param pCard Cardinal to be re-used.
 	 * @return DivField child number created
 	 */
-	public <T> DivField createZERO(Cardinal pCard) {
+	public DivField createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
@@ -238,9 +284,6 @@ public enum CladosFBuilder {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
 			return ComplexD.newZERO(pCard);
 		}
-		case DIVFIELD -> {
-			return new DivField(pCard);
-		}
 		default -> {
 			return null;
 		}
@@ -251,15 +294,10 @@ public enum CladosFBuilder {
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * NOTE there is an odd exceptional case here. There is also the option to
-	 * create a DivField directly. That particular object doesn't have any 'number'
-	 * within it. It just captures these sense of 'number' as described in CladosF.
-	 * At present, it is only used for testing purposes.
-	 * 
 	 * @param pS String name for the associated Cardinal
 	 * @return DivField child number created
 	 */
-	public <T> DivField createZERO(String pS) {
+	public <T extends DivField & Divisible> DivField createZERO(String pS) {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(pS);
@@ -276,10 +314,6 @@ public enum CladosFBuilder {
 		case COMPLEXD -> {
 			Cardinal toCache = createCardinal(pS);
 			return ComplexD.newZERO(toCache);
-		}
-		case DIVFIELD -> {
-			Cardinal toCache = createCardinal(pS);
-			return new DivField(toCache);
 		}
 		default -> {
 			return null;

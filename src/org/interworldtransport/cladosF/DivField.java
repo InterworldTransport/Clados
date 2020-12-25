@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosF;
 
+import java.util.Optional;
+
 /**
  * This class supports the concept of a Division Field from mathematics. Field
  * objects within the clados packages are used as 'numbers' in the definition of
@@ -41,6 +43,70 @@ package org.interworldtransport.cladosF;
  * @author Dr Alfred W Differ
  */
 public class DivField {
+	/**
+	 * Static method that creates a new CladosF number with a copy of the parameter.
+	 * This copy reuses the cardinal to ensure it will pass a type match test.
+	 * 
+	 * @param pF D extends DivField and Divisible
+	 * @return Optional D which extends DivField and Divisible (A CladosF number)
+	 */
+	@SuppressWarnings("unchecked")
+	public static final <D extends DivField & Divisible> Optional<D> copyOf(D pF) {
+		if (pF instanceof RealF)
+			return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
+		else if (pF instanceof RealD)
+			return (Optional<D>) Optional.ofNullable(new RealD((RealD) pF));
+		else if (pF instanceof ComplexF)
+			return (Optional<D>) Optional.ofNullable(new ComplexF((ComplexF) pF));
+		else if (pF instanceof ComplexD)
+			return (Optional<D>) Optional.ofNullable(new ComplexD((ComplexD) pF));
+		else
+			return Optional.empty();
+	}
+	
+
+	/**
+	 * Static zero construction method with copied cardinal and real part set to ONE.
+	 * 
+	 * @param pR D extends DivField and Divisible
+	 * 
+	 * @return D extends DivField and Divisible
+	 */
+	@SuppressWarnings("unchecked")
+	public final static <D extends DivField & Divisible> Optional<D> copyONE(D pR) {
+		if (pR instanceof RealF)
+			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
+		else if (pR instanceof RealD)
+			return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 1.0d));
+		else if (pR instanceof ComplexF)
+			return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 1.0f, 0.0f));
+		else if (pR instanceof ComplexD)
+			return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 1.0d, 0.0d));
+		else
+			return Optional.empty();
+	}
+	
+	/**
+	 * Static zero construction method with copied cardinal and real part set to ONE.
+	 * 
+	 * @param pR D extends DivField and Divisible
+	 * 
+	 * @return D extends DivField and Divisible
+	 */
+	@SuppressWarnings("unchecked")
+	public final static <D extends DivField & Divisible> Optional<D> copyZERO(D pR) {
+		if (pR instanceof RealF)
+			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
+		else if (pR instanceof RealD)
+			return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 0.0d));
+		else if (pR instanceof ComplexF)
+			return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 0.0f, 0.0f));
+		else if (pR instanceof ComplexD)
+			return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 0.0d, 0.0d));
+		else
+			return Optional.empty();
+	}
+	
 	/**
 	 * Check to see if the two argument are of the same cardinal.
 	 * 

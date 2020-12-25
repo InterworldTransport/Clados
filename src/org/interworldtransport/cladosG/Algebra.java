@@ -42,29 +42,31 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @author Dr Alfred W Differ
  */
 public class Algebra implements Unitized, Comparable<Algebra> {
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Algebra other = (Algebra) obj;
-		if (uuid == null) {
-			if (other.uuid != null)
-				return false;
-		} else if (!uuid.equals(other.uuid))
-			return false;
-		return true;
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain
+	 * security concerns related to Java serialization of objects.
+	 * 
+	 * @param pA Algebra to be exported as XML data
+	 * @param indent String of tab characters to assist with human readability of output.
+	 * @return String formatted as XML containing information about the Algebra
+	 */
+	public final static String toXMLString(Algebra pA, String indent) {
+		if (indent == null)
+			indent = "\t\t\t\t";
+		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
+		rB.append(indent).append("\t").append(pA.protoNumber.toXMLString()).append("\n");
+		// -----------------------------------------------------------------------
+		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
+		for (String tip : pA.rFrames)
+			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"")
+					.append(tip).append("\" />\n");
+		rB.append(indent).append("\t</Frames>\n");
+		// -----------------------------------------------------------------------
+		rB.append(pA.getFoot().toXMLString(indent + "\t"));
+		rB.append(pA.getGProduct().toXMLString(indent + "\t"));
+		rB.append(indent).append("</Algebra>\n");
+		return rB.toString();
 	}
 
 	/**
@@ -73,6 +75,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * by the algebra. This is the Foot.
 	 */
 	protected Foot foot;
+
 	/**
 	 * The second among the common elements is the Eddington basis formed from all
 	 * blades that can be produced through exterior products of generating
@@ -104,40 +107,12 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * This is the list of known frames defined against this Algebra.
 	 */
 	protected ArrayList<String> rFrames;
-
 	/**
 	 * Unique string (hopefully) that provides a machine readable name more likely
 	 * to be unique. Used by apps that need more than the human readable name to
 	 * avoid duplicating objects unnecessarily.
 	 */
 	protected String uuid;
-	
-	/**
-	 * This is an exporter of internal details to XML. It exists to bypass certain
-	 * security concerns related to Java serialization of objects.
-	 * 
-	 * @param pA Algebra to be exported as XML data
-	 * @param indent String of tab characters to assist with human readability of output.
-	 * @return String formatted as XML containing information about the Algebra
-	 */
-	public final static String toXMLString(Algebra pA, String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
-		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
-		rB.append(indent).append("\t").append(pA.protoNumber.toXMLString()).append("\n");
-		// -----------------------------------------------------------------------
-		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
-		for (String tip : pA.rFrames)
-			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"")
-					.append(tip).append("\" />\n");
-		rB.append(indent).append("\t</Frames>\n");
-		// -----------------------------------------------------------------------
-		rB.append(pA.getFoot().toXMLString(indent + "\t"));
-		rB.append(pA.getGProduct().toXMLString(indent + "\t"));
-		rB.append(indent).append("</Algebra>\n");
-		return rB.toString();
-	}
 
 	/**
 	 * This is the constructor that assumes a full Algebra has already been
@@ -153,7 +128,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	public Algebra(String pS, Algebra pA) {
 		this(pS, pA.getFoot(), pA.shareCardinal(), pA.getGProduct());
 	}
-
+	
 	/**
 	 * This is the constructor that assumes a Foot, Cardinal, and GProduct have been
 	 * instantiated. It appends the Cardinal to the Foot and points at the offered
@@ -339,6 +314,23 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 		}
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Algebra other = (Algebra) obj;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
+	}
+
 	/**
 	 * This method returns the Algebra's name.
 	 * 
@@ -439,6 +431,14 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 */
 	public ArrayList<String> getReferenceFrames() {
 		return rFrames;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
 	}
 
 	/**

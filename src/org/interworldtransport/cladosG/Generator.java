@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * supported sizes of related blades. Most uses of an instance will NOT make use
  * of the internal state, though, and cannot change it either way.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum Generator {

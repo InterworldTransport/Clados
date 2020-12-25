@@ -43,7 +43,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * The directions are simply Generators from an enumeration class. They are kept
  * in an EnumSet which uses as its sense of order the same order generators are
  * enumerated in their class. At present, the supported number of 'directions'
- * is 0 to 14, so the enumeration class lists 14 possible generators.
+ * is 0 to 15, so the enumeration class lists 14 possible generators.
  * 
  * The EnumSet keeps Generators in their natural order. If a new direction is
  * added, the EnumSet will handle it 'late' in the computational sense. In other
@@ -54,9 +54,9 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * 
  * For example, if a sub-manifold has six possible directions, a Blade will
  * contain zero to six of them represented as generators E1 through E6. If only
- * 3 are in the Blade (making it a 3-blade) then only E1, E2, and E3 will be in
- * the EnumSet. If the EnumSet is empty, zero directions are contained and the
- * blade represents a scalar.
+ * 3 are in the Blade (making it a 3-blade) then ANY three will be in the
+ * EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions are
+ * contained and the blade represents a scalar.
  * 
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -79,7 +79,7 @@ public class Blade implements Comparable<Blade> {
 	 * 
 	 * @param pMaxGen This is the byte integer representation of the largest
 	 *                genertor that will be used in this blade being created.
-	 * @return Blade is returned. 
+	 * @return Blade is returned.
 	 */
 	public final static Blade createBlade(byte pMaxGen) {
 		Blade returnIt;
@@ -393,12 +393,12 @@ public class Blade implements Comparable<Blade> {
 	 *                                 from 0 to 2^15 which is one too many for byte
 	 *                                 integers.
 	 */
-	//public Blade(byte pMaxGen, byte[] pDirs) throws GeneratorRangeException {
-	//	this(pMaxGen);
-	//	for (byte tS : pDirs)
-	//		blade.add(Generator.get(tS));
-	//	makeKey();
-	//}
+	// public Blade(byte pMaxGen, byte[] pDirs) throws GeneratorRangeException {
+	// this(pMaxGen);
+	// for (byte tS : pDirs)
+	// blade.add(Generator.get(tS));
+	// makeKey();
+	// }
 
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGen
@@ -447,10 +447,10 @@ public class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See add(Byte pS)
 	 */
-	//public Blade add(byte pS) throws GeneratorRangeException {
-	//	add(Byte.valueOf(pS));
-	//	return this;
-	//}
+	// public Blade add(byte pS) throws GeneratorRangeException {
+	// add(Byte.valueOf(pS));
+	// return this;
+	// }
 
 	/**
 	 * The boxed byte represents a 'direction' in the blade to be added. It is first
@@ -467,17 +467,19 @@ public class Blade implements Comparable<Blade> {
 	 *                                 trying to add 22 or -5 will cause this
 	 *                                 exception to be thrown.
 	 */
-	//public Blade add(Byte pS) throws GeneratorRangeException {
-	//	if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
-	//		throw new GeneratorRangeException("Index out of Range as a generator for blade.");
-	//	else if (isPScalar(this) | pS.byteValue() > maxGen)
-	//		return this;
-	//	else {
-	//		if (blade.add(Generator.get(pS.byteValue())))
-	//			makeKey();
-	//		return this;
-	//	}
-	//}
+	// public Blade add(Byte pS) throws GeneratorRangeException {
+	// if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() >
+	// CladosConstant.GENERATOR_MAX.ord)
+	// throw new GeneratorRangeException("Index out of Range as a generator for
+	// blade.");
+	// else if (isPScalar(this) | pS.byteValue() > maxGen)
+	// return this;
+	// else {
+	// if (blade.add(Generator.get(pS.byteValue())))
+	// makeKey();
+	// return this;
+	// }
+	// }
 
 	/**
 	 * This 'add' method assumes an entire enumerated set of generators has been
@@ -675,9 +677,9 @@ public class Blade implements Comparable<Blade> {
 	 * @return Blade The blade itself is returned to support stream calls.
 	 * @throws GeneratorRangeException See remove(Short pS)
 	 */
-	//public Blade remove(byte pS) throws GeneratorRangeException {
-	//	return remove(Byte.valueOf(pS));
-	//}
+	// public Blade remove(byte pS) throws GeneratorRangeException {
+	// return remove(Byte.valueOf(pS));
+	// }
 
 	/**
 	 * The boxed byte represents a 'direction' in the blade to be removed. It is
@@ -693,13 +695,14 @@ public class Blade implements Comparable<Blade> {
 	 *                                 example, trying to remove 22 or -5 will cause
 	 *                                 this exception to be thrown.
 	 */
-	//public Blade remove(Byte pS) throws GeneratorRangeException {
-	//	if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
-	//		throw new GeneratorRangeException("Unsupported Generator for Blade.");
-	//	else if (blade.remove(Generator.get(pS.byteValue())))
-	//		makeKey();
-	//	return this;
-	//}
+	// public Blade remove(Byte pS) throws GeneratorRangeException {
+	// if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() >
+	// CladosConstant.GENERATOR_MAX.ord)
+	// throw new GeneratorRangeException("Unsupported Generator for Blade.");
+	// else if (blade.remove(Generator.get(pS.byteValue())))
+	// makeKey();
+	// return this;
+	// }
 
 	/**
 	 * This 'remove' method assumes an entire enumerated set of generators has been

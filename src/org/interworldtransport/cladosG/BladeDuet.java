@@ -38,11 +38,11 @@ import org.interworldtransport.cladosGExceptions.BladeCombinationException;
  * BladeDuet makes use of streams, but intentionally avoids parallelizing
  * computations internally. Most of what each one does must be done in sequence.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public final class BladeDuet {
-		
+
 	/**
 	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet
 	 * list. It's actually two buckets of sorted generators that upon duplication
@@ -62,7 +62,8 @@ public final class BladeDuet {
 	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit'
 	 * sized data element to track signs.
 	 * 
-	 * Exception cases NOT checked because this is for CladosG internal use.
+	 * Exception cases NOT checked because this is for CladosG internal use. The
+	 * method itself is public, but it's really for internal use.
 	 * 
 	 * @param pB1 Blade appearing on the left/row of a multiplication operation
 	 * @param pB2 Blade appearing on the right/column of a multiplication operation
@@ -89,14 +90,10 @@ public final class BladeDuet {
 
 	/**
 	 * This is a re-use constructor that builds this as a juxtaposition of the two
-	 * offered blades which it then sorts IN THIS LIST without altering the lists
-	 * representing the offered blades.
+	 * offered blades.
 	 * 
-	 * BEWARE that an assertion is made here. If maxGenerator() on both blades fails
-	 * to be identical, this constructor will abort.
-	 * 
-	 * @param pB1 A Blade to re-use it's boxed shorts.
-	 * @param pB2 A Blade to re-use it's boxed shorts.
+	 * @param pB1 A Blade to re-use on the left.
+	 * @param pB2 A Blade to re-use on the right.
 	 */
 	public BladeDuet(Blade pB1, Blade pB2) {
 		assert (pB1.maxGenerator() == pB2.maxGenerator());
@@ -116,7 +113,7 @@ public final class BladeDuet {
 	 * list. It's actually two buckets of sorted generators that upon duplication
 	 * removal MIGHT be sorted. If not, we can jump straight to the sorted order
 	 * simply by inserting the generators in an EnumSet which happens to be their
-	 * destination in a Blade anyway. What we don't know immeidately is how many
+	 * destination in a Blade anyway. What we don't know immediately is how many
 	 * transpositions are necessary to reach that sort order. That's what this
 	 * method does after removing generator duplicates.
 	 * 

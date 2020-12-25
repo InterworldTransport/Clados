@@ -87,10 +87,9 @@ public enum CladosFListBuilder {
 	 * operation fails but equals() does not.
 	 * 
 	 * @param pField CladosField enumeration hint for DivField child to be created.
-	 * @param pCD    List of DivField Numbers to be copied.
+	 * @param pD    List of DivField Numbers to be copied.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <T extends DivField & Divisible> T[] copyOf(CladosField pField, T[] pD) {
 		switch (pField) {
 		case REALF -> {
@@ -125,25 +124,25 @@ public enum CladosFListBuilder {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = RealF.copyOf((RealF) pDV.get(j));
+				tSpot[j] = CladosFBuilder.copyOf((RealF) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = RealD.copyOf((RealD) pDV.get(j));
+				tSpot[j] = CladosFBuilder.copyOf((RealD) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = ComplexF.copyOf((ComplexF) pDV.get(j));
+				tSpot[j] = CladosFBuilder.copyOf((ComplexF) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = ComplexD.copyOf((ComplexD) pDV.get(j));
+				tSpot[j] = CladosFBuilder.copyOf((ComplexD) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		default -> {
@@ -159,30 +158,31 @@ public enum CladosFListBuilder {
 	 * @param pDV Array of Numbers to be copied.
 	 * @return DivField[] Newly constructed copies of incoming numbers
 	 */
-	public <T extends DivField & Divisible> DivField[] copyOf(T[] pDV) {
+	@SuppressWarnings("unchecked")
+	public <T extends DivField & Divisible> T[] copyOf(T[] pDV) {
 		switch (this) {
 		case REALF -> {
-			RealF[] tSpot = new RealF[pDV.length];
+			T[] tSpot = (T[]) new RealF[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = RealF.copyOf((RealF) pDV[j]);
+				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		case REALD -> {
-			RealD[] tSpot = new RealD[pDV.length];
+			T[] tSpot = (T[]) new RealD[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = RealD.copyOf((RealD) pDV[j]);
+				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		case COMPLEXF -> {
-			ComplexF[] tSpot = new ComplexF[pDV.length];
+			T[] tSpot = (T[]) new ComplexF[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = ComplexF.copyOf((ComplexF) pDV[j]);
+				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		case COMPLEXD -> {
-			ComplexD[] tSpot = new ComplexD[pDV.length];
+			T[] tSpot = (T[]) new ComplexD[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = ComplexD.copyOf((ComplexD) pDV[j]);
+				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		default -> {

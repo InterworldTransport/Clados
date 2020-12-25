@@ -46,14 +46,15 @@ class CoreMonadComplexDTest {
 			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15 - k);
 
 		tM0 = new Monad("Test Monad 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
-				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
+				new ComplexD(Cardinal.generate("Test Double 1"), 0d, 0d));
 		tM1 = new Monad("Test Monad 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
-				new ComplexD(Cardinal.generate("Test Float 1"), 0d));
+				new ComplexD(Cardinal.generate("Test Double 1"), 0d, 0d));
+		//assert(tM1.getMode() == CladosField.COMPLEXD);
 		tM2 = new Monad("Test Monad 2", tM1);
 		tM3 = new Monad("Test Monad 3", tM1);
 		tM4 = new Monad(tM0);
 		tM5 = new Monad("Test Monad 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
-				new ComplexD(Cardinal.generate("Test Float 5"), 0d), "Unit PScalar");
+				new ComplexD(Cardinal.generate("Test Double 5"), 0d, 0d), "Unit PScalar");
 		tM6 = new Monad("Test Monad 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF);
 		tM7 = new Monad(mName + "7", tM6);
 		tM8 = new Monad(mName + "8", tM6);
@@ -70,18 +71,14 @@ class CoreMonadComplexDTest {
 	public void testMultiplication() throws FieldBinaryException, CladosMonadBinaryException {
 		assert(tM1.getAlgebra() == tM2.getAlgebra());
 		assert(tM2.getAlgebra() == tM9.getAlgebra());
-		//System.out.println(MonadRealF.toXMLString(tM2, ""));
-		//System.out.println(MonadRealF.toXMLString(tM9, ""));
-		//tM9.multiplyLeft(tM2);
-		//assertTrue(MonadRealF.isGZero(tM2));
 		
-		Monad check1 = new Monad(tM9);
-		assertTrue(tM9.isGEqual(check1));
-		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		check1.multiplyLeft(tM9);
-		//System.out.println(MonadRealF.toXMLString(check1, ""));
-		assert(Monad.isGZero(check1));
-		
+		for (short m = 0; m < 100; m++) {
+			//System.out.println("ComplexD | " + m);
+			Monad check1 = new Monad(tM9);
+			assertTrue(tM9.isGEqual(check1));
+			check1.multiplyLeft(tM9);
+			assert (Monad.isGZero(check1));
+		}
 	}
 
 	@Test
