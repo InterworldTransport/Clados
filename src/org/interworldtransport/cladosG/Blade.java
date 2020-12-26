@@ -43,7 +43,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * The directions are simply Generators from an enumeration class. They are kept
  * in an EnumSet which uses as its sense of order the same order generators are
  * enumerated in their class. At present, the supported number of 'directions'
- * is 0 to 15, so the enumeration class lists 14 possible generators.
+ * is 0 to 15, so the enumeration class lists 15 possible generators.
  * 
  * The EnumSet keeps Generators in their natural order. If a new direction is
  * added, the EnumSet will handle it 'late' in the computational sense. In other
@@ -52,11 +52,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * generating a blade key. Iterators will always deliver directions in the same
  * order.
  * 
- * For example, if a sub-manifold has six possible directions, a Blade will
- * contain zero to six of them represented as generators E1 through E6. If only
- * 3 are in the Blade (making it a 3-blade) then ANY three will be in the
- * EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions are
- * contained and the blade represents a scalar.
+ * For example, if a sub-manifold has six possible directions from a point, a
+ * Blade will contain zero to six of them represented as generators E1 through
+ * E6. If only 3 are in the Blade (making it a 3-blade) then ANY three will be
+ * in the EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions
+ * are contained and the blade represents a scalar.
  * 
  * @version 2.0
  * @author Dr Alfred W Differ

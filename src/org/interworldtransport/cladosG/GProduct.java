@@ -41,7 +41,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * 
  * Most errors can be avoided by using CladosGBuilder to construct this object.
  * However, it shouldn't be necessary to construct a GProduct directly. Best
- * practice is to create an algebra instead.
+ * practice is to create an algebra and let it construct it's product.
+ * 
+ * The implemented interface is currently all the methods available in this
+ * class. That will change in the future as helper methods are built here that
+ * need not be exposed elsewhere.
  * 
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -130,8 +134,8 @@ public class GProduct implements CliffordProduct {
 			int row = canonicalBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
 			canonicalBasis.bladeStream().forEach(bladeRight -> {
 				int col = canonicalBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
-				Blade tSpot = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
-				result[row][col] = tSpot.sign() * canonicalBasis.getKeyIndexMap().get(tSpot.key());
+				Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
+				result[row][col] = bMult.sign() * canonicalBasis.getKeyIndexMap().get(bMult.key());
 			});
 		});
 	}

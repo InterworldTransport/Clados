@@ -60,7 +60,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF add(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (DivField.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return new ComplexF(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
 
@@ -188,7 +188,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF divide(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
+		if (DivField.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
 				&& !ComplexF.isInfinite(pF1) && !ComplexF.isInfinite(pF2)) {
 			ComplexF tZ = new ComplexF(pF1);
 			pF2.conjugate();
@@ -275,7 +275,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return complexF
 	 */
 	public static ComplexF multiply(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (DivField.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2)) {
 			float tempR = pF1.getReal() * pF2.getReal() - pF1.getImg() * pF2.getImg();
 			float tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
@@ -339,7 +339,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF subtract(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (DivField.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return new ComplexF(pF1.getCardinal(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
 

@@ -37,12 +37,73 @@ import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 
 /**
- * This class is definitely a work in progress. It is intended to replace an
- * array of DivFields that store the coefficients in a Monad.
+ * This class contains cladosF numbers that act together as the coefficients of
+ * a monad. They are all children of DivField and implement Divisible, so they
+ * have both a sense of 'units' and support basic arithmetic operations. Which
+ * numbers are contained internally, therefore, is tracked by two private
+ * elements. One contains a reference to a Cardinal that all the numbers should
+ * share. The other is a reference two one of the CladosField elements so we
+ * know whether this Scale is expected to contain real or complex numbers and at
+ * what level of floating point precision. Access to the two private elements is
+ * managed by their 'get' methods. getCardinal() and getMode(). There are set
+ * methods for them too, but they are package protected methods that should not
+ * be handled much by developers of physical models.
  * 
- * @version 1.0
+ * The data structure used to represent 'coefficients' used to be a fixed array
+ * that had the same length as the number of blades in a monad's basis. That has
+ * been modernized to an IdentityHashMap contained within this class. The basis
+ * against which the map is applicable can be referenced by another private
+ * element, but shouldn't be manipulated once set. The private element is
+ * finalized.
+ * 
+ * An IdentityHashMap was used instead of a simpler HashMap in order to get
+ * reference equality between map keys instead of object equality. Map Keys are
+ * Blades from the basis, so reference equality is the correct expectation when
+ * comparing keys. Typical use of keys from the map occurs with streams that
+ * effectively iterate through the blades for access to coefficients in the
+ * encompassing vector space. The information within a blade is far less
+ * important than which blade it is, thus reference equality is what is needed.
+ * 
+ * Map Values are CladosF numbers like RealF or ComplexD. Because they are
+ * objects instead of primitives, they behave much like Java's boxed primitives.
+ * In fact, they would BE those boxed primitives if not for the need to track
+ * units in physical models. For example, one meter is not one second. No
+ * equality test should pass.
+ * 
+ * Because values are objects, care must be taken once one has a reference to
+ * them. Any reference to one enables a developer to change it without the Scale
+ * or Monad knowing. This is the hydra monster named Mutability. It IS a danger
+ * here. Many of Scale's methods copy inbound numbers to avoid altering them,
+ * but some do not INTENTIONALLY.
+ * 
+ * 1. Coefficient settors that accept arrays do NOT copy values before placing
+ * them in the internal map. BEWARE BEWARE BEWARE
+ * 
+ * 2. Put() does not copy the incoming value before placing it in the internal
+ * map. Again... BEWARE.
+ * 
+ * 3. Coefficient settors that accept maps DO COPY values before placing them in
+ * the internal map. Any object from which values are taken to be used here are
+ * safe from the hydra.
+ * 
+ * 4. All gettors for coefficients provide direct references to values in the
+ * map. There most common use is INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA.
+ * The safest way to use them is within streams / lambdas.
+ * 
+ * GENERAL NOTE | Many of the methods for Scale will look a lot like Monad, so
+ * one can reasonably wonder why all the extra stuff in Monad when Scale looks
+ * enough like a tuple to represent things. The primary difference is that Scale
+ * contains only the coefficients and references a basis like what we got used
+ * to as students. That's not enough because a basis is only enough to represent
+ * linear combinations for a vector space. Other geometric meanings aren't
+ * in the basis. They are in the product table. Combining product table and
+ * basis into an 'algebra' gives a MUCH better description of a 'tuple'
+ * reference frame than a vector space.
+ * 
+ * @version 2.0
  * @author Dr Alfred W Differ
- * @param <D>
+ * @param <D> CladosF number like RealF, RealD, ComplexF, ComplexD. They must be
+ *            children of DivField AND implement Divisible.
  */
 public class Scale<D extends DivField & Divisible> {
 	/**
@@ -250,26 +311,31 @@ public class Scale<D extends DivField & Divisible> {
 	 * asking the question regarding the value rather than handle all the various
 	 * DivField children separately.
 	 * 
+	 * NOTE this tends to get used in filters in streams to minimize the number of
+	 * coefficients processed in arithmetic operations. Non-zero ones contribute
+	 * non-zero results to products, so this especially matters in O(N^2)
+	 * calculations.
+	 * 
 	 * @param pB
-	 * @return boolean True if the related value evaluates as ZERO in whatever
+	 * @return boolean False if the related value evaluates as ZERO in whatever
 	 *         number style it is.
 	 */
-	public boolean isZeroAt(Blade pB) {
+	public boolean isNotZeroAt(Blade pB) {
 		switch (mode) {
 		case COMPLEXD -> {
-			return ComplexD.isZero((ComplexD) map.get(pB));
+			return !ComplexD.isZero((ComplexD) map.get(pB));
 		}
 		case COMPLEXF -> {
-			return ComplexF.isZero((ComplexF) map.get(pB));
+			return !ComplexF.isZero((ComplexF) map.get(pB));
 		}
 		case REALD -> {
-			return RealD.isZero((RealD) map.get(pB));
+			return !RealD.isZero((RealD) map.get(pB));
 		}
 		case REALF -> {
-			return RealF.isZero((RealF) map.get(pB));
+			return !RealF.isZero((RealF) map.get(pB));
 		}
 		default -> {
-			return false;
+			return true;
 		}
 		}
 	}

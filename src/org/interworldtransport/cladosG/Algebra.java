@@ -35,8 +35,61 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
- * a multivector over a division field {Cl(p,q) x DivField} except the actual
- * field. That makes this an abstraction of an algebra.
+ * a multivector over a division field {Cl(p,q) x DivField} except for the
+ * actual field. That makes this a partial abstraction of an algebra. Once an
+ * actual division field is in the mix we are there, but that structure is
+ * reserved for the Monad class.
+ * 
+ * The primary data structures in a Algebra are a CanonicalBasis and a GProduct.
+ * Between them they define the structure of operations an Algebra can support.
+ * The basis provides for most behaviors people know from vector spaces. The
+ * product provides the other behaviors people know from differential forms.
+ * Together, though, they enable linear combinations of multi-ranked sums, thus
+ * they step beyond familiar ground from forms and outer products AND the
+ * familiar ground of scalar-only multiplication in vector spaces. All elements
+ * of an algebra an participate in addition and multiplication and
+ * multiplicative commutativity is NOT expected.
+ * 
+ * This isn't the place to explain what Clifford Algebras are and what they do.
+ * This IS the place to point that that Clados extends the idea slightly in
+ * order to support future uses.
+ * 
+ * 1. An Algebra references a 'Foot' object to imitate a location where the
+ * algebra's geometry is expected to be a tangent space to some underlying
+ * curved sub-manifold. No attempt at curvature is made here, but the Foot
+ * object IS used in reference match tests. This is intentionally done to
+ * prevent different tangent spaces being compared. In a model that assumes
+ * curvature on the manifold, one must first transport their frame before making
+ * comparisons. No 'transport' capability is written for Clados, but it might be
+ * some day.
+ * 
+ * Anyone wanting to get around this feature need only declare one 'Foot' and
+ * then re-use it everywhere. The computational penalty is miniscule.
+ * 
+ * 2. An Algebra has a CladosField mode. Whether the field is real or complex
+ * matters. For computational reasons, the floating point precision technique in
+ * use also matters. For those reasons, an Algebra maintains an internal mode
+ * reference.
+ * 
+ * 3. An Algebra has a DivField element too in order to contain the Cardinal
+ * within it and to use it combined with Mode to generate field numbers. This
+ * might change in the future as the builder classes mature. It used to be used
+ * as an operand in a copy function frequently in Monad in Clados V1.0, but is
+ * largely bypassed in V2.0. If a complete bypass happens, the DivField element
+ * may be reduced to it's contained Cardinal.
+ * 
+ * 4. There is a residual reference to a list of frame names with related
+ * settors and gettors. This is changing in V2.0 as frames are better described
+ * by linear combinations of basis elements, which makes them sets of Scale's.
+ * Algebra's WILL track them, but by reference in a more complicated manner
+ * since they will be used to 'cut out' the meanings of multiplication and
+ * addition.
+ * 
+ * 5. There is a UUID string kept internally for use an XML variant of
+ * serialization. It has no geometric meaning. Think of it as a digital name.
+ * 
+ * 6. There is also a 'name' string for the human readable name of an algebra.
+ * It has no geometric meaning and is not used for anything important.
  * 
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -46,8 +99,9 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * 
-	 * @param pA Algebra to be exported as XML data
-	 * @param indent String of tab characters to assist with human readability of output.
+	 * @param pA     Algebra to be exported as XML data
+	 * @param indent String of tab characters to assist with human readability of
+	 *               output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
 	public final static String toXMLString(Algebra pA, String indent) {
@@ -128,7 +182,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	public Algebra(String pS, Algebra pA) {
 		this(pS, pA.getFoot(), pA.shareCardinal(), pA.getGProduct());
 	}
-	
+
 	/**
 	 * This is the constructor that assumes a Foot, Cardinal, and GProduct have been
 	 * instantiated. It appends the Cardinal to the Foot and points at the offered

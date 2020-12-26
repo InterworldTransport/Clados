@@ -26,7 +26,7 @@ class CoreMonadComplexDTest {
 	String mName = "Test MonadComplexD ";
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
-	ComplexD[] cRF;
+	ComplexD[] cRD;
 	Monad tM0;
 	Monad tM1;
 	Monad tM2;
@@ -40,10 +40,9 @@ class CoreMonadComplexDTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		cRF = new ComplexD[16];
+		cRD = new ComplexD[16];
 		Cardinal tSpot = Cardinal.generate("TestComplexDs");
-		for (int k = 0; k < 16; k++)
-			cRF[k] = new ComplexD(tSpot, (double) k, (double) 15 - k);
+		cRD = (ComplexD[]) CladosFListBuilder.COMPLEXD.createONE(tSpot, cRD.length);
 
 		tM0 = new Monad("Test Monad 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
 				new ComplexD(Cardinal.generate("Test Double 1"), 0d, 0d));
@@ -55,7 +54,7 @@ class CoreMonadComplexDTest {
 		tM4 = new Monad(tM0);
 		tM5 = new Monad("Test Monad 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
 				new ComplexD(Cardinal.generate("Test Double 5"), 0d, 0d), "Unit PScalar");
-		tM6 = new Monad("Test Monad 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM6 = new Monad("Test Monad 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRD);
 		tM7 = new Monad(mName + "7", tM6);
 		tM8 = new Monad(mName + "8", tM6);
 		tM9 = new Monad(mName + "9", tM2);
@@ -146,23 +145,18 @@ class CoreMonadComplexDTest {
 	@Test
 	public void testBiMathOps2() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
 		tM8.gradePart((byte) 4).normalize();
-		// System.out.println(toXMLString(tM8));
 		tM6.multiplyLeft(tM8).dualLeft();
 		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
-		// System.out.println(toXMLString(tM6));
-		// System.out.println(toXMLString(tM7));
 		assertTrue(tM6.isGEqual(tM7));
 
 		tM6.multiplyRight(tM8).dualRight();
 		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
 		assertTrue(tM6.isGEqual(tM7));
-
+		
 		tM5.setCoeff((ComplexD[]) tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
-
 		tM6.multiplySymm(tM8);
 		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
-		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 
 		tM6.setCoeff((ComplexD[]) tM7.getCoeff());

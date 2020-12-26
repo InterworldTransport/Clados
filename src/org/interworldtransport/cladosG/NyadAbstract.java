@@ -30,11 +30,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.Divisible;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * Many math objects within the cladosG package have a number of attributes in
@@ -48,7 +53,7 @@ import org.interworldtransport.cladosGExceptions.CladosNyadException;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public abstract class NyadAbstract {
+public class NyadAbstract {
 	/**
 	 * Return a boolean stating whether or not the nyad covers the algebra named in
 	 * the parameter. Coverage is true if a monad can be found in the nyad that
@@ -83,7 +88,7 @@ public abstract class NyadAbstract {
 			return !pN._strongFlag;
 		return pN._oneAlgebra;
 	}
-	
+
 	/**
 	 * Return true if the Monads in the two lists are GEqual and the nyads are
 	 * reference matches. Only monads sharing the same algebra name need to be
@@ -188,7 +193,7 @@ public abstract class NyadAbstract {
 	public static final boolean isStrong(NyadAbstract pN) {
 		return pN._strongFlag;
 	}
-	
+
 	/**
 	 * This method performs a strong test for a reference match. All properties of
 	 * the Nyads must match except for the NyadRealF names. The monads within the
@@ -271,7 +276,7 @@ public abstract class NyadAbstract {
 	public static final boolean isWeak(NyadAbstract pN) {
 		return !pN._strongFlag;
 	}
-	
+
 	/**
 	 * This method performs a weak test for a reference match. All properties of the
 	 * Nyads must match except for the NyadRealF names and orders. The monads within
@@ -337,6 +342,8 @@ public abstract class NyadAbstract {
 	 */
 	protected Foot footPoint;
 
+	protected CladosField mode;
+
 	/**
 	 * This array is the list of Monads that makes up the NyadRealF. It will be tied
 	 * to the footPoint members of each Monad as keys.
@@ -347,6 +354,89 @@ public abstract class NyadAbstract {
 	 * All objects of this class have a name independent of all other features.
 	 */
 	protected String Name;
+	
+	/**
+	 * Simple copy constructor of a Nyad. The passed NyadAbstract will be copied in
+	 * detail. This contructor is used most often to get around operations that
+	 * alter one of the nyads when the developer does not wish it to be altered.
+	 * 
+	 * @param pN NyadAbstract
+	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
+	 *                              is malformed. Make no assumptions!
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed one one of the
+	 *                              monads in the nyad being copied.
+	 */
+	public NyadAbstract(NyadAbstract pN) throws CladosNyadException, CladosMonadException {
+		this(pN.getName(), pN, true);
+	}
+
+	/**
+	 * A basic constructor of a NyadAbstract that starts with a Monad. The Monad will
+	 * be copied and placed at the top of the list OR reused based on pCopy The
+	 * Foot, however, will be used exactly as is either way.
+	 * 
+	 * @param pName String
+	 * @param pM    Monad
+	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
+	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
+	 *                              is malformed. Make no assumptions!
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed about the monad
+	 *                              being used/copied.
+	 */
+	public NyadAbstract(String pName, Monad pM, boolean pCopy)
+			throws CladosNyadException, CladosMonadException {
+		setName(pName);
+		setFoot(pM.getAlgebra().getFoot());
+		mode = pM.getMode();
+		monadList = new ArrayList<Monad>(1);
+		algebraList = new ArrayList<Algebra>(1);
+		if (pCopy)
+			appendMonadCopy(pM);
+		else
+			appendMonad(pM);
+	}
+
+	/**
+	 * A simple copy constructor of a NyadAbstract. The passed NyadComplexD will be
+	 * copied without the name. This constructor is used most often to clone other
+	 * objects in every way except name.
+	 * 
+	 * The Foot object is re-used. The Algebra object is re-used. The Nyad's
+	 * proto-number object is re-used. The Nyad's monad objects are copyied OR
+	 * re-used depending on pCopy. but... re-use the monad's algebra object copy the
+	 * monad's frame name create new RealF's that clone the monad's coefficients
+	 * such that they... re-use the RealF's Cardinal object merely copy the val
+	 * array
+	 * 
+	 * @param pName String
+	 * @param pN    NyadAbstract
+	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
+	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
+	 *                              is malformed. Make no assumptions!
+	 * @throws CladosMonadException This shouldn't happen very often. If it does,
+	 *                              there is something malformed one one of the
+	 *                              monads in the nyad being copied.
+	 */
+	public NyadAbstract(String pName, NyadAbstract pN, boolean pCopy) throws CladosNyadException, CladosMonadException {
+		if (pN.getNyadOrder() == 0) 
+			throw new IllegalArgumentException("Offered Nyad to copy is empty.");
+		
+		setName(pName);
+		setFoot(pN.getFoot());
+		mode = pN.getMonadList(0).getMode();
+		if (pN.getMonadList() != null) {
+			monadList = new ArrayList<Monad>(pN.getMonadList().size());
+			algebraList = new ArrayList<Algebra>(pN.getAlgebraList().size());
+			if (pCopy)
+				for (Monad tSpot : pN.getMonadList())
+					appendMonadCopy(tSpot);
+			else
+				for (Monad tSpot : pN.getMonadList())
+					appendMonad(tSpot);
+		}
+	}
 
 	/**
 	 * This is just an alias for algebraList.stream().
@@ -404,7 +494,6 @@ public abstract class NyadAbstract {
 		resetAlgebraList(monadList);
 		return this;
 	}
-	
 
 	/**
 	 * Dyad anymmetric compression: 1/2 (left right - right left) Monads are placed
@@ -427,7 +516,8 @@ public abstract class NyadAbstract {
 		tempLeft.multiplyAntisymm(tempRight);
 
 		monadList.remove(pFrom);
-		//TODO RESET Algebra list or write small method that removes it being careful for weak detection
+		// TODO RESET Algebra list or write small method that removes it being careful
+		// for weak detection
 		monadList.trimToSize();
 	}
 
@@ -451,8 +541,57 @@ public abstract class NyadAbstract {
 		tempLeft.multiplySymm(tempRight);
 
 		monadList.remove(pFrom);
-		//TODO RESET Algebra list or write small method that removes it being careful for weak detection
+		// TODO RESET Algebra list or write small method that removes it being careful
+		// for weak detection
 		monadList.trimToSize();
+	}
+
+	/**
+	 * Create a new monad for this nyad using the prototype field and then append it
+	 * to the end of the monadList. A 'zero' for the new algebra will be added to
+	 * the list. This method creates a new algebra using the offered name and
+	 * signature. It also creates a new frame using the offered name. It is not a
+	 * copy method.
+	 * 
+	 * @param pName    String
+	 * @param pAlgebra String
+	 * @param pFrame   String
+	 * @param pSig     String
+	 * @param pCard    String
+	 * 
+	 * @throws CladosMonadException    This exception is thrown when the new monad
+	 *                                 constructor fails.
+	 * @throws BadSignatureException   This exception is thrown when signature is
+	 *                                 rejected as invalid.
+	 * @throws CladosNyadException     This exception is thrown when the new monad
+	 *                                 cannot be appended. Perhaps there is a
+	 *                                 reference mismatch or the new monad failed
+	 *                                 construction.
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 * @return NyadAbstract
+	 */
+	public NyadAbstract createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard)
+			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
+
+		Cardinal tCard = (pCard == null) ? CladosFBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
+				: CladosFBuilder.createCardinal(pCard);
+
+		switch (mode) {
+		case COMPLEXD -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXD.createZERO(tCard),
+				getFoot(), pName, pAlgebra, pFrame, pSig));
+		case COMPLEXF -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(tCard),
+				getFoot(), pName, pAlgebra, pFrame, pSig));
+		case REALD -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALD.createZERO(tCard), getFoot(),
+				pName, pAlgebra, pFrame, pSig));
+		case REALF -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALF.createZERO(tCard), getFoot(),
+				pName, pAlgebra, pFrame, pSig));
+		default -> {
+		}
+		}
+
+		return this;
 	}
 
 	/**
@@ -810,11 +949,11 @@ public abstract class NyadAbstract {
 		removeMonad(testfind);
 		return this;
 	}
-	
+
 	/**
-	 * NyadAbstract Scaling: Pick a monad and scale it by the magnitude provided. Only
-	 * one monad can be scaled within a nyad at a time. Note that a request to scale
-	 * a monad that cannot be found in the list results in no action and no
+	 * NyadAbstract Scaling: Pick a monad and scale it by the magnitude provided.
+	 * Only one monad can be scaled within a nyad at a time. Note that a request to
+	 * scale a monad that cannot be found in the list results in no action and no
 	 * exception. The scaling is effectively performed against a 'zero' monad for
 	 * the algebra not represented in the list since much monads can be appended to
 	 * the list without really changing the nature of the nyad.

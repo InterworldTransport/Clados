@@ -89,7 +89,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * 
  * The choice limit of 14 generators produces a maximum basis size of 16,384.
  * More can be used, but one must change the 'magic numbers' in the
- * CladosConstant class and recompile.
+ * CladosConstant class and recompile. (NOTE the new limit is 15.)
  * 
  * There IS a sort buried in the constructor for a Basis. After Blades are
  * generated using the private powerSet method, they are sorted on the 'natural

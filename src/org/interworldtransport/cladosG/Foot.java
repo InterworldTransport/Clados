@@ -216,8 +216,8 @@ public final class Foot {
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * 
-	 * @param pind String indentation to assist with human readability of output XML
-	 *             data
+	 * @param indent String indentation to assist with human readability of output
+	 *               XML data
 	 * @return String formatted as XML containing information about the Foot
 	 */
 	public String toXMLString(String indent) {
