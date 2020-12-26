@@ -106,7 +106,7 @@ class CoreMonadRealFTest {
 	}
 
 	@Test
-	public void testUniMathOps() throws FieldBinaryException, CladosMonadException {
+	public void testUniMathOps() throws FieldException {
 		tM0.dualLeft();
 		assertTrue(tM4.isGEqual(tM0));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));

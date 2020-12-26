@@ -63,7 +63,6 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 		if (DivField.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return new ComplexF(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
-
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
 
@@ -95,13 +94,11 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 *                              on sqMagnitude.
 	 * @return complexF
 	 */
-	public static ComplexF copyFromModuliSum(ComplexF[] pL) throws FieldBinaryException {
-		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getModulus());
-		for (int j = 1; j < pL.length; j++)
-			if (isTypeMatch(pL[j], tR))
-				tR.add((ComplexF.copyONE(pL[j]).scale(pL[j].getModulus())));
-			else
-				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
+	public final static ComplexF copyFromModuliSum(ComplexF[] pL) throws FieldBinaryException {
+		if (pL.length == 0) throw new IllegalArgumentException("Can't form Modulus Sum from empty array.");
+		ComplexF tR = ComplexF.copyZERO(pL[0]);
+		for (ComplexF point : pL)
+			tR.add((ComplexF.copyONE(point).scale(point.getModulus())));
 		return tR;
 	}
 
@@ -120,15 +117,11 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return ComplexF
 	 */
-	public static ComplexF copyFromSQModuliSum(ComplexF[] pL) throws FieldBinaryException {
-		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getSQModulus());
-
-		for (int j = 1; j < pL.length; j++)
-			if (isTypeMatch(pL[j], tR))
-				tR.add((ComplexF.copyONE(pL[j])).scale(pL[j].getSQModulus()));
-			else
-				throw new FieldBinaryException(pL[j], "cardinal mistach during addition", tR);
-
+	public final static ComplexF copyFromSQModuliSum(ComplexF[] pL) throws FieldBinaryException {
+		if (pL.length == 0) throw new IllegalArgumentException("Can't form SQ Modulus Sum from empty array.");
+		ComplexF tR = ComplexF.copyZERO(pL[0]);
+		for (ComplexF point : pL)
+			tR.add((ComplexF.copyONE(point).scale(point.getSQModulus())));
 		return tR;
 	}
 
@@ -150,7 +143,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return ComplexF
 	 */
-	public static ComplexF copyONE(ComplexF pR) {
+	public static ComplexF copyONE(DivField pR) {
 		return new ComplexF(pR.getCardinal(), 1.0f, 0.0f);
 	}
 
@@ -161,7 +154,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return ComplexF
 	 */
-	public static ComplexF copyZERO(ComplexF pR) {
+	public static ComplexF copyZERO(DivField pR) {
 		return new ComplexF(pR.getCardinal(), 0.0f, 0.0f);
 	}
 

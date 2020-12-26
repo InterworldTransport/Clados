@@ -106,7 +106,7 @@ class CoreMonadComplexDTest {
 	}
 
 	@Test
-	public void testUniMathOps() throws FieldBinaryException, CladosMonadException {
+	public void testUniMathOps() throws FieldException {
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
 		assertTrue(isGZero(tM5.scale(ComplexD.copyZERO((ComplexD) tM5.getCoeff(0)))));
@@ -133,7 +133,7 @@ class CoreMonadComplexDTest {
 	}
 
 	@Test
-	public void testBiMathOps1() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
+	public void testBiMathOps1() throws FieldException, CladosMonadException {
 		tM6.add(tM7);
 		tM7.scale(new ComplexD(tM6.getCoeff((short) 0), 2.0f, 0.0f));
 		assertTrue(tM6.isGEqual(tM7));
@@ -143,7 +143,7 @@ class CoreMonadComplexDTest {
 	}
 
 	@Test
-	public void testBiMathOps2() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
+	public void testBiMathOps2() throws FieldException, CladosMonadException {
 		tM8.gradePart((byte) 4).normalize();
 		tM6.multiplyLeft(tM8).dualLeft();
 		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));

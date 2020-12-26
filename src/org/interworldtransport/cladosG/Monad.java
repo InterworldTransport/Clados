@@ -35,6 +35,7 @@ import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.DivField;
 import org.interworldtransport.cladosF.Divisible;
+import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
@@ -838,7 +839,7 @@ public class Monad {
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible> Monad dualLeft() {
+	public <T extends DivField & Divisible & Normalizable> Monad dualLeft() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 
@@ -862,7 +863,7 @@ public class Monad {
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible> Monad dualRight() {
+	public <T extends DivField & Divisible & Normalizable> Monad dualRight() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 
@@ -1063,21 +1064,10 @@ public class Monad {
 	 * Return the magnitude of the Monad
 	 * 
 	 * @return DivField but in practice it is always a child of DivField
-	 * @throws CladosMonadException This exception is thrown when the monad's
-	 *                              coefficients aren't in the same field. This
-	 *                              should be caught during monad construction, but
-	 *                              field coefficients are references so there is
-	 *                              always a chance something will happen to alter
-	 *                              the object referred to in a list of
-	 *                              coefficients.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField> T magnitude() throws CladosMonadException {
-		try {
-			return (T) scales.magnitude();
-		} catch (FieldBinaryException e) {
-			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
-		}
+	public <T extends DivField & Divisible> T magnitude() {
+		return (T) scales.modulusSum();
 	}
 
 	/**
@@ -1145,7 +1135,7 @@ public class Monad {
 	 *                                    match test fails with the two monads
 	 * @return Monad
 	 */
-	public <T extends DivField & Divisible> Monad multiplyLeft(Monad pM)
+	public <T extends DivField & Divisible & Normalizable> Monad multiplyLeft(Monad pM)
 			throws FieldBinaryException, CladosMonadBinaryException {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new CladosMonadBinaryException(this, "Left multiply fails reference match.", pM);
@@ -1301,7 +1291,7 @@ public class Monad {
 	 *                                    match test fails with the two monads
 	 * @return Monad
 	 */
-	public <T extends DivField & Divisible> Monad multiplyRight(Monad pM)
+	public <T extends DivField & Divisible & Normalizable> Monad multiplyRight(Monad pM)
 			throws FieldBinaryException, CladosMonadBinaryException {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new CladosMonadBinaryException(this, "Right multiply fails reference match.", pM);
@@ -1463,18 +1453,13 @@ public class Monad {
 	 * a zero magnitude.
 	 * 
 	 * @return Monad but in practice it will always be a child of MonadAbtract
-	 * @throws CladosMonadException This exception is thrown when normalizing a zero
+	 * @throws FieldException This exception is thrown when normalizing a zero
 	 *                              or field conflicted monad is tried.
 	 */
-	public Monad normalize() throws CladosMonadException {
+	public Monad normalize() throws FieldException {
 		if (gradeKey == 0L & scales.isScalarZero())
-			throw new CladosMonadException(this, "Normalizing a zero magnitude Monad isn't possible");
-		try {
-			scales.normalize();
-		} catch (FieldException e) {
-			throw new CladosMonadException(this,
-					"Normalizing a zero magnitude or Field conflicted Monad isn't possible");
-		}
+			throw new FieldException(null, "Normalizing a zero magnitude Monad isn't possible");
+		scales.normalize();
 		return this;
 	}
 
@@ -1613,21 +1598,10 @@ public class Monad {
 	 * Return the magnitude squared of the Monad
 	 * 
 	 * @return DivField but in practice it is always a child of DivField
-	 * @throws CladosMonadException This exception is thrown when the monad's
-	 *                              coefficients aren't in the same field. This
-	 *                              should be caught during monad construction, but
-	 *                              field coefficients are references so there is
-	 *                              always a chance something will happen to alter
-	 *                              the object referred to in a list of
-	 *                              coefficients.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField> T sqMagnitude() throws CladosMonadException {
-		try {
-			return (T) scales.sqMagnitude();
-		} catch (FieldBinaryException e) {
-			throw new CladosMonadException(this, "Coefficients of Monad must be from the same field.");
-		}
+	public <T extends DivField> T sqMagnitude() {
+		return (T) scales.modulusSQSum();
 	}
 
 	/**

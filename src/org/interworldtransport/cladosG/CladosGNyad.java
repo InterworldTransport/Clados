@@ -57,7 +57,7 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @param pN2 Second nyad to test
 	 * @return TRUE if nyads are of the same type. FALSE otherwise.
 	 */
-	public static final boolean isClassMatch(NyadAbstract pN1, NyadAbstract pN2) {
+	public static final boolean isClassMatch(Nyad pN1, Nyad pN2) {
 		return pN1.getClass().equals(pN2.getClass());
 	}
 
@@ -69,28 +69,28 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
 	 *              USE A CONCRETE Nyad here or nada.
 	 * @param pName A String for the new Nyad's name.
-	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract duplicateReference(NyadAbstract pN, String pName)
+	public final Nyad duplicateReference(Nyad pN, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
-		return new NyadAbstract(pName, pN, false);
+		return new Nyad(pName, pN, false);
 	}
 
 	/**
 	 * Nyad Constructor #1 covered with this method
 	 * 
 	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
-	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract copyOf(NyadAbstract pN)
+	public final Nyad copyOf(Nyad pN)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
-		return new NyadAbstract(pN);
+		return new Nyad(pN);
 	}
 
 	/**
@@ -99,14 +99,14 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @param pN    The nyad to copy causing all listed monads TO BE CONSTRUCTED.
 	 *              USE A CONCRETE Nyad here or nada.
 	 * @param pName A String for the new Nyad's name.
-	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract copyRename(NyadAbstract pN, String pName)
+	public final Nyad copyRename(Nyad pN, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
-		return new NyadAbstract(pName, pN, true);
+		return new Nyad(pName, pN, true);
 	}
 
 	/**
@@ -115,14 +115,14 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @param pM    The monad to be COPIED as the first in the list in a new nyad.
 	 *              USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new Nyad's name.
-	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract createWithMonadCopy(Monad pM, String pName)
+	public final Nyad createWithMonadCopy(Monad pM, String pName)
 			throws BadSignatureException, CladosMonadException, CladosNyadException {
-		return new NyadAbstract(pName, pM, true);
+		return new Nyad(pName, pM, true);
 	}
 
 	/**
@@ -131,13 +131,13 @@ public enum CladosGNyad { // All of these have implicit private constructors
 	 * @param pM    The monad to be used as the first in monadList in a new nyad.
 	 *              USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new Nyad's name.
-	 * @return NyadAbstract (Cast this as the concrete nyad to be used)
+	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final NyadAbstract createWithMonad(Monad pM, String pName)
+	public final Nyad createWithMonad(Monad pM, String pName)
 			throws CladosNyadException, CladosMonadException {
-		return new NyadAbstract(pName, pM, false);
+		return new Nyad(pName, pM, false);
 	}
 }

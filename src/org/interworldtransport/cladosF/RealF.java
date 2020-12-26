@@ -63,7 +63,6 @@ public class RealF extends DivField implements Divisible, Normalizable {
 		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2) && !RealF.isInfinite(pF1)
 				&& !RealF.isInfinite(pF2))
 			return new RealF(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
-
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
 
@@ -92,13 +91,11 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 *                              with the RealF array
 	 * @return RealF
 	 */
-	public static RealF copyFromModuliSum(RealF[] pL) throws FieldBinaryException {
-		RealF tR = (RealF.copyONE(pL[0])).scale(pL[0].getModulus());
-		for (int j = 1; j < pL.length; j++)
-			if (isTypeMatch(pL[j], tR))
-				tR.add((RealF.copyONE(pL[j]).scale(pL[j].getModulus())));
-			else
-				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
+	public final static RealF copyFromModuliSum(RealF[] pL) throws FieldBinaryException {
+		if (pL.length == 0)	throw new IllegalArgumentException("Can't form Modulus Sum from empty array.");
+		RealF tR = RealF.copyZERO(pL[0]);
+		for (RealF point : pL)
+			tR.add((RealF.copyONE(point).scale(point.getModulus())));
 		return tR;
 	}
 
@@ -117,15 +114,11 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return RealF
 	 */
-	public static RealF copyFromSQModuliSum(RealF[] pL) throws FieldBinaryException {
-		RealF tR = (RealF.copyONE(pL[0])).scale(pL[0].getSQModulus());
-
-		for (int j = 1; j < pL.length; j++)
-			if (isTypeMatch(pL[j], tR))
-				tR.add((RealF.copyONE(pL[j]).scale(pL[j].getSQModulus())));
-			else
-				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
-
+	public final static RealF copyFromSQModuliSum(RealF[] pL) throws FieldBinaryException {
+		if (pL.length == 0)	throw new IllegalArgumentException("Can't form SQ Modulus Sum from empty array.");
+		RealF tR = RealF.copyZERO(pL[0]);
+		for (RealF point : pL)
+			tR.add((RealF.copyONE(point).scale(point.getSQModulus())));
 		return tR;
 	}
 
@@ -147,7 +140,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return RealF
 	 */
-	public static RealF copyONE(RealF pR) {
+	public static RealF copyONE(DivField pR) {
 		return new RealF(pR.getCardinal(), 1.0f);
 	}
 
@@ -158,7 +151,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return RealF
 	 */
-	public static RealF copyZERO(RealF pR) {
+	public static RealF copyZERO(DivField pR) {
 		return new RealF(pR.getCardinal(), 0.0f);
 	}
 

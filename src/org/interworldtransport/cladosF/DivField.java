@@ -51,7 +51,7 @@ public class DivField {
 	 * @return Optional D which extends DivField and Divisible (A CladosF number)
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <D extends DivField & Divisible> Optional<D> copyOf(D pF) {
+	public static final <D extends DivField & Divisible> Optional<D> copyMaybe(D pF) {
 		if (pF instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
 		else if (pF instanceof RealD)
@@ -73,7 +73,7 @@ public class DivField {
 	 * @return D extends DivField and Divisible
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends DivField & Divisible> Optional<D> copyONE(D pR) {
+	public final static <D extends DivField & Divisible> Optional<D> copyMaybeONE(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
 		else if (pR instanceof RealD)
@@ -94,7 +94,7 @@ public class DivField {
 	 * @return D extends DivField and Divisible
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends DivField & Divisible> Optional<D> copyZERO(D pR) {
+	public final static <D extends DivField & Divisible> Optional<D> copyMaybeZERO(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
 		else if (pR instanceof RealD)

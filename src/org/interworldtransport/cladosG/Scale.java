@@ -105,7 +105,7 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * @param <D> CladosF number like RealF, RealD, ComplexF, ComplexD. They must be
  *            children of DivField AND implement Divisible.
  */
-public class Scale<D extends DivField & Divisible> {
+public class Scale<D extends DivField & Divisible & Normalizable> {
 	/**
 	 * When entries appear in the internal map, they should all share the same
 	 * cardinal. That cardinal is referenced here.
@@ -395,34 +395,132 @@ public class Scale<D extends DivField & Divisible> {
 		}
 		}
 	}
-
+	
 	/**
-	 * Return the magnitude of the values in the map as though they were a vector in
-	 * a vector space.
+	 * This method takes all values in the map and returns one DivField child that
+	 * has a real value that is equal to the square root of the sum of the SQModulus of
+	 * each value. 
 	 * 
-	 * @return DivField child containing magnitude of this.
-	 * @throws FieldBinaryException This exception is possible because magnitudes
-	 *                              are build from sqMagnitudes. That means there is
-	 *                              an intermediate multiplication steps that could
-	 *                              cause a FieldBinaryException, but never should.
-	 *                              If this exception gets thrown here there is
-	 *                              something seriously amiss with magnitude() and
-	 *                              sqMagnitude().
+	 * Because these are real numbers, though, we get away
+	 * with simply summing the moduli instead. It does not perform a cardinal safety
+	 * check and will throw the exception if that test fails.
+	 * 
+	 * @throws FieldBinaryException This exception is thrown when sqMagnitude fails
+	 *                              with the RealF array
+	 * @return D
 	 */
 	@SuppressWarnings("unchecked")
-	public D magnitude() throws FieldBinaryException {
+	public D modulusSQSum() {
 		switch (mode) {
 		case REALF -> {
-			return (D) RealF.copyFromModuliSum(map.values().toArray(RealF[]::new));
+			D tR = (D) CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(RealF.newONE(div.getCardinal()).scale(div.getSQModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
 		}
 		case REALD -> {
-			return (D) RealD.copyFromModuliSum(map.values().toArray(RealD[]::new));
+			D tR = (D) CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(RealD.newONE(div.getCardinal()).scale(div.getSQModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
 		}
 		case COMPLEXF -> {
-			return (D) ComplexF.copyFromModuliSum(map.values().toArray(ComplexF[]::new));
+			D tR = (D) CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.getSQModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
 		}
 		case COMPLEXD -> {
-			return (D) ComplexD.copyFromModuliSum(map.values().toArray(ComplexD[]::new));
+			D tR = (D) CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.getSQModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+	
+	/**
+	 * This method takes all values in the map and returns one DivField child that
+	 * has a real value that is equal to the square root of the sum of the SQModulus of
+	 * each value. 
+	 * 
+	 * Because these are real numbers, though, we get away
+	 * with simply summing the moduli instead. It does not perform a cardinal safety
+	 * check and will throw the exception if that test fails.
+	 * 
+	 * @throws FieldBinaryException This exception is thrown when sqMagnitude fails
+	 *                              with the RealF array
+	 * @return D
+	 */
+	@SuppressWarnings("unchecked")
+	public D modulusSum() {
+		switch (mode) {
+		case REALF -> {
+			D tR = (D) CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(RealF.newONE(div.getCardinal()).scale(div.getModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
+		}
+		case REALD -> {
+			D tR = (D) CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(RealD.newONE(div.getCardinal()).scale(div.getModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
+		}
+		case COMPLEXF -> {
+			D tR = (D) CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.getModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
+		}
+		case COMPLEXD -> {
+			D tR = (D) CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			coefficientStream().forEach(div -> {
+				try {
+					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.getModulus()));
+				} catch (FieldBinaryException e) {
+					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+				}
+			});
+			return tR;
 		}
 		default -> {
 			return null;
@@ -437,19 +535,13 @@ public class Scale<D extends DivField & Divisible> {
 	 * square root to determine the magnitude and then invert that to scale the
 	 * original numbers.
 	 * 
-	 * @throws FieldException       This happens when normalizing something that has
-	 *                              a zero magnitudes. The exception is thrown by
-	 *                              the invert() method and passed along here.
-	 * @throws FieldBinaryException This happens when normalizing something with
-	 *                              cardinal conflicted values.
+	 * @throws FieldException This happens when normalizing something that has a
+	 *                        zero magnitude. The exception is thrown by the
+	 *                        invert() method and passed along here.
 	 */
-	public void normalize() throws FieldBinaryException, FieldException {
-		switch (mode) {
-		case REALF -> this.scale((RealF.copyFromModuliSum(map.values().toArray(RealF[]::new))).invert());
-		case REALD -> this.scale((RealD.copyFromModuliSum(map.values().toArray(RealD[]::new))).invert());
-		case COMPLEXF -> this.scale((ComplexF.copyFromModuliSum(map.values().toArray(ComplexF[]::new))).invert());
-		case COMPLEXD -> this.scale((ComplexD.copyFromModuliSum(map.values().toArray(ComplexD[]::new))).invert());
-		}
+	@SuppressWarnings("unchecked")
+	public <T extends DivField & Divisible> void normalize() throws FieldException {
+		this.scale((T) modulusSum().invert());
 	}
 
 	/**
@@ -523,40 +615,6 @@ public class Scale<D extends DivField & Divisible> {
 			});
 		}
 		return this;
-	}
-
-	/**
-	 * Return the magnitude squared of the values in the map as though they were a
-	 * vector in a vector space.
-	 * 
-	 * @return DivField child containing magnitude of this.
-	 * @throws FieldBinaryException This exception is possible because magnitudes
-	 *                              are build from sqMagnitudes. That means there is
-	 *                              an intermediate multiplication steps that could
-	 *                              cause a FieldBinaryException, but never should.
-	 *                              If this exception gets thrown here there is
-	 *                              something seriously amiss with magnitude() and
-	 *                              sqMagnitude().
-	 */
-	@SuppressWarnings("unchecked")
-	public D sqMagnitude() throws FieldBinaryException {
-		switch (mode) {
-		case REALF -> {
-			return (D) RealF.copyFromSQModuliSum(map.values().toArray(RealF[]::new));
-		}
-		case REALD -> {
-			return (D) RealD.copyFromSQModuliSum(map.values().toArray(RealD[]::new));
-		}
-		case COMPLEXF -> {
-			return (D) ComplexF.copyFromSQModuliSum(map.values().toArray(ComplexF[]::new));
-		}
-		case COMPLEXD -> {
-			return (D) ComplexD.copyFromSQModuliSum(map.values().toArray(ComplexD[]::new));
-		}
-		default -> {
-			return null;
-		}
-		}
 	}
 
 	/**

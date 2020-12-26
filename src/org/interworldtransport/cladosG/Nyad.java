@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.NyadAbstract<br>
+ * ---org.interworldtransport.cladosG.Nyad<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosG.NyadAbstract<br>
+ * ---org.interworldtransport.cladosG.Nyad<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -53,17 +53,17 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class NyadAbstract {
+public class Nyad {
 	/**
 	 * Return a boolean stating whether or not the nyad covers the algebra named in
 	 * the parameter. Coverage is true if a monad can be found in the nyad that
 	 * belongs to the algebra.
 	 * 
-	 * @param pN   NyadAbstract
+	 * @param pN   Nyad
 	 * @param pAlg String
 	 * @return boolean
 	 */
-	public static final boolean hasAlgebra(NyadAbstract pN, Algebra pAlg) {
+	public static final boolean hasAlgebra(Nyad pN, Algebra pAlg) {
 		for (Algebra pM : pN.getAlgebraList())
 			if (pAlg.equals(pM))
 				return true;
@@ -77,13 +77,13 @@ public class NyadAbstract {
 	 * 
 	 * In the future, the Frame classes will override this as it is likely that
 	 * other tests are required to ensure a monad list is actually a reference
-	 * frame. At the NyadAbstract leve, therefore, it is best to to think of a true
+	 * frame. At the Nyad leve, therefore, it is best to to think of a true
 	 * response to this method as suggesting the nyad is a frame candidate.
 	 * 
-	 * @param pN NyadAbstract to be tested
+	 * @param pN Nyad to be tested
 	 * @return boolean True if nyad's monads are all of the same algebra
 	 */
-	public static final boolean isFrame(NyadAbstract pN) {
+	public static final boolean isFrame(Nyad pN) {
 		if (pN._strongFlag)
 			return !pN._strongFlag;
 		return pN._oneAlgebra;
@@ -103,7 +103,7 @@ public class NyadAbstract {
 	 * @param pN  NyadRealF
 	 * @return boolean
 	 */
-	public static final boolean isMEqual(NyadAbstract pTs, NyadAbstract pN) {
+	public static final boolean isMEqual(Nyad pTs, Nyad pN) {
 		// Check first to see if the Nyads are of the same order. Return false
 		// if they are not.
 		if (pTs.getNyadOrder() != pN.getNyadOrder())
@@ -186,11 +186,11 @@ public class NyadAbstract {
 	 * If the monads listed within a nyad are all of a different algebra, the
 	 * strongFlag should be set to true. This method returns that flag.
 	 * 
-	 * @param pN NyadAbstract to be tested
+	 * @param pN Nyad to be tested
 	 * @return boolean True if nyad is strong meaning each Monad is of a different
 	 *         algebra False if nyad's monads double up on any particular algebra
 	 */
-	public static final boolean isStrong(NyadAbstract pN) {
+	public static final boolean isStrong(Nyad pN) {
 		return pN._strongFlag;
 	}
 
@@ -203,11 +203,11 @@ public class NyadAbstract {
 	 * to be checked against each other for reference matches. For those in the same
 	 * algebra, we make use of the isRefereceMatch method and compare the two.
 	 * 
-	 * @param pTs NyadAbstract
-	 * @param pN  NyadAbstract
+	 * @param pTs Nyad
+	 * @param pN  Nyad
 	 * @return boolean
 	 */
-	public static final boolean isStrongReferenceMatch(NyadAbstract pTs, NyadAbstract pN) {
+	public static final boolean isStrongReferenceMatch(Nyad pTs, Nyad pN) {
 		// Return false if the Nyads are not of the same order.
 		if (pTs.getNyadOrder() != pN.getNyadOrder())
 			return false;
@@ -269,11 +269,11 @@ public class NyadAbstract {
 	 * strongFlag should be set to true. This method returns that the inverse of
 	 * that flag.
 	 * 
-	 * @param pN NyadAbstract to be tested
+	 * @param pN Nyad to be tested
 	 * @return boolean False if nyad is strong meaning each Monad is of a different
 	 *         algebra True if nyad's monads double up on any particular algebra
 	 */
-	public static final boolean isWeak(NyadAbstract pN) {
+	public static final boolean isWeak(Nyad pN) {
 		return !pN._strongFlag;
 	}
 
@@ -288,11 +288,11 @@ public class NyadAbstract {
 	 * for reference matches. For those in the same algebra, we make use of the
 	 * isRefereceMatch method and compare the two.
 	 * 
-	 * @param pTs NyadAbstract
-	 * @param pN  NyadAbstract
+	 * @param pTs Nyad
+	 * @param pN  Nyad
 	 * @return boolean
 	 */
-	public static final boolean isWeakReferenceMatch(NyadAbstract pTs, NyadAbstract pN) {
+	public static final boolean isWeakReferenceMatch(Nyad pTs, Nyad pN) {
 		// Check to see if the foot objects match
 		if (pTs.getFoot() != pN.getFoot())
 			return false;
@@ -356,23 +356,23 @@ public class NyadAbstract {
 	protected String Name;
 	
 	/**
-	 * Simple copy constructor of a Nyad. The passed NyadAbstract will be copied in
+	 * Simple copy constructor of a Nyad. The passed Nyad will be copied in
 	 * detail. This contructor is used most often to get around operations that
 	 * alter one of the nyads when the developer does not wish it to be altered.
 	 * 
-	 * @param pN NyadAbstract
+	 * @param pN Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
 	 * @throws CladosMonadException This shouldn't happen very often. If it does,
 	 *                              there is something malformed one one of the
 	 *                              monads in the nyad being copied.
 	 */
-	public NyadAbstract(NyadAbstract pN) throws CladosNyadException, CladosMonadException {
+	public Nyad(Nyad pN) throws CladosNyadException, CladosMonadException {
 		this(pN.getName(), pN, true);
 	}
 
 	/**
-	 * A basic constructor of a NyadAbstract that starts with a Monad. The Monad will
+	 * A basic constructor of a Nyad that starts with a Monad. The Monad will
 	 * be copied and placed at the top of the list OR reused based on pCopy The
 	 * Foot, however, will be used exactly as is either way.
 	 * 
@@ -385,7 +385,7 @@ public class NyadAbstract {
 	 *                              there is something malformed about the monad
 	 *                              being used/copied.
 	 */
-	public NyadAbstract(String pName, Monad pM, boolean pCopy)
+	public Nyad(String pName, Monad pM, boolean pCopy)
 			throws CladosNyadException, CladosMonadException {
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
@@ -399,7 +399,7 @@ public class NyadAbstract {
 	}
 
 	/**
-	 * A simple copy constructor of a NyadAbstract. The passed NyadComplexD will be
+	 * A simple copy constructor of a Nyad. The passed NyadComplexD will be
 	 * copied without the name. This constructor is used most often to clone other
 	 * objects in every way except name.
 	 * 
@@ -411,7 +411,7 @@ public class NyadAbstract {
 	 * array
 	 * 
 	 * @param pName String
-	 * @param pN    NyadAbstract
+	 * @param pN    Nyad
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
@@ -419,7 +419,7 @@ public class NyadAbstract {
 	 *                              there is something malformed one one of the
 	 *                              monads in the nyad being copied.
 	 */
-	public NyadAbstract(String pName, NyadAbstract pN, boolean pCopy) throws CladosNyadException, CladosMonadException {
+	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException, CladosMonadException {
 		if (pN.getNyadOrder() == 0) 
 			throw new IllegalArgumentException("Offered Nyad to copy is empty.");
 		
@@ -455,9 +455,9 @@ public class NyadAbstract {
 	 * 
 	 * @throws CladosNyadException This exception is thrown if the foot of the new
 	 *                             monad fails to match
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract appendMonad(Monad pM) throws CladosNyadException {
+	public Nyad appendMonad(Monad pM) throws CladosNyadException {
 		// This method works if the foot of pM matches the foot of this nyad
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
 			throw new CladosNyadException(this, "Monads is a nyad should share a Foot");
@@ -475,14 +475,14 @@ public class NyadAbstract {
 	 * wind up referencing the passed Monad.
 	 * 
 	 * @param pM Monad
-	 * @return NyadAbstract
+	 * @return Nyad
 	 * @throws CladosNyadException  This exception is thrown if the foot of the new
 	 *                              monad fails to match.
 	 * @throws CladosMonadException This shouldn't happen very often. If it does,
 	 *                              there is something malformed about the monad
 	 *                              being copied.
 	 */
-	public NyadAbstract appendMonadCopy(Monad pM) throws CladosNyadException, CladosMonadException {
+	public Nyad appendMonadCopy(Monad pM) throws CladosNyadException, CladosMonadException {
 		// This method works if the foot of pM matches the foot of this nyad
 		// The footPoint objects must match.
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
@@ -570,9 +570,9 @@ public class NyadAbstract {
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard)
+	public Nyad createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard)
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
 
 		Cardinal tCard = (pCard == null) ? CladosFBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
@@ -597,9 +597,9 @@ public class NyadAbstract {
 	/**
 	 * Each of the Monads is turned into its Dual from the left.
 	 * 
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract dualLeft() {
+	public Nyad dualLeft() {
 		for (Monad tSpot : monadList)
 			tSpot.dualLeft();
 		return this;
@@ -608,9 +608,9 @@ public class NyadAbstract {
 	/**
 	 * Each of the Monads is turned into its Dual from the right.
 	 * 
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract dualRight() {
+	public Nyad dualRight() {
 		for (Monad tSpot : monadList)
 			tSpot.dualRight();
 		return this;
@@ -620,7 +620,7 @@ public class NyadAbstract {
 	 * Return an integer pointing to a monad in the nyad that uses the algebra named
 	 * in the parameter.
 	 * 
-	 * @param pN   NyadAbstract
+	 * @param pN   Nyad
 	 * @param pAlg String
 	 * @return int
 	 */
@@ -635,7 +635,7 @@ public class NyadAbstract {
 	 * Return an integer pointing to the part of the nyad expressed in the frame
 	 * named in the parameter.
 	 * 
-	 * @param pN     NyadAbstract
+	 * @param pN     Nyad
 	 * @param pFrame String
 	 * @return boolean
 	 */
@@ -649,7 +649,7 @@ public class NyadAbstract {
 	/**
 	 * Return the index for monad within the nyad if found.
 	 * 
-	 * @param pN  NyadAbstract
+	 * @param pN  Nyad
 	 * @param pIn Monad
 	 * @return int
 	 */
@@ -663,7 +663,7 @@ public class NyadAbstract {
 	/**
 	 * Return the index for monad matching requested name within the nyad if found.
 	 * 
-	 * @param pN    NyadAbstract
+	 * @param pN    Nyad
 	 * @param pName String
 	 * @return int
 	 */
@@ -678,7 +678,7 @@ public class NyadAbstract {
 	 * Return an integer larger than pStart pointing to a monad in the nyad that
 	 * uses the algebra named in the parameter.
 	 * 
-	 * @param pN     NyadAbstract
+	 * @param pN     Nyad
 	 * @param pAlg   String
 	 * @param pStart int
 	 * @return int
@@ -882,9 +882,9 @@ public class NyadAbstract {
 	 * 
 	 * @param key int
 	 * 
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract pop(int key) {
+	public Nyad pop(int key) {
 		int limit = monadList.size();
 		if (key > 0 && key < limit) {
 			Monad temp = monadList.remove(key - 1);
@@ -900,9 +900,9 @@ public class NyadAbstract {
 	 * 
 	 * @param key int
 	 * 
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract push(int key) {
+	public Nyad push(int key) {
 		int limit = monadList.size();
 		if (key >= 0 && key < limit - 1) {
 			Monad temp = monadList.remove(key);
@@ -917,9 +917,9 @@ public class NyadAbstract {
 	 * @param pthisone int
 	 * @throws CladosNyadException This exception is thrown when the monad to be
 	 *                             removed can't be found.
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract removeMonad(int pthisone) throws CladosNyadException {
+	public Nyad removeMonad(int pthisone) throws CladosNyadException {
 		Monad test = null;
 		try {
 			test = monadList.remove(pthisone);
@@ -940,9 +940,9 @@ public class NyadAbstract {
 	 * @param pM Monad
 	 * @throws CladosNyadException This exception is thrown when the monad to be
 	 *                             removed can't be found.
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract removeMonad(Monad pM) throws CladosNyadException {
+	public Nyad removeMonad(Monad pM) throws CladosNyadException {
 		int testfind = monadList.indexOf(pM);
 		if (testfind < 0)
 			throw new CladosNyadException(this, "Can't find the Monad to remove.");
@@ -951,7 +951,7 @@ public class NyadAbstract {
 	}
 
 	/**
-	 * NyadAbstract Scaling: Pick a monad and scale it by the magnitude provided.
+	 * Nyad Scaling: Pick a monad and scale it by the magnitude provided.
 	 * Only one monad can be scaled within a nyad at a time. Note that a request to
 	 * scale a monad that cannot be found in the list results in no action and no
 	 * exception. The scaling is effectively performed against a 'zero' monad for
@@ -964,7 +964,7 @@ public class NyadAbstract {
 	 *                              doesn't match the nyad's field.
 	 * @return NyadRealF
 	 */
-	public <T extends DivField & Divisible> NyadAbstract scale(int pk, T pMag) throws FieldBinaryException {
+	public <T extends DivField & Divisible> Nyad scale(int pk, T pMag) throws FieldBinaryException {
 		if (pk >= 0 && pk < monadList.size())
 			monadList.get(pk).scale(pMag);
 		return this;
