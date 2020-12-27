@@ -36,6 +36,7 @@ import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.CladosNyadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
@@ -479,6 +480,86 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public final static boolean validateSignature(String pSig) {
 		return CliffordProduct.validateSignature(pSig);
+	}
+	
+	/**
+	 * Nyad Constructor #3 covered with this method, but with re-use. This causes
+	 * the new nyad to use EXACTLY the same monads as the one passed, so it is a
+	 * second reference to the same objects. Dangerous!
+	 * 
+	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
+	 *              USE A CONCRETE Nyad here or nada.
+	 * @param pName A String for the new Nyad's name.
+	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final Nyad duplicateNyadReference(Nyad pN, String pName)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		return new Nyad(pName, pN, false);
+	}
+
+	/**
+	 * Nyad Constructor #1 covered with this method
+	 * 
+	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
+	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final Nyad copyOfNyad(Nyad pN)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		return new Nyad(pN);
+	}
+
+	/**
+	 * Nyad Constructor #3 covered with this method
+	 * 
+	 * @param pN    The nyad to copy causing all listed monads TO BE CONSTRUCTED.
+	 *              USE A CONCRETE Nyad here or nada.
+	 * @param pName A String for the new Nyad's name.
+	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final Nyad copyOfNyad(Nyad pN, String pName)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		return new Nyad(pName, pN, true);
+	}
+
+	/**
+	 * Nyad Constructor #2 covered with this method
+	 * 
+	 * @param pM    The monad to be COPIED as the first in the list in a new nyad.
+	 *              USE A CONCRETE Monad here or nada.
+	 * @param pName A String for the new Nyad's name.
+	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final Nyad createNyadWithMonadCopy(Monad pM, String pName)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		return new Nyad(pName, pM, true);
+	}
+
+	/**
+	 * Nyad Constructor #2 covered with this method, but with re-use
+	 * 
+	 * @param pM    The monad to be used as the first in monadList in a new nyad.
+	 *              USE A CONCRETE Monad here or nada.
+	 * @param pName A String for the new Nyad's name.
+	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
+	 * @throws CladosMonadException  Thrown for a general monad constructor error
+	 * @throws CladosNyadException   Thrown for a general nyad constructor error
+	 */
+	public final Nyad createNyadUsingMonad(Monad pM, String pName)
+			throws CladosNyadException, CladosMonadException {
+		return new Nyad(pName, pM, false);
 	}
 
 	private CladosGBuilder() {
