@@ -25,7 +25,7 @@
 package org.interworldtransport.cladosG;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.UnitAbstract;
 
 /**
  * Anything implementing this interface has "units" in the physical sense.
@@ -34,8 +34,8 @@ import org.interworldtransport.cladosF.DivField;
  * 'units', so this contract makes a statement that a particular class adds this
  * sense of meaning on top of any others.
  * 
- * @author Dr Alfred W Differ
  * @version 2.0
+ * @author Dr Alfred W Differ
  */
 public interface Unitized {
 
@@ -48,10 +48,10 @@ public interface Unitized {
 
 	/**
 	 * This is really just a gettor for the protoNumber. A class implementing this
-	 * interface MAY use a child of DivField, though.
+	 * interface MAY use a child of UnitAbstract, though.
 	 * 
-	 * @return DivField protoNumber
+	 * @return UnitAbstract protoNumber
 	 */
-	public abstract DivField shareProtoNumber();
+	public abstract UnitAbstract shareProtoNumber();
 
 }

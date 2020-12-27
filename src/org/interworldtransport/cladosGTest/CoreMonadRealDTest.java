@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosG.CladosConstant;
 import org.interworldtransport.cladosG.Monad;
-import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ class CoreMonadRealDTest {
 	Monad tM9;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		cRD = new RealD[16];
 		Cardinal tSpot = Cardinal.generate(fType);
 		cRD = (RealD[]) CladosFListBuilder.REALD.createONE(tSpot, cRD.length);
@@ -67,7 +67,7 @@ class CoreMonadRealDTest {
 	}
 	
 	@Test
-	public void testMultiplication() throws FieldBinaryException, CladosMonadBinaryException {
+	public void testMultiplication() {
 		assert(tM1.getAlgebra() == tM2.getAlgebra());
 		assert(tM2.getAlgebra() == tM9.getAlgebra());
 		
@@ -127,7 +127,7 @@ class CoreMonadRealDTest {
 	}
 
 	@Test
-	public void testBiMathOps1() throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
+	public void testBiMathOps1() throws CladosMonadException {
 		tM6.add(tM7);
 		tM7.scale(new RealD(tM6.getCoeff(0), 2.0f));
 		assertTrue(tM6.isGEqual(tM7));
@@ -137,8 +137,7 @@ class CoreMonadRealDTest {
 	}
 
 	@Test
-	public void testBiMathOps2() 
-			throws FieldBinaryException, CladosMonadBinaryException, CladosMonadException {
+	public void testBiMathOps2() throws CladosMonadException {
 		tM8.gradePart((byte) 4);
 		tM6.multiplyLeft(tM8);
 		tM6.dualLeft();

@@ -28,7 +28,7 @@ package org.interworldtransport.cladosF;
  * DivFields currently come in four varieties. RealF, RealD, ComplexF, ComplexD
  * To facilitate a Builder class we would give basic information and construct
  * any of them. This would be supported by an enumeration type that can't be
- * DivField itself because DivField is subclassed to make the four field
+ * UnitAbstract itself because UnitAbstract is subclassed to make the four field
  * classes.
  * 
  * This enum doubles up a bit as a builder. Each of its instances rely on the
@@ -64,18 +64,18 @@ public enum CladosField {
 	COMPLEXD("org.interworldtransport.cladosF.ComplexD");
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using the CladosField hint.
 	 * 
 	 * Number created has a real value of ONE.
 	 * 
-	 * @param pField CladosField enumeration to be used as description of DivField
+	 * @param pField CladosField enumeration to be used as description of UnitAbstract
 	 *               child to be created.
 	 * @param pCard  Cardinal to be re-used.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final static DivField createONE(CladosField pField, Cardinal pCard) {
+	public final static UnitAbstract createONE(CladosField pField, Cardinal pCard) {
 		switch (pField) {
 		case REALF:
 			return new RealF(pCard, 1f);
@@ -91,18 +91,18 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using the CladosField hint.
 	 * 
 	 * Number created has a real value of ZERO.
 	 * 
-	 * @param pField CladosField enumeration to be used as description of DivField
+	 * @param pField CladosField enumeration to be used as description of UnitAbstract
 	 *               child to be created.
 	 * @param pCard  Cardinal to be re-used.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final static DivField createZERO(CladosField pField, Cardinal pCard) {
+	public final static UnitAbstract createZERO(CladosField pField, Cardinal pCard) {
 		switch (pField) {
 		case REALF:
 			return new RealF(pCard, 0f);
@@ -118,16 +118,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
 	 * 
 	 * Number created has a real value of ONE.
 	 * 
 	 * @param pCard Cardinal to be re-used.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final DivField createONE(Cardinal pCard) {
+	public final UnitAbstract createONE(Cardinal pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(pCard, 1f);
@@ -143,16 +143,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
 	 * 
 	 * Number created has a real value of ONE.
 	 * 
 	 * @param pDiv Source of the Cardinal to be re-used.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final DivField createONE(DivField pDiv) {
+	public final UnitAbstract createONE(UnitAbstract pDiv) {
 		switch (this) {
 		case REALF:
 			return new RealF(pDiv.getCardinal(), 1f);
@@ -168,16 +168,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
 	 * 
 	 * Number created has a real value of ONE.
 	 * 
 	 * @param pCard String name of the Cardinal to be created.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final DivField createONE(String pCard) {
+	public final UnitAbstract createONE(String pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(Cardinal.generate(pCard), 1f);
@@ -193,16 +193,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
 	 * 
 	 * Number created has a real value of ZERO.
 	 * 
 	 * @param pCard Cardinal to be re-used.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final DivField createZERO(Cardinal pCard) {
+	public final UnitAbstract createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(pCard, 0f);
@@ -218,16 +218,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
 	 * 
 	 * Number created has a real value of ZERO.
 	 * 
 	 * @param pDiv Source of the Cardinal to be re-used.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final DivField createZERO(DivField pDiv) {
+	public final UnitAbstract createZERO(UnitAbstract pDiv) {
 		switch (this) {
 		case REALF:
 			return new RealF(pDiv.getCardinal(), 0f);
@@ -243,16 +243,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular DivField
+	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
 	 * 
 	 * Number created has a real value of ZERO.
 	 * 
 	 * @param pCard String name of the Cardinal to be created.
-	 * @return DivField Newly constructed 'zero' number returned as a DivField, but
-	 *         it will always be one of the DivField children.
+	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
+	 *         it will always be one of the UnitAbstract children.
 	 */
-	public final DivField createZERO(String pCard) {
+	public final UnitAbstract createZERO(String pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(Cardinal.generate(pCard), 0f);

@@ -58,11 +58,11 @@ public enum CladosFListBuilder {
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
 	 * 
-	 * @param pField CladosField enumeration hint for DivField child to be created.
-	 * @param pD     List of DivField Numbers to be copied.
+	 * @param pField CladosField enumeration hint for UnitAbstract child to be created.
+	 * @param pD     List of UnitAbstract Numbers to be copied.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static <T extends DivField & Divisible> List<T> copyOf(CladosField pField, List<T> pD) {
+	public final static <T extends UnitAbstract & Field> List<T> copyOf(CladosField pField, List<T> pD) {
 		switch (pField) {
 		case REALF -> {
 			return CladosFListBuilder.REALF.copyListOf(pD);
@@ -86,11 +86,11 @@ public enum CladosFListBuilder {
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
 	 * 
-	 * @param pField CladosField enumeration hint for DivField child to be created.
-	 * @param pD    List of DivField Numbers to be copied.
+	 * @param pField CladosField enumeration hint for UnitAbstract child to be created.
+	 * @param pD    List of UnitAbstract Numbers to be copied.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static <T extends DivField & Divisible> T[] copyOf(CladosField pField, T[] pD) {
+	public final static <T extends UnitAbstract & Field> T[] copyOf(CladosField pField, T[] pD) {
 		switch (pField) {
 		case REALF -> {
 			return (T[]) CladosFListBuilder.REALF.copyOf(pD);
@@ -115,11 +115,11 @@ public enum CladosFListBuilder {
 	 * operation fails but equals() does not.
 	 * 
 	 * @param pDV List of CladosF Numbers to be copied.
-	 * @return List of DivField children Newly constructed copies of incoming
+	 * @return List of UnitAbstract children Newly constructed copies of incoming
 	 *         numbers
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible> List<T> copyListOf(List<T> pDV) {
+	public <T extends UnitAbstract & Field> List<T> copyListOf(List<T> pDV) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pDV.size()];
@@ -156,10 +156,10 @@ public enum CladosFListBuilder {
 	 * operation fails but equals() does not.
 	 * 
 	 * @param pDV Array of Numbers to be copied.
-	 * @return DivField[] Newly constructed copies of incoming numbers
+	 * @return UnitAbstract[] Newly constructed copies of incoming numbers
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible> T[] copyOf(T[] pDV) {
+	public <T extends UnitAbstract & Field> T[] copyOf(T[] pDV) {
 		switch (this) {
 		case REALF -> {
 			T[] tSpot = (T[]) new RealF[pDV.length];
@@ -194,11 +194,11 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
-	 * @param pCard The cardinal to re-use in all DivField child objects
+	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
-	 * @return DivField[] Newly constructed ZEROS using incoming cardinal.
+	 * @return UnitAbstract[] Newly constructed ZEROS using incoming cardinal.
 	 */
-	public DivField[] create(Cardinal pCard, int pSize) {
+	public UnitAbstract[] create(Cardinal pCard, int pSize) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
@@ -234,9 +234,9 @@ public enum CladosFListBuilder {
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
 	 * @param pSize The size oF the array to create.
-	 * @return DivField[] Newly constructed ZEROS with default cardinals.
+	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
 	 */
-	public DivField[] create(int pSize) {
+	public UnitAbstract[] create(int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(CladosField.REALF);
@@ -267,11 +267,11 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
-	 * @param pS    The String name for a new cardinal to use in DivField children
+	 * @param pS    The String name for a new cardinal to use in UnitAbstract children
 	 * @param pSize The size oF the array to create.
-	 * @return DivField[] Newly constructed ZEROS with default cardinals.
+	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
 	 */
-	public DivField[] create(String pS, int pSize) {
+	public UnitAbstract[] create(String pS, int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(pS);
@@ -302,12 +302,12 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
-	 * @param pCard The cardinal to re-use in all DivField child objects
+	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
-	 * @return List of DivField children set to ZERO using incoming cardinal.
+	 * @return List of UnitAbstract children set to ZERO using incoming cardinal.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible> List<T> createListOf(Cardinal pCard, int pSize) {
+	public <T extends UnitAbstract & Field> List<T> createListOf(Cardinal pCard, int pSize) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
@@ -343,9 +343,9 @@ public enum CladosFListBuilder {
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
 	 * @param pSize The size oF the array to create.
-	 * @return List of DivField children as ZEROS with default cardinals.
+	 * @return List of UnitAbstract children as ZEROS with default cardinals.
 	 */
-	public <T extends DivField & Divisible> List<T> createListOf(int pSize) {
+	public <T extends UnitAbstract & Field> List<T> createListOf(int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(CladosField.REALF);
@@ -376,11 +376,11 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
-	 * @param pS    String name of a new cardinal to use in all DivField children
+	 * @param pS    String name of a new cardinal to use in all UnitAbstract children
 	 * @param pSize The size oF the array to create.
-	 * @return List of DivField children as ZEROS with default cardinals.
+	 * @return List of UnitAbstract children as ZEROS with default cardinals.
 	 */
-	public <T extends DivField & Divisible> List<T> createListOf(String pS, int pSize) {
+	public <T extends UnitAbstract & Field> List<T> createListOf(String pS, int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(pS);
@@ -411,11 +411,11 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
-	 * @param pCard The cardinal to re-use in all DivField child objects
+	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
-	 * @return DivField[] Newly constructed ONEs using incoming cardinal.
+	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public DivField[] createONE(Cardinal pCard, int pSize) {
+	public UnitAbstract[] createONE(Cardinal pCard, int pSize) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
@@ -451,9 +451,9 @@ public enum CladosFListBuilder {
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
 	 * @param pSize The size of the array to create.
-	 * @return DivField[] Newly constructed ONEs using incoming cardinal.
+	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public DivField[] createONE(int pSize) {
+	public UnitAbstract[] createONE(int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(CladosField.REALF);
@@ -496,11 +496,11 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * 
-	 * @param pS    String name for new cardinal to use in DivField children.
+	 * @param pS    String name for new cardinal to use in UnitAbstract children.
 	 * @param pSize The size of the array to create.
-	 * @return DivField[] Newly constructed ONEs using incoming cardinal.
+	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public DivField[] createONE(String pS, int pSize) {
+	public UnitAbstract[] createONE(String pS, int pSize) {
 		switch (this) {
 		case REALF -> {
 			Cardinal def = Cardinal.generate(pS);

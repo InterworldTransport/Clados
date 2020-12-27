@@ -27,8 +27,6 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
-
 /**
  * This class just acts as a bucket two blades when they are combined and
  * reduced in product result discovery. In Clados v1 the methods were all buried
@@ -69,14 +67,6 @@ public final class BladeDuet {
 	 * @param pB2 Blade appearing on the right/column of a multiplication operation
 	 * @param sig signature array to use to reduce duplicate generators
 	 * @return A fully reduced blade
-	 * @throws BladeCombinationException there are several ways this method can fail
-	 *                                   and throw this exception. For example, one
-	 *                                   or more of the maximum generator sizes
-	 *                                   might not be the same in the two blades and
-	 *                                   the signature. A malformed signature WON'T
-	 *                                   happen here since we use the integer
-	 *                                   reduced form of it, but it could still be
-	 *                                   of the wrong size.
 	 */
 	public static final Blade simplify(Blade pB1, Blade pB2, byte[] sig) {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);

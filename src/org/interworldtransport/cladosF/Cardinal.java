@@ -44,7 +44,7 @@ package org.interworldtransport.cladosF;
  * <p>
  * One consequence of this approach is that two division fields might use
  * different Cardinal objects of the same name. The TypeMatch method in a
- * DivField will state that they are different because object equality is tested
+ * UnitAbstract will state that they are different because object equality is tested
  * instead of string content equality. This allows an application writer to keep
  * two distinct systems of numbers apart in their application even though the
  * fields are internally identical. This is useful when objects in one algebra

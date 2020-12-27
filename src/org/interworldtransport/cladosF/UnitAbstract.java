@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.DivField<br>
+ * ---org.interworldtransport.cladosF.UnitAbstract<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.DivField<br>
+ * ---org.interworldtransport.cladosF.UnitAbstract<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
@@ -29,9 +29,9 @@ import java.util.Optional;
 /**
  * This class supports the concept of a Division Field from mathematics. Field
  * objects within the clados packages are used as 'numbers' in the definition of
- * an algebra. All Clados objects use DivField descendants as a result.
+ * an algebra. All Clados objects use UnitAbstract descendants as a result.
  * 
- * DivField's capture only a reference frame type, so they appear to be named.
+ * UnitAbstract's capture only a reference frame type, so they appear to be named.
  * However, they are named with Cardinal objects so their names can be shared as
  * references, thus survive reference frame match tests.
  * 
@@ -42,16 +42,16 @@ import java.util.Optional;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class DivField {
+public class UnitAbstract {
 	/**
 	 * Static method that creates a new CladosF number with a copy of the parameter.
 	 * This copy reuses the cardinal to ensure it will pass a type match test.
 	 * 
-	 * @param pF D extends DivField and Divisible
-	 * @return Optional D which extends DivField and Divisible (A CladosF number)
+	 * @param pF D extends UnitAbstract and Field
+	 * @return Optional D which extends UnitAbstract and Field (A CladosF number)
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <D extends DivField & Divisible> Optional<D> copyMaybe(D pF) {
+	public static final <D extends UnitAbstract & Field> Optional<D> copyMaybe(D pF) {
 		if (pF instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
 		else if (pF instanceof RealD)
@@ -68,12 +68,12 @@ public class DivField {
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
 	 * 
-	 * @param pR D extends DivField and Divisible
+	 * @param pR D extends UnitAbstract and Field
 	 * 
-	 * @return D extends DivField and Divisible
+	 * @return D extends UnitAbstract and Field
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends DivField & Divisible> Optional<D> copyMaybeONE(D pR) {
+	public final static <D extends UnitAbstract & Field> Optional<D> copyMaybeONE(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
 		else if (pR instanceof RealD)
@@ -89,12 +89,12 @@ public class DivField {
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
 	 * 
-	 * @param pR D extends DivField and Divisible
+	 * @param pR D extends UnitAbstract and Field
 	 * 
-	 * @return D extends DivField and Divisible
+	 * @return D extends UnitAbstract and Field
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends DivField & Divisible> Optional<D> copyMaybeZERO(D pR) {
+	public final static <D extends UnitAbstract & Field> Optional<D> copyMaybeZERO(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
 		else if (pR instanceof RealD)
@@ -110,11 +110,11 @@ public class DivField {
 	/**
 	 * Check to see if the two argument are of the same cardinal.
 	 * 
-	 * @param pE DivField
-	 * @param pF DivField
+	 * @param pE UnitAbstract
+	 * @param pF UnitAbstract
 	 * @return boolean
 	 */
-	public static final boolean isTypeMatch(DivField pE, DivField pF) {
+	public static final boolean isTypeMatch(UnitAbstract pE, UnitAbstract pF) {
 		if (pE._card == null && pF._card == null)
 			return true;
 		return pE._card.getUnit() == pF._card.getUnit();
@@ -128,11 +128,11 @@ public class DivField {
 	protected Cardinal _card;
 
 	/**
-	 * Construct a simple DivField using the Cardinal offered.
+	 * Construct a simple UnitAbstract using the Cardinal offered.
 	 * 
 	 * @param pCard Cardinal to re-use.
 	 */
-	public DivField(Cardinal pCard) {
+	public UnitAbstract(Cardinal pCard) {
 		setCardinal(pCard);
 	}
 	
@@ -144,7 +144,7 @@ public class DivField {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DivField other = (DivField) obj;
+		UnitAbstract other = (UnitAbstract) obj;
 		if (_card == null) {
 			if (other._card != null)
 				return false;
@@ -156,7 +156,7 @@ public class DivField {
 	/**
 	 * Get method for _card
 	 * 
-	 * @return Cardinal (A cardinal name for a DivField)
+	 * @return Cardinal (A cardinal name for a UnitAbstract)
 	 */
 	public Cardinal getCardinal() {
 		return _card;
@@ -165,7 +165,7 @@ public class DivField {
 	/**
 	 * Get method for _card
 	 * 
-	 * @return Cardinal (A cardinal name for a DivField)
+	 * @return Cardinal (A cardinal name for a UnitAbstract)
 	 */
 	public String getCardinalString() {
 		return _card.getUnit();
@@ -182,10 +182,10 @@ public class DivField {
 	/**
 	 * Return a string representation of the field element.
 	 * 
-	 * @return String Flat string representation of this Divisible float(s) field
+	 * @return String Flat string representation of this Field float(s) field
 	 */
 	public String toXMLString() {
-		return ("<DivField cardinal=\"" + getCardinalString() + " />");
+		return ("<UnitAbstract cardinal=\"" + getCardinalString() + " />");
 	}
 	
 	/**

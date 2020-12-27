@@ -139,7 +139,7 @@ public class Blade implements Comparable<Blade> {
 	 */
 	public final static Blade createPScalarBlade(Generator pGen) {
 		Blade returnIt = new Blade(pGen);
-		Generator.flow(pGen.ord).forEach(g -> returnIt.add(g));
+		Generator.stream(pGen.ord).forEach(g -> returnIt.add(g));
 		return returnIt;
 	}
 

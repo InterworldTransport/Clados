@@ -1,6 +1,6 @@
 package org.interworldtransport.cladosFTest;
 
-import static org.interworldtransport.cladosF.DivField.isTypeMatch;
+import static org.interworldtransport.cladosF.UnitAbstract.isTypeMatch;
 import static org.interworldtransport.cladosF.ComplexF.add;
 import static org.interworldtransport.cladosF.ComplexF.conjugate;
 import static org.interworldtransport.cladosF.ComplexF.divide;
@@ -107,22 +107,22 @@ class CoreComplexFTest {
 
 	@Test
 	public void testGetModulus() {
-		assertTrue(tComplex0.getModulus() == 0f);
-		assertTrue(tComplex1.getModulus() > 0f);
-		assertTrue(Float.isNaN(tComplex4.getModulus()));
-		assertTrue(Float.isInfinite(tComplex5.getModulus()));
-		assertTrue(Float.isInfinite(tComplex6.getModulus()));
-		assertTrue(Float.isInfinite(tComplex2.getModulus()));
+		assertTrue(tComplex0.modulus() == 0f);
+		assertTrue(tComplex1.modulus() > 0f);
+		assertTrue(Float.isNaN(tComplex4.modulus()));
+		assertTrue(Float.isInfinite(tComplex5.modulus()));
+		assertTrue(Float.isInfinite(tComplex6.modulus()));
+		assertTrue(Float.isInfinite(tComplex2.modulus()));
 	}
 
 	@Test
 	public void testGetSQModulus() {
-		assertTrue(tComplex0.getModulus() == 0f);
-		assertTrue(tComplex1.getModulus() > 0f);
-		assertTrue(Float.isNaN(tComplex4.getModulus()));
-		assertTrue(Float.isInfinite(tComplex5.getModulus()));
-		assertTrue(Float.isInfinite(tComplex6.getModulus()));
-		assertTrue(Float.isInfinite(tComplex2.getModulus()));
+		assertTrue(tComplex0.modulus() == 0f);
+		assertTrue(tComplex1.modulus() > 0f);
+		assertTrue(Float.isNaN(tComplex4.modulus()));
+		assertTrue(Float.isInfinite(tComplex5.modulus()));
+		assertTrue(Float.isInfinite(tComplex6.modulus()));
+		assertTrue(Float.isInfinite(tComplex2.modulus()));
 	}
 
 	@Test

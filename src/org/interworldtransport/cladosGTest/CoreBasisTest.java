@@ -22,7 +22,7 @@ class CoreBasisTest {
 	CanonicalBasis tBasis14;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() throws GeneratorRangeException {
 		tBasis0 = new Basis((byte) 0);
 		tBasis4 = new Basis((byte) 4);
 		tBasis43 = new Basis((byte) 4);

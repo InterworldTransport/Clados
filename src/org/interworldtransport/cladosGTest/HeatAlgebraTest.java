@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosG.Algebra;
 import org.interworldtransport.cladosG.CladosGBuilder;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -17,12 +17,12 @@ class HeatAlgebraTest {
 	String fType = "CardinalUnit";
 	String ftName = "Foot Default";
 	String aName = "MotionAlgebra";
-	DivField coeff;
+	UnitAbstract coeff;
 	Algebra a0;
 	int loopLimit = 1;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		coeff = CladosFBuilder.COMPLEXD.createZERO(Cardinal.generate(fType));
 	}
 

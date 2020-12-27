@@ -8,7 +8,6 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosG.Algebra;
 import org.interworldtransport.cladosG.Foot;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -29,7 +28,7 @@ class CoreAlgebraTest {
 	protected Algebra alg2;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() throws BadSignatureException, GeneratorRangeException {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealF(fType, 0.0f);
 		tFoot = new Foot(fName, fType);
@@ -78,7 +77,7 @@ class CoreAlgebraTest {
 	}
 
 	@Test
-	public void testFootShared() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+	public void testFootShared() throws BadSignatureException, GeneratorRangeException {
 		tFoot.appendCardinal(rNumber.getCardinal());
 		Algebra alg3 = new Algebra(aName, tFoot, pSig31, rNumber);
 		assertTrue(alg1.getFoot() == alg3.getFoot());
@@ -96,7 +95,7 @@ class CoreAlgebraTest {
 	}
 
 	@Test
-	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException, BladeCombinationException {
+	public void testCompareCores() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
 
 		Algebra alg4 = new Algebra("light weight frame", alg1);
 		assertFalse(alg4 == alg1);

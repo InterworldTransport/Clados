@@ -17,7 +17,7 @@ class CoreBladeTest {
 	private Blade tB43;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() throws GeneratorRangeException {
 		tB0 = new Blade((byte) 0);
 		tB4 = new Blade((byte) 4);
 		tB4.add(g[0]).add(g[1]);
@@ -42,11 +42,11 @@ class CoreBladeTest {
 		assertFalse(tB42.key() == tB43.key());
 
 		Blade tB8 = new Blade((byte) 8);
-		Generator.flow((byte) 8).forEach(g-> tB8.add(g));
+		Generator.stream((byte) 8).forEach(g-> tB8.add(g));
 		Blade tB10 = new Blade((byte) 10);
-		Generator.flow((byte) 10).forEach(g-> tB10.add(g));
+		Generator.stream((byte) 10).forEach(g-> tB10.add(g));
 		Blade tB15 = new Blade((byte) 14);
-		Generator.flow((byte) 14).forEach(g-> tB15.add(g));
+		Generator.stream((byte) 14).forEach(g-> tB15.add(g));
 
 
 		assertTrue(tB8.getGenerators().size() == 8);
@@ -70,7 +70,7 @@ class CoreBladeTest {
 		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there.
 		assertTrue(newtB0.equals(tB0)); // tB is a scalar. Nothing to remove. Silent acceptance expected.
 		Blade tB10 = new Blade((byte) 10);
-		Generator.flow((byte) 10).forEach(g-> tB10.add(g));
+		Generator.stream((byte) 10).forEach(g-> tB10.add(g));
 		Blade newtB10 = new Blade(tB10);
 		newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
 		assertTrue(newtB10.equals(tB10));

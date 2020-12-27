@@ -29,13 +29,13 @@ import java.util.UUID;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
- * a multivector over a division field {Cl(p,q) x DivField} except for the
+ * a multivector over a division field {Cl(p,q) x UnitAbstract} except for the
  * actual field. That makes this a partial abstraction of an algebra. Once an
  * actual division field is in the mix we are there, but that structure is
  * reserved for the Monad class.
@@ -71,11 +71,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * use also matters. For those reasons, an Algebra maintains an internal mode
  * reference.
  * 
- * 3. An Algebra has a DivField element too in order to contain the Cardinal
+ * 3. An Algebra has a UnitAbstract element too in order to contain the Cardinal
  * within it and to use it combined with Mode to generate field numbers. This
  * might change in the future as the builder classes mature. It used to be used
  * as an operand in a copy function frequently in Monad in Clados V1.0, but is
- * largely bypassed in V2.0. If a complete bypass happens, the DivField element
+ * largely bypassed in V2.0. If a complete bypass happens, the UnitAbstract element
  * may be reduced to it's contained Cardinal.
  * 
  * 4. There is a residual reference to a list of frame names with related
@@ -144,7 +144,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 */
 	protected CliffordProduct gProduct;
 	/**
-	 * The algebras mode is the particular DivField child used to represent numbers.
+	 * The algebras mode is the particular UnitAbstract child used to represent numbers.
 	 */
 	protected CladosField mode;
 	/**
@@ -153,10 +153,10 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 */
 	protected String name;
 	/**
-	 * The algebra's prototypical 'number'. A DivField suffices most of the time,
-	 * but there is no issue with using a child of DivField.
+	 * The algebra's prototypical 'number'. A UnitAbstract suffices most of the time,
+	 * but there is no issue with using a child of UnitAbstract.
 	 */
-	protected DivField protoNumber;
+	protected UnitAbstract protoNumber;
 	/**
 	 * This is the list of known frames defined against this Algebra.
 	 */
@@ -203,7 +203,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 */
 	public Algebra(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
 		setAlgebraName(pS);
-		protoNumber = new DivField(pCard);
+		protoNumber = new UnitAbstract(pCard);
 		setFoot(pF);
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(pGP);
@@ -249,7 +249,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	}
 
 	/**
-	 * This is the constructor that assumes a Foot and DivField have been
+	 * This is the constructor that assumes a Foot and UnitAbstract have been
 	 * instantiated. It takes in two strings (one name and a product signature), the
 	 * Foot and Cardinal and produces an Algebra.
 	 * 
@@ -269,7 +269,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @param pS   This is the Algebra's name
 	 * @param pF   This is the foot being offered for reference
 	 * @param pSig This is the signature of the GProduct
-	 * @param pDiv This is the DivField to imitate when the Foot tracks Cardinals
+	 * @param pDiv This is the UnitAbstract to imitate when the Foot tracks Cardinals
 	 * @throws BadSignatureException   This constructor creates a new GProduct which
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
@@ -277,7 +277,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public Algebra(String pS, Foot pF, String pSig, DivField pDiv)
+	public Algebra(String pS, Foot pF, String pSig, UnitAbstract pDiv)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.createGProduct(pSig));
 	}
@@ -285,7 +285,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	/**
 	 * This is the raw constructor that assumes only the number type has been
 	 * instantiated. It takes in three strings (two names and a product signature)
-	 * and the example DivField and produces an Algebra. If anything is wrong with
+	 * and the example UnitAbstract and produces an Algebra. If anything is wrong with
 	 * the signature it throws one of two exceptions.
 	 * 
 	 * This is the constructor that ensures algebra reference match failures even
@@ -296,7 +296,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @param pS        This is the Algebra's name
 	 * @param pFootName This is the Foot's name
 	 * @param pSig      This is the signature of the GProduct
-	 * @param pF        This is the number type to use expressed as a DivField
+	 * @param pF        This is the number type to use expressed as a UnitAbstract
 	 * @throws BadSignatureException   This constructor creates a new GProduct which
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
@@ -304,7 +304,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public Algebra(String pS, String pFootName, String pSig, DivField pF)
+	public Algebra(String pS, String pFootName, String pSig, UnitAbstract pF)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()), pF.getCardinal(),
 				CladosGBuilder.createGProduct(pSig));
@@ -468,9 +468,9 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	}
 
 	/**
-	 * Simple gettor for the kind of DivField in use in the algebra as a 'number.'
+	 * Simple gettor for the kind of UnitAbstract in use in the algebra as a 'number.'
 	 * 
-	 * @return CladosField instance that matches the type of DivField in use
+	 * @return CladosField instance that matches the type of UnitAbstract in use
 	 */
 	public CladosField getMode() {
 		return mode;
@@ -532,9 +532,9 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	}
 
 	/**
-	 * Simple setter for the kind of DivField in use in the algebra as a 'number.'
+	 * Simple setter for the kind of UnitAbstract in use in the algebra as a 'number.'
 	 * 
-	 * @param pMode CladosField instance that matches the type of DivField in use
+	 * @param pMode CladosField instance that matches the type of UnitAbstract in use
 	 */
 	public void setMode(CladosField pMode) {
 		this.mode = pMode;
@@ -554,10 +554,10 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	/**
 	 * This is really just a gettor for the protoNumber.
 	 * 
-	 * @return DivField protoNumber
+	 * @return UnitAbstract protoNumber
 	 */
 	@Override
-	public final DivField shareProtoNumber() {
+	public final UnitAbstract shareProtoNumber() {
 		return protoNumber;
 	}
 

@@ -49,7 +49,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class RealF extends DivField implements Divisible, Normalizable {
+public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
 	 * 
@@ -95,7 +95,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 		if (pL.length == 0)	throw new IllegalArgumentException("Can't form Modulus Sum from empty array.");
 		RealF tR = RealF.copyZERO(pL[0]);
 		for (RealF point : pL)
-			tR.add((RealF.copyONE(point).scale(point.getModulus())));
+			tR.add((RealF.copyONE(point).scale(point.modulus())));
 		return tR;
 	}
 
@@ -118,7 +118,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 		if (pL.length == 0)	throw new IllegalArgumentException("Can't form SQ Modulus Sum from empty array.");
 		RealF tR = RealF.copyZERO(pL[0]);
 		for (RealF point : pL)
-			tR.add((RealF.copyONE(point).scale(point.getSQModulus())));
+			tR.add((RealF.copyONE(point).scale(point.sqModulus())));
 		return tR;
 	}
 
@@ -140,7 +140,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return RealF
 	 */
-	public static RealF copyONE(DivField pR) {
+	public static RealF copyONE(UnitAbstract pR) {
 		return new RealF(pR.getCardinal(), 1.0f);
 	}
 
@@ -151,7 +151,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return RealF
 	 */
-	public static RealF copyZERO(DivField pR) {
+	public static RealF copyZERO(UnitAbstract pR) {
 		return new RealF(pR.getCardinal(), 0.0f);
 	}
 
@@ -198,7 +198,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 *         otherwise.
 	 */
 	public static boolean isEqual(RealF pE, RealF pF) {
-		return DivField.isTypeMatch(pE, pF) && pE.getReal() == pF.getReal();
+		return UnitAbstract.isTypeMatch(pE, pF) && pE.getReal() == pF.getReal();
 
 	}
 
@@ -312,7 +312,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	}
 
 	/**
-	 * These are the actual java primitives within the DivField child that as as
+	 * These are the actual java primitives within the UnitAbstract child that as as
 	 * 'the number.'
 	 */
 	protected float[] vals;
@@ -387,7 +387,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @param pF float
 	 */
-	public RealF(DivField pR, float pF) {
+	public RealF(UnitAbstract pR, float pF) {
 		super(pR.getCardinal());
 		vals = new float[1];
 		setReal(pF);
@@ -398,17 +398,17 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when a field mismatch
 	 *                              happens
 	 * 
 	 * @return RealF
 	 */
 	@Override
-	public RealF add(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
+	public RealF add(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Addition failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Addition failed type match test", (UnitAbstract) pF));
 
 		setReal(getReal() + ((RealF) pF).getReal());
 		return this;
@@ -429,20 +429,20 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	/**
 	 * This method divides real numbers and changes this object to be the result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
 	 *                              division by zero happens
 	 * 
 	 * @return RealF
 	 */
 	@Override
-	public RealF divide(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
+	public RealF divide(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Divide failed type match test", (UnitAbstract) pF));
 
 		if (RealF.isZero((RealF) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", (DivField) pF));
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
 
 		setReal(getReal() / ((RealF) pF).getReal());
 		return this;
@@ -455,8 +455,8 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * @return Float
 	 */
 	@Override
-	public Float getModulus() {
-		return Float.valueOf((float) Math.sqrt(getSQModulus().floatValue()));
+	public Float modulus() {
+		return Float.valueOf((float) Math.sqrt(sqModulus().floatValue()));
 	}
 
 	/**
@@ -476,7 +476,7 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	 * @return Float
 	 */
 	@Override
-	public Float getSQModulus() {
+	public Float sqModulus() {
 		float tR = 0f;
 		for (float point : vals)
 			tR += point * point;
@@ -503,17 +503,17 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
 	 * 
 	 * @return RealF
 	 */
 	@Override
-	public RealF multiply(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
+	public RealF multiply(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Multiply failed type match test", (UnitAbstract) pF));
 
 		setReal(getReal() * ((RealF) pF).getReal());
 		return this;
@@ -545,17 +545,17 @@ public class RealF extends DivField implements Divisible, Normalizable {
 	/**
 	 * This method subtracts real numbers and changes this object to be the result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
 	 * 
 	 * @return RealF
 	 */
 	@Override
-	public RealF subtract(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
+	public RealF subtract(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealF.isNaN(this) && !RealF.isNaN((RealF) pF)
 				&& !RealF.isInfinite(this) && !RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Subtraction failed type match test", (UnitAbstract) pF));
 
 		setReal(getReal() - ((RealF) pF).getReal());
 		return this;

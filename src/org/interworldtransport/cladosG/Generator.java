@@ -118,7 +118,7 @@ public enum Generator {
 	 * 
 	 * @return Stream of Generator
 	 */
-	public final static Stream<Generator> flow() {
+	public final static Stream<Generator> stream() {
 		return Stream.of(Generator.values());
 	}
 
@@ -129,7 +129,7 @@ public enum Generator {
 	 *               reach the same ordinal value of a generator.
 	 * @return Stream of Generator
 	 */
-	public final static Stream<Generator> flow(byte pLimit) {
+	public final static Stream<Generator> stream(byte pLimit) {
 		return Stream.of(Generator.values()).limit(pLimit);
 	}
 

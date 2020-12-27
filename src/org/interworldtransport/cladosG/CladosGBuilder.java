@@ -31,14 +31,13 @@ import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFCache;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * This builder gets basic information and constructs many Clados Geometry
@@ -108,30 +107,28 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #1 covered with this method
 	 * 
-	 * @param pA The monad to be copied. USE A CONCRETE Monad here or nada.
+	 * @param pM The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @return Monad (Cast this as the concrete monad to be used)
-	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 */
-	public static final Monad copyOfMonad(Monad pA) throws CladosMonadException {
-		return new Monad(pA);
+	public static final Monad copyOfMonad(Monad pM) {
+		return new Monad(pM);
 	}
 
 	/**
 	 * Monad Constructor #2 covered with this method
 	 * 
-	 * @param pA    The monad to be copied. USE A CONCRETE Monad here or nada.
+	 * @param pM    The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new monad's name.
 	 * @return Monad (Cast this as the concrete monad to be used)
-	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 */
-	public static final Monad copyOfMonad(Monad pA, String pName) throws CladosMonadException {
-		return new Monad(pName, pA);
+	public static final Monad copyOfMonad(Monad pM, String pName) {
+		return new Monad(pName, pM);
 	}
 
 	/**
 	 * Algebra Constructor #5 covered with this
 	 * 
-	 * @param pNumber The DivField to be re-used.
+	 * @param pNumber The UnitAbstract to be re-used.
 	 * @param pName   A String for the new algebra's name.
 	 * @param pFTName A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
@@ -141,7 +138,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws GeneratorRangeException Thrown by an algebra constructor if the pSig
 	 *                                 parameter is too long
 	 */
-	public static final Algebra createAlgebra(DivField pNumber, String pName, String pFTName, String pSig)
+	public static final Algebra createAlgebra(UnitAbstract pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
 			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
@@ -176,14 +173,14 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * Algebra Constructor #4 covered with this
 	 * 
 	 * @param pF      A Foot to be referenced so a new one is NOT created.
-	 * @param pNumber The DivField to be re-used.
+	 * @param pNumber The UnitAbstract to be re-used.
 	 * @param pName   A String for the new algebra's name.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return Algebra
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Algebra createAlgebraWithFoot(Foot pF, DivField pNumber, String pName, String pSig)
+	public static final Algebra createAlgebraWithFoot(Foot pF, UnitAbstract pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
 			return new Algebra(pName, pF, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
@@ -194,7 +191,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		} else if (pNumber instanceof ComplexD) {
 			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
-			throw new IllegalArgumentException("Unexpected DivField child for Algebra mode | "+pNumber.toXMLString());
+			throw new IllegalArgumentException("Unexpected UnitAbstract child for Algebra mode | "+pNumber.toXMLString());
 		}
 	}
 
@@ -265,10 +262,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * This method creates a new Foot object using the Cardinal offered.
 	 * 
 	 * @param pName String name of new Foot
-	 * @param pDiv  DivField holding Cardinal to be re-used.
+	 * @param pDiv  UnitAbstract holding Cardinal to be re-used.
 	 * @return Foot (new instance)
 	 */
-	public final static Foot createFootLike(String pName, DivField pDiv) {
+	public final static Foot createFootLike(String pName, UnitAbstract pDiv) {
 		return createFootLike(pName, pDiv.getCardinal());
 	}
 	
@@ -358,7 +355,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #5 covered with this method
 	 * 
-	 * @param pNumber  The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pNumber  The UnitAbstract to be re-used. USE A CONCRETE one here or nada.
 	 * @param pName    A String for the new monad's name.
 	 * @param pAName   A String for the new algebra's name.
 	 * @param pFrame   A String for the new frame name.
@@ -369,12 +366,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws BadSignatureException    Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException     Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException  Thrown if the pSig parameter is too long
-	 * @throws GradeOutOfRangeException Thrown on an internal error if special case
-	 *                                  handler glitches
 	 */
-	public static final Monad createMonadSpecial(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
+	public static final Monad createMonadSpecial(UnitAbstract pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig, String pSpecial)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber, pSpecial);
 	}
 	
@@ -382,7 +377,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #7 covered with this method
 	 * 
-	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or nada.
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pFrame  A String for the new frame name.
@@ -391,7 +386,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadWithAlgebra(DivField[] pNumber, Algebra pA, String pName, String pFrame)
+	public static final Monad createMonadWithAlgebra(UnitAbstract[] pNumber, Algebra pA, String pName, String pFrame)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pA, pFrame, pNumber);
 	}
@@ -399,7 +394,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #6 covered with this method
 	 * 
-	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
 	 * @param pFrame  A String for the new frame name.
@@ -410,7 +405,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadWithCoeffs(DivField[] pNumber, String pName, String pAName, String pFrame,
+	public static final Monad createMonadWithCoeffs(UnitAbstract[] pNumber, String pName, String pAName, String pFrame,
 			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
 	}
@@ -418,7 +413,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #4 covered with this method
 	 * 
-	 * @param pNumber The DivField to be re-used.
+	 * @param pNumber The UnitAbstract to be re-used.
 	 * @param pFt     A Foot to be referenced so a new one is NOT created.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
@@ -429,7 +424,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadWithFoot(DivField pNumber, Foot pFt, String pName, String pAName, String pFrame,
+	public static final Monad createMonadWithFoot(UnitAbstract pNumber, Foot pFt, String pName, String pAName, String pFrame,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFt, pSig, pNumber);
 	}
@@ -437,7 +432,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #3 covered with this method
 	 * 
-	 * @param pNumber The DivField to be re-used. USE A CONCRETE one here or nada.
+	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
 	 * @param pFrame  A String for the new frame name.
@@ -448,7 +443,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadZero(DivField pNumber, String pName, String pAName, String pFrame, String pFoot,
+	public static final Monad createMonadZero(UnitAbstract pNumber, String pName, String pAName, String pFrame, String pFoot,
 			String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
 	}

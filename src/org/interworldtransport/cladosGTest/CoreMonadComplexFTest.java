@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosG.Monad;
-import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
+import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,7 @@ class CoreMonadComplexFTest {
 	Monad tM9;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		cRF = new ComplexF[16];
 		Cardinal tSpot = Cardinal.generate("TestComplexFs");
 		cRF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(tSpot, cRF.length);
@@ -66,7 +66,7 @@ class CoreMonadComplexFTest {
 	}
 	
 	@Test
-	public void testMultiplication() throws FieldBinaryException, CladosMonadBinaryException {
+	public void testMultiplication() {
 		assert(tM1.getAlgebra() == tM2.getAlgebra());
 		assert(tM2.getAlgebra() == tM9.getAlgebra());
 		
@@ -106,7 +106,7 @@ class CoreMonadComplexFTest {
 	}
 
 	@Test
-	public void testUniMathOps() throws FieldBinaryException, FieldException, CladosMonadException {
+	public void testUniMathOps() throws FieldException, CladosMonadException {
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
 		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO((ComplexF) tM5.getCoeff(0)))));
@@ -133,7 +133,7 @@ class CoreMonadComplexFTest {
 	}
 	
 	@Test
-	public void testBiMathOps1() throws FieldBinaryException, CladosMonadException {
+	public void testBiMathOps1() throws CladosMonadException {
 		tM6.add(tM7);
 		tM7.scale(new ComplexF(tM6.getCoeff((short) 0), 2.0f, 0.0f));
 		assertTrue(tM6.isGEqual(tM7));

@@ -12,7 +12,7 @@ class HeatBasisTest {
 	int loopLimit=100;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 	}
 	
 	@Test

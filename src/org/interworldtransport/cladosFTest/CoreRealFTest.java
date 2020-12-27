@@ -1,6 +1,6 @@
 package org.interworldtransport.cladosFTest;
 
-import static org.interworldtransport.cladosF.DivField.isTypeMatch;
+import static org.interworldtransport.cladosF.UnitAbstract.isTypeMatch;
 import static org.interworldtransport.cladosF.RealF.add;
 import static org.interworldtransport.cladosF.RealF.conjugate;
 import static org.interworldtransport.cladosF.RealF.divide;
@@ -107,22 +107,22 @@ class CoreRealFTest {
 
 	@Test
 	public void testGetModulus() {
-		assertTrue(tReal0.getModulus() == 0f);
-		assertTrue(tReal1.getModulus() > 0f);
-		assertTrue(Float.isNaN(tReal4.getModulus()));
-		assertTrue(Float.isInfinite(tReal5.getModulus()));
-		assertTrue(Float.isInfinite(tReal6.getModulus()));
-		assertTrue(Float.isInfinite(tReal2.getModulus()));
+		assertTrue(tReal0.modulus() == 0f);
+		assertTrue(tReal1.modulus() > 0f);
+		assertTrue(Float.isNaN(tReal4.modulus()));
+		assertTrue(Float.isInfinite(tReal5.modulus()));
+		assertTrue(Float.isInfinite(tReal6.modulus()));
+		assertTrue(Float.isInfinite(tReal2.modulus()));
 	}
 
 	@Test
 	public void testGetSQModulus() {
-		assertTrue(tReal0.getModulus() == 0f);
-		assertTrue(tReal1.getModulus() > 0f);
-		assertTrue(Float.isNaN(tReal4.getModulus()));
-		assertTrue(Float.isInfinite(tReal5.getModulus()));
-		assertTrue(Float.isInfinite(tReal6.getModulus()));
-		assertTrue(Float.isInfinite(tReal2.getModulus()));
+		assertTrue(tReal0.modulus() == 0f);
+		assertTrue(tReal1.modulus() > 0f);
+		assertTrue(Float.isNaN(tReal4.modulus()));
+		assertTrue(Float.isInfinite(tReal5.modulus()));
+		assertTrue(Float.isInfinite(tReal6.modulus()));
+		assertTrue(Float.isInfinite(tReal2.modulus()));
 	}
 
 	@Test

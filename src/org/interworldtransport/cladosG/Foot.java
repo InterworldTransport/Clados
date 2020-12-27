@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.UnitAbstract;
 
 /**
  * Objects within the cladosG package have a number of attributes in common that
@@ -112,10 +112,10 @@ public final class Foot {
 	 * Build the footPoint object from scratch.
 	 * 
 	 * @param pName String This string will be the name of the foot point.
-	 * @param pF    DivField This object holds the cardinal that defines the kind of
+	 * @param pF    UnitAbstract This object holds the cardinal that defines the kind of
 	 *              numbers that are meaningful for this foot point
 	 */
-	public Foot(String pName, DivField pF) {
+	public Foot(String pName, UnitAbstract pF) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
 		cardinalList.add(pF.getCardinal());

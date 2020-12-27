@@ -33,18 +33,16 @@ import org.interworldtransport.cladosF.CladosFListBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.DivField;
-import org.interworldtransport.cladosF.Divisible;
+import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.CladosMonadBinaryException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
 
 /**
  * A CladosG Monad is better known as a multivector to anyone with experience
@@ -93,11 +91,11 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * restricted to the casting that happens in the CladosFBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
  * to avoid mutability using a generic copyOf() method. As long as the
- * coefficients in the monad are valid DivField children implementing Divisible,
+ * coefficients in the monad are valid UnitAbstract children implementing Field,
  * the copyOf() function will work fine. There are two cases where things can go
  * awry, though.
  * 
- * 1. It is probably possible for someone to mix DivField children in a Scale
+ * 1. It is probably possible for someone to mix UnitAbstract children in a Scale
  * object containing a mondad's coefficients. The copyOf() function will
  * faithfully copy them as they are. The scale() method and others will
  * faithfully pass them to the Scale object to be used as appropriate there. For
@@ -107,7 +105,7 @@ import org.interworldtransport.cladosGExceptions.GradeOutOfRangeException;
  * unless one thought the scaling was between two complex numbers. THAT'S why
  * mode is kept in Scale AND Monad, but it is not enforced yet.
  * 
- * 2. If someone invents a new DivField child, there is a ton of work to do as
+ * 2. If someone invents a new UnitAbstract child, there is a ton of work to do as
  * the builders and other enumerations have to be adapted. Some of the code in
  * downstream method switches on CladosField modes. So... be cautious about
  * inventing new DivFields. Lots of work will have to be done.
@@ -165,13 +163,8 @@ public class Monad {
 	 * 
 	 * @return boolean
 	 * @param pM Monad
-	 * @throws CladosMonadException This exception is thrown when the method can't
-	 *                              create a copy of the monad to be checked.
-	 * @throws FieldBinaryException This exception is thrown when the method can't
-	 *                              multiply two fields used by the monad to be
-	 *                              checked.
 	 */
-	public static boolean isIdempotent(Monad pM) throws FieldBinaryException, CladosMonadException {
+	public static boolean isIdempotent(Monad pM) {
 		if (isGZero(pM))
 			return true;
 		return CladosGBuilder.copyOfMonad(pM).multiplyLeft(pM).isGEqual(pM);
@@ -190,14 +183,11 @@ public class Monad {
 	 * 
 	 * @return boolean
 	 * @param pM Monad
-	 * @throws CladosMonadException This exception is thrown when the method can't
-	 *                              create a copy of the monad to be checked.
 	 * @throws FieldException       This exception is thrown when the method can't
 	 *                              copy the field used by the monad to be checked.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends DivField & Divisible> boolean isScaledIdempotent(Monad pM)
-			throws CladosMonadException, FieldException {
+	public static <T extends UnitAbstract & Field> boolean isScaledIdempotent(Monad pM) throws FieldException {
 		if (isIdempotent(pM))
 			return true;
 		if (Monad.isNilpotent(pM, 2))
@@ -218,13 +208,8 @@ public class Monad {
 	 * @return boolean
 	 * @param pM     Monad The monad to be tested
 	 * @param pPower int The integer power to test
-	 * @throws CladosMonadException This exception is thrown when the method can't
-	 *                              create a copy of the monad to be checked.
-	 * @throws FieldBinaryException This exception is thrown when the method can't
-	 *                              multiply two fields used by the monad to be
-	 *                              checked.
 	 */
-	public static boolean isNilpotent(Monad pM, int pPower) throws FieldBinaryException, CladosMonadException {
+	public static boolean isNilpotent(Monad pM, int pPower) {
 		if (isGZero(pM))
 			return true;
 		Monad check1 = CladosGBuilder.copyOfMonad(pM);
@@ -385,7 +370,7 @@ public class Monad {
 	 * bladeCount. It is keyed to the blades in a monad's basis. It is fundamentally
 	 * an IdentityHashMap with some frosting.
 	 */
-	protected Scale<? extends DivField> scales;
+	protected Scale<? extends UnitAbstract> scales;
 
 	/**
 	 * This boolean is a flag used internally by multiplication methods to make
@@ -443,7 +428,7 @@ public class Monad {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public Monad(String pName, Monad pM) throws CladosMonadException {
+	public Monad(String pName, Monad pM) {
 		this(pM);
 		setName(pName);
 	}
@@ -457,7 +442,7 @@ public class Monad {
 	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
-	 * @param pF           DivField Used to construct number
+	 * @param pF           UnitAbstract Used to construct number
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
@@ -468,7 +453,7 @@ public class Monad {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF)
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, UnitAbstract pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
 
@@ -481,7 +466,7 @@ public class Monad {
 		else if (pF instanceof ComplexD)
 			mode = CladosField.COMPLEXD;
 		else
-			throw new IllegalArgumentException("Offered Number must be a child of CladosF/DivField");
+			throw new IllegalArgumentException("Offered Number must be a child of CladosF/UnitAbstract");
 
 		switch (mode) {
 		case COMPLEXD -> {
@@ -531,7 +516,7 @@ public class Monad {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, DivField pF)
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, UnitAbstract pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
 
@@ -544,7 +529,7 @@ public class Monad {
 		else if (pF instanceof ComplexD)
 			mode = CladosField.COMPLEXD;
 		else
-			throw new IllegalArgumentException("Offered Number must be a child of CladosF/DivField");
+			throw new IllegalArgumentException("Offered Number must be a child of CladosF/UnitAbstract");
 
 		switch (mode) {
 		case COMPLEXD -> {
@@ -597,15 +582,10 @@ public class Monad {
 	 * @throws GeneratorRangeException  This exception is thrown when the integer
 	 *                                  number of generators for the basis is out of
 	 *                                  the supported range. {0, 1, 2, ..., 14}
-	 * @throws GradeOutOfRangeException This method is thrown if the special case
-	 *                                  handler has issues with the grade implied in
-	 *                                  the case. It really shouldn't happen, but
-	 *                                  might if someone tinkers with the case in an
-	 *                                  unsafe way.
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, DivField pF,
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, UnitAbstract pF,
 			String pSpecial)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException, GradeOutOfRangeException {
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already. Now handle the special cases.
 		if (CladosConstant.MONAD_SPECIAL_CASES.contains(pSpecial)) {
@@ -656,7 +636,7 @@ public class Monad {
 	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
-	 * @param pC           DivField[]
+	 * @param pC           UnitAbstract[]
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
@@ -668,7 +648,7 @@ public class Monad {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
 	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			DivField[] pC) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			UnitAbstract[] pC) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		if (pC == null | pC[0] == null)
 			throw new CladosMonadException(this, "Missing coefficients.");
 		else if (pC.length != (1 << pSig.length()))
@@ -685,7 +665,7 @@ public class Monad {
 		else if (pC[0] instanceof ComplexD)
 			mode = CladosField.COMPLEXD;
 		else
-			throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/DivField");
+			throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/UnitAbstract");
 
 		switch (mode) {
 		case COMPLEXD -> {
@@ -726,13 +706,13 @@ public class Monad {
 	 * @param pMonadName String
 	 * @param pAlgebra   Algebra
 	 * @param pFrameName String
-	 * @param pC         DivField[]
+	 * @param pC         UnitAbstract[]
 	 * @throws CladosMonadException This exception is thrown if there is an issue
 	 *                              with the coefficients offered. The issues could
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public Monad(String pMonadName, Algebra pAlgebra, String pFrameName, DivField[] pC) throws CladosMonadException {
+	public Monad(String pMonadName, Algebra pAlgebra, String pFrameName, UnitAbstract[] pC) throws CladosMonadException {
 		if (pC.length != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array size does not match bladecount from offered Algebra.");
@@ -741,7 +721,7 @@ public class Monad {
 		setAlgebra(pAlgebra);
 		setFrameName(pFrameName);
 
-		if (pAlgebra.shareProtoNumber() instanceof DivField) {
+		if (pAlgebra.shareProtoNumber() instanceof UnitAbstract) {
 			if (pC[0] instanceof RealF)
 				mode = CladosField.REALF;
 			else if (pC[0] instanceof RealD)
@@ -751,7 +731,7 @@ public class Monad {
 			else if (pC[0] instanceof ComplexD)
 				mode = CladosField.COMPLEXD;
 			else
-				throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/DivField");
+				throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/UnitAbstract");
 		} else {
 			if (pAlgebra.shareProtoNumber() instanceof RealF)
 				mode = CladosField.REALF;
@@ -762,7 +742,7 @@ public class Monad {
 			else if (pAlgebra.shareProtoNumber() instanceof ComplexD)
 				mode = CladosField.COMPLEXD;
 			else
-				throw new IllegalArgumentException("Algebra's protonumber must be a child of CladosF/DivField");
+				throw new IllegalArgumentException("Algebra's protonumber must be a child of CladosF/UnitAbstract");
 		}
 
 		switch (mode) {
@@ -796,13 +776,11 @@ public class Monad {
 	 * the same field and satisfy the Reference Matching test.
 	 * 
 	 * @param pM Monad
-	 * @throws CladosMonadBinaryException This exception is thrown when the monads
-	 *                                    fail a reference match.
 	 * @return Monad
 	 */
-	public Monad add(Monad pM) throws CladosMonadBinaryException {
+	public Monad add(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Can't add when frames don't match.", pM);
+			throw new IllegalArgumentException("Can't add monads when frames don't match.");
 		bladeStream().parallel().forEach(blade -> {
 			try {
 				scales.get(blade).add(pM.scales.get(blade));
@@ -839,7 +817,7 @@ public class Monad {
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible & Normalizable> Monad dualLeft() {
+	public <T extends UnitAbstract & Field & Normalizable> Monad dualLeft() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 
@@ -863,7 +841,7 @@ public class Monad {
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible & Normalizable> Monad dualRight() {
+	public <T extends UnitAbstract & Field & Normalizable> Monad dualRight() {
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 
@@ -894,10 +872,10 @@ public class Monad {
 	 * Return the field Coefficients for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
 	 * 
-	 * @return DivField[]
+	 * @return UnitAbstract[]
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField> T[] getCoeff() {
+	public <T extends UnitAbstract> T[] getCoeff() {
 		return (T[]) scales.getCoefficients();
 	}
 
@@ -907,10 +885,10 @@ public class Monad {
 	 * 
 	 * @param i int This points at the coefficient at the equivalent tuple location.
 	 * 
-	 * @return DivField
+	 * @return UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField> T getCoeff(int i) {
+	public <T extends UnitAbstract> T getCoeff(int i) {
 		if (i >= 0 & i < getAlgebra().getBladeCount())
 			return (T) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
 		return null;
@@ -935,7 +913,7 @@ public class Monad {
 	}
 
 	/**
-	 * This answers a question concerning which type of DivField children are used.
+	 * This answers a question concerning which type of UnitAbstract children are used.
 	 * 
 	 * @return CladosField mode for this monad
 	 */
@@ -955,10 +933,10 @@ public class Monad {
 	 * This method returns the map relating basis blades to coefficients in the
 	 * monad.
 	 * 
-	 * @return Scale of Blades and DivField children. This is the 'coefficients'
+	 * @return Scale of Blades and UnitAbstract children. This is the 'coefficients'
 	 *         object.
 	 */
-	public Scale<? extends DivField> getScales() {
+	public Scale<? extends UnitAbstract> getScales() {
 		return scales;
 	}
 
@@ -1063,10 +1041,10 @@ public class Monad {
 	/**
 	 * Return the magnitude of the Monad
 	 * 
-	 * @return DivField but in practice it is always a child of DivField
+	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField & Divisible> T magnitude() {
+	public <T extends UnitAbstract & Field> T magnitude() {
 		return (T) scales.modulusSum();
 	}
 
@@ -1077,13 +1055,10 @@ public class Monad {
 	 * 
 	 * @param pM Monad
 	 * @return Monad
-	 * @throws FieldBinaryException This exception is thrown when the field match
-	 *                              test fails with the two monads
-	 * @throws CladosMonadException
 	 */
-	public Monad multiplyAntisymm(Monad pM) throws FieldBinaryException, CladosMonadException {
+	public Monad multiplyAntisymm(Monad pM) {
 		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
+			throw new IllegalArgumentException("Symm multiply fails reference match.");
 		Monad halfTwo = CladosGBuilder.copyOfMonad(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
@@ -1128,17 +1103,11 @@ public class Monad {
 	 * multiplication.
 	 * 
 	 * @param pM Monad
-	 * @throws CladosMonadBinaryException This exception is thrown when the
-	 *                                    reference match test fails with the two
-	 *                                    monads
-	 * @throws FieldBinaryException       This exception is thrown when the field
-	 *                                    match test fails with the two monads
 	 * @return Monad
 	 */
-	public <T extends DivField & Divisible & Normalizable> Monad multiplyLeft(Monad pM)
-			throws FieldBinaryException, CladosMonadBinaryException {
+	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Left multiply fails reference match.", pM);
+			throw new IllegalArgumentException("Left multiply fails reference match.");
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 
@@ -1161,7 +1130,7 @@ public class Monad {
 										.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						case COMPLEXF -> {
@@ -1172,7 +1141,7 @@ public class Monad {
 										.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						case REALD -> {
@@ -1182,7 +1151,7 @@ public class Monad {
 										.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						case REALF -> {
@@ -1192,7 +1161,7 @@ public class Monad {
 										.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						}
@@ -1217,7 +1186,7 @@ public class Monad {
 									.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					case COMPLEXF -> {
@@ -1227,7 +1196,7 @@ public class Monad {
 									.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					case REALD -> {
@@ -1237,7 +1206,7 @@ public class Monad {
 									.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					case REALF -> {
@@ -1247,7 +1216,7 @@ public class Monad {
 									.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					}
@@ -1284,17 +1253,11 @@ public class Monad {
 	 * multiplication.
 	 * 
 	 * @param pM Monad
-	 * @throws CladosMonadBinaryException This exception is thrown when the
-	 *                                    reference match test fails with the two
-	 *                                    monads
-	 * @throws FieldBinaryException       This exception is thrown when the field
-	 *                                    match test fails with the two monads
 	 * @return Monad
 	 */
-	public <T extends DivField & Divisible & Normalizable> Monad multiplyRight(Monad pM)
-			throws FieldBinaryException, CladosMonadBinaryException {
+	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
-			throw new CladosMonadBinaryException(this, "Right multiply fails reference match.", pM);
+			throw new IllegalArgumentException("Right multiply fails reference match.");
 		CliffordProduct tProd = getAlgebra().getGProduct();
 		CanonicalBasis tBasis = getAlgebra().getGBasis();
 
@@ -1317,7 +1280,7 @@ public class Monad {
 										.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						case COMPLEXF -> {
@@ -1328,7 +1291,7 @@ public class Monad {
 										.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						case REALD -> {
@@ -1338,7 +1301,7 @@ public class Monad {
 										.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						case REALF -> {
@@ -1348,7 +1311,7 @@ public class Monad {
 										.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
 						}
 						}
@@ -1373,7 +1336,7 @@ public class Monad {
 									.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					case COMPLEXF -> {
@@ -1383,7 +1346,7 @@ public class Monad {
 									.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					case REALD -> {
@@ -1393,7 +1356,7 @@ public class Monad {
 									.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					case REALF -> {
@@ -1403,7 +1366,7 @@ public class Monad {
 									.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails DivField reference match.");
+							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
 					}
 					}
@@ -1422,13 +1385,10 @@ public class Monad {
 	 * 
 	 * @param pM Monad
 	 * @return Monad
-	 * @throws FieldBinaryException This exception is thrown when the field match
-	 *                              test fails with the two monads
-	 * @throws CladosMonadException
 	 */
-	public Monad multiplySymm(Monad pM) throws FieldBinaryException, CladosMonadException {
+	public Monad multiplySymm(Monad pM) {
 		if (!isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Symm multiply fails reference match.", pM);
+			throw new IllegalArgumentException("Symm multiply fails reference match.");
 		Monad halfTwo = CladosGBuilder.copyOfMonad(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
@@ -1467,10 +1427,10 @@ public class Monad {
 	 * This method is a concession to the old notation for the PScalar Part of a
 	 * monad. It returns the pscalar part coefficient.
 	 * 
-	 * @return DivField but in practice it is always a child of DivField
+	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@Deprecated
-	public DivField PSPc() {
+	public UnitAbstract PSPc() {
 		return scales.getPScalar();
 	}
 
@@ -1501,10 +1461,10 @@ public class Monad {
 	 * multiplication. The inbound number gets cast to the other, so imaginary
 	 * components won't get used in real number multiplication.
 	 * 
-	 * @param pScale DivField to use for scaling the monad
+	 * @param pScale UnitAbstract to use for scaling the monad
 	 * @return Monad after the scaling is complete.
 	 */
-	public <T extends DivField & Divisible> Monad scale(T pScale) {
+	public <T extends UnitAbstract & Field> Monad scale(T pScale) {
 		scales.scale((T) pScale);
 		setGradeKey();
 		return this;
@@ -1520,13 +1480,13 @@ public class Monad {
 	 * Caution is advised if this method is used while frequent reuse should be
 	 * considered bad form.
 	 * 
-	 * @param <T> DivField child
-	 * @param ppC DivField child array
+	 * @param <T> UnitAbstract child
+	 * @param ppC UnitAbstract child array
 	 * @return Monad after setting the coefficients to the offered array.
 	 * @throws CladosMonadException This exception is thrown when the array offered
 	 *                              for coordinates is of the wrong length.
 	 */
-	public <T extends DivField & Divisible> Monad setCoeff(T[] ppC) throws CladosMonadException {
+	public <T extends UnitAbstract & Field> Monad setCoeff(T[] ppC) throws CladosMonadException {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
 		scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (T[]) ppC));
@@ -1587,20 +1547,20 @@ public class Monad {
 	 * This method is a concession to the old notation for the Scalar Part of a
 	 * monad. It returns the scalar part coefficient.
 	 * 
-	 * @return DivField but in practice it is always a child of DivField
+	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@Deprecated
-	public DivField SPc() {
+	public UnitAbstract SPc() {
 		return scales.getScalar();
 	}
 
 	/**
 	 * Return the magnitude squared of the Monad
 	 * 
-	 * @return DivField but in practice it is always a child of DivField
+	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DivField> T sqMagnitude() {
+	public <T extends UnitAbstract> T sqMagnitude() {
 		return (T) scales.modulusSQSum();
 	}
 
@@ -1609,13 +1569,11 @@ public class Monad {
 	 * use the same field and satisfy the Reference Matching test.
 	 * 
 	 * @param pM Monad
-	 * @throws CladosMonadBinaryException This exception is thrown when the monads
-	 *                                    fail a reference match.
 	 * @return Monad
 	 */
-	public Monad subtract(Monad pM) throws CladosMonadBinaryException {
+	public Monad subtract(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
-			throw new CladosMonadBinaryException(this, "Can't subtract without a reference match.", pM);
+			throw new IllegalArgumentException("Can't subtract monads without a reference match.");
 		bladeStream().parallel().forEach(blade -> {
 			try {
 				scales.get(blade).subtract(pM.scales.get(blade));
@@ -1663,8 +1621,8 @@ public class Monad {
 	 *                allow this method to reside in the Monad class. If it were in
 	 *                one of the child monad classes, it would work just as well,
 	 *                but it would have to know the child algebra class too in order
-	 *                to avoid DivField confusion. Since a monad can be sparse or
-	 *                not independent of the DivField used, the method is placed
+	 *                to avoid UnitAbstract confusion. Since a monad can be sparse or
+	 *                not independent of the UnitAbstract used, the method is placed
 	 *                here in the abstract parent.
 	 */
 	protected void setSparseFlag(byte pGrades) {

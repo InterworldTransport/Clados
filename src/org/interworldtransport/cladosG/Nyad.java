@@ -33,8 +33,8 @@ import java.util.stream.Stream;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.DivField;
-import org.interworldtransport.cladosF.Divisible;
+import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -46,9 +46,8 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * common. They are named objects from named algebras and with named feet. The
  * abstracted nyad covers those common elements and methods shared by objects in
  * potentially more than one algebra.
- * <p>
+ * 
  * (Single monad nyads are essentially monads, but can be expanded.)
- * <p>
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
@@ -959,12 +958,12 @@ public class Nyad {
 	 * the list without really changing the nature of the nyad.
 	 * 
 	 * @param pk   int
-	 * @param pMag DivField child object
+	 * @param pMag UnitAbstract child object
 	 * @throws FieldBinaryException This exception is thrown when the scale field
 	 *                              doesn't match the nyad's field.
 	 * @return NyadRealF
 	 */
-	public <T extends DivField & Divisible> Nyad scale(int pk, T pMag) throws FieldBinaryException {
+	public <T extends UnitAbstract & Field> Nyad scale(int pk, T pMag) throws FieldBinaryException {
 		if (pk >= 0 && pk < monadList.size())
 			monadList.get(pk).scale(pMag);
 		return this;

@@ -33,7 +33,7 @@ import java.util.Optional;
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum CladosGCache {

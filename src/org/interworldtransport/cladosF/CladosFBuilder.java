@@ -31,7 +31,7 @@ import java.util.Optional;
  * their supporting classes like a Cardinal. Some features are supported by the
  * CladosField enumeration.
  * 
- * The DivField builder is a singleton enforced as an enumeration.
+ * The UnitAbstract builder is a singleton enforced as an enumeration.
  * 
  * This enumeration has NO non-static element for the instance, thus
  * CladosFBuilder HAS NO INTERNAL STATE that can change.
@@ -88,9 +88,9 @@ public enum CladosFBuilder {
 	 * 
 	 * @param pMode 
 	 * @param pCard Cardinal to be re-used.
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public final static DivField createZERO(CladosField pMode, Cardinal pCard) {
+	public final static UnitAbstract createZERO(CladosField pMode, Cardinal pCard) {
 		switch (pMode) {
 		case REALF -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
@@ -120,9 +120,9 @@ public enum CladosFBuilder {
 	 * 
 	 * @param pMode 
 	 * @param pCard Cardinal to be re-used.
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public final static DivField createONE(CladosField pMode, Cardinal pCard) {
+	public final static UnitAbstract createONE(CladosField pMode, Cardinal pCard) {
 		switch (pMode) {
 		case REALF -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
@@ -153,11 +153,11 @@ public enum CladosFBuilder {
 	 * NOTE this one makes no attempt to update the cardinal cache. It is assumed to
 	 * have been done while constructing the number passed in as a parameter.
 	 * 
-	 * @param pDiv A DivField child number to be copied
-	 * @return DivField child number created
+	 * @param pDiv A UnitAbstract child number to be copied
+	 * @return UnitAbstract child number created
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <T extends DivField & Divisible> T copyOf(T pDiv) {
+	public final static <T extends UnitAbstract & Field> T copyOf(T pDiv) {
 		if (pDiv instanceof RealF) {
 			return (T) new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal());
 		} else if (pDiv instanceof RealD) {
@@ -176,9 +176,9 @@ public enum CladosFBuilder {
 	 * string provided to define and cache a Cardinal.
 	 * 
 	 * @param pS String name for the associated Cardinal
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public DivField createONE(String pS) {
+	public UnitAbstract createONE(String pS) {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(pS);
@@ -207,9 +207,9 @@ public enum CladosFBuilder {
 	 * offered Cardinal.
 	 * 
 	 * @param pCard Cardinal to use in construction
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public DivField createONE(Cardinal pCard) {
+	public UnitAbstract createONE(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
 			return RealF.newONE(pCard);
@@ -233,9 +233,9 @@ public enum CladosFBuilder {
 	 * Method creates a number as distinct ZERO object using default cardinal name.
 	 * 
 	 * @param pCard Cardinal to be re-used.
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public DivField createZERO() {
+	public UnitAbstract createZERO() {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(CladosField.REALF.name());
@@ -264,9 +264,9 @@ public enum CladosFBuilder {
 	 * string provided to define and cache a Cardinal.
 	 * 
 	 * @param pCard Cardinal to be re-used.
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public DivField createZERO(Cardinal pCard) {
+	public UnitAbstract createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
@@ -295,9 +295,9 @@ public enum CladosFBuilder {
 	 * string provided to define and cache a Cardinal.
 	 * 
 	 * @param pS String name for the associated Cardinal
-	 * @return DivField child number created
+	 * @return UnitAbstract child number created
 	 */
-	public <T extends DivField & Divisible> DivField createZERO(String pS) {
+	public <T extends UnitAbstract & Field> UnitAbstract createZERO(String pS) {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(pS);

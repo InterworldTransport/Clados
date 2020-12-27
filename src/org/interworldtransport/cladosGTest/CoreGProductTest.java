@@ -24,7 +24,7 @@ class CoreGProductTest {
 	String pSig15 = "+++-+++-+++-+++";
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 	}
 
 	@Test

@@ -57,7 +57,7 @@ public final class CladosConstant {
 	 * This is just a list of the special cases for Monad construction. Rather than
 	 * have a copy of them in each monad class, we keep them here.
 	 */
-	public final static List<String> MONAD_SPECIAL_CASES = List.of("Zero", "Unit Scalar", "Unit -Scalar",
+	public final static List<String> MONAD_SPECIAL_CASES = List.of("Unit Scalar", "Unit -Scalar",
 			"Unit PScalar", "Unit -PScalar");
 	/**
 	 * Alias for -1 to help readability elsewhere. Java's Float doesn't have it.

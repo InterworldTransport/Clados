@@ -13,7 +13,7 @@ class HeatGProductTest {
 	CliffordProduct a0;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 	}
 
 	@Test
