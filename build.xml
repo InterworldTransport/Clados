@@ -107,7 +107,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
 						    	/Users/alfredwdiffer/.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar:
 						    	/Users/alfredwdiffer/.p2/pool/plugins/org.junit.jupiter.params_5.1.0.v20180327-1502.jar" 
 	    			destdir="${docDir}" 
-	    			doctitle="CladosOne" 
+	    			doctitle="CladosTwo" 
 	    			nodeprecated="false" 
 	    			nodeprecatedlist="false" 
 	    			noindex="false" 
