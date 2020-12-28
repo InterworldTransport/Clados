@@ -27,8 +27,9 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.TreeMap;
-
-import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 /**
  * This interface represents the 'contract' obeyed by a canonical basis in
@@ -43,7 +44,7 @@ import org.interworldtransport.cladosGExceptions.BladeOutOfRangeException;
  * computational short-cuts for product tables having to deal with very large
  * vector spaces.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public interface CanonicalBasis {
@@ -79,6 +80,23 @@ public interface CanonicalBasis {
 	}
 
 	/**
+	 * In support of streams, a basis should offer a stream of its blades of a
+	 * particular grade.
+	 * 
+	 * @param pIn byte integer for magnitude of grade of blades in stream.
+	 * 
+	 * @return Stream of Blades in the basis of a particular grade.
+	 */
+	public abstract Stream<Blade> bladeOfGradeStream(byte pIn);
+
+	/**
+	 * In support of streams, a basis should offer a stream of its blades.
+	 * 
+	 * @return Stream of Blades in the basis
+	 */
+	public abstract Stream<Blade> bladeStream();
+
+	/**
 	 * Old-fashioned 'find' method that reports index location in the basis where a
 	 * Blade is found OR -1 if it wasn't found.
 	 * 
@@ -104,11 +122,8 @@ public interface CanonicalBasis {
 	 * @param p1 integer pointing to the blade in the internal list
 	 * @return EnumSet of Generator representing the blade without the context
 	 *         necessary for knowing much about the enclosing space for the blade.
-	 * @throws BladeOutOfRangeException This exception is thrown when the integer
-	 *                                  index would result in an IndexOutOfRange
-	 *                                  exception on an array of blades.
 	 */
-	public abstract EnumSet<Generator> getBladeSet(int p1) throws BladeOutOfRangeException;
+	public abstract EnumSet<Generator> getBladeSet(int p1);
 
 	/**
 	 * Return the number of grades in the basis. Since there is no geometry in the
@@ -142,11 +157,8 @@ public interface CanonicalBasis {
 	 * 
 	 * @param p1 short This is the desired key at p1 .
 	 * @return long
-	 * @throws BladeOutOfRangeException This exception is thrown if the requested
-	 *                                  blade is NOT between 0 and bladeCount
-	 *                                  inclusive.
 	 */
-	public abstract long getKey(int p1) throws BladeOutOfRangeException;
+	public abstract long getKey(int p1);
 
 	/**
 	 * Simple gettor method for the Map connecting Blade keys to their indexed
@@ -158,11 +170,27 @@ public interface CanonicalBasis {
 	public abstract TreeMap<Long, Integer> getKeyIndexMap();
 
 	/**
+	 * This is a short-hand method for getSingleBlade('last'). It just returns the
+	 * last blade in the basis.
+	 * 
+	 * @return Blade that is the last in the basis
+	 */
+	public abstract Blade getPScalarBlade();
+	
+	/**
 	 * This is a special version of getGradeStart() that finds the highest grade.
 	 * 
 	 * @return int Index within the basis where pscalar grade starts.
 	 */
 	public abstract int getPScalarStart();
+	
+	/**
+	 * This is a short-hand method for getSingleBlade(0). It just returns the first
+	 * blade in the basis.
+	 * 
+	 * @return Blade that is the first in the basis
+	 */
+	public abstract Blade getScalarBlade();
 
 	/**
 	 * Simple gettor method retrieves the Blade at the indexed position in the
@@ -172,6 +200,24 @@ public interface CanonicalBasis {
 	 * @return Blade at the indexed position.
 	 */
 	public abstract Blade getSingleBlade(int p1);
+
+	/**
+	 * This should essentially be an integer stream, but grades are very small. The
+	 * maximum grade in a basis is equal to the number of generators used to create
+	 * it. For now, a single byte integer suffices, but IntStream is better
+	 * supported by Java.
+	 * 
+	 * @return Stream of Grades in the basis
+	 */
+	public abstract IntStream gradeStream();
+
+	/**
+	 * Similar to bladestream(), this method returns a stream of boxed long integers
+	 * that represents blade keys.
+	 * 
+	 * @return LongStream of blade keys.
+	 */
+	public abstract LongStream keyStream();
 
 	/**
 	 * This method produces a printable and parseable string that represents the

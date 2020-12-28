@@ -18,7 +18,7 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
-import org.interworldtransport.cladosG.NyadAbstract;
+import org.interworldtransport.cladosG.Nyad;
 
 /**
  * This class is designed to be the top of the CladosG exception family. All
@@ -36,7 +36,7 @@ public class CladosNyadException extends Exception
 	/**
 	 * The source NyadRealD is the originator of the Exception.
 	 */
-	private NyadAbstract	Source;
+	private Nyad	Source;
 	/**
 	 * The source message is the reason given by the originating NyadRealD for
 	 * the exception.
@@ -48,11 +48,11 @@ public class CladosNyadException extends Exception
 	 * only a source NyadRealD and message.
 	 * 
 	 * @param pSource
-	 *            NyadAbstract
+	 *            Nyad
 	 * @param pMessage
 	 *            String
 	 */
-	public CladosNyadException(NyadAbstract pSource, String pMessage)
+	public CladosNyadException(Nyad pSource, String pMessage)
 	{
 		super();
 		SourceMessage = pMessage;
@@ -63,9 +63,9 @@ public class CladosNyadException extends Exception
 	 * This method delivers a reference to the NyadRealD that originated the
 	 * Exception
 	 * 
-	 * @return NyadAbstract
+	 * @return Nyad
 	 */
-	public NyadAbstract getSourceNyad()
+	public Nyad getSourceNyad()
 	{
 		return Source;
 	}

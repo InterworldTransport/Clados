@@ -34,7 +34,7 @@ package org.interworldtransport.cladosG;
  * The farther one gets from basic methods delivering 'results' and 'signs', the
  * more one is wandering off into conveniences.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public interface CliffordProduct {

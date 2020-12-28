@@ -31,7 +31,7 @@ import java.util.Optional;
  * their supporting classes like a Cardinal. Some features are supported by the
  * CladosField enumeration.
  * 
- * The DivField builder is a singleton enforced as an enumeration.
+ * The UnitAbstract builder is a singleton enforced as an enumeration.
  * 
  * This enumeration has NO non-static element for the instance, thus
  * CladosFBuilder HAS NO INTERNAL STATE that can change.
@@ -41,187 +41,33 @@ import java.util.Optional;
  */
 public enum CladosFBuilder {
 	/**
-	 * There is an implicit private constructor for this singleton, but we won't
-	 * override it.
+	 * The implicit private constructor IS NOT overridden.
 	 */
-	INSTANCE;
-
+	COMPLEXD,
 	/**
-	 * Method copies the incoming number into a distinct object ensuring the ==
-	 * operation fails but equals() does not.
-	 * 
-	 * @param pCD Number to be copied.
-	 * @return ComplexD Newly constructed copy of incoming number
+	 * The implicit private constructor IS NOT overridden.
 	 */
-	public final static ComplexD copyOf(ComplexD pCD) {
-		return ComplexD.copyOf(pCD);
-	}
-
+	COMPLEXF,
 	/**
-	 * Method copies the incoming number into a distinct object ensuring the ==
-	 * operation fails but equals() does not.
-	 * 
-	 * @param pCF Number to be copied.
-	 * @return ComplexF Newly constructed copy of incoming number
+	 * The implicit private constructor IS NOT overridden.
 	 */
-	public final static ComplexF copyOf(ComplexF pCF) {
-		return ComplexF.copyOf(pCF);
-	}
-
+	REALD,
 	/**
-	 * Method copies the incoming number into a distinct object ensuring the ==
-	 * operation fails but equals() does not.
-	 * 
-	 * @param pRD Number to be copied.
-	 * @return RealD Newly constructed copy of incoming number
+	 * The implicit private constructor IS NOT overridden.
 	 */
-	public final static RealD copyOf(RealD pRD) {
-		return RealD.copyOf(pRD);
-	}
-
+	REALF;
 	/**
-	 * Method copies the incoming number into a distinct object ensuring the ==
-	 * operation fails but equals() does not.
-	 * 
-	 * @param pRF Number to be copied.
-	 * @return RealR Newly constructed copy of incoming number
+	 * The implicit private constructor IS NOT overridden.
 	 */
-	public final static RealF copyOf(RealF pRF) {
-		return RealF.copyOf(pRF);
-	}
-
-	/**
-	 * Method copies the incoming cardinal into a distinct 'zero' number.
-	 * 
-	 * @param pCard Cardinal to be re-used.
-	 * @return ComplexD Newly constructed 'zero' number.
-	 */
-	public final static ComplexD createComplexD(Cardinal pCard) {
-		return new ComplexD(pCard, 0d, 0d);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ONE using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return ComplexD number created
-	 */
-	public final static ComplexD createComplexDONE(String pS) {
-		return ComplexD.newONE(pS);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ZERO using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return ComplexD number created
-	 */
-	public final static ComplexD createComplexDZERO(String pS) {
-		return ComplexD.newZERO(pS);
-	}
-
-	/**
-	 * Method copies the incoming cardinal into a distinct 'zero' number.
-	 * 
-	 * @param pCard Cardinal to be re-used.
-	 * @return ComplexF Newly constructed 'zero' number.
-	 */
-	public final static ComplexF createComplexF(Cardinal pCard) {
-		return new ComplexF(pCard, 0f, 0f);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ONE using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return ComplexF number created
-	 */
-	public final static ComplexF createComplexFONE(String pS) {
-		return ComplexF.newONE(pS);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ZERO using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return ComplexF number created
-	 */
-	public final static ComplexF createComplexFZERO(String pS) {
-		return ComplexF.newZERO(pS);
-	}
-
-	/**
-	 * Method copies the incoming cardinal into a distinct 'zero' number.
-	 * 
-	 * @param pCard Cardinal to be re-used.
-	 * @return RealD Newly constructed 'zero' number.
-	 */
-	public final static RealD createRealD(Cardinal pCard) {
-		return new RealD(pCard, 0d);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ONE using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return RealD number created
-	 */
-	public final static RealD createRealDONE(String pS) {
-		return RealD.newONE(pS);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ZERO using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return RealD number created
-	 */
-	public final static RealD createRealDZERO(String pS) {
-		return RealD.newZERO(pS);
-	}
-
-	/**
-	 * Method copies the incoming cardinal into a distinct 'zero' number.
-	 * 
-	 * @param pCard Cardinal to be re-used.
-	 * @return RealF Newly constructed 'zero' number.
-	 */
-	public final static RealF createRealF(Cardinal pCard) {
-		return new RealF(pCard, 0f);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ONE using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return RealF number created
-	 */
-	public final static RealF createRealFONE(String pS) {
-		return RealF.newONE(pS);
-	}
-
-	/**
-	 * Method creates a new number object with a real value set to ZERO using the
-	 * string provided to define a Cardinal.
-	 * 
-	 * @param pS String name for the associated Cardinal
-	 * @return RealF number created
-	 */
-	public final static RealF createRealFZERO(String pS) {
-		return RealF.newZERO(pS);
-	}
+	// DIVFIELD;
 
 	/**
 	 * Method creates a new Cardinal using the string provided IF one by that name
 	 * is not present in the cache. If it IS in the cache, the cached Cardinal is
 	 * returned instead.
+	 * 
+	 * NOTE that Cardinal has a static method that does something similar. The
+	 * difference is this one also caches the cardinal.
 	 * 
 	 * @param pName String name for the associated Cardinal
 	 * @return Cardinal unit cardinal created or retrieved
@@ -236,43 +82,257 @@ public enum CladosFBuilder {
 	}
 
 	/**
-	 * Method creates a new number as distinct ZERO object using the default
-	 * cardinal name.
+	 * Method creates a new number object with a real value set to ZERO using the
+	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @return ComplexD Newly constructed number
+	 * @param pMode
+	 * @param pCard Cardinal to be re-used.
+	 * @return UnitAbstract child number created
 	 */
-	public final static ComplexD createComplexD() {
-		return new ComplexD(createCardinal("C|D"), 0d, 0d);
+	public final static UnitAbstract createZERO(CladosField pMode, Cardinal pCard) {
+		switch (pMode) {
+		case REALF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALF.createZERO(pCard);
+		}
+		case REALD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALD.createZERO(pCard);
+		}
+		case COMPLEXF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXF.createZERO(pCard);
+		}
+		case COMPLEXD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXD.createZERO(pCard);
+		}
+		default -> {
+			return null;
+		}
+		}
 	}
 
 	/**
-	 * Method creates a new number as distinct ZERO object using the default
-	 * cardinal name.
+	 * Method creates a new number object with a real value set to ONE using the
+	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @return ComplexF Newly constructed number
+	 * @param pMode
+	 * @param pCard Cardinal to be re-used.
+	 * @return UnitAbstract child number created
 	 */
-	public final static ComplexF createComplexF() {
-		return new ComplexF(createCardinal("C|F"), 0f, 0f);
+	public final static UnitAbstract createONE(CladosField pMode, Cardinal pCard) {
+		switch (pMode) {
+		case REALF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALF.createONE(pCard);
+		}
+		case REALD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.REALD.createONE(pCard);
+		}
+		case COMPLEXF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXF.createONE(pCard);
+		}
+		case COMPLEXD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return CladosFBuilder.COMPLEXD.createONE(pCard);
+		}
+		default -> {
+			return null;
+		}
+		}
 	}
 
 	/**
-	 * Method creates a new number as distinct ZERO object using the default
-	 * cardinal name.
+	 * Method copies the incoming number into a distinct object ensuring the ==
+	 * operation fails but equals() does not.
 	 * 
-	 * @return RealD Newly constructed number
+	 * NOTE this one makes no attempt to update the cardinal cache. It is assumed to
+	 * have been done while constructing the number passed in as a parameter.
+	 * 
+	 * NOTE about suppressed type cast warnings | This method sifts through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
+	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
+	 * 
+	 * @param pDiv A UnitAbstract child number to be copied
+	 * @return UnitAbstract child number created
 	 */
-	public final static RealD createRealD() {
-		return new RealD(createCardinal("R|D"), 0d);
+	@SuppressWarnings("unchecked")
+	public final static <T extends UnitAbstract & Field & Normalizable> T copyOf(T pDiv) {
+		if (pDiv instanceof RealF) {
+			return (T) new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal());
+		} else if (pDiv instanceof RealD) {
+			return (T) new RealD(pDiv.getCardinal(), ((RealD) pDiv).getReal());
+		} else if (pDiv instanceof ComplexF) {
+			return (T) new ComplexF(pDiv.getCardinal(), ((ComplexF) pDiv).getReal(), ((ComplexF) pDiv).getImg());
+		} else if (pDiv instanceof ComplexD) {
+			return (T) new ComplexD(pDiv.getCardinal(), ((ComplexD) pDiv).getReal(), ((ComplexD) pDiv).getImg());
+		} else {
+			return null;
+		}
 	}
 
 	/**
-	 * Method creates a new number as distinct ZERO object using the default
-	 * cardinal name.
+	 * Method creates a new number object with a real value set to ONE using the
+	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @return RealF Newly constructed number
+	 * @param pS String name for the associated Cardinal
+	 * @return UnitAbstract child number created
 	 */
-	public final static RealF createRealF() {
-		return new RealF(createCardinal("R|F"), 0f);
+	public UnitAbstract createONE(String pS) {
+		switch (this) {
+		case REALF -> {
+			Cardinal toCache = createCardinal(pS);
+			return RealF.newONE(toCache);
+		}
+		case REALD -> {
+			Cardinal toCache = createCardinal(pS);
+			return RealD.newONE(toCache);
+		}
+		case COMPLEXF -> {
+			Cardinal toCache = createCardinal(pS);
+			return ComplexF.newONE(toCache);
+		}
+		case COMPLEXD -> {
+			Cardinal toCache = createCardinal(pS);
+			return ComplexD.newONE(toCache);
+		}
+		default -> {
+			return null;
+		}
+		}
 	}
 
+	/**
+	 * Method creates a new number object with a real value set to ONE using the
+	 * offered Cardinal.
+	 * 
+	 * @param pCard Cardinal to use in construction
+	 * @return UnitAbstract child number created
+	 */
+	public UnitAbstract createONE(Cardinal pCard) {
+		switch (this) {
+		case REALF -> {
+			return RealF.newONE(pCard);
+		}
+		case REALD -> {
+			return RealD.newONE(pCard);
+		}
+		case COMPLEXF -> {
+			return ComplexF.newONE(pCard);
+		}
+		case COMPLEXD -> {
+			return ComplexD.newONE(pCard);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * Method creates a number as distinct ZERO object using default cardinal name.
+	 * 
+	 * @param pCard Cardinal to be re-used.
+	 * @return UnitAbstract child number created
+	 */
+	public UnitAbstract createZERO() {
+		switch (this) {
+		case REALF -> {
+			Cardinal toCache = createCardinal(CladosField.REALF.name());
+			return RealF.newZERO(toCache);
+		}
+		case REALD -> {
+			Cardinal toCache = createCardinal(CladosField.REALD.name());
+			return RealD.newZERO(toCache);
+		}
+		case COMPLEXF -> {
+			Cardinal toCache = createCardinal(CladosField.COMPLEXF.name());
+			return ComplexF.newZERO(toCache);
+		}
+		case COMPLEXD -> {
+			Cardinal toCache = createCardinal(CladosField.COMPLEXD.name());
+			return ComplexD.newZERO(toCache);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * Method creates a new number object with a real value set to ZERO using the
+	 * string provided to define and cache a Cardinal.
+	 * 
+	 * @param pCard Cardinal to be re-used.
+	 * @return UnitAbstract child number created
+	 */
+	public UnitAbstract createZERO(Cardinal pCard) {
+		switch (this) {
+		case REALF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return RealF.newZERO(pCard);
+		}
+		case REALD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return RealD.newZERO(pCard);
+		}
+		case COMPLEXF -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return ComplexF.newZERO(pCard);
+		}
+		case COMPLEXD -> {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			return ComplexD.newZERO(pCard);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
+
+	/**
+	 * Method creates a new number object with a real value set to ZERO using the
+	 * string provided to define and cache a Cardinal.
+	 * 
+	 * @param pS String name for the associated Cardinal
+	 * @return UnitAbstract child number created
+	 */
+	public <T extends UnitAbstract & Field> UnitAbstract createZERO(String pS) {
+		switch (this) {
+		case REALF -> {
+			Cardinal toCache = createCardinal(pS);
+			return RealF.newZERO(toCache);
+		}
+		case REALD -> {
+			Cardinal toCache = createCardinal(pS);
+			return RealD.newZERO(toCache);
+		}
+		case COMPLEXF -> {
+			Cardinal toCache = createCardinal(pS);
+			return ComplexF.newZERO(toCache);
+		}
+		case COMPLEXD -> {
+			Cardinal toCache = createCardinal(pS);
+			return ComplexD.newZERO(toCache);
+		}
+		default -> {
+			return null;
+		}
+		}
+	}
 }

@@ -33,7 +33,7 @@ import java.util.Optional;
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum CladosGCache {
@@ -47,13 +47,13 @@ public enum CladosGCache {
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<CanonicalBasis> listOfBasisLists = new ArrayList<>(1);
+	private ArrayList<CanonicalBasis> listOfBases = new ArrayList<>(1);
 	/**
 	 * Heads Up! These ArrayLists ensures this 'enumeration' is mutable. This class
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<CliffordProduct> listOfGProductMaps = new ArrayList<>(1);
+	private ArrayList<CliffordProduct> listOfGProducts = new ArrayList<>(1);
 
 	/**
 	 * Method appends offered basis to cache IF one like it is not already present.
@@ -75,9 +75,8 @@ public enum CladosGCache {
 	 * @param pB CanonicalBasis to be appended to the cache IF not already present.
 	 */
 	public void appendBasis(CanonicalBasis pB) {
-		if (listOfBasisLists.contains(pB))
-			return;
-		listOfBasisLists.add(pB);
+		if (!listOfBases.contains(pB))
+			listOfBases.add(pB);
 	}
 
 	/**
@@ -95,11 +94,12 @@ public enum CladosGCache {
 	 * a product table of elements of a CanonicalBasis. As with a basis, no meaning
 	 * to the generators or blades is implied in a product table.
 	 * 
-	 * @param pGP CliffordProduct to be appended to the cache IF not already present.
+	 * @param pGP CliffordProduct to be appended to the cache IF not already
+	 *            present.
 	 */
 	public void appendGProduct(CliffordProduct pGP) {
-		if (listOfGProductMaps.contains(pGP))
-			listOfGProductMaps.add(pGP);
+		if (!listOfGProducts.contains(pGP))
+			listOfGProducts.add(pGP);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public enum CladosGCache {
 	 * @return Optional of CanonicalBasis matching the number of generators offered.
 	 */
 	public Optional<CanonicalBasis> findBasisList(byte pGen) {
-		return listOfBasisLists.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
+		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
 	}
 
 	/**
@@ -127,7 +127,7 @@ public enum CladosGCache {
 	 * @return Optional of CliffordProduct matching the signature offered.
 	 */
 	public Optional<CliffordProduct> findGProductMap(String pSig) {
-		return listOfGProductMaps.stream().filter(x -> x.signature().equals(pSig)).findFirst();
+		return listOfGProducts.stream().filter(x -> x.signature().equals(pSig)).findFirst();
 	}
 
 	/**
@@ -138,7 +138,7 @@ public enum CladosGCache {
 	 * @return byte integer of the size of the cache of basis instances.
 	 */
 	public byte getBasisListSize() {
-		return (byte) listOfBasisLists.size();
+		return (byte) listOfBases.size();
 	}
 
 	/**
@@ -150,7 +150,7 @@ public enum CladosGCache {
 	 * @return integer of the size of the cache of basis instances.
 	 */
 	public int getGProductListSize() {
-		return listOfGProductMaps.size();
+		return listOfGProducts.size();
 	}
 
 	/**
@@ -161,7 +161,7 @@ public enum CladosGCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeBasis(CanonicalBasis pB) {
-		return listOfBasisLists.remove(pB);
+		return listOfBases.remove(pB);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public enum CladosGCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeGProduct(CliffordProduct pGP) {
-		return listOfGProductMaps.remove(pGP);
+		return listOfGProducts.remove(pGP);
 	}
 
 	/**

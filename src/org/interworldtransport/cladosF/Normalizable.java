@@ -25,35 +25,39 @@
 package org.interworldtransport.cladosF;
 
 /**
- * This interface implements the part of the concept of a Division Field from 
- * mathematics. Specifically, if is the portion that says the field supports
- * the notion of 'length' or 'magnitude'. 
- * <p>
- * For real numbers this is just the idea of distance from a number line origin. 
- * For complex numbers, it is the radius in a typical polar representation.
- * <p>
- * This particular interface also requires that responses be delivered as floats.
- * <p>
- * @version 1.0
+ * This interface implements the part of the concept of a Division Field from
+ * mathematics. Specifically, if is the portion that says the field supports the
+ * notion of 'length' or 'magnitude' when several of them are used as scaling
+ * factors in vector spaces.
+ * 
+ * For real numbers this is just the idea of distance from a number line origin.
+ * In a vector space where several are involved, one uses a root-mean-square
+ * method to combine them. Think Pythagorus.
+ * 
+ * For complex numbers, it is the radius in a polar representation. When several
+ * are involved, it is Pythagorus again, but the squares are formed with numbers
+ * and their conjugates, but computation is made easier by ignoring the
+ * imaginary and just squaring the components.
+ * 
+ * @version 2.0
  * @author Dr Alfred W Differ
  * 
  */
-public interface Normalizable
-{
+public interface Normalizable {
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
 	 * 
 	 * @return Number
 	 */
-	public abstract Number getModulus();
+	public abstract Number modulus();
 
 	/**
 	 * This function delivers the sum of the squares of the numeric values. Many
-	 * times it is the modulus squared that is actually needed so it makes sense
-	 * to calculate this before the modulus itself.
+	 * times it is the modulus squared that is actually needed so it makes sense to
+	 * calculate this before the modulus itself.
 	 * 
 	 * @return Number
 	 */
-	public abstract Number getSQModulus();
+	public abstract Number sqModulus();
 }

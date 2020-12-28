@@ -49,7 +49,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class ComplexF extends DivField implements Divisible, Normalizable {
+public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new ComplexF with the sum pF1 + pF2.
 	 * 
@@ -60,10 +60,9 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF add(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return new ComplexF(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
-
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
 
@@ -95,13 +94,11 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 *                              on sqMagnitude.
 	 * @return complexF
 	 */
-	public static ComplexF copyFromModuliSum(ComplexF[] pL) throws FieldBinaryException {
-		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getModulus());
-		for (int j = 1; j < pL.length; j++)
-			if (isTypeMatch(pL[j], tR))
-				tR.add((ComplexF.copyONE(pL[j]).scale(pL[j].getModulus())));
-			else
-				throw new FieldBinaryException(pL[j], "Cardinal mistach during addition", tR);
+	public final static ComplexF copyFromModuliSum(ComplexF[] pL) throws FieldBinaryException {
+		if (pL.length == 0) throw new IllegalArgumentException("Can't form Modulus Sum from empty array.");
+		ComplexF tR = ComplexF.copyZERO(pL[0]);
+		for (ComplexF point : pL)
+			tR.add((ComplexF.copyONE(point).scale(point.modulus())));
 		return tR;
 	}
 
@@ -120,15 +117,11 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return ComplexF
 	 */
-	public static ComplexF copyFromSQModuliSum(ComplexF[] pL) throws FieldBinaryException {
-		ComplexF tR = (ComplexF.copyONE(pL[0])).scale(pL[0].getSQModulus());
-
-		for (int j = 1; j < pL.length; j++)
-			if (isTypeMatch(pL[j], tR))
-				tR.add((ComplexF.copyONE(pL[j])).scale(pL[j].getSQModulus()));
-			else
-				throw new FieldBinaryException(pL[j], "cardinal mistach during addition", tR);
-
+	public final static ComplexF copyFromSQModuliSum(ComplexF[] pL) throws FieldBinaryException {
+		if (pL.length == 0) throw new IllegalArgumentException("Can't form SQ Modulus Sum from empty array.");
+		ComplexF tR = ComplexF.copyZERO(pL[0]);
+		for (ComplexF point : pL)
+			tR.add((ComplexF.copyONE(point).scale(point.sqModulus())));
 		return tR;
 	}
 
@@ -150,7 +143,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return ComplexF
 	 */
-	public static ComplexF copyONE(ComplexF pR) {
+	public static ComplexF copyONE(UnitAbstract pR) {
 		return new ComplexF(pR.getCardinal(), 1.0f, 0.0f);
 	}
 
@@ -161,7 +154,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * 
 	 * @return ComplexF
 	 */
-	public static ComplexF copyZERO(ComplexF pR) {
+	public static ComplexF copyZERO(UnitAbstract pR) {
 		return new ComplexF(pR.getCardinal(), 0.0f, 0.0f);
 	}
 
@@ -188,13 +181,13 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF divide(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
+		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
 				&& !ComplexF.isInfinite(pF1) && !ComplexF.isInfinite(pF2)) {
 			ComplexF tZ = new ComplexF(pF1);
 			pF2.conjugate();
 			tZ.multiply(pF2);
 			pF2.conjugate();
-			tZ.scale(Float.valueOf(1.0f / pF2.getSQModulus()));
+			tZ.scale(Float.valueOf(1.0f / pF2.sqModulus()));
 			return tZ;
 		}
 		throw (new FieldBinaryException(pF1, "Static Division error found", pF2));
@@ -211,7 +204,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 *         otherwise.
 	 */
 	public static boolean isEqual(ComplexF pE, ComplexF pF) {
-		return DivField.isTypeMatch(pE, pF) && (pE.getReal() == pF.getReal()) && (pE.getImg() == pF.getImg());
+		return UnitAbstract.isTypeMatch(pE, pF) && (pE.getReal() == pF.getReal()) && (pE.getImg() == pF.getImg());
 	}
 
 	/**
@@ -275,7 +268,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return complexF
 	 */
 	public static ComplexF multiply(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2)) {
 			float tempR = pF1.getReal() * pF2.getReal() - pF1.getImg() * pF2.getImg();
 			float tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
@@ -339,7 +332,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF subtract(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ComplexF.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return new ComplexF(pF1.getCardinal(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
 
@@ -347,7 +340,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	}
 
 	/**
-	 * These are the actual java primitives within the DivField child that as as
+	 * These are the actual java primitives within the UnitAbstract child that as as
 	 * 'the number.'
 	 */
 	protected float[] vals;
@@ -356,8 +349,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * Basic Constructor with no values to initialize.
 	 */
 	public ComplexF() {
+		super(Cardinal.generate(CladosField.COMPLEXF));
 		vals = new float[2];
-		setCardinal(Cardinal.generate(CladosField.COMPLEXF));
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -368,8 +361,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pC ComplexF
 	 */
 	public ComplexF(ComplexF pC) {
+		super(pC.getCardinal());
 		vals = new float[2];
-		setCardinal(pC.getCardinal());
 		setReal(pC.getReal());
 		setImg(pC.getImg());
 	}
@@ -382,7 +375,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pR float
 	 * @param pI float
 	 */
-	public ComplexF(DivField pC, float pR, float pI) {
+	public ComplexF(UnitAbstract pC, float pR, float pI) {
+		super(pC.getCardinal());
 		vals = new float[2];
 		setCardinal(pC.getCardinal());
 		setReal(pR);
@@ -395,8 +389,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pT Cardinal
 	 */
 	public ComplexF(Cardinal pT) {
+		super(pT);
 		vals = new float[2];
-		setCardinal(pT);
 		setReal(0.0f);
 		setImg(0.0f);
 	}
@@ -408,8 +402,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pR float
 	 */
 	public ComplexF(Cardinal pT, float pR) {
+		super(pT);
 		vals = new float[2];
-		setCardinal(pT);
 		setReal(pR);
 		setImg(0.0f);
 	}
@@ -422,8 +416,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pI float
 	 */
 	public ComplexF(Cardinal pT, float pR, float pI) {
+		super(pT);
 		vals = new float[2];
-		setCardinal(pT);
 		setReal(pR);
 		setImg(pI);
 	}
@@ -435,8 +429,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @param pI float
 	 */
 	public ComplexF(float pR, float pI) {
+		super(Cardinal.generate("Complex"));
 		vals = new float[2];
-		setCardinal(Cardinal.generate("Complex"));
 		setReal(pR);
 		setImg(pI);
 	}
@@ -445,17 +439,17 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
 	 *
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when a field mismatch
 	 *                              happens
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF add(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
+	public ComplexF add(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Addition failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Addition failed type match test", (UnitAbstract) pF));
 		setReal(getReal() + ((ComplexF) pF).getReal());
 		setImg(getImg() + ((ComplexF) pF).getImg());
 		return this;
@@ -476,25 +470,25 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	/**
 	 * This method divides real numbers and changes this object to be the result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
 	 *                              division by zero happens
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF divide(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
+	public ComplexF divide(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Divide failed type match test", (UnitAbstract) pF));
 		if (ComplexF.isZero((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", (DivField) pF));
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
 
 		ComplexF tempZ = (ComplexF) pF;
 		tempZ.conjugate();
 		multiply(tempZ);
 		tempZ.conjugate();
-		scale(Float.valueOf(1.0f / tempZ.getSQModulus()));
+		scale(Float.valueOf(1.0f / tempZ.sqModulus()));
 		return this;
 	}
 
@@ -527,8 +521,8 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return Float
 	 */
 	@Override
-	public Float getModulus() {
-		return Float.valueOf((float) Math.sqrt(getSQModulus().floatValue()));
+	public Float modulus() {
+		return Float.valueOf((float) Math.sqrt(sqModulus().floatValue()));
 	}
 
 	/**
@@ -548,7 +542,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	 * @return Float
 	 */
 	@Override
-	public Float getSQModulus() {
+	public Float sqModulus() {
 		float tR = 0f;
 		for (float point : vals)
 			tR += point * point;
@@ -568,7 +562,7 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 		if (ComplexF.isZero(this))
 			throw new FieldException(this, "Can't invert a zero ComplexF");
 
-		float tM = 1.0f / getModulus();
+		float tM = 1.0f / modulus();
 		float tA = -1.0f * getArgument();
 		setReal((float) (tM * Math.cos(tA)));
 		setImg((float) (tM * Math.sin(tA)));
@@ -578,17 +572,17 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF multiply(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
+	public ComplexF multiply(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Multiply failed type match test", (UnitAbstract) pF));
 		ComplexF tempZ = (ComplexF) pF;
 		setReal(getReal() * tempZ.getReal() - getImg() * tempZ.getImg());
 		setImg(getReal() * tempZ.getImg() + getImg() * tempZ.getReal());
@@ -630,17 +624,17 @@ public class ComplexF extends DivField implements Divisible, Normalizable {
 	/**
 	 * This method subtracts real numbers and changes this object to be the result.
 	 * 
-	 * @param pF Divisible
+	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
 	 * 
 	 * @return ComplexF
 	 */
 	@Override
-	public ComplexF subtract(Divisible pF) throws FieldBinaryException {
-		if (!DivField.isTypeMatch(this, (DivField) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
+	public ComplexF subtract(Field pF) throws FieldBinaryException {
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexF.isNaN(this) && !ComplexF.isNaN((ComplexF) pF)
 				&& !ComplexF.isInfinite(this) && !ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match test", (DivField) pF));
+			throw (new FieldBinaryException(this, "Subtraction failed type match test", (UnitAbstract) pF));
 		ComplexF tempZ = (ComplexF) pF;
 		setReal(getReal() - tempZ.getReal());
 		setImg(getImg() - tempZ.getImg());

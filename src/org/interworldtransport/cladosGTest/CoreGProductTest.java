@@ -2,16 +2,18 @@ package org.interworldtransport.cladosGTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.interworldtransport.cladosG.CladosGBuilder;
+import org.interworldtransport.cladosG.CladosGCache;
+import org.interworldtransport.cladosG.CliffordProduct;
 import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreGProductTest {
 	String pSig0 = "";
+	String pSig1 = "+";
 	String pSig2 = "-+";
 	String pSig3 = "+++";
 	String pSig4 = "-+++";
@@ -19,46 +21,32 @@ class CoreGProductTest {
 	String pSig10 = "+++-++++++";
 	String pSig12 = "-+++-+++-+++";
 	String pSig14 = "++-+++-+++-+++";
+	String pSig15 = "+++-+++-+++-+++";
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() {
 	}
 
 	@Test
-	public void test00s() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
+		CliffordProduct tGP1 = CladosGBuilder.createGProduct(pSig3);
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize()>0);
+		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);
+		assertTrue(tGP1 == tGP2);
+	}
+	
+	
+	@Test
+	public void test00s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig0);
-		assertTrue(tGP.getSignature().equals(""));
+		assertTrue(tGP.signature().equals(""));
 		assertTrue(tGP.getGradeCount() == 1);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 0));
-
-		int tS = (int) Math.pow(2, 0);
+		assertTrue(tGP.getBladeCount() == (1 << 0));
+		//System.out.println(tGP.toXMLString(""));
+		int tS = (1 << 0);
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
-			int tSumP = 0;
-			for (int j = 0; j < tSpot.length; j++)
-				tSumP += Math.abs(tSpot[j]);
-
-			assertTrue(tSum == tSumP);
-		}
-
-		GProduct tGPClone = new GProduct(tGP);
-		assertTrue(tGPClone.getBasis().equals(tGP.getBasis()));
-		assertFalse(tGPClone.getResult().equals(tGP.getResult()));
-	}
-
-	@Test
-	public void test02s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
-		GProduct tGP = new GProduct(pSig2);
-		//System.out.println(tGP.toXMLString());
-		assertTrue(tGP.getSignature().equals("-+"));
-		assertTrue(tGP.getGradeCount() == 3);
-		assertTrue(tGP.getBladeCount() == (1 << 2));
-
-		int tS = (1 << 2);
-		int tSum = (tS * (tS + 1) / 2);
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
@@ -68,17 +56,56 @@ class CoreGProductTest {
 	}
 	
 	@Test
-	public void test03s() throws BadSignatureException, GeneratorRangeException, BladeCombinationException {
+	public void test01s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig1);
+		assertTrue(tGP.signature().equals("+"));
+		assertTrue(tGP.getGradeCount() == 2);
+		assertTrue(tGP.getBladeCount() == (1 << 1));
+		//System.out.println(tGP.toXMLString(""));
+		int tS = (1 << 1);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+
+	@Test
+	public void test02s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig2);
+		//System.out.println(tGP.toXMLString(""));
+		assertTrue(tGP.signature().equals("-+"));
+		assertTrue(tGP.getGradeCount() == 3);
+		assertTrue(tGP.getBladeCount() == (1 << 2));
+		int tS = (1 << 2);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+
+	
+	@Test
+	public void test03s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig3);
-		System.out.println(tGP.toXMLString());
-		assertTrue(tGP.getSignature().equals("+++"));
+		//System.out.println(tGP.toXMLString(""));
+		assertTrue(tGP.signature().equals("+++"));
 		assertTrue(tGP.getGradeCount() == 4);
 		assertTrue(tGP.getBladeCount() == (1<<3));
 
 		int tS = 1<<3;
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
@@ -88,41 +115,36 @@ class CoreGProductTest {
 	}
 
 	@Test
-	public void test04s() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void test04s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig4);
-		//System.out.println(tGP.toXMLString());
-		assertTrue(tGP.getSignature().equals("-+++"));
+		//System.out.println(tGP.toXMLString(""));
+		assertTrue(tGP.signature().equals("-+++"));
 		assertTrue(tGP.getGradeCount() == 5);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 4));
+		assertTrue(tGP.getBladeCount() == (1<<4));
 
 		int tS = (int) Math.pow(2, 4);
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
 
 			assertTrue(tSum == tSumP);
 		}
-
-		GProduct tGPClone = new GProduct(tGP);
-		assertTrue(tGPClone.getBasis().equals(tGP.getBasis()));
-		assertFalse(tGPClone.getResult().equals(tGP.getResult()));
-
 	}
-/*
+
 	@Test
-	public void test08s() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void test08s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig8);
-		assertTrue(tGP.getSignature().equals("-+++-+++"));
+		assertTrue(tGP.signature().equals("-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 9);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 8));
+		assertTrue(tGP.getBladeCount() == (1<<8));
 
 		int tS = (int) Math.pow(2, 8);
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
@@ -132,16 +154,16 @@ class CoreGProductTest {
 	}
 
 	@Test
-	public void test10s() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void test10s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig10);
-		assertTrue(tGP.getSignature().equals("+++-++++++"));
+		assertTrue(tGP.signature().equals("+++-++++++"));
 		assertTrue(tGP.getGradeCount() == 11);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 10));
+		assertTrue(tGP.getBladeCount() == (1<<10));
 
 		int tS = (int) Math.pow(2, 10);
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
@@ -151,16 +173,16 @@ class CoreGProductTest {
 	}
 
 	@Test
-	public void test12s() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void test12s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig12);
-		assertTrue(tGP.getSignature().equals("-+++-+++-+++"));
+		assertTrue(tGP.signature().equals("-+++-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 13);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 12));
+		assertTrue(tGP.getBladeCount() == (1<<12));
 
 		int tS = (int) Math.pow(2, 12);
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
@@ -170,16 +192,16 @@ class CoreGProductTest {
 	}
 
 	@Test
-	public void test14s() throws CladosMonadException, BadSignatureException, GeneratorRangeException {
+	public void test14s() throws BadSignatureException, GeneratorRangeException {
 		GProduct tGP = new GProduct(pSig14);
-		assertTrue(tGP.getSignature().equals("++-+++-+++-+++"));
+		assertTrue(tGP.signature().equals("++-+++-+++-+++"));
 		assertTrue(tGP.getGradeCount() == 15);
-		assertTrue(tGP.getBladeCount() == Math.pow(2, 14));
+		assertTrue(tGP.getBladeCount() == (1<<14));
 
 		int tS = (int) Math.pow(2, 14);
 		int tSum = tS * (tS + 1) / 2;
-		for (short k = 0; k < tGP.getBladeCount(); k++) {
-			short[] tSpot = tGP.getResult(k);
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
 			int tSumP = 0;
 			for (int j = 0; j < tSpot.length; j++)
 				tSumP += Math.abs(tSpot[j]);
@@ -187,5 +209,24 @@ class CoreGProductTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
-*/
+	
+	@Test
+	public void test15s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig15);
+		assertTrue(tGP.signature().equals("+++-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 16);
+		assertTrue(tGP.getBladeCount() == (1<<15));
+
+		int tS = (int) Math.pow(2, 15);
+		int tSum = tS * (tS + 1) / 2;
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			int[] tSpot = tGP.getResult(k);
+			int tSumP = 0;
+			for (int j = 0; j < tSpot.length; j++)
+				tSumP += Math.abs(tSpot[j]);
+
+			assertTrue(tSum == tSumP);
+		}
+	}
+
 }

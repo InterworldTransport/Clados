@@ -44,7 +44,7 @@ package org.interworldtransport.cladosF;
  * <p>
  * One consequence of this approach is that two division fields might use
  * different Cardinal objects of the same name. The TypeMatch method in a
- * DivField will state that they are different because object equality is tested
+ * UnitAbstract will state that they are different because object equality is tested
  * instead of string content equality. This allows an application writer to keep
  * two distinct systems of numbers apart in their application even though the
  * fields are internally identical. This is useful when objects in one algebra
@@ -85,7 +85,7 @@ public final class Cardinal {
 		return new Cardinal(pT);
 	}
 
-	private String unit;
+	private final String unit;
 
 	private Cardinal(CladosField pT) {
 		unit = pT.name();
@@ -134,16 +134,19 @@ public final class Cardinal {
 	 * 
 	 * @param pUnit String This string names the 'unit type' represented by the Cardinal
 	 */
-	public void setUnit(String pUnit) {
-		unit = pUnit;
-	}
+	//public void setUnit(String pUnit) {
+	//	unit = pUnit;
+	//}
 
 	/**
-	 * Similar to a toString() mehtod, but it focuses upon an XML style output.
+	 * Similar to a toString() method, but it focuses upon an XML style output.
+	 * @param indent String to assist with human readability of XML output.
 	 * 
-	 * @return String XML compatible sub-unit for code relying on exportable Cardinals.
+	 * @return String XML compatible sub-unit for code relying on export-able Cardinals.
 	 */
-	public String toXMLString() {
-		return ("<Cardinal unit=\"" + unit + "\" />\n");
+	public String toXMLString(String indent) {
+		if (indent == null)
+			indent ="";
+		return (indent + "<Cardinal unit=\"" + unit + "\" />\n");
 	}
 }

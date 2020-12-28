@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * supported sizes of related blades. Most uses of an instance will NOT make use
  * of the internal state, though, and cannot change it either way.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum Generator {
@@ -103,17 +103,22 @@ public enum Generator {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	EE((byte) 14);
-
-	// EF((byte) 15),
-	// EG((byte) 16);
+	EE((byte) 14),
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	EF((byte) 15);
+	/**
+	 * There is an implicit private constructor for this, but we won't override it.
+	 */
+	//EG((byte) 16);
 
 	/**
 	 * This method returns an unlimited stream of generators in this enumeration.
 	 * 
 	 * @return Stream of Generator
 	 */
-	public final static Stream<Generator> flow() {
+	public final static Stream<Generator> stream() {
 		return Stream.of(Generator.values());
 	}
 
@@ -124,7 +129,7 @@ public enum Generator {
 	 *               reach the same ordinal value of a generator.
 	 * @return Stream of Generator
 	 */
-	public final static Stream<Generator> flow(byte pLimit) {
+	public final static Stream<Generator> stream(byte pLimit) {
 		return Stream.of(Generator.values()).limit(pLimit);
 	}
 

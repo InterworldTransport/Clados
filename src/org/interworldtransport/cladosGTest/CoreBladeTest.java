@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosG.Blade;
 import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,7 @@ class CoreBladeTest {
 	private Blade tB43;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws GeneratorRangeException {
 		tB0 = new Blade((byte) 0);
 		tB4 = new Blade((byte) 4);
 		tB4.add(g[0]).add(g[1]);
@@ -43,24 +42,24 @@ class CoreBladeTest {
 		assertFalse(tB42.key() == tB43.key());
 
 		Blade tB8 = new Blade((byte) 8);
-		Generator.flow((byte) 8).forEach(g-> tB8.add(g));
+		Generator.stream((byte) 8).forEach(g-> tB8.add(g));
 		Blade tB10 = new Blade((byte) 10);
-		Generator.flow((byte) 10).forEach(g-> tB10.add(g));
+		Generator.stream((byte) 10).forEach(g-> tB10.add(g));
 		Blade tB15 = new Blade((byte) 14);
-		Generator.flow((byte) 14).forEach(g-> tB15.add(g));
+		Generator.stream((byte) 14).forEach(g-> tB15.add(g));
 
 
 		assertTrue(tB8.getGenerators().size() == 8);
 		assertTrue(tB10.getGenerators().size() == 10);
 		assertTrue(tB15.getGenerators().size() == 14);
 
-		tB15.remove((byte) 12);
+		tB15.remove(Generator.EC);
 		assertTrue(tB15.getGenerators().size() == 13);
 
-		tB15.add((byte) 10); // generator already there, so silently ignore the add.
+		tB15.add(Generator.EA); // generator already there, so silently ignore the add.
 		assertTrue(tB15.getGenerators().size() == 13);
 
-		tB15.add(Byte.valueOf((byte) 12));
+		tB15.add(Generator.EC);
 		assertTrue(tB15.getGenerators().size() == 14);
 
 	}
@@ -71,27 +70,18 @@ class CoreBladeTest {
 		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there.
 		assertTrue(newtB0.equals(tB0)); // tB is a scalar. Nothing to remove. Silent acceptance expected.
 		Blade tB10 = new Blade((byte) 10);
-		Generator.flow((byte) 10).forEach(g-> tB10.add(g));
+		Generator.stream((byte) 10).forEach(g-> tB10.add(g));
 		Blade newtB10 = new Blade(tB10);
 		newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
 		assertTrue(newtB10.equals(tB10));
 	}
 
-	@Test
-	public void testLowGeneratorLimit() throws GeneratorRangeException {
-		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 0));
-	}
 
-	@Test
-	public void testHighGeneratorLimit() throws GeneratorRangeException {
-		Assertions.assertThrows(GeneratorRangeException.class, () -> tB0.remove((byte) 16));
-	}
-
-	@Test
-	public void testXMLOutput() throws GeneratorRangeException {
-		Blade tB = new Blade((byte) 14);
-		Generator.flow((byte) 14).forEach(g-> tB.add(g));
-		System.out.println(Blade.toXMLString(tB,""));
-	}
+	//@Test
+	//public void testXMLOutput() throws GeneratorRangeException {
+	//	Blade tB = new Blade((byte) 14);
+	//	Generator.flow((byte) 14).forEach(g-> tB.add(g));
+	//	System.out.println(Blade.toXMLString(tB,""));
+	//}
 
 }

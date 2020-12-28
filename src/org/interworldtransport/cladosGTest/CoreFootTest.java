@@ -9,16 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreFootTest {
-	public String		fName	= "Test:TangentPoint";
-	public Cardinal	fType;
-	public RealD		rNumber;
-	public Foot			tFoot;
-	public Foot			tFoot2;
+	public String fName = "Test:TangentPoint";
+	public Cardinal fType;
+	public RealD rNumber;
+	public Foot tFoot;
+	public Foot tFoot2;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() {
 		fType = Cardinal.generate("Test:NumberType");
-		rNumber = new RealD(fType,0.0);
+		rNumber = new RealD(fType, 0.0);
 		tFoot = new Foot(fName, fType);
 		// A foot can be created with a raw number type of no magnitude
 		tFoot2 = new Foot(fName, rNumber);
@@ -28,9 +28,8 @@ class CoreFootTest {
 	}
 
 	@Test
-	public void testFootCompare()
-	{
-		assertFalse(tFoot == tFoot2); 
+	public void testFootCompare() {
+		assertFalse(tFoot == tFoot2);
 		// Two different feet
 		assertTrue(tFoot.getCardinal(0) == tFoot2.getCardinal(0));
 		// using the same number type.

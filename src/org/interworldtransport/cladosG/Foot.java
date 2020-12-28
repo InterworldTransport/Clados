@@ -28,7 +28,8 @@ import java.util.ArrayList;
 //import java.util.ListIterator;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.DivField;
+import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.UnitAbstract;
 
 /**
  * Objects within the cladosG package have a number of attributes in common that
@@ -91,7 +92,7 @@ public final class Foot {
 	public Foot(String pName) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
-		cardinalList.add(Cardinal.generate(pName));
+		cardinalList.add(CladosFBuilder.createCardinal(pName));
 	}
 
 	/**
@@ -111,10 +112,10 @@ public final class Foot {
 	 * Build the footPoint object from scratch.
 	 * 
 	 * @param pName String This string will be the name of the foot point.
-	 * @param pF    DivField This object holds the cardinal that defines the kind of
+	 * @param pF    UnitAbstract This object holds the cardinal that defines the kind of
 	 *              numbers that are meaningful for this foot point
 	 */
-	public Foot(String pName, DivField pF) {
+	public Foot(String pName, UnitAbstract pF) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
 		cardinalList.add(pF.getCardinal());
@@ -215,23 +216,22 @@ public final class Foot {
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * 
-	 * @param pind String indentation to assist with human readability of output XML
-	 *             data
+	 * @param indent String indentation to assist with human readability of output
+	 *               XML data
 	 * @return String formatted as XML containing information about the Foot
 	 */
-	public String toXMLString(String pind) {
-		String indent = "\t\t";
-		if (pind == null)
-			pind = "";
-		StringBuilder rB = new StringBuilder(indent + pind + "<Foot>\n");
-		rB.append(indent).append(pind).append("\t<Name>").append(getFootName()).append("</Name>\n");
+	public String toXMLString(String indent) {
+		if (indent == null)
+			indent = "\t\t";
+		StringBuilder rB = new StringBuilder(indent + "<Foot>\n");
+		rB.append(indent).append("\t<Name>").append(getFootName()).append("</Name>\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent).append(pind).append("\t<Cardinals number=\"").append(cardinalList.size()).append("\" >\n");
+		rB.append(indent).append("\t<Cardinals number=\"").append(cardinalList.size()).append("\" >\n");
 		for (Cardinal point : cardinalList)
-			rB.append(indent).append(pind).append("\t\t").append(point.toXMLString());
-		rB.append(indent).append(pind).append("\t</Cardinals>\n");
+			rB.append(indent).append(point.toXMLString("\t\t"));
+		rB.append(indent).append("\t</Cardinals>\n");
 		// -----------------------------------------------------------------------
-		rB.append(indent).append(pind).append("</Foot>\n");
+		rB.append(indent).append("</Foot>\n");
 		return rB.toString();
 	}
 }

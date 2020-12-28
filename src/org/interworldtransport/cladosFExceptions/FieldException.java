@@ -37,7 +37,7 @@ public class FieldException extends Exception
 /**
  * The source Field element is the originator of the Exception.
  */
-    private DivField  Source;
+    private UnitAbstract  Source;
 /**
  * The source message is the reason given by the originating Field for the exception.
  */
@@ -48,11 +48,11 @@ public class FieldException extends Exception
  * It needs only a source Field and message.
  * 
  * @param pSource
- * 			DivField
+ * 			UnitAbstract
  * @param pMessage
  * 			String
  */
-    public FieldException(DivField pSource, String pMessage)
+    public FieldException(UnitAbstract pSource, String pMessage)
     {
     	super();
     	SourceMessage=pMessage;
@@ -62,9 +62,9 @@ public class FieldException extends Exception
 /**
  * This method delivers a reference to the object that originated the Exception
  * 
- * @return DivField
+ * @return UnitAbstract
  */
-    public DivField  getSource()
+    public UnitAbstract  getSource()
     {
     	return Source;
     }

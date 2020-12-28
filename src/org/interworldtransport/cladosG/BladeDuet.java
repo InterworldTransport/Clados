@@ -27,8 +27,6 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.interworldtransport.cladosGExceptions.BladeCombinationException;
-
 /**
  * This class just acts as a bucket two blades when they are combined and
  * reduced in product result discovery. In Clados v1 the methods were all buried
@@ -38,10 +36,11 @@ import org.interworldtransport.cladosGExceptions.BladeCombinationException;
  * BladeDuet makes use of streams, but intentionally avoids parallelizing
  * computations internally. Most of what each one does must be done in sequence.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public final class BladeDuet {
+
 	/**
 	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet
 	 * list. It's actually two buckets of sorted generators that upon duplication
@@ -61,24 +60,17 @@ public final class BladeDuet {
 	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit'
 	 * sized data element to track signs.
 	 * 
-	 * Exception cases NOT checked because this is for CladosG internal use.
+	 * Exception cases NOT checked because this is for CladosG internal use. The
+	 * method itself is public, but it's really for internal use.
 	 * 
 	 * @param pB1 Blade appearing on the left/row of a multiplication operation
 	 * @param pB2 Blade appearing on the right/column of a multiplication operation
 	 * @param sig signature array to use to reduce duplicate generators
 	 * @return A fully reduced blade
-	 * @throws BladeCombinationException there are several ways this method can fail
-	 *                                   and throw this exception. For example, one
-	 *                                   or more of the maximum generator sizes
-	 *                                   might not be the same in the two blades and
-	 *                                   the signature. A malformed signature WON'T
-	 *                                   happen here since we use the integer
-	 *                                   reduced form of it, but it could still be
-	 *                                   of the wrong size.
 	 */
-	public static final Blade reduce(Blade pB1, Blade pB2, byte[] sig) throws BladeCombinationException {
+	public static final Blade simplify(Blade pB1, Blade pB2, byte[] sig) {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);
-		return tBD.reduce(sig);
+		return tBD.simplify(sig);
 	}
 
 	private int bitKeyLeft, bitKeyRight = 0;
@@ -88,19 +80,15 @@ public final class BladeDuet {
 
 	/**
 	 * This is a re-use constructor that builds this as a juxtaposition of the two
-	 * offered blades which it then sorts IN THIS LIST without altering the lists
-	 * representing the offered blades.
+	 * offered blades.
 	 * 
-	 * BEWARE that an assertion is made here. If maxGenerator() on both blades fails
-	 * to be identical, this constructor will abort.
-	 * 
-	 * @param pB1 A Blade to re-use it's boxed shorts.
-	 * @param pB2 A Blade to re-use it's boxed shorts.
+	 * @param pB1 A Blade to re-use on the left.
+	 * @param pB2 A Blade to re-use on the right.
 	 */
 	public BladeDuet(Blade pB1, Blade pB2) {
 		assert (pB1.maxGenerator() == pB2.maxGenerator());
 		maxGen = pB1.maxGenerator();
-		assert (maxGen > 0);
+		// assert (maxGen > 0);
 		bladeDuet = new ArrayList<>(2 * maxGen);
 		pB1.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
 		sign = pB1.sign();
@@ -115,7 +103,7 @@ public final class BladeDuet {
 	 * list. It's actually two buckets of sorted generators that upon duplication
 	 * removal MIGHT be sorted. If not, we can jump straight to the sorted order
 	 * simply by inserting the generators in an EnumSet which happens to be their
-	 * destination in a Blade anyway. What we don't know immeidately is how many
+	 * destination in a Blade anyway. What we don't know immediately is how many
 	 * transpositions are necessary to reach that sort order. That's what this
 	 * method does after removing generator duplicates.
 	 * 
@@ -135,7 +123,7 @@ public final class BladeDuet {
 	 *             occur as generator pairs are removed from the internal dual list.
 	 * @return Blade [supporting stream approach]
 	 */
-	protected Blade reduce(byte[] pSig) {
+	protected Blade simplify(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
 		byte gen = 1;
 		while (andKey > 0) {
@@ -148,7 +136,7 @@ public final class BladeDuet {
 			gen++;
 			andKey = andKey >>> 1;
 		}
-		Blade returnIt = Blade.createBlade(Generator.get(maxGen));// new Blade(maxGen, true);
+		Blade returnIt = Blade.createBlade(maxGen); // Technically this can be null, but shouldn't happen.
 		bladeDuet.stream().forEach(g -> returnIt.add(g));
 		// returnIt has all the correct generators, but might have the wrong sign
 		andKey = bitKeyLeft & bitKeyRight;
