@@ -88,32 +88,33 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * rather something else? 'Unad'? Make your case by helping out.
  * 
  * NOTE | Regarding suppressed unchecked type casting warnings, they are
- * restricted to the casting that happens in the CladosFBuilder and
+ * restricted to the casting that happens in CladosFBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
  * to avoid mutability using a generic copyOf() method. As long as the
- * coefficients in the monad are valid UnitAbstract children implementing Field,
- * the copyOf() function will work fine. There are two cases where things can go
- * awry, though.
+ * coefficients in a monad are valid UnitAbstract children implementing Field
+ * and Normalizable, the copyOf() functions will work fine. There are two cases
+ * where things can go awry, though.
  * 
- * 1. It is probably possible for someone to mix UnitAbstract children in a Scale
- * object containing a mondad's coefficients. The copyOf() function will
- * faithfully copy them as they are. The scale() method and others will
- * faithfully pass them to the Scale object to be used as appropriate there. For
+ * 1. It is probably possible for someone to mix UnitAbstract children in a
+ * Scale object containing a mondad's coefficients. The copyOf() functions will
+ * faithfully copy them as they are. The scale() methods and others will
+ * faithfully pass them to a Scale object to be used as appropriate there. For
  * example, Scale's scale() method will will try to use them as given. What
  * happens, though, is the inbound number gets multiplied against others AS THEY
  * UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right
  * unless one thought the scaling was between two complex numbers. THAT'S why
- * mode is kept in Scale AND Monad, but it is not enforced yet.
+ * Scale AND Monad implement Modal, but nothing is not enforced yet.
  * 
- * 2. If someone invents a new UnitAbstract child, there is a ton of work to do as
- * the builders and other enumerations have to be adapted. Some of the code in
- * downstream method switches on CladosField modes. So... be cautious about
- * inventing new DivFields. Lots of work will have to be done.
+ * 2. If someone invents a new UnitAbstract child, there is a ton of work to do
+ * as the builders and other enumerations have to be adapted. Any class
+ * implementing Model might have methods that switch on CladosField values.
+ * So... be cautious about inventing new CladosF numbers. Lots of work will have
+ * to be done.
  * 
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class Monad {
+public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
 	 * 
@@ -181,16 +182,30 @@ public class Monad {
 	 * b) test the re-scaled monad to see if it is idenpotent. If so, return true.
 	 * 3. Return false.
 	 * 
+	 * Since the map internal to a Monad's Scale can accept any of the CladosF
+	 * numbers as values, there is a cast to a 'generic' type within this method.
+	 * This would normally cause warnings by the compiler since the generic named in
+	 * the internal map IS a UnitAbstract child AND casting an unchecked type could
+	 * fail at runtime.
+	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
+	 * 
 	 * @return boolean
 	 * @param pM Monad
-	 * @throws FieldException       This exception is thrown when the method can't
-	 *                              copy the field used by the monad to be checked.
+	 * @throws FieldException This exception is thrown when the method can't copy
+	 *                        the field used by the monad to be checked.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends UnitAbstract & Field> boolean isScaledIdempotent(Monad pM) throws FieldException {
+	public static <T extends UnitAbstract & Field & Normalizable> boolean isScaledIdempotent(Monad pM)
+			throws FieldException {
 		if (isIdempotent(pM))
 			return true;
-		if (Monad.isNilpotent(pM, 2))
+		else if (Monad.isNilpotent(pM, 2))
 			return false;
 
 		Optional<Blade> first = pM.bladeStream().filter(blade -> pM.getScales().isNotZeroAt(blade)).sequential()
@@ -453,8 +468,8 @@ public class Monad {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, UnitAbstract pF)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
+			UnitAbstract pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
 
 		if (pF instanceof RealF)
@@ -572,19 +587,19 @@ public class Monad {
 	 * @param pSig         String
 	 * @param pF           RealF
 	 * @param pSpecial     String
-	 * @throws BadSignatureException    This exception is thrown if the signature
-	 *                                  string offered is rejected.
-	 * @throws CladosMonadException     This exception is thrown if there is an
-	 *                                  issue with the coefficients offered the
-	 *                                  default constructor. The issues could
-	 *                                  involve null coefficients or a coefficient
-	 *                                  array of the wrong size.
-	 * @throws GeneratorRangeException  This exception is thrown when the integer
-	 *                                  number of generators for the basis is out of
-	 *                                  the supported range. {0, 1, 2, ..., 14}
+	 * @throws BadSignatureException   This exception is thrown if the signature
+	 *                                 string offered is rejected.
+	 * @throws CladosMonadException    This exception is thrown if there is an issue
+	 *                                 with the coefficients offered the default
+	 *                                 constructor. The issues could involve null
+	 *                                 coefficients or a coefficient array of the
+	 *                                 wrong size.
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig, UnitAbstract pF,
-			String pSpecial)
+	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
+			UnitAbstract pF, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already. Now handle the special cases.
@@ -712,7 +727,8 @@ public class Monad {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public Monad(String pMonadName, Algebra pAlgebra, String pFrameName, UnitAbstract[] pC) throws CladosMonadException {
+	public Monad(String pMonadName, Algebra pAlgebra, String pFrameName, UnitAbstract[] pC)
+			throws CladosMonadException {
 		if (pC.length != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array size does not match bladecount from offered Algebra.");
@@ -721,7 +737,7 @@ public class Monad {
 		setAlgebra(pAlgebra);
 		setFrameName(pFrameName);
 
-		if (pAlgebra.shareProtoNumber() instanceof UnitAbstract) {
+		if (pAlgebra.getProtoNumber() instanceof UnitAbstract) {
 			if (pC[0] instanceof RealF)
 				mode = CladosField.REALF;
 			else if (pC[0] instanceof RealD)
@@ -733,13 +749,13 @@ public class Monad {
 			else
 				throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/UnitAbstract");
 		} else {
-			if (pAlgebra.shareProtoNumber() instanceof RealF)
+			if (pAlgebra.getProtoNumber() instanceof RealF)
 				mode = CladosField.REALF;
-			else if (pAlgebra.shareProtoNumber() instanceof RealD)
+			else if (pAlgebra.getProtoNumber() instanceof RealD)
 				mode = CladosField.REALD;
-			else if (pAlgebra.shareProtoNumber() instanceof ComplexF)
+			else if (pAlgebra.getProtoNumber() instanceof ComplexF)
 				mode = CladosField.COMPLEXF;
-			else if (pAlgebra.shareProtoNumber() instanceof ComplexD)
+			else if (pAlgebra.getProtoNumber() instanceof ComplexD)
 				mode = CladosField.COMPLEXD;
 			else
 				throw new IllegalArgumentException("Algebra's protonumber must be a child of CladosF/UnitAbstract");
@@ -747,24 +763,22 @@ public class Monad {
 
 		switch (mode) {
 		case COMPLEXD -> {
-			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(),
-					pAlgebra.shareProtoNumber().getCardinal());
+			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexD[]) pC));
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(),
-					pAlgebra.shareProtoNumber().getCardinal());
+			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexF[]) pC));
 			setGradeKey();
 		}
 		case REALD -> {
-			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealD[]) pC));
 			setGradeKey();
 		}
 		case REALF -> {
-			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pAlgebra.shareProtoNumber().getCardinal());
+			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
 			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealF[]) pC));
 			setGradeKey();
 		}
@@ -814,6 +828,19 @@ public class Monad {
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
 	 * 
+	 * Since the map internal to Scale can accept any of the CladosF numbers as
+	 * values, there is a cast to a 'generic' type within this method. This would
+	 * normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * at runtime.
+	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
+	 * 
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
@@ -837,6 +864,19 @@ public class Monad {
 
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
+	 * 
+	 * Since the map internal to Scale can accept any of the CladosF numbers as
+	 * values, there is a cast to a 'generic' type within this method. This would
+	 * normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * at runtime.
+	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
 	 * 
 	 * @return Monad after operation.
 	 */
@@ -872,6 +912,19 @@ public class Monad {
 	 * Return the field Coefficients for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
 	 * 
+	 * Since the map internal to Scale can accept any of the CladosF numbers as
+	 * values, there is a cast to a 'generic' type within this method. This would
+	 * normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * at runtime.
+	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
+	 * 
 	 * @return UnitAbstract[]
 	 */
 	@SuppressWarnings("unchecked")
@@ -883,8 +936,20 @@ public class Monad {
 	 * Return a field Coefficient for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
 	 * 
-	 * @param i int This points at the coefficient at the equivalent tuple location.
+	 * Since the map internal to Scale can accept any of the CladosF numbers as
+	 * values, there is a cast to a 'generic' type within this method. This would
+	 * normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * at runtime.
 	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
+	 * 
+	 * @param i int This points at the coefficient at the equivalent tuple location.
 	 * @return UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
@@ -913,10 +978,12 @@ public class Monad {
 	}
 
 	/**
-	 * This answers a question concerning which type of UnitAbstract children are used.
+	 * This answers a question concerning which type of UnitAbstract children are
+	 * used.
 	 * 
 	 * @return CladosField mode for this monad
 	 */
+	@Override
 	public CladosField getMode() {
 		return mode;
 	}
@@ -1040,6 +1107,19 @@ public class Monad {
 
 	/**
 	 * Return the magnitude of the Monad
+	 * 
+	 * Since the map internal to Scale can accept any of the CladosF numbers as
+	 * values, there is a cast to a 'generic' type within this method. This would
+	 * normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * at runtime.
+	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
 	 * 
 	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
@@ -1413,8 +1493,8 @@ public class Monad {
 	 * a zero magnitude.
 	 * 
 	 * @return Monad but in practice it will always be a child of MonadAbtract
-	 * @throws FieldException This exception is thrown when normalizing a zero
-	 *                              or field conflicted monad is tried.
+	 * @throws FieldException This exception is thrown when normalizing a zero or
+	 *                        field conflicted monad is tried.
 	 */
 	public Monad normalize() throws FieldException {
 		if (gradeKey == 0L & scales.isScalarZero())
@@ -1486,7 +1566,7 @@ public class Monad {
 	 * @throws CladosMonadException This exception is thrown when the array offered
 	 *                              for coordinates is of the wrong length.
 	 */
-	public <T extends UnitAbstract & Field> Monad setCoeff(T[] ppC) throws CladosMonadException {
+	public <T extends UnitAbstract & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
 		scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (T[]) ppC));
@@ -1557,6 +1637,19 @@ public class Monad {
 	/**
 	 * Return the magnitude squared of the Monad
 	 * 
+	 * Since the map internal to Scale can accept any of the CladosF numbers as
+	 * values, there is a cast to a 'generic' type within this method. This would
+	 * normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * at runtime.
+	 * 
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
+	 * 
 	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
@@ -1621,9 +1714,9 @@ public class Monad {
 	 *                allow this method to reside in the Monad class. If it were in
 	 *                one of the child monad classes, it would work just as well,
 	 *                but it would have to know the child algebra class too in order
-	 *                to avoid UnitAbstract confusion. Since a monad can be sparse or
-	 *                not independent of the UnitAbstract used, the method is placed
-	 *                here in the abstract parent.
+	 *                to avoid UnitAbstract confusion. Since a monad can be sparse
+	 *                or not independent of the UnitAbstract used, the method is
+	 *                placed here in the abstract parent.
 	 */
 	protected void setSparseFlag(byte pGrades) {
 		long slideKey = gradeKey;

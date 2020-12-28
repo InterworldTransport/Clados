@@ -42,17 +42,32 @@ import org.interworldtransport.cladosGExceptions.CladosNyadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
- * Many math objects within the cladosG package have a number of attributes in
- * common. They are named objects from named algebras and with named feet. The
- * abstracted nyad covers those common elements and methods shared by objects in
- * potentially more than one algebra.
+ * Nyads are for all practical purposes just lists of monads that share a common
+ * Foot, but not necessarily common or unique algebras. They can be used as mere
+ * lists, but they are intended to act more like transformations. For example, a
+ * nyad of order two contains two monads. If they are of different algebras,
+ * there is no path to simplifying them. No product or addition operation exists
+ * between the monads even though they share the same Foot. However, if one of
+ * the monads is multiplied against a different monad resulting in a scalar, the
+ * nyad can be contracted to one monad. There are other ways to accomplish this
+ * contraction as well and all of them imitate operations upon an operand.
+ * 
+ * The Nyad class in it's current form is immature. The list capability works,
+ * but the operation behaviors are yet to be written. This will most likely be
+ * done as the library gets used in physical models for field theories that
+ * require multi-algebra currents and potentials. The expected physical behavior
+ * of a 'classical' field theory from physics will inform the behaviors expected
+ * of CladosG Nyads.
+ * 
+ * Nyads ARE Modal because they contain modal objects. Nothing in the List
+ * nature of Nyads requires Modal, but specific Monad handling behavior does.
  * 
  * (Single monad nyads are essentially monads, but can be expanded.)
  * 
  * @version 1.0
  * @author Dr Alfred W Differ
  */
-public class Nyad {
+public class Nyad implements Modal {
 	/**
 	 * Return a boolean stating whether or not the nyad covers the algebra named in
 	 * the parameter. Coverage is true if a monad can be found in the nyad that
@@ -76,8 +91,8 @@ public class Nyad {
 	 * 
 	 * In the future, the Frame classes will override this as it is likely that
 	 * other tests are required to ensure a monad list is actually a reference
-	 * frame. At the Nyad leve, therefore, it is best to to think of a true
-	 * response to this method as suggesting the nyad is a frame candidate.
+	 * frame. At the Nyad leve, therefore, it is best to to think of a true response
+	 * to this method as suggesting the nyad is a frame candidate.
 	 * 
 	 * @param pN Nyad to be tested
 	 * @return boolean True if nyad's monads are all of the same algebra
@@ -353,11 +368,11 @@ public class Nyad {
 	 * All objects of this class have a name independent of all other features.
 	 */
 	protected String Name;
-	
+
 	/**
-	 * Simple copy constructor of a Nyad. The passed Nyad will be copied in
-	 * detail. This contructor is used most often to get around operations that
-	 * alter one of the nyads when the developer does not wish it to be altered.
+	 * Simple copy constructor of a Nyad. The passed Nyad will be copied in detail.
+	 * This contructor is used most often to get around operations that alter one of
+	 * the nyads when the developer does not wish it to be altered.
 	 * 
 	 * @param pN Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
@@ -371,9 +386,9 @@ public class Nyad {
 	}
 
 	/**
-	 * A basic constructor of a Nyad that starts with a Monad. The Monad will
-	 * be copied and placed at the top of the list OR reused based on pCopy The
-	 * Foot, however, will be used exactly as is either way.
+	 * A basic constructor of a Nyad that starts with a Monad. The Monad will be
+	 * copied and placed at the top of the list OR reused based on pCopy The Foot,
+	 * however, will be used exactly as is either way.
 	 * 
 	 * @param pName String
 	 * @param pM    Monad
@@ -384,8 +399,7 @@ public class Nyad {
 	 *                              there is something malformed about the monad
 	 *                              being used/copied.
 	 */
-	public Nyad(String pName, Monad pM, boolean pCopy)
-			throws CladosNyadException, CladosMonadException {
+	public Nyad(String pName, Monad pM, boolean pCopy) throws CladosNyadException, CladosMonadException {
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		mode = pM.getMode();
@@ -398,9 +412,9 @@ public class Nyad {
 	}
 
 	/**
-	 * A simple copy constructor of a Nyad. The passed NyadComplexD will be
-	 * copied without the name. This constructor is used most often to clone other
-	 * objects in every way except name.
+	 * A simple copy constructor of a Nyad. The passed NyadComplexD will be copied
+	 * without the name. This constructor is used most often to clone other objects
+	 * in every way except name.
 	 * 
 	 * The Foot object is re-used. The Algebra object is re-used. The Nyad's
 	 * proto-number object is re-used. The Nyad's monad objects are copyied OR
@@ -419,9 +433,9 @@ public class Nyad {
 	 *                              monads in the nyad being copied.
 	 */
 	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException, CladosMonadException {
-		if (pN.getNyadOrder() == 0) 
+		if (pN.getNyadOrder() == 0)
 			throw new IllegalArgumentException("Offered Nyad to copy is empty.");
-		
+
 		setName(pName);
 		setFoot(pN.getFoot());
 		mode = pN.getMonadList(0).getMode();
@@ -719,6 +733,11 @@ public class Nyad {
 		return footPoint;
 	}
 
+	@Override
+	public CladosField getMode() {
+		return mode;
+	}
+
 	/**
 	 * Return the array of Monads
 	 * 
@@ -950,12 +969,12 @@ public class Nyad {
 	}
 
 	/**
-	 * Nyad Scaling: Pick a monad and scale it by the magnitude provided.
-	 * Only one monad can be scaled within a nyad at a time. Note that a request to
-	 * scale a monad that cannot be found in the list results in no action and no
-	 * exception. The scaling is effectively performed against a 'zero' monad for
-	 * the algebra not represented in the list since much monads can be appended to
-	 * the list without really changing the nature of the nyad.
+	 * Nyad Scaling: Pick a monad and scale it by the magnitude provided. Only one
+	 * monad can be scaled within a nyad at a time. Note that a request to scale a
+	 * monad that cannot be found in the list results in no action and no exception.
+	 * The scaling is effectively performed against a 'zero' monad for the algebra
+	 * not represented in the list since much monads can be appended to the list
+	 * without really changing the nature of the nyad.
 	 * 
 	 * @param pk   int
 	 * @param pMag UnitAbstract child object

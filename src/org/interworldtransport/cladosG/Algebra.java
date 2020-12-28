@@ -94,7 +94,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class Algebra implements Unitized, Comparable<Algebra> {
+public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
@@ -180,7 +180,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @param pA This is the other Algebra to copy.
 	 */
 	public Algebra(String pS, Algebra pA) {
-		this(pS, pA.getFoot(), pA.shareCardinal(), pA.getGProduct());
+		this(pS, pA.getFoot(), pA.getCardinal(), pA.getGProduct());
 	}
 
 	/**
@@ -472,6 +472,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * 
 	 * @return CladosField instance that matches the type of UnitAbstract in use
 	 */
+	@Override
 	public CladosField getMode() {
 		return mode;
 	}
@@ -547,7 +548,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * @return Cardinal of the protoNumber
 	 */
 	@Override
-	public final Cardinal shareCardinal() {
+	public final Cardinal getCardinal() {
 		return protoNumber.getCardinal();
 	}
 
@@ -556,8 +557,7 @@ public class Algebra implements Unitized, Comparable<Algebra> {
 	 * 
 	 * @return UnitAbstract protoNumber
 	 */
-	@Override
-	public final UnitAbstract shareProtoNumber() {
+	public final UnitAbstract getProtoNumber() {
 		return protoNumber;
 	}
 

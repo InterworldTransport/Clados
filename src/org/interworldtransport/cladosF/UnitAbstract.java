@@ -47,11 +47,27 @@ public class UnitAbstract {
 	 * Static method that creates a new CladosF number with a copy of the parameter.
 	 * This copy reuses the cardinal to ensure it will pass a type match test.
 	 * 
+	 * NOTE about suppressed type cast warnings | This method sifts through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
+	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
+	 * 
 	 * @param pF D extends UnitAbstract and Field
 	 * @return Optional D which extends UnitAbstract and Field (A CladosF number)
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <D extends UnitAbstract & Field> Optional<D> copyMaybe(D pF) {
+	public static final <D extends UnitAbstract & Field & Normalizable> Optional<D> copyMaybe(D pF) {
 		if (pF instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
 		else if (pF instanceof RealD)
@@ -68,12 +84,27 @@ public class UnitAbstract {
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
 	 * 
-	 * @param pR D extends UnitAbstract and Field
+	 * NOTE about suppressed type cast warnings | This method sifts through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
 	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
+	 * 
+	 * @param pR D extends UnitAbstract and Field
 	 * @return D extends UnitAbstract and Field
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends UnitAbstract & Field> Optional<D> copyMaybeONE(D pR) {
+	public final static <D extends UnitAbstract & Field & Normalizable> Optional<D> copyMaybeONE(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
 		else if (pR instanceof RealD)
@@ -89,12 +120,27 @@ public class UnitAbstract {
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
 	 * 
-	 * @param pR D extends UnitAbstract and Field
+	 * NOTE about suppressed type cast warnings | This method sifts through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
 	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
+	 * 
+	 * @param pR D extends UnitAbstract and Field
 	 * @return D extends UnitAbstract and Field
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends UnitAbstract & Field> Optional<D> copyMaybeZERO(D pR) {
+	public final static <D extends UnitAbstract & Field & Normalizable> Optional<D> copyMaybeZERO(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
 		else if (pR instanceof RealD)

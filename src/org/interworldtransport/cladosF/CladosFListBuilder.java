@@ -58,7 +58,8 @@ public enum CladosFListBuilder {
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
 	 * 
-	 * @param pField CladosField enumeration hint for UnitAbstract child to be created.
+	 * @param pField CladosField enumeration hint for UnitAbstract child to be
+	 *               created.
 	 * @param pD     List of UnitAbstract Numbers to be copied.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
@@ -86,11 +87,12 @@ public enum CladosFListBuilder {
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
 	 * 
-	 * @param pField CladosField enumeration hint for UnitAbstract child to be created.
-	 * @param pD    List of UnitAbstract Numbers to be copied.
+	 * @param pField CladosField enumeration hint for UnitAbstract child to be
+	 *               created.
+	 * @param pD     List of UnitAbstract Numbers to be copied.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static <T extends UnitAbstract & Field> T[] copyOf(CladosField pField, T[] pD) {
+	public final static <T extends UnitAbstract & Field & Normalizable> T[] copyOf(CladosField pField, T[] pD) {
 		switch (pField) {
 		case REALF -> {
 			return (T[]) CladosFListBuilder.REALF.copyOf(pD);
@@ -113,6 +115,22 @@ public enum CladosFListBuilder {
 	/**
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
+	 * 
+	 * NOTE about suppressed type cast warnings | This method switches through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
+	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
 	 * 
 	 * @param pDV List of CladosF Numbers to be copied.
 	 * @return List of UnitAbstract children Newly constructed copies of incoming
@@ -155,11 +173,27 @@ public enum CladosFListBuilder {
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
 	 * 
+	 * NOTE about suppressed type cast warnings | This method switches through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
+	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
+	 * 
 	 * @param pDV Array of Numbers to be copied.
 	 * @return UnitAbstract[] Newly constructed copies of incoming numbers
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field> T[] copyOf(T[] pDV) {
+	public <T extends UnitAbstract & Field & Normalizable> T[] copyOf(T[] pDV) {
 		switch (this) {
 		case REALF -> {
 			T[] tSpot = (T[]) new RealF[pDV.length];
@@ -267,7 +301,8 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
-	 * @param pS    The String name for a new cardinal to use in UnitAbstract children
+	 * @param pS    The String name for a new cardinal to use in UnitAbstract
+	 *              children
 	 * @param pSize The size oF the array to create.
 	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
 	 */
@@ -301,6 +336,22 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
+	 * 
+	 * NOTE about suppressed type cast warnings | This method switches through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
+	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
 	 * 
 	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
@@ -376,7 +427,8 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
-	 * @param pS    String name of a new cardinal to use in all UnitAbstract children
+	 * @param pS    String name of a new cardinal to use in all UnitAbstract
+	 *              children
 	 * @param pSize The size oF the array to create.
 	 * @return List of UnitAbstract children as ZEROS with default cardinals.
 	 */

@@ -59,7 +59,7 @@ class CoreMonadComplexDTest {
 		tM8 = new Monad(mName + "8", tM6);
 		tM9 = new Monad(mName + "9", tM2);
 		
-		ComplexD tAdj = new ComplexD(tM9.getAlgebra().shareCardinal(), 0.0f);
+		ComplexD tAdj = new ComplexD(tM9.getAlgebra().getCardinal(), 0.0f);
 		ComplexD[] tFix = (ComplexD[]) CladosFListBuilder.COMPLEXD.create(tAdj.getCardinal(), 16);
 		tFix[1] = new ComplexD(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f, 0.0f);
 		tFix[4] = ComplexD.copyOf(tFix[1]);

@@ -59,7 +59,7 @@ public enum CladosFBuilder {
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
-	//DIVFIELD;
+	// DIVFIELD;
 
 	/**
 	 * Method creates a new Cardinal using the string provided IF one by that name
@@ -80,13 +80,12 @@ public enum CladosFBuilder {
 		}
 		return test.get();
 	}
-	
 
 	/**
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @param pMode 
+	 * @param pMode
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
@@ -113,12 +112,12 @@ public enum CladosFBuilder {
 		}
 		}
 	}
-	
+
 	/**
 	 * Method creates a new number object with a real value set to ONE using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @param pMode 
+	 * @param pMode
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
@@ -153,11 +152,27 @@ public enum CladosFBuilder {
 	 * NOTE this one makes no attempt to update the cardinal cache. It is assumed to
 	 * have been done while constructing the number passed in as a parameter.
 	 * 
+	 * NOTE about suppressed type cast warnings | This method sifts through the
+	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * copied is one of them, the method uses a constructor appropriate to it, but
+	 * then casts the result back to the generic T before returning it.
+	 * 
+	 * There is no danger to this with respect to the implementation of this method.
+	 * The danger comes from mis-use of the method. If one passes a different kind
+	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * Normalizable, this method might not detect it and return null. The type
+	 * casting operation itself cannot fail, but unrecognized child classes do NOT
+	 * get copied.
+	 * 
+	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This method will not be aware of the new class until its implementation is
+	 * updated.
+	 * 
 	 * @param pDiv A UnitAbstract child number to be copied
 	 * @return UnitAbstract child number created
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <T extends UnitAbstract & Field> T copyOf(T pDiv) {
+	public final static <T extends UnitAbstract & Field & Normalizable> T copyOf(T pDiv) {
 		if (pDiv instanceof RealF) {
 			return (T) new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal());
 		} else if (pDiv instanceof RealD) {
