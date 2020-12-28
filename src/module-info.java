@@ -3,7 +3,7 @@
  * likely won't have the test packages bundled into it.
  * 
  * @author Dr Alfred W Differ
- * @version 1.0
+ * @version 2.0
  */
 
 module org.interworldtransport.clados {
