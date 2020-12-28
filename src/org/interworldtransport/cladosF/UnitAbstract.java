@@ -63,6 +63,7 @@ public class UnitAbstract {
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * 
+	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
 	 * @param pF D extends UnitAbstract and Field
 	 * @return Optional D which extends UnitAbstract and Field (A CladosF number)
 	 */
@@ -100,6 +101,7 @@ public class UnitAbstract {
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * 
+	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
 	 * @param pR D extends UnitAbstract and Field
 	 * @return D extends UnitAbstract and Field
 	 */
@@ -137,6 +139,7 @@ public class UnitAbstract {
 	 * updated.
 	 * 
 	 * @param pR D extends UnitAbstract and Field
+	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
 	 * @return D extends UnitAbstract and Field
 	 */
 	@SuppressWarnings("unchecked")

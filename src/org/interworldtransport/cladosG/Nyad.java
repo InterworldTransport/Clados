@@ -356,7 +356,10 @@ public class Nyad implements Modal {
 	 */
 	protected Foot footPoint;
 
-	protected CladosField mode;
+	/**
+	 * This is the internal element supporting the Modal interface.
+	 */
+	private CladosField mode;
 
 	/**
 	 * This array is the list of Monads that makes up the NyadRealF. It will be tied
@@ -478,7 +481,7 @@ public class Nyad implements Modal {
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
 		monadList.add(pM);
-		resetAlgebraList(monadList);
+		resetAlgebraList();
 		return this;
 	}
 
@@ -504,7 +507,7 @@ public class Nyad implements Modal {
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
 		monadList.add((Monad) CladosGBuilder.copyOfMonad(pM));
-		resetAlgebraList(monadList);
+		resetAlgebraList();
 		return this;
 	}
 
@@ -519,9 +522,8 @@ public class Nyad implements Modal {
 	 * 
 	 * @throws FieldBinaryException This exception is thrown when the monads to be
 	 *                              compressed fail the Field match test
-	 * @throws CladosMonadException
 	 */
-	public void compressAntiSymm(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
+	public void compressAntiSymm(int pInto, int pFrom) throws FieldBinaryException {
 		Monad tempLeft = monadList.get(pInto);
 		Monad tempRight = monadList.get(pFrom);
 
@@ -544,9 +546,8 @@ public class Nyad implements Modal {
 	 * 
 	 * @throws FieldBinaryException This exception is thrown when the scale field
 	 *                              doesn't match the nyad's field.
-	 * @throws CladosMonadException
 	 */
-	public void compressSymm(int pInto, int pFrom) throws FieldBinaryException, CladosMonadException {
+	public void compressSymm(int pInto, int pFrom) throws FieldBinaryException {
 		Monad tempLeft = monadList.get(pInto);
 		Monad tempRight = monadList.get(pFrom);
 
@@ -630,11 +631,10 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Return an integer pointing to a monad in the nyad that uses the algebra named
-	 * in the parameter.
+	 * Return an integer pointing to a monad in the nyad that uses the algebra
+	 * referenced in the parameter.
 	 * 
-	 * @param pN   Nyad
-	 * @param pAlg String
+	 * @param pAlg Algebra
 	 * @return int
 	 */
 	public int findAlgebra(Algebra pAlg) {
@@ -648,7 +648,6 @@ public class Nyad implements Modal {
 	 * Return an integer pointing to the part of the nyad expressed in the frame
 	 * named in the parameter.
 	 * 
-	 * @param pN     Nyad
 	 * @param pFrame String
 	 * @return boolean
 	 */
@@ -662,7 +661,6 @@ public class Nyad implements Modal {
 	/**
 	 * Return the index for monad within the nyad if found.
 	 * 
-	 * @param pN  Nyad
 	 * @param pIn Monad
 	 * @return int
 	 */
@@ -676,7 +674,6 @@ public class Nyad implements Modal {
 	/**
 	 * Return the index for monad matching requested name within the nyad if found.
 	 * 
-	 * @param pN    Nyad
 	 * @param pName String
 	 * @return int
 	 */
@@ -689,10 +686,9 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return an integer larger than pStart pointing to a monad in the nyad that
-	 * uses the algebra named in the parameter.
+	 * uses the algebra referenced in the parameter.
 	 * 
-	 * @param pN     Nyad
-	 * @param pAlg   String
+	 * @param pAlg   Algebra
 	 * @param pStart int
 	 * @return int
 	 */
@@ -946,7 +942,7 @@ public class Nyad implements Modal {
 		} finally {
 			if (test != null) {
 				monadList.trimToSize();
-				resetAlgebraList(monadList);
+				resetAlgebraList();
 			}
 		}
 		return this;
@@ -978,9 +974,10 @@ public class Nyad implements Modal {
 	 * 
 	 * @param pk   int
 	 * @param pMag UnitAbstract child object
+	 * @param <T> UnitAbstract child object generic type support
 	 * @throws FieldBinaryException This exception is thrown when the scale field
 	 *                              doesn't match the nyad's field.
-	 * @return NyadRealF
+	 * @return Nyad
 	 */
 	public <T extends UnitAbstract & Field> Nyad scale(int pk, T pMag) throws FieldBinaryException {
 		if (pk >= 0 && pk < monadList.size())
@@ -1046,10 +1043,17 @@ public class Nyad implements Modal {
 		return rB.toString();
 	}
 
-	protected void resetAlgebraList(ArrayList<Monad> pMLIn) {
+	/**
+	 * This method simply resets the internal list of algebras associated with the
+	 * nyad. It sifts through the monad list and builds a list of references to
+	 * unique algebras found along the way.
+	 * 
+	 * At the end, this method ALSO sets the strongFlag and oneAlgebra flag.
+	 */
+	protected void resetAlgebraList() {
 		algebraList.clear();
-		algebraList.ensureCapacity(pMLIn.size());
-		for (Monad point : pMLIn)
+		algebraList.ensureCapacity(monadList.size());
+		for (Monad point : monadList)
 			if (!algebraList.contains(point.getAlgebra()))
 				algebraList.add(point.getAlgebra());
 		// 1 <= algebraList.size() <= monadList.size()
@@ -1057,13 +1061,13 @@ public class Nyad implements Modal {
 
 		Collections.sort(algebraList); // and now that list is sorted by name
 
-		if (pMLIn.size() == 1) {
+		if (monadList.size() == 1) {
 			_strongFlag = true;
 			_oneAlgebra = true;
 		} else if (algebraList.size() == 1) {
 			_strongFlag = false;
 			_oneAlgebra = true;
-		} else if (pMLIn.size() == algebraList.size()) {
+		} else if (monadList.size() == algebraList.size()) {
 			_strongFlag = true;
 			_oneAlgebra = false;
 		} else {// We know monadList.size()>algebraList.size()>1 at this point

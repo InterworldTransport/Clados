@@ -61,6 +61,7 @@ public enum CladosFListBuilder {
 	 * @param pField CladosField enumeration hint for UnitAbstract child to be
 	 *               created.
 	 * @param pD     List of UnitAbstract Numbers to be copied.
+	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
 	public final static <T extends UnitAbstract & Field> List<T> copyOf(CladosField pField, List<T> pD) {
@@ -90,6 +91,7 @@ public enum CladosFListBuilder {
 	 * @param pField CladosField enumeration hint for UnitAbstract child to be
 	 *               created.
 	 * @param pD     List of UnitAbstract Numbers to be copied.
+	 * @param <T> UnitAbstract number from CladosF with all number interfaces.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
 	public final static <T extends UnitAbstract & Field & Normalizable> T[] copyOf(CladosField pField, T[] pD) {
@@ -133,6 +135,7 @@ public enum CladosFListBuilder {
 	 * updated.
 	 * 
 	 * @param pDV List of CladosF Numbers to be copied.
+	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of UnitAbstract children Newly constructed copies of incoming
 	 *         numbers
 	 */
@@ -190,6 +193,7 @@ public enum CladosFListBuilder {
 	 * updated.
 	 * 
 	 * @param pDV Array of Numbers to be copied.
+	 * @param <T> UnitAbstract number from CladosF with all number interfaces.
 	 * @return UnitAbstract[] Newly constructed copies of incoming numbers
 	 */
 	@SuppressWarnings("unchecked")
@@ -355,6 +359,7 @@ public enum CladosFListBuilder {
 	 * 
 	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
+	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of UnitAbstract children set to ZERO using incoming cardinal.
 	 */
 	@SuppressWarnings("unchecked")
@@ -394,6 +399,7 @@ public enum CladosFListBuilder {
 	 * This method returns an array of numbers using the default Cardinal.
 	 * 
 	 * @param pSize The size oF the array to create.
+	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of UnitAbstract children as ZEROS with default cardinals.
 	 */
 	public <T extends UnitAbstract & Field> List<T> createListOf(int pSize) {
@@ -430,6 +436,7 @@ public enum CladosFListBuilder {
 	 * @param pS    String name of a new cardinal to use in all UnitAbstract
 	 *              children
 	 * @param pSize The size oF the array to create.
+	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of UnitAbstract children as ZEROS with default cardinals.
 	 */
 	public <T extends UnitAbstract & Field> List<T> createListOf(String pS, int pSize) {

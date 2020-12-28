@@ -195,8 +195,10 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param pM  Monad
+	 * @param <T> UnitAbstract number from CladosF with all the interfaces this
+	 *            time.
 	 * @return boolean
-	 * @param pM Monad
 	 * @throws FieldException This exception is thrown when the method can't copy
 	 *                        the field used by the monad to be checked.
 	 */
@@ -438,10 +440,6 @@ public class Monad implements Modal {
 	 * 
 	 * @param pName String
 	 * @param pM    Monad
-	 * @throws CladosMonadException This exception is thrown if there is an issue
-	 *                              with the coefficients offered. The issues could
-	 *                              involve null coefficients or a coefficient array
-	 *                              of the wrong size.
 	 */
 	public Monad(String pName, Monad pM) {
 		this(pM);
@@ -841,6 +839,8 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract number from CladosF with all the interfaces this
+	 *            time.
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
@@ -878,6 +878,8 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract number from CladosF with all the interfaces this
+	 *            time.
 	 * @return Monad after operation.
 	 */
 	@SuppressWarnings("unchecked")
@@ -925,6 +927,7 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
 	 * @return UnitAbstract[]
 	 */
 	@SuppressWarnings("unchecked")
@@ -949,7 +952,9 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
-	 * @param i int This points at the coefficient at the equivalent tuple location.
+	 * @param i   int This points at the coefficient at the equivalent tuple
+	 *            location.
+	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
 	 * @return UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
@@ -1121,6 +1126,8 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract number from CladosF with the Field interface this
+	 *            time.
 	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
@@ -1182,7 +1189,9 @@ public class Monad implements Modal {
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
 	 * 
-	 * @param pM Monad
+	 * @param pM  Monad
+	 * @param <T> UnitAbstract number from CladosF with all the interfaces this
+	 *            time.
 	 * @return Monad
 	 */
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyLeft(Monad pM) {
@@ -1332,7 +1341,9 @@ public class Monad implements Modal {
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
 	 * 
-	 * @param pM Monad
+	 * @param pM  Monad
+	 * @param <T> UnitAbstract number from CladosF with all the interfaces this
+	 *            time.
 	 * @return Monad
 	 */
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyRight(Monad pM) {
@@ -1542,6 +1553,7 @@ public class Monad implements Modal {
 	 * components won't get used in real number multiplication.
 	 * 
 	 * @param pScale UnitAbstract to use for scaling the monad
+	 * @param <T>    UnitAbstract number from CladosF with the Field interface.
 	 * @return Monad after the scaling is complete.
 	 */
 	public <T extends UnitAbstract & Field> Monad scale(T pScale) {
@@ -1650,6 +1662,7 @@ public class Monad implements Modal {
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
 	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")

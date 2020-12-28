@@ -56,10 +56,6 @@ public enum CladosFBuilder {
 	 * The implicit private constructor IS NOT overridden.
 	 */
 	REALF;
-	/**
-	 * The implicit private constructor IS NOT overridden.
-	 */
-	// DIVFIELD;
 
 	/**
 	 * Method creates a new Cardinal using the string provided IF one by that name
@@ -85,7 +81,7 @@ public enum CladosFBuilder {
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @param pMode
+	 * @param pMode CladosField mode to use when creating UnitAbstract numbers
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
@@ -117,7 +113,7 @@ public enum CladosFBuilder {
 	 * Method creates a new number object with a real value set to ONE using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @param pMode
+	 * @param pMode CladosField mode to use when creating UnitAbstract numbers
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
@@ -169,6 +165,8 @@ public enum CladosFBuilder {
 	 * updated.
 	 * 
 	 * @param pDiv A UnitAbstract child number to be copied
+	 * @param <T>  UnitAbstract child number with the Field and Normalizable
+	 *             interfaces too.
 	 * @return UnitAbstract child number created
 	 */
 	@SuppressWarnings("unchecked")
@@ -247,7 +245,6 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a number as distinct ZERO object using default cardinal name.
 	 * 
-	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
 	public UnitAbstract createZERO() {
@@ -309,7 +306,8 @@ public enum CladosFBuilder {
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
 	 * 
-	 * @param pS String name for the associated Cardinal
+	 * @param pS  String name for the associated Cardinal
+	 * @param <T> UnitAbstract child number with the Field interface too.
 	 * @return UnitAbstract child number created
 	 */
 	public <T extends UnitAbstract & Field> UnitAbstract createZERO(String pS) {

@@ -49,19 +49,19 @@ public enum CladosField {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	REALF("org.interworldtransport.cladosF.RealF"),
+	REALF,
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	REALD("org.interworldtransport.cladosF.RealD"),
+	REALD,
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXF("org.interworldtransport.cladosF.ComplexF"),
+	COMPLEXF,
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXD("org.interworldtransport.cladosF.ComplexD");
+	COMPLEXD;
 
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
@@ -265,11 +265,5 @@ public enum CladosField {
 		default:
 			return null;
 		}
-	}
-	
-	protected final String name;
-	
-	private CladosField(String pIn) {
-		name = pIn;
 	}
 }

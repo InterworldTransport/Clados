@@ -112,7 +112,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	private Cardinal card;
 	private final CanonicalBasis gBasis;
-	private IdentityHashMap<Blade, UnitAbstract> map;
+	private IdentityHashMap<Blade, D> map;
 
 	/**
 	 * This is the type of UnitAbstract that should be present in the list held by
@@ -171,12 +171,14 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract child generic type support. Must also implement
+	 *            Field.
 	 * @return Stream of UnitAbstract children that are the coefficients represented
 	 *         as values in the internal map.
 	 */
 	@SuppressWarnings("unchecked")
-	public Stream<D> coefficientStream() {
-		return (Stream<D>) map.values().stream();
+	public <T extends UnitAbstract & Field & Normalizable> Stream<T> coefficientStream() {
+		return (Stream<T>) map.values().stream();
 	}
 
 	/**
@@ -219,9 +221,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pB Blade to use as key in internal map
 	 * @return A UnitAbstract child related to this blade
 	 */
-	@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public D get(Blade pB) {
-		return (D) map.get(pB);
+		return map.get(pB);
 	}
 
 	/**
@@ -306,9 +308,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * 
 	 * @return A UnitAbstract child related to the pscalar blade
 	 */
-	@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public D getPScalar() {
-		return (D) map.get(gBasis.getPScalarBlade());
+		return map.get(gBasis.getPScalarBlade());
 	}
 
 	/**
@@ -329,9 +331,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * 
 	 * @return A UnitAbstract child related to the scalar blade
 	 */
-	@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public D getScalar() {
-		return (D) map.get(gBasis.getScalarBlade());
+		return map.get(gBasis.getScalarBlade());
 	}
 
 	/**
@@ -367,7 +369,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * non-zero results to products, so this especially matters in O(N^2)
 	 * calculations.
 	 * 
-	 * @param pB
+	 * @param pB Blade to use as key to discover if related value is non-zero.
 	 * @return boolean False if the related value evaluates as ZERO in whatever
 	 *         number style it is.
 	 */
@@ -472,9 +474,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * moduli instead. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
 	 * 
-	 * @throws FieldBinaryException This exception is thrown when sqMagnitude fails
-	 *                              with the RealF array
-	 * @return D
+	 * @return D UnitAbstract child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
 	public D modulusSQSum() {
@@ -554,9 +554,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * 
-	 * @throws FieldBinaryException This exception is thrown when sqMagnitude fails
-	 *                              with the RealF array
-	 * @return D
+	 * @return D UnitAbstract child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
 	public D modulusSum() {
@@ -630,6 +628,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract child generic type support. Must also implement Field
+	 *            AND Normalizable.
 	 * @throws FieldException This happens when normalizing something that has a
 	 *                        zero magnitude. The exception is thrown by the
 	 *                        invert() method and passed along here.
@@ -643,12 +643,15 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Put a key/value pair into the internal map of coefficients. A Blade acts as
 	 * key. A UnitAbstract child acts as coefficient.
 	 * 
-	 * @param pB Blade acting as key in the internal map
-	 * @param pD UnitAbstract child acting as the coefficient.
+	 * @param pB  Blade acting as key in the internal map
+	 * @param pD  UnitAbstract child acting as the coefficient.
+	 * @param <T> UnitAbstract child generic type support. Must also implement
+	 *            Field.
 	 * @return Scale object. Just this object after modification if it occurs.
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field> Scale<D> put(Blade pB, T pD) {
-		map.put(pB, pD);
+		map.put(pB, (D) pD);
 		return this;
 	}
 
@@ -661,9 +664,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pB Blade key to zero out the related coefficient
 	 * @return Scale object. Just this object after modification.
 	 */
+	@SuppressWarnings("unchecked")
 	public Scale<D> remove(Blade pB) {
 		if (pB != null & map.containsKey(pB))
-			map.put(pB, CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
+			map.put(pB, (D) CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
 		return this;
 	}
 
@@ -697,6 +701,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * 
 	 * @param pIn UnitAbstract child to use as a scaling element. Mode and cardinal
 	 *            MUST match values in map.
+	 * @param <T> UnitAbstract child generic type support. Must also implement
+	 *            Field.
 	 * @return Scale object. Just this object after modification.
 	 */
 	public <T extends UnitAbstract & Field> Scale<D> scale(T pIn) {
@@ -755,6 +761,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * 
+	 * @param <T> UnitAbstract child generic type support. Must also implement Field
+	 *            AND Normalizable.
 	 * @return deliver the internal coefficients as the internal map.
 	 */
 	@SuppressWarnings("unchecked")
@@ -763,8 +771,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
+	 * The settor method supporting Modal interface that isn't actually in the
+	 * interface.
 	 * 
-	 * @param pCard
+	 * @param pCard CladosField element to set as the mode.
 	 * @return Scale object. Just this object after modification.
 	 */
 	protected Scale<D> setCardinal(Cardinal pCard) {
@@ -782,17 +792,20 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * method that way, copy your coefficients first.
 	 * 
 	 * @param pIn Array of UnitAbstract children
+	 * @param <T> UnitAbstract child generic type support. Must also implement
+	 *            Field.
 	 * @return Scale object. Just this object after modification.
 	 * @throws IllegalArgumentException This happens if the offered array does not
 	 *                                  have the same size as the basis. Good enough
 	 *                                  to ensure all blades are covered.
 	 */
+	@SuppressWarnings("unchecked")
 	protected <T extends UnitAbstract & Field> Scale<D> setCoefficientArray(T[] pIn) {
 		if (pIn.length != gBasis.getBladeCount())
 			throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
 
 		gBasis.bladeStream().forEach(blade -> {
-			map.put(blade, pIn[gBasis.find(blade) - 1]);
+			map.put(blade, (D) pIn[gBasis.find(blade) - 1]);
 		});
 		return this;
 	}
@@ -835,8 +848,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * 
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @param pIn    Array of UnitAbstract Children
+	 * @param <T>    UnitAbstract child generic type support. Must also implement
+	 *               Field.
 	 * @return Scale object. Just this object after modification.
 	 */
+	@SuppressWarnings("unchecked")
 	protected <T extends UnitAbstract & Field> Scale<D> setCoefficientsAtGrade(byte pGrade, T[] pIn) {
 		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
@@ -850,7 +866,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 		int init = gBasis.getGradeStart(pGrade);
 		gBasis.bladeOfGradeStream(pGrade).forEach(blade -> {
-			map.put(blade, pIn[gBasis.find(blade) - init]);
+			map.put(blade, (D) pIn[gBasis.find(blade) - init]);
 		});
 		return this;
 	}
@@ -879,9 +895,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * 
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
+	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAll() {
 		gBasis.bladeStream().forEach(b -> {
-			map.put(b, CladosFBuilder.createZERO(mode, card));
+			map.put(b, (D) CladosFBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
@@ -905,12 +922,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pGrade byte integer naming the grade to be preserved
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
+	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAllButGrade(byte pGrade) {
 		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
 
 		gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-			map.put(blade, CladosFBuilder.createZERO(mode, card));
+			map.put(blade, (D) CladosFBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
@@ -934,12 +952,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
+	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAtGrade(byte pGrade) {
 		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
 
 		gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-			map.put(blade, CladosFBuilder.createZERO(mode, card));
+			map.put(blade, (D) CladosFBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
