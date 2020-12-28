@@ -15,8 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreAlgebraTest {
-	protected String fName = "Test:TangentPoint";
-	protected String aName = "Test Algebra";
+	protected String fName = "Tst:TangentPoint";
+	protected String aName = "Tst Algebra";
 	protected String pSig31 = "-+++";
 	protected String pSig13 = "+---";
 	protected Cardinal fType;
