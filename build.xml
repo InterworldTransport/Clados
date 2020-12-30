@@ -49,30 +49,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/." />
 	    <delete dir="${distDir}"/>
 		<delete dir="${docDir}"/>
 	  </target>
-
-  <!--<target 		name="compile" 
-  				depends="init"
-        		description="compile the source">
-     Compile the Java code from ${src} into ${build}
-    <javac 		includeantruntime="false" 
-				modulepath="/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.api_5.1.0.v20180327-1502.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.opentest4j*.jar:
-    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.vintage.engine*.jar:
-    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.engine*.jar:
-    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.engine*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.commons*.jar:
-    						/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.launcher*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.suite.api*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.migrationsupport*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.apiguardian*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.platform.runner*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.hamcrest.core*.jar:
-					    	/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit.jupiter.params*.jar"
-    			srcdir="${srcDir}" 
-    			source="15"
-    			destdir="${buildDir}"> 
-    </javac>
-  </target>-->
 	
 	  <target 		name="compile" 
 	  				depends="init"
