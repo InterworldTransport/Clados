@@ -31,6 +31,8 @@ import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosFCache;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosF.Field;
+import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
@@ -123,6 +125,18 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public static final Monad copyOfMonad(Monad pM, String pName) {
 		return new Monad(pName, pM);
+	}
+
+	/**
+	 * @param <T> generic description of a CladosF number. Descends from
+	 *            UnitAbstract but must also implement Field and Normalizable.
+	 * @param pIn The Scale object to be imitated.
+	 * @return new Scale object that RE-USES blades from the contained basis, but
+	 *         copies all numbers ensuring the two Scale objects do NOT share values
+	 *         in their internal maps.
+	 */
+	public static final <T extends UnitAbstract & Field & Normalizable> Scale<T> copyOfScale(Scale<T> pIn) {
+		return new Scale<T>(pIn);
 	}
 
 	/**
@@ -260,17 +274,6 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	}
 
 	/**
-	 * This method creates a new Foot object using the Cardinal offered.
-	 * 
-	 * @param pName String name of new Foot
-	 * @param pDiv  UnitAbstract holding Cardinal to be re-used.
-	 * @return Foot (new instance)
-	 */
-	public final static Foot createFootLike(String pName, UnitAbstract pDiv) {
-		return createFootLike(pName, pDiv.getCardinal());
-	}
-
-	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated but the Foot has a new name too.
 	 * 
@@ -281,6 +284,17 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public final static Foot createFootLike(String pName, Foot pF, int pSpot) {
 		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
+	}
+
+	/**
+	 * This method creates a new Foot object using the Cardinal offered.
+	 * 
+	 * @param pName String name of new Foot
+	 * @param pDiv  UnitAbstract holding Cardinal to be re-used.
+	 * @return Foot (new instance)
+	 */
+	public final static Foot createFootLike(String pName, UnitAbstract pDiv) {
+		return createFootLike(pName, pDiv.getCardinal());
 	}
 
 	/**
@@ -369,10 +383,11 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadSpecial(UnitAbstract pNumber, String pName, String pAName, String pFrame,
-			String pFoot, String pSig, String pSpecial)
+	@SuppressWarnings("unchecked")
+	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadSpecial(UnitAbstract pNumber,
+			String pName, String pAName, String pFrame, String pFoot, String pSig, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber, pSpecial);
+		return new Monad(pName, pAName, pFrame, pFoot, pSig, (T) pNumber, pSpecial);
 	}
 
 	/**
@@ -388,7 +403,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadWithAlgebra(UnitAbstract[] pNumber, Algebra pA, String pName, String pFrame)
+	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadWithAlgebra(Scale<T> pNumber,
+			Algebra pA, String pName, String pFrame)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pA, pFrame, pNumber);
 	}
@@ -408,8 +424,9 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadWithCoeffs(UnitAbstract[] pNumber, String pName, String pAName, String pFrame,
-			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumber,
+			String pName, String pAName, String pFrame, String pFoot, String pSig)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
 	}
 
@@ -427,9 +444,11 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadWithFoot(UnitAbstract pNumber, Foot pFt, String pName, String pAName,
-			String pFrame, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pAName, pFrame, pFt, pSig, pNumber);
+	@SuppressWarnings("unchecked")
+	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadWithFoot(UnitAbstract pNumber,
+			Foot pFt, String pName, String pAName, String pFrame, String pSig)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		return new Monad(pName, pAName, pFrame, pFt, pSig, (T) pNumber);
 	}
 
 	/**
@@ -447,8 +466,9 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Monad createMonadZero(UnitAbstract pNumber, String pName, String pAName, String pFrame,
-			String pFoot, String pSig) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadZero(T pNumber, String pName,
+			String pAName, String pFrame, String pFoot, String pSig)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
 	}
 
@@ -481,21 +501,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		return CliffordProduct.validateSignature(pSig);
 	}
 
-	/**
-	 * Nyad Constructor #3 covered with this method, but with re-use. This causes
-	 * the new nyad to use EXACTLY the same monads as the one passed, so it is a
-	 * second reference to the same objects. Dangerous!
-	 * 
-	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
-	 * @param pName A String for the new Nyad's name.
-	 * @return Nyad (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
-	 * @throws CladosMonadException  Thrown for a general monad constructor error
-	 * @throws CladosNyadException   Thrown for a general nyad constructor error
-	 */
-	public final Nyad duplicateNyadReference(Nyad pN, String pName)
-			throws BadSignatureException, CladosMonadException, CladosNyadException {
-		return new Nyad(pName, pN, false);
+	private CladosGBuilder() {
+		;
 	}
 
 	/**
@@ -527,6 +534,19 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	}
 
 	/**
+	 * Nyad Constructor #2 covered with this method, but with re-use
+	 * 
+	 * @param pM    The monad to be used as the first in monadList in a new nyad.
+	 * @param pName A String for the new Nyad's name.
+	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws CladosMonadException Thrown for a general monad constructor error
+	 * @throws CladosNyadException  Thrown for a general nyad constructor error
+	 */
+	public final Nyad createNyadUsingMonad(Monad pM, String pName) throws CladosNyadException, CladosMonadException {
+		return new Nyad(pName, pM, false);
+	}
+
+	/**
 	 * Nyad Constructor #2 covered with this method
 	 * 
 	 * @param pM    The monad to be COPIED as the first in the list in a new nyad.
@@ -542,19 +562,19 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	}
 
 	/**
-	 * Nyad Constructor #2 covered with this method, but with re-use
+	 * Nyad Constructor #3 covered with this method, but with re-use. This causes
+	 * the new nyad to use EXACTLY the same monads as the one passed, so it is a
+	 * second reference to the same objects. Dangerous!
 	 * 
-	 * @param pM    The monad to be used as the first in monadList in a new nyad.
+	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
+	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final Nyad createNyadUsingMonad(Monad pM, String pName) throws CladosNyadException, CladosMonadException {
-		return new Nyad(pName, pM, false);
-	}
-
-	private CladosGBuilder() {
-		;
+	public final Nyad duplicateNyadReference(Nyad pN, String pName)
+			throws BadSignatureException, CladosMonadException, CladosNyadException {
+		return new Nyad(pName, pN, false);
 	}
 }

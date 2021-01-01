@@ -54,7 +54,8 @@ class CoreMonadRealFTest {
 		tM4 = new Monad(tM0);
 		tM5 = new Monad(mName + "5", aName, "Foot Default Frame", "Test Foot 5", "-+++",
 				new RealF(Cardinal.generate("Test Float 5"), 0f), "Unit PScalar");
-		tM6 = new Monad(mName + "6", aName2, "Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM6 = new Monad(mName + "6", aName2, "Foot Default Frame", "Test Foot 6", "-+++", cRF[0]);
+		tM6.setCoeff(cRF);
 		tM7 = new Monad(mName + "7", tM6);
 		tM8 = new Monad(mName + "8", tM6);
 		tM9 = new Monad(mName + "9", tM2);
@@ -167,7 +168,7 @@ class CoreMonadRealFTest {
 		for (short m = 0; m < tM0.getCoeff().length; m++)
 			assertFalse(tM0.getCoeff(m).equals(null));
 		//System.out.println(Monad.toXMLFullString(tM0, ""));
-		Monad newOne = new Monad("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getCoeff());
+		Monad newOne = new Monad("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getScales());
 		assertFalse(newOne.equals(null));
 		assertFalse(isReferenceMatch(tM0, newOne));
 	}

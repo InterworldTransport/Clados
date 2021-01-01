@@ -152,6 +152,16 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		card = map.get(gBasis.getScalarBlade()).getCardinal(); // gets scalar part cardinal
 		assert (pInMap.keySet().size() == pB.getBladeCount());
 	}
+	
+	/**
+	 * @param pIn Scale to be imitated.
+	 */
+	public Scale(Scale<D> pIn) {
+		this(pIn.getMode(), pIn.gBasis, pIn.getCardinal());
+		gBasis.bladeStream().forEach(blade -> {
+			map.put(blade, CladosFBuilder.copyOf(pIn.get(blade)));
+		});
+	}
 
 	/**
 	 * This is the compliment of a blade stream involving the scaling factors
@@ -766,7 +776,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @return deliver the internal coefficients as the internal map.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends UnitAbstract & Field & Normalizable> Map<Blade, T> getMap() {
+	public <T extends UnitAbstract & Field & Normalizable> Map<Blade, T> getMap() {
 		return (Map<Blade, T>) map;
 	}
 

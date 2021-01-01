@@ -404,33 +404,14 @@ public class Monad implements Modal {
 	 * 
 	 * @param pM Monad
 	 */
-	public Monad(Monad pM) {
+	@SuppressWarnings("unchecked")
+	public <T extends UnitAbstract & Field & Normalizable> Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
 		mode = pM.mode;
-		switch (mode) {
-		case COMPLEXD -> {
-			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
-			scales.setCoefficientMap(pM.scales.getMap());
-			setGradeKey();
-		}
-		case COMPLEXF -> {
-			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
-			scales.setCoefficientMap(pM.scales.getMap());
-			setGradeKey();
-		}
-		case REALD -> {
-			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
-			scales.setCoefficientMap(pM.scales.getMap());
-			setGradeKey();
-		}
-		case REALF -> {
-			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pM.getScales().getCardinal());
-			scales.setCoefficientMap(pM.scales.getMap());
-			setGradeKey();
-		}
-		}
+		scales = new Scale<T>((Scale<T>) pM.getScales());
+		setGradeKey();
 	}
 
 	/**
@@ -466,47 +447,10 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			UnitAbstract pF) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		setName(pMonadName);
-
-		if (pF instanceof RealF)
-			mode = CladosField.REALF;
-		else if (pF instanceof RealD)
-			mode = CladosField.REALD;
-		else if (pF instanceof ComplexF)
-			mode = CladosField.COMPLEXF;
-		else if (pF instanceof ComplexD)
-			mode = CladosField.COMPLEXD;
-		else
-			throw new IllegalArgumentException("Offered Number must be a child of CladosF/UnitAbstract");
-
-		switch (mode) {
-		case COMPLEXD -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		case COMPLEXF -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		case REALD -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		case REALF -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pF, pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		}
+	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+			String pFrameName, String pFootName, String pSig, T pF)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		this(pMonadName, pAlgebraName, pFrameName, CladosGBuilder.createFootLike(pFootName, pF), pSig, pF);
 	}
 
 	/**
@@ -518,7 +462,7 @@ public class Monad implements Modal {
 	 * @param pFrameName   String
 	 * @param pFoot        Foot
 	 * @param pSig         String
-	 * @param pF           RealF
+	 * @param pF           T generic for a CladosF number
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
@@ -529,9 +473,12 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, Foot pFoot, String pSig, UnitAbstract pF)
+	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+			String pFrameName, Foot pFoot, String pSig, T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
+		setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
+		setFrameName(pFrameName);
 
 		if (pF instanceof RealF)
 			mode = CladosField.REALF;
@@ -546,26 +493,18 @@ public class Monad implements Modal {
 
 		switch (mode) {
 		case COMPLEXD -> {
-			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
-			setFrameName(pFrameName);
 			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case COMPLEXF -> {
-			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
-			setFrameName(pFrameName);
 			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALD -> {
-			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
-			setFrameName(pFrameName);
 			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
 		case REALF -> {
-			setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
-			setFrameName(pFrameName);
 			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 			setGradeKey();
 		}
@@ -583,7 +522,7 @@ public class Monad implements Modal {
 	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
-	 * @param pF           RealF
+	 * @param pF           T generic for a CladosF number
 	 * @param pSpecial     String
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
@@ -596,8 +535,8 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			UnitAbstract pF, String pSpecial)
+	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+			String pFrameName, String pFootName, String pSig, T pF, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already. Now handle the special cases.
@@ -649,7 +588,7 @@ public class Monad implements Modal {
 	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
-	 * @param pC           UnitAbstract[]
+	 * @param pScale       Scale of CladosF numbers
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
@@ -660,56 +599,10 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public Monad(String pMonadName, String pAlgebraName, String pFrameName, String pFootName, String pSig,
-			UnitAbstract[] pC) throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		if (pC == null | pC[0] == null)
-			throw new CladosMonadException(this, "Missing coefficients.");
-		else if (pC.length != (1 << pSig.length()))
-			throw new CladosMonadException(this, "Coefficient array size will not match bladecount of algebra.");
-
-		setName(pMonadName);
-
-		if (pC[0] instanceof RealF)
-			mode = CladosField.REALF;
-		else if (pC[0] instanceof RealD)
-			mode = CladosField.REALD;
-		else if (pC[0] instanceof ComplexF)
-			mode = CladosField.COMPLEXF;
-		else if (pC[0] instanceof ComplexD)
-			mode = CladosField.COMPLEXD;
-		else
-			throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/UnitAbstract");
-
-		switch (mode) {
-		case COMPLEXD -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexD[]) pC));
-			setGradeKey();
-		}
-		case COMPLEXF -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexF[]) pC));
-			setGradeKey();
-		}
-		case REALD -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealD[]) pC));
-			setGradeKey();
-		}
-		case REALF -> {
-			setAlgebra(CladosGBuilder.createAlgebra(pC[0], pAlgebraName, pFootName, pSig));
-			setFrameName(pFrameName);
-			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pC[0].getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealF[]) pC));
-			setGradeKey();
-		}
-		}
+	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
+			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+		this(pMonadName, CladosGBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName, pScale);
 	}
 
 	/**
@@ -719,68 +612,24 @@ public class Monad implements Modal {
 	 * @param pMonadName String
 	 * @param pAlgebra   Algebra
 	 * @param pFrameName String
-	 * @param pC         UnitAbstract[]
+	 * @param pScale     Scale of CladosF numbers
 	 * @throws CladosMonadException This exception is thrown if there is an issue
 	 *                              with the coefficients offered. The issues could
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public Monad(String pMonadName, Algebra pAlgebra, String pFrameName, UnitAbstract[] pC)
-			throws CladosMonadException {
-		if (pC.length != pAlgebra.getBladeCount())
+	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, Algebra pAlgebra, String pFrameName,
+			Scale<T> pScale) throws CladosMonadException {
+		if (pScale.getMap().size() != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
 					"Coefficient array size does not match bladecount from offered Algebra.");
 
 		setName(pMonadName);
 		setAlgebra(pAlgebra);
 		setFrameName(pFrameName);
-
-		if (pAlgebra.getProtoNumber() instanceof UnitAbstract) {
-			if (pC[0] instanceof RealF)
-				mode = CladosField.REALF;
-			else if (pC[0] instanceof RealD)
-				mode = CladosField.REALD;
-			else if (pC[0] instanceof ComplexF)
-				mode = CladosField.COMPLEXF;
-			else if (pC[0] instanceof ComplexD)
-				mode = CladosField.COMPLEXD;
-			else
-				throw new IllegalArgumentException("Offered Numbers must be a children of CladosF/UnitAbstract");
-		} else {
-			if (pAlgebra.getProtoNumber() instanceof RealF)
-				mode = CladosField.REALF;
-			else if (pAlgebra.getProtoNumber() instanceof RealD)
-				mode = CladosField.REALD;
-			else if (pAlgebra.getProtoNumber() instanceof ComplexF)
-				mode = CladosField.COMPLEXF;
-			else if (pAlgebra.getProtoNumber() instanceof ComplexD)
-				mode = CladosField.COMPLEXD;
-			else
-				throw new IllegalArgumentException("Algebra's protonumber must be a child of CladosF/UnitAbstract");
-		}
-
-		switch (mode) {
-		case COMPLEXD -> {
-			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexD[]) pC));
-			setGradeKey();
-		}
-		case COMPLEXF -> {
-			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (ComplexF[]) pC));
-			setGradeKey();
-		}
-		case REALD -> {
-			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealD[]) pC));
-			setGradeKey();
-		}
-		case REALF -> {
-			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pAlgebra.getProtoNumber().getCardinal());
-			scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (RealF[]) pC));
-			setGradeKey();
-		}
-		}
+		mode = pScale.getMode();
+		scales = new Scale<T>(pScale);
+		setGradeKey();
 	}
 
 	/**

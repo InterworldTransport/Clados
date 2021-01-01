@@ -567,9 +567,9 @@ public class Nyad implements Modal {
 	 * signature. It also creates a new frame using the offered name. It is not a
 	 * copy method.
 	 * 
-	 * @param pName    String
-	 * @param pAlgebra String
-	 * @param pFrame   String
+	 * @param pMonadName    String
+	 * @param pAlgebraName String
+	 * @param pFrameName   String
 	 * @param pSig     String
 	 * @param pCard    String
 	 * 
@@ -586,7 +586,7 @@ public class Nyad implements Modal {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 * @return Nyad
 	 */
-	public Nyad createMonad(String pName, String pAlgebra, String pFrame, String pSig, String pCard)
+	public Nyad createMonad(String pMonadName, String pAlgebraName, String pFrameName, String pSig, String pCard)
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
 
 		Cardinal tCard = (pCard == null) ? CladosFBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
@@ -594,13 +594,13 @@ public class Nyad implements Modal {
 
 		switch (mode) {
 		case COMPLEXD -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXD.createZERO(tCard),
-				getFoot(), pName, pAlgebra, pFrame, pSig));
+				getFoot(), pMonadName, pAlgebraName, pFrameName, pSig));
 		case COMPLEXF -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(tCard),
-				getFoot(), pName, pAlgebra, pFrame, pSig));
+				getFoot(), pMonadName, pAlgebraName, pFrameName, pSig));
 		case REALD -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALD.createZERO(tCard), getFoot(),
-				pName, pAlgebra, pFrame, pSig));
+				pMonadName, pAlgebraName, pFrameName, pSig));
 		case REALF -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALF.createZERO(tCard), getFoot(),
-				pName, pAlgebra, pFrame, pSig));
+				pMonadName, pAlgebraName, pFrameName, pSig));
 		default -> {
 		}
 		}

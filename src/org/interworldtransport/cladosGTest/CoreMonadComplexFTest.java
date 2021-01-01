@@ -53,7 +53,8 @@ class CoreMonadComplexFTest {
 		tM4 = new Monad(tM0);
 		tM5 = new Monad("Test MonadComplexF 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
 				new ComplexF(Cardinal.generate("Test Float 5"), 0f), "Unit PScalar");
-		tM6 = new Monad("Test MonadComplexF 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF);
+		tM6 = new Monad("Test MonadComplexF 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRF[0]);
+		tM6.setCoeff(cRF);
 		tM7 = new Monad(mName + "7", tM6);
 		tM8 = new Monad(mName + "8", tM6);
 		tM9 = new Monad(mName + "9", tM2);
