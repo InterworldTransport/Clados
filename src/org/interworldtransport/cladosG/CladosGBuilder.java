@@ -370,6 +370,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #5 covered with this method
 	 * 
+	 * @param <T>      CladosF number is a UnitAbstract child that implemnts Field
+	 *                 and Normalizable.
 	 * @param pNumber  The UnitAbstract to be re-used. USE A CONCRETE one here or
 	 *                 nada.
 	 * @param pName    A String for the new monad's name.
@@ -393,6 +395,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #7 covered with this method
 	 * 
+	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
 	 *                nada.
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
@@ -412,6 +416,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #6 covered with this method
 	 * 
+	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
 	 *                nada.
 	 * @param pName   A String for the new monad's name.
@@ -433,6 +439,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #4 covered with this method
 	 * 
+	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used.
 	 * @param pFt     A Foot to be referenced so a new one is NOT created.
 	 * @param pName   A String for the new monad's name.
@@ -454,6 +462,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Monad Constructor #3 covered with this method
 	 * 
+	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
 	 *                nada.
 	 * @param pName   A String for the new monad's name.

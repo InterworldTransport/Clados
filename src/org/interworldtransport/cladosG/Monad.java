@@ -402,7 +402,9 @@ public class Monad implements Modal {
 	 * This contructor is used most often to get around operations that alter a
 	 * Monad when the developer does not wish it to be altered.
 	 * 
-	 * @param pM Monad
+	 * @param <T> CladosF number is a UnitAbstract child that implemnts Field and
+	 *            Normalizable.
+	 * @param pM  Monad
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field & Normalizable> Monad(Monad pM) {
@@ -431,6 +433,8 @@ public class Monad implements Modal {
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create the default 'Zero' Monad.
 	 * 
+	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFrameName   String
@@ -457,6 +461,8 @@ public class Monad implements Modal {
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create a default 'Zero' Monad while re-using the Foot of another.
 	 * 
+	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFrameName   String
@@ -517,6 +523,8 @@ public class Monad implements Modal {
 	 * PScalar' are recognized special cases. All unrecognized strings create a
 	 * 'Zero' Monad by default.
 	 * 
+	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFrameName   String
@@ -583,6 +591,8 @@ public class Monad implements Modal {
 	/**
 	 * Main constructor of Monad with all information passed in.
 	 * 
+	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFrameName   String
@@ -602,13 +612,16 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, CladosGBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName, pScale);
+		this(pMonadName, CladosGBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName,
+				pScale);
 	}
 
 	/**
 	 * Main constructor of Monad with pre-constructed objects not already part of
 	 * another Monad.
 	 * 
+	 * @param <T>        CladosF number is a UnitAbstract child that implemnts Field
+	 *                   and Normalizable.
 	 * @param pMonadName String
 	 * @param pAlgebra   Algebra
 	 * @param pFrameName String
