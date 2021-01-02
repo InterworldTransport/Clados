@@ -215,8 +215,8 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * This is the constructor that assumes a Foot has been instantiated, so it
-	 * takes the ComplexD number type from there. It takes in two strings (one name
-	 * and a product signature) and the Foot and produces an AlgebraComplexD. If
+	 * takes the CladosF number type from there. It takes in two strings (one name
+	 * and a product signature) and the Foot and produces an Algebra. If
 	 * anything is wrong with the signature it throws an exception. Any other error
 	 * throws a general monad exception.
 	 * 
