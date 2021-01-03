@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
  * -------------------------------------------------------------------- <p>
@@ -210,11 +210,13 @@ public class Monad implements Modal {
 		else if (Monad.isNilpotent(pM, 2))
 			return false;
 
-		Optional<Blade> first = pM.bladeStream().filter(blade -> pM.getScales().isNotZeroAt(blade)).sequential()
+		Monad check1 = CladosGBuilder.copyOfMonad(pM);
+		check1.multiplyLeft(check1);
+		Optional<Blade> first = check1.bladeStream().filter(blade -> check1.getScales().isNotZeroAt(blade)).sequential()
 				.findFirst();
 		if (first.isPresent()) {
 			return isIdempotent(CladosGBuilder.copyOfMonad(pM)
-					.scale((T) CladosFBuilder.copyOf(pM.getScales().get(first.get())).invert()));
+					.scale((T) CladosFBuilder.copyOf(check1.getScales().get(first.get())).invert()));
 		} else
 			return false;
 	}
