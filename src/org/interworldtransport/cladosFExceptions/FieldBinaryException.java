@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosFExceptions.FieldBinaryException<br>
  * -------------------------------------------------------------------- <p>
@@ -17,54 +17,49 @@
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosFExceptions;
+
 import org.interworldtransport.cladosF.*;
+
 /**
- * This class is designed to be the top of the binary Field exception family.  
- * All instances of descendants are assumed to originate from Field related 
- * problems.  Common elements from each exception class are found here.
+ * This class is designed to be the top of the binary Field exception family.
+ * All instances of descendants are assumed to originate from Field related
+ * problems. Common elements from each exception class are found here.
  * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  *
  */
 
-public class FieldBinaryException extends FieldException 
-{
-/**
- * Serialization ID
- */
+public class FieldBinaryException extends FieldException {
+	/**
+	 * Serialization ID
+	 */
 	private static final long serialVersionUID = -8985905609966643248L;
-/**
- * This is the second object involved in the Exception if the operation
- * is a binary operation.
- */
-    private UnitAbstract  Second;
+	/**
+	 * This is the second object involved in the Exception if the operation is a
+	 * binary operation.
+	 */
+	private UnitAbstract Second;
 
-/**
- * This method is the main constructor of all Clados Field Binary Exceptions.
- * 
- * @param pSource
- * 			UnitAbstract
- * @param pMessage
- * 			String
- * @param pSecond
- * 			UnitAbstract
- */
-    public FieldBinaryException(UnitAbstract pSource, String pMessage, UnitAbstract pSecond)
-    {
-    	super(pSource, pMessage);
-    	Second=pSecond;
-    }
+	/**
+	 * This method is the main constructor of all Clados Field Binary Exceptions.
+	 * <p>
+	 * @param pSource  UnitAbstract
+	 * @param pMessage String
+	 * @param pSecond  UnitAbstract
+	 */
+	public FieldBinaryException(UnitAbstract pSource, String pMessage, UnitAbstract pSecond) {
+		super(pSource, pMessage);
+		Second = pSecond;
+	}
 
-/**
- * This method elivers a reference to the object that originated the Exception
- * 
- * @return UnitAbstract
- */
-    public UnitAbstract  getSecond()
-    {
-    	return Second;
-    }
+	/**
+	 * This method elivers a reference to the object that originated the Exception
+	 * <p>
+	 * @return UnitAbstract
+	 */
+	public UnitAbstract getSecond() {
+		return Second;
+	}
 
 }
-

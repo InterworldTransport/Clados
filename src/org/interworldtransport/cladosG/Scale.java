@@ -1,6 +1,6 @@
 
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Scale<br>
  * -------------------------------------------------------------------- <p>
@@ -48,14 +48,14 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * managed by their 'get' methods. getCardinal() and getMode(). There are set
  * methods for them too, but they are package protected methods that should not
  * be handled much by developers of physical models.
- * 
+ * <p>
  * The data structure used to represent 'coefficients' used to be a fixed array
  * that had the same length as the number of blades in a monad's basis. That has
  * been modernized to an IdentityHashMap contained within this class. The basis
  * against which the map is applicable can be referenced by another private
  * element, but shouldn't be manipulated once set. The private element is
  * finalized.
- * 
+ * <p>
  * An IdentityHashMap was used instead of a simpler HashMap in order to get
  * reference equality between map keys instead of object equality. Map Keys are
  * Blades from the basis, so reference equality is the correct expectation when
@@ -63,33 +63,33 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * effectively iterate through the blades for access to coefficients in the
  * encompassing vector space. The information within a blade is far less
  * important than which blade it is, thus reference equality is what is needed.
- * 
+ * <p>
  * Map Values are CladosF numbers like RealF or ComplexD. Because they are
  * objects instead of primitives, they behave much like Java's boxed primitives.
  * In fact, they would BE those boxed primitives if not for the need to track
  * units in physical models. For example, one meter is not one second. No
  * equality test should pass.
- * 
+ * <p>
  * Because values are objects, care must be taken once one has a reference to
  * them. Any reference to one enables a developer to change it without the Scale
  * or Monad knowing. This is the hydra monster named Mutability. It IS a danger
  * here. Many of Scale's methods copy inbound numbers to avoid altering them,
  * but some do not INTENTIONALLY.
- * 
+ * <p>
  * 1. Coefficient settors that accept arrays do NOT copy values before placing
  * them in the internal map. BEWARE BEWARE BEWARE
- * 
+ * <p>
  * 2. Put() does not copy the incoming value before placing it in the internal
  * map. Again... BEWARE.
- * 
+ * <p>
  * 3. Coefficient settors that accept maps DO COPY values before placing them in
  * the internal map. Any object from which values are taken to be used here are
  * safe from the hydra.
- * 
+ * <p>
  * 4. All gettors for coefficients provide direct references to values in the
  * map. There most common use is INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA.
  * The safest way to use them is within streams / lambdas.
- * 
+ * <p>
  * GENERAL NOTE | Many of the methods for Scale will look a lot like Monad, so
  * one can reasonably wonder why all the extra stuff in Monad when Scale looks
  * enough like a tuple to represent things. The primary difference is that Scale
@@ -99,6 +99,7 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * the basis. They are in the product table. Combining product table and basis
  * into an 'algebra' gives a MUCH better description of a 'tuple' reference
  * frame than a vector space.
+ * <p>
  * 
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -124,7 +125,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This is the constructor to use when one does not have the actual map ready,
 	 * but will provide it later.
-	 * 
+	 * <p>
 	 * @param pMode CladosField enumeration so we know what kind of UnitAbstract to
 	 *              expect from get()
 	 * @param pB    Basis to which the blades used in the internal map belong.
@@ -139,6 +140,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
+	 * This is the constructor to use when one already has a map built and a
+	 * reference to the basis on which the map relies for keys.
+	 * <p>
 	 * @param pMode  CladosField enumeration so we know what kind of UnitAbstract to
 	 *               expect from get()
 	 * @param pB     Basis to which the blades offered in the map belong.
@@ -152,8 +156,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		card = map.get(gBasis.getScalarBlade()).getCardinal(); // gets scalar part cardinal
 		assert (pInMap.keySet().size() == pB.getBladeCount());
 	}
-	
+
 	/**
+	 * Straight forward copy constructor. Copies values ONLY. Re-uses keys.
+	 * <p>
 	 * @param pIn Scale to be imitated.
 	 */
 	public Scale(Scale<D> pIn) {
@@ -168,19 +174,19 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * 'multiplied' by blades in the sense of a division field over a vector space.
 	 * When forming a linear combination of blades to make a 'vector', these are the
 	 * 'numbers' that scale each direction.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @param <T> UnitAbstract child generic type support. Must also implement
 	 *            Field.
 	 * @return Stream of UnitAbstract children that are the coefficients represented
@@ -194,7 +200,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method conjugates all the values in the internal map, but leaves the
 	 * blades of the algebra untouched.
-	 * 
+	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> conjugate() {
@@ -215,30 +221,29 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method imitates the 'get()' method in a map. Offer a key and receive a
 	 * value in return. In this particular case, keys are blades from the basis and
 	 * values are coefficients that scale blades.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @param pB Blade to use as key in internal map
 	 * @return A UnitAbstract child related to this blade
 	 */
-	// @SuppressWarnings("unchecked")
 	public D get(Blade pB) {
 		return map.get(pB);
 	}
 
 	/**
 	 * Simple gettor method for the Cardinal associated with this object.
-	 * 
+	 * <p>
 	 * @return Cardinal in use in this.
 	 */
 	@Override
@@ -252,19 +257,19 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * smarter approach, though, is to call the parent class method values() and
 	 * receive a Collection of coefficients instead of an array. Do it that way and
 	 * they are already of a known UnitAbstract child class.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @return an array of UnitAbstract children.
 	 */
 	@SuppressWarnings("unchecked")
@@ -291,7 +296,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 	/**
 	 * Simple gettor method reporting the Scale's internal mode.
-	 * 
+	 * <p>
 	 * @return CladosField element reporting which UnitAbstract child is expected in
 	 *         the list of this Scale.
 	 */
@@ -303,22 +308,21 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method imitates the 'get()' method in a map, but specializes in the
 	 * pscalar blade key.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @return A UnitAbstract child related to the pscalar blade
 	 */
-	// @SuppressWarnings("unchecked")
 	public D getPScalar() {
 		return map.get(gBasis.getPScalarBlade());
 	}
@@ -326,22 +330,21 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method imitates the 'get()' method in a map, but specializes in the
 	 * scalar blade key.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @return A UnitAbstract child related to the scalar blade
 	 */
-	// @SuppressWarnings("unchecked")
 	public D getScalar() {
 		return map.get(gBasis.getScalarBlade());
 	}
@@ -349,7 +352,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method inverts all generators in each blade and works out the sign
 	 * implications for the values in the internal map. No typeMismatch can occur.
-	 * 
+	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> invert() {
@@ -373,12 +376,12 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking the question regarding the value rather than handle all the various
 	 * UnitAbstract children separately.
-	 * 
+	 * <p>
 	 * NOTE this tends to get used in filters in streams to minimize the number of
 	 * coefficients processed in arithmetic operations. Non-zero ones contribute
 	 * non-zero results to products, so this especially matters in O(N^2)
 	 * calculations.
-	 * 
+	 * <p>
 	 * @param pB Blade to use as key to discover if related value is non-zero.
 	 * @return boolean False if the related value evaluates as ZERO in whatever
 	 *         number style it is.
@@ -407,7 +410,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking this one rather than handle all the various UnitAbstract children
 	 * separately.
-	 * 
+	 * <p>
 	 * @return boolean True if the pscalar value evaluates as ZERO in whatever
 	 *         number style it is.
 	 */
@@ -435,7 +438,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking this one rather than handle all the various UnitAbstract children
 	 * separately.
-	 * 
+	 * <p>
 	 * @return boolean True if the scalar value evaluates as ZERO in whatever number
 	 *         style it is.
 	 */
@@ -463,27 +466,27 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method takes all values in the map and returns one UnitAbstract child
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each value.
-	 * 
+	 * <p>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * 
+	 * <p>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * 
+	 * <p>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * 
+	 * <p>
 	 * Because these are real numbers, though, we get away with simply summing the
 	 * moduli instead. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
-	 * 
+	 * <p>
 	 * @return D UnitAbstract child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
@@ -543,27 +546,27 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method takes all values in the map and returns one UnitAbstract child
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each value.
-	 * 
+	 * <p>
 	 * Because these are real numbers, though, we get away with simply summing the
 	 * moduli instead. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
-	 * 
+	 * <p>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * 
+	 * <p>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * 
+	 * <p>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * 
+	 * <p>
 	 * @return D UnitAbstract child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
@@ -625,19 +628,19 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * simple, though. Just add up the squares of the numbers and then take the
 	 * square root to determine the magnitude and then invert that to scale the
 	 * original numbers.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @param <T> UnitAbstract child generic type support. Must also implement Field
 	 *            AND Normalizable.
 	 * @throws FieldException This happens when normalizing something that has a
@@ -652,7 +655,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * Put a key/value pair into the internal map of coefficients. A Blade acts as
 	 * key. A UnitAbstract child acts as coefficient.
-	 * 
+	 * <p>
 	 * @param pB  Blade acting as key in the internal map
 	 * @param pD  UnitAbstract child acting as the coefficient.
 	 * @param <T> UnitAbstract child generic type support. Must also implement
@@ -667,10 +670,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 	/**
 	 * Remove a key/value pair in the map of coefficients. A Blade acts as key.
-	 * 
+	 * <p>
 	 * NOTE this doesn't ACTUALLY remove the blade from the map. The internal map
 	 * must always have a full key set, so the value at that key is zero'd.
-	 * 
+	 * <p>
 	 * @param pB Blade key to zero out the related coefficient
 	 * @return Scale object. Just this object after modification.
 	 */
@@ -685,7 +688,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method reverses all the order of implied multiplication in blade
 	 * generators and works out the sign implications for the values in the internal
 	 * map. No typeMismatch can occur here.
-	 * 
+	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> reverse() {
@@ -708,7 +711,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method scales all values in the internal map by the value offered
 	 * provided there is no typeMatch failure.
-	 * 
+	 * <p>
 	 * @param pIn UnitAbstract child to use as a scaling element. Mode and cardinal
 	 *            MUST match values in map.
 	 * @param <T> UnitAbstract child generic type support. Must also implement
@@ -731,7 +734,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
-	 * 
+	 * <p>
 	 * @param indent String of 'tab' characters to get spacing right for human
 	 *               readable XML output.
 	 * @return String formatted as XML containing information about the Algebra
@@ -757,20 +760,20 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * map's keys are all blades from the object's basis. The map won't contain just
 	 * a few blades as keys, though. It will contain every blade as a key paired to
 	 * some unique CladosF number.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF numbers (and
 	 * UnitAbstract itself though that would be useless) there is a cast to a
 	 * 'generic' type before insertion into the map. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * 
+	 * <p>
 	 * @param <T> UnitAbstract child generic type support. Must also implement Field
 	 *            AND Normalizable.
 	 * @return deliver the internal coefficients as the internal map.
@@ -783,7 +786,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * The settor method supporting Modal interface that isn't actually in the
 	 * interface.
-	 * 
+	 * <p>
 	 * @param pCard CladosField element to set as the mode.
 	 * @return Scale object. Just this object after modification.
 	 */
@@ -796,11 +799,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This coefficient settor accepts an array of UnitAbstract numbers, assumes
 	 * they are in basis index order, and then inserts them into the internal map by
 	 * blade at that index.
-	 * 
+	 * <p>
 	 * NOTE | Do NOT use this method if you intend the offered coefficient array to
 	 * be disconnected from this object. It won't be. If you really must use this
 	 * method that way, copy your coefficients first.
-	 * 
+	 * <p>
 	 * @param pIn Array of UnitAbstract children
 	 * @param <T> UnitAbstract child generic type support. Must also implement
 	 *            Field.
@@ -824,11 +827,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method sets the coefficients represented by this Scale. It accepts a map
 	 * relating blades in the basis to CladosF.DivField children. It checks to see
 	 * if the map is of the wrong size and throws an IllegalArgumentException if so.
-	 * 
+	 * <p>
 	 * NOTE this method DEEP COPIES the inbound map to disconnect the map's source
 	 * DivFields from the ones added to this object. This is the safest settor
 	 * method to use when handing in information from other clados sources.
-	 * 
+	 * <p>
 	 * @param pInMap Inbound Map relating blades to UnitAbstract child numbers.
 	 * @return Scale object. Just this object after modification.
 	 * @throws IllegalArgumentException This happens if the offered map does not
@@ -851,11 +854,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * they are in basis index order, and then inserts them into the internal map by
 	 * blade at that index offset by the amount necessary to cover ONLY the grade
 	 * suggested by the byte integer parameter.
-	 * 
+	 * <p>
 	 * NOTE | Do NOT use this method if you intend the offered coefficient array to
 	 * be disconnected from this object. It won't be. If you really must use this
 	 * method that way, copy your coefficients first.
-	 * 
+	 * <p>
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @param pIn    Array of UnitAbstract Children
 	 * @param <T>    UnitAbstract child generic type support. Must also implement
@@ -885,7 +888,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Simple settor method altering the Scale's internal mode. IF the new mode
 	 * involves a change, the internal list is cleared too. What is NOT cleared is
 	 * the cardinal as this ensures the new coefficients retain their unit meanings.
-	 * 
+	 * <p>
 	 * @param pMode CladosField element hinting at what UnitAbstract children are
 	 *              expected internally.
 	 * @return Scale of UnitAbstract children of the type named in the mode.
@@ -902,7 +905,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method causes all coefficients to be set to zero using the offered
 	 * cardinal.
-	 * 
+	 * <p>
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
 	@SuppressWarnings("unchecked")
@@ -916,19 +919,19 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This is a specialty method making use of setCoefficientsAtGrade for a
 	 * specific purpose of grade suppression.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF.DivField children (and
 	 * UnitAbstract itself though that would be useless) there is a cast to a
 	 * 'generic' type before insertion into the map. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type would fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here because CladosField is used as a builder. It can't
 	 * build anything that is NOT a UnitAbstract child. It can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as second
 	 * parameter of the 'put' function. Thus, there is no danger of a failed cast
 	 * operation.
-	 * 
+	 * <p>
 	 * @param pGrade byte integer naming the grade to be preserved
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
@@ -946,19 +949,19 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This is a specialty method making use of setCoefficientsAtGrade for a
 	 * specific purpose of grade suppression.
-	 * 
+	 * <p>
 	 * Since the internal map can accept any of the CladosF.DivField children (and
 	 * UnitAbstract itself though that would be useless) there is a cast to a
 	 * 'generic' type before insertion into the map. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * UnitAbstract child AND casting an unchecked type would fail at runtime.
-	 * 
+	 * <p>
 	 * That won't happen here because CladosField is used as a builder. It can't
 	 * build anything that is NOT a UnitAbstract child. It can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as second
 	 * parameter of the 'put' function. Thus, there is no danger of a failed cast
 	 * operation.
-	 * 
+	 * <p>
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */

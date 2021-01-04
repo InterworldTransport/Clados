@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Field<br>
  * -------------------------------------------------------------------- <p>
@@ -37,7 +37,6 @@ import org.interworldtransport.cladosFExceptions.*;
  * <p>
  * The "Number" to be computed appears elsewhere.
  * <p>
- * 
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
@@ -46,7 +45,7 @@ public interface Field {
 	/**
 	 * This is the self-altering add method. The incoming variable is added to this
 	 * object and this object changes.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception is thrown when the fields fail a
 	 *                              match test.
@@ -57,7 +56,7 @@ public interface Field {
 	/**
 	 * This is the self-altering conjugate method. This object changes when all of
 	 * its imaginary members are set to their additive inverses.
-	 * 
+	 * <p>
 	 * @return Field
 	 */
 	public abstract Field conjugate();
@@ -66,7 +65,7 @@ public interface Field {
 	 * This is the self-altering divide method. The incoming variable is divided
 	 * into this object (making the parameter the denominator) and this object
 	 * changes.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception is thrown when the fields fail a
 	 *                              match test.
@@ -79,9 +78,8 @@ public interface Field {
 	 * such an operation is viable for all values other than the multiplicative
 	 * ZERO, so this method establishes a big part of the contract for a division
 	 * algebra's behaviors.
-	 * 
+	 * <p>
 	 * @throws FieldException This is thrown if one attempts inversion of ZERO.
-	 * 
 	 * @return Field
 	 */
 	public abstract Field invert() throws FieldException;
@@ -89,7 +87,7 @@ public interface Field {
 	/**
 	 * This is the self-altering multiply method. The incoming variable is
 	 * multiplied against this object and this object changes.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception is thrown when the fields fail a
 	 *                              match test.
@@ -100,11 +98,11 @@ public interface Field {
 	/**
 	 * Scale method scales the modulus of a UnitAbstract by a Number. Field multiply
 	 * operation is avoided.
-	 * 
+	 * <p>
 	 * For real numbers this is scaling the distance from a number line origin. For
 	 * complex numbers, one scales the modulus of the number which is radius in a
 	 * polar representation.
-	 * 
+	 * <p>
 	 * This method will appear peculiar to the uninitiated. Why not just use the
 	 * multiply operation they might ask. One certainly could, but in doing so one
 	 * risks tripping an exception for Cardinal matching. It will often be the case
@@ -117,13 +115,13 @@ public interface Field {
 	 * contract implied by this method. A "scalable" object is one that can be
 	 * altered using a Number of some kind WITHOUT a cardinal check. Why not just
 	 * ditch the Cardinal instead? Check the documentation for Cardinal to see why.
-	 * 
+	 * <p>
 	 * One very important distinction is that cladosF UnitAbstract children are scaled
 	 * by Numbers from java.lang. Essentially the boxed promitives that look like
 	 * numbers will do. Byte, Short, Integer, and Long along with Float and Double.
 	 * Geometry in cladosG is scaled by CladosF UnitAbstract children and NOT Numbers.
 	 * Why? In order to bring Cardinal into a physical model containing geometry.
-	 * 
+	 * <p>
 	 * @param pN Number
 	 * @return Divisable
 	 */
@@ -132,7 +130,7 @@ public interface Field {
 	/**
 	 * This is the self-altering subtract method. The incoming variable is
 	 * subtracted from this object and this object changes.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception is thrown when the fields fail a
 	 *                              match test.

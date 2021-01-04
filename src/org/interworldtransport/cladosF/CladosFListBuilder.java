@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosFBuilder<br>
  * -------------------------------------------------------------------- <p>
@@ -57,7 +57,7 @@ public enum CladosFListBuilder {
 	/**
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
-	 * 
+	 * <p>
 	 * @param pField CladosField enumeration hint for UnitAbstract child to be
 	 *               created.
 	 * @param pD     List of UnitAbstract Numbers to be copied.
@@ -87,7 +87,7 @@ public enum CladosFListBuilder {
 	/**
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
-	 * 
+	 * <p>
 	 * @param pField CladosField enumeration hint for UnitAbstract child to be
 	 *               created.
 	 * @param pD     List of UnitAbstract Numbers to be copied.
@@ -117,23 +117,23 @@ public enum CladosFListBuilder {
 	/**
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
-	 * 
+	 * <p>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * 
+	 * <p>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * 
+	 * <p>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * 
+	 * <p>
 	 * @param pDV List of CladosF Numbers to be copied.
 	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of UnitAbstract children Newly constructed copies of incoming
@@ -175,23 +175,23 @@ public enum CladosFListBuilder {
 	/**
 	 * Method copies the incoming numbers into a distinct objects ensuring the ==
 	 * operation fails but equals() does not.
-	 * 
+	 * <p>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * 
+	 * <p>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * 
+	 * <p>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * 
+	 * <p>
 	 * @param pDV Array of Numbers to be copied.
 	 * @param <T> UnitAbstract number from CladosF with all number interfaces.
 	 * @return UnitAbstract[] Newly constructed copies of incoming numbers
@@ -231,7 +231,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
+	 * <p>
 	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
 	 * @return UnitAbstract[] Newly constructed ZEROS using incoming cardinal.
@@ -270,7 +270,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
-	 * 
+	 * <p>
 	 * @param pSize The size oF the array to create.
 	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
 	 */
@@ -304,7 +304,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
-	 * 
+	 * <p>
 	 * @param pS    The String name for a new cardinal to use in UnitAbstract
 	 *              children
 	 * @param pSize The size oF the array to create.
@@ -340,23 +340,23 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
+	 * <p>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * 
+	 * <p>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * 
+	 * <p>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * 
+	 * <p>
 	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
 	 * @param <T> UnitAbstract number from CladosF with Field interface.
@@ -397,7 +397,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
-	 * 
+	 * <p>
 	 * @param pSize The size oF the array to create.
 	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of UnitAbstract children as ZEROS with default cardinals.
@@ -432,7 +432,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
-	 * 
+	 * <p>
 	 * @param pS    String name of a new cardinal to use in all UnitAbstract
 	 *              children
 	 * @param pSize The size oF the array to create.
@@ -469,7 +469,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
+	 * <p>
 	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
 	 * @param pSize The size of the array to create.
 	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
@@ -508,7 +508,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
+	 * <p>
 	 * @param pSize The size of the array to create.
 	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
 	 */
@@ -554,7 +554,7 @@ public enum CladosFListBuilder {
 
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
-	 * 
+	 * <p>
 	 * @param pS    String name for new cardinal to use in UnitAbstract children.
 	 * @param pSize The size of the array to create.
 	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.

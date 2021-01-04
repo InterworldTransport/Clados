@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosGCache<br>
  * -------------------------------------------------------------------- <p>
@@ -32,7 +32,7 @@ import java.util.Optional;
  * use of this singleton enumeration as a 'builder'. Nothing fancy here
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
- * 
+ * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -58,20 +58,20 @@ public enum CladosGCache {
 	/**
 	 * Method appends offered basis to cache IF one like it is not already present.
 	 * If it IS, nothing is done and the method silently returns.
-	 * 
+	 * <p>
 	 * By 'like it' we mean the basis objects have the same number of generators
 	 * used to construct them. It doesn't matter what signatures are used as a basis
 	 * isn't aware of products except as lists. NO generator duplications should
 	 * exist in blades within a basis, thus all N-generator basis objects are
 	 * structurally the same even if represented by different instances.
-	 * 
+	 * <p>
 	 * Important NOTE. Basis objects capture structural meaning implied by a list of
 	 * generators of an algebra. They do NOT capture the meaning of the generators
 	 * themselves. Generators in one algebra need not mean the same thing as
 	 * generators in another algebra, but the structure created in a basis is the
 	 * same between algebras if the basis for each shares the same number of
 	 * generators.
-	 * 
+	 * <p>
 	 * @param pB CanonicalBasis to be appended to the cache IF not already present.
 	 */
 	public void appendBasis(CanonicalBasis pB) {
@@ -82,18 +82,18 @@ public enum CladosGCache {
 	/**
 	 * Method appends offered product to cache IF one like it is not already
 	 * present. If it IS, nothing is done and the method silently returns.
-	 * 
+	 * <p>
 	 * By 'like it' we mean the product objects have the same number of generators
 	 * and identical signatures used to construct them. NO generator duplications
 	 * will survive in a product table after reducing blade combinations using the
 	 * product's signature, so there is structural similarity between product tables
 	 * that use the same number of generators (because of basis similarities) and
 	 * the same signatures.
-	 * 
+	 * <p>
 	 * Important Note. CliffordProduct objects capture structural meaning implied in
 	 * a product table of elements of a CanonicalBasis. As with a basis, no meaning
 	 * to the generators or blades is implied in a product table.
-	 * 
+	 * <p>
 	 * @param pGP CliffordProduct to be appended to the cache IF not already
 	 *            present.
 	 */
@@ -108,7 +108,7 @@ public enum CladosGCache {
 	 * not, it will be disengaged. IF by some chance there are two basis instances
 	 * in the cache by the same number of generators (which should NOT happen) the
 	 * first one found will be returned in the Optional.
-	 * 
+	 * <p>
 	 * @param pGen byte integer of generators in a basis to be found in the cache
 	 * @return Optional of CanonicalBasis matching the number of generators offered.
 	 */
@@ -122,7 +122,7 @@ public enum CladosGCache {
 	 * will be disengaged. IF by some chance there are two product instances in the
 	 * cache by the same signatures (which should NOT happen) the first one found
 	 * will be returned in the Optional.
-	 * 
+	 * <p>
 	 * @param pSig String signature in a product to be found in the cache
 	 * @return Optional of CliffordProduct matching the signature offered.
 	 */
@@ -134,7 +134,7 @@ public enum CladosGCache {
 	 * Simple gettor for the size of the basis cache. Since there is a limit to the
 	 * Generator enumeration, there is also a limit to the basis cache. One should
 	 * NEVER see more than CladosConstant.MAXGRADE basis objects in the cache.
-	 * 
+	 * <p>
 	 * @return byte integer of the size of the cache of basis instances.
 	 */
 	public byte getBasisListSize() {
@@ -146,7 +146,7 @@ public enum CladosGCache {
 	 * the Generator enumeration, there is also a limit to the product cache. One
 	 * should NEVER see more than 2^(CladosConstant.MAXGRADE+1)-1 product objects in
 	 * the cache.
-	 * 
+	 * <p>
 	 * @return integer of the size of the cache of basis instances.
 	 */
 	public int getGProductListSize() {
@@ -156,7 +156,7 @@ public enum CladosGCache {
 	/**
 	 * Method removes explicit basis from cache IF present. If it IS NOT, nothing is
 	 * done and the method silently returns.
-	 * 
+	 * <p>
 	 * @param pB CanonicalBasis to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
@@ -167,16 +167,16 @@ public enum CladosGCache {
 	/**
 	 * Method removes implied basis from cache IF one like it is present. If it IS
 	 * NOT, nothing is done and the method silently returns.
-	 * 
+	 * <p>
 	 * An implied basis is simply one that matches the integer number of generators
 	 * passed in as a parameter. If no basis is found, nothing is done. That covers
 	 * error conditions too. For example, no basis exists with -1 generators, but
 	 * this method will report TRUE as though it removed it. There is no harm in
 	 * this since the point of this method is to clean out the cache and NOT to
 	 * error check the calling object.
-	 * 
+	 * <p>
 	 * So... Generator size quality is NOT checked.
-	 * 
+	 * <p>
 	 * @param pGen byte integer number of generators in a basis to remove from the
 	 *             cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
@@ -191,7 +191,7 @@ public enum CladosGCache {
 	/**
 	 * Method removes explicit product from cache IF present. If it IS NOT, nothing
 	 * is done and the method silently returns.
-	 * 
+	 * <p>
 	 * @param pGP CliffordProduct to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
@@ -202,7 +202,7 @@ public enum CladosGCache {
 	/**
 	 * Method removes implied product from cache IF one like it is present. If it IS
 	 * NOT, nothing is done and the method silently returns.
-	 * 
+	 * <p>
 	 * An implied product is simply one that matches the signature parameter and its
 	 * integer size. If no product is found, nothing is done. That covers error
 	 * conditions too. For example, no CliffordProduct exists with -1 generators (no
@@ -210,9 +210,9 @@ public enum CladosGCache {
 	 * will report TRUE as though it removed them. There is no harm in this since
 	 * the point of this method is to clean out the cache and NOT to error check the
 	 * calling object.
-	 * 
+	 * <p>
 	 * So... Signature quality is NOT checked.
-	 * 
+	 * <p>
 	 * @param pSig String signature of product to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */

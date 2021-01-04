@@ -1,4 +1,4 @@
-Copyright © 2020 Alfred Differ.
+Copyright © 2021 Alfred Differ
 
 Welcome to Clados …so what is it? 
 

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosGBuilder<br>
  * -------------------------------------------------------------------- <p>
@@ -44,10 +44,10 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 /**
  * This builder gets basic information and constructs many Clados Geometry
  * objects.
- * 
+ * <p>
  * This enumeration has NO non-static element for the instance, thus
  * CladosGBuilder HAS NO INTERNAL STATE that can change.
- * 
+ * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -59,10 +59,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Cleans the signature string to ensure it passes the validateSignature() test.
-	 * 
+	 * <p>
 	 * Any char in the string that isn't '+' or '-' is simply removed. If the
 	 * resulting string is too long, it is clipped at the supported length.
-	 * 
+	 * <p>
 	 * @param pSig String signature to be cleaned
 	 * @return String that has only + or - characters in it.
 	 */
@@ -84,7 +84,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Algebra Constructor #1 covered with this
-	 * 
+	 * <p>
 	 * @param pA    The Algebra to be copied.
 	 * @param pName A String for the new algebra's name.
 	 * @return Algebra
@@ -97,7 +97,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated.
-	 * 
+	 * <p>
 	 * @param pF    Foot object to copy
 	 * @param pSpot indexed location in offered Foot to find a Cardinal
 	 * @return Foot (new instance)
@@ -108,7 +108,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #1 covered with this method
-	 * 
+	 * <p>
 	 * @param pM The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 */
@@ -118,7 +118,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #2 covered with this method
-	 * 
+	 * <p>
 	 * @param pM    The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new monad's name.
 	 * @return Monad (Cast this as the concrete monad to be used)
@@ -128,6 +128,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	}
 
 	/**
+	 * Simple copy method. Offer a Scale, get a copy of it back as far as mapped values go.
+	 * <p>
 	 * @param <T> generic description of a CladosF number. Descends from
 	 *            UnitAbstract but must also implement Field and Normalizable.
 	 * @param pIn The Scale object to be imitated.
@@ -141,7 +143,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Algebra Constructor #5 covered with this
-	 * 
+	 * <p>
 	 * @param pNumber The UnitAbstract to be re-used.
 	 * @param pName   A String for the new algebra's name.
 	 * @param pFTName A String to name a new Foot.
@@ -169,7 +171,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Algebra Constructor #3 covered with this
-	 * 
+	 * <p>
 	 * @param pF    A Foot to be referenced so a new one is NOT created.
 	 * @param pCard The Cardinal to be re-used.
 	 * @param pName A String for the new algebra's name.
@@ -185,7 +187,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Algebra Constructor #4 covered with this
-	 * 
+	 * <p>
 	 * @param pF      A Foot to be referenced so a new one is NOT created.
 	 * @param pNumber The UnitAbstract to be re-used.
 	 * @param pName   A String for the new algebra's name.
@@ -212,7 +214,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Algebra Constructor #2 covered with this method
-	 * 
+	 * <p>
 	 * @param pF    A Foot to be referenced so a new one is NOT created.
 	 * @param pCard The Cardinal to be re-used.
 	 * @param pGP   The GProduct to be re-used.
@@ -225,7 +227,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * This method creates a basis and caches it.
-	 * 
+	 * <p>
 	 * @param pGen integer number of generators to use in constructing the basis.
 	 * @return CanonicalBasis constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
@@ -247,10 +249,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * This method creates a new Foot object and a new Cardinal to go with it.
-	 * 
+	 * <p>
 	 * NOTE this method checks the Cardinal cache first. If one is found that
 	 * matches the offered name, it is re-used instead of creating a new Cardinal.
-	 * 
+	 * <p>
 	 * @param pName     String name of new Foot
 	 * @param pCardName String name of new Cardinal
 	 * @return Foot (new instance)
@@ -264,7 +266,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * This method creates a new Foot object using the Cardinal offered.
-	 * 
+	 * <p>
 	 * @param pName String name of new Foot
 	 * @param pCard Cardinal to be re-used.
 	 * @return Foot (new instance)
@@ -276,7 +278,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated but the Foot has a new name too.
-	 * 
+	 * <p>
 	 * @param pName New string name for Foot to be created.
 	 * @param pF    Foot object to copy
 	 * @param pSpot indexed location in offered Foot to find a Cardinal
@@ -288,7 +290,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * This method creates a new Foot object using the Cardinal offered.
-	 * 
+	 * <p>
 	 * @param pName String name of new Foot
 	 * @param pDiv  UnitAbstract holding Cardinal to be re-used.
 	 * @return Foot (new instance)
@@ -306,7 +308,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * since that other method checks the basis cache before making a new basis. By
 	 * the end of the method, both basis and product caches are populated with
 	 * anything that had to be constructed.
-	 * 
+	 * <p>
 	 * @param pB   Basis to re-use in constructing product
 	 * @param pSig String form of the product's signature
 	 * @return CliffordProduct constructed
@@ -336,7 +338,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * a match to decide which product constructor to use. By the end of the method,
 	 * both basis and product caches are populated with anything that had to be
 	 * constructed.
-	 * 
+	 * <p>
 	 * @param pSig String form of the product's signature
 	 * @return CliffordProduct constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
@@ -369,7 +371,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #5 covered with this method
-	 * 
+	 * <p>
 	 * @param <T>      CladosF number is a UnitAbstract child that implemnts Field
 	 *                 and Normalizable.
 	 * @param pNumber  The UnitAbstract to be re-used. USE A CONCRETE one here or
@@ -394,7 +396,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #7 covered with this method
-	 * 
+	 * <p>
 	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
 	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
@@ -415,7 +417,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #6 covered with this method
-	 * 
+	 * <p>
 	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
 	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
@@ -438,7 +440,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #4 covered with this method
-	 * 
+	 * <p>
 	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
 	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used.
@@ -461,7 +463,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Monad Constructor #3 covered with this method
-	 * 
+	 * <p>
 	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
 	 *                and Normalizable.
 	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
@@ -485,10 +487,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Tests the byte integer of generators to be used to see if it can be
 	 * supported.
-	 * 
+	 * <p>
 	 * This method just calls the method of the same name in the CanonicalBasis
 	 * interface. It is here for convenience.
-	 * 
+	 * <p>
 	 * @param pGen byte integer of number of generators for the test
 	 * @return TRUE if integer is in the supported range. FALSE otherwise.
 	 */
@@ -499,10 +501,10 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	/**
 	 * Tests the signature string to see if it contains the correct chars and no
 	 * more of them than can be supported.
-	 * 
+	 * <p>
 	 * This method just calls the method of the same name in the CliffordProduct
 	 * interface. It is here for convenience.
-	 * 
+	 * <p>
 	 * @param pSig String signature to be tested
 	 * @return TRUE if string is composed of '+' and '-' chars, but not too many.
 	 *         FALSE otherwise.
@@ -517,7 +519,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Nyad Constructor #1 covered with this method
-	 * 
+	 * <p>
 	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
 	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
@@ -530,7 +532,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Nyad Constructor #3 covered with this method
-	 * 
+	 * <p>
 	 * @param pN    The nyad to copy causing all listed monads TO BE CONSTRUCTED.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
@@ -545,7 +547,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Nyad Constructor #2 covered with this method, but with re-use
-	 * 
+	 * <p>
 	 * @param pM    The monad to be used as the first in monadList in a new nyad.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
@@ -558,7 +560,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 
 	/**
 	 * Nyad Constructor #2 covered with this method
-	 * 
+	 * <p>
 	 * @param pM    The monad to be COPIED as the first in the list in a new nyad.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
@@ -575,7 +577,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * Nyad Constructor #3 covered with this method, but with re-use. This causes
 	 * the new nyad to use EXACTLY the same monads as the one passed, so it is a
 	 * second reference to the same objects. Dangerous!
-	 * 
+	 * <p>
 	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)

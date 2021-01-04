@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.ComplexD<br>
  * -------------------------------------------------------------------- <p>
@@ -45,14 +45,13 @@ import org.interworldtransport.cladosFExceptions.*;
  * Ideally, this would extend java.lang.Double and implement an interface called
  * DivFieldD. That can't be done, though, because Double is final.
  * <p>
- * 
  * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new ComplexD with the sum pF1 + pF2.
-	 * 
+	 * <p>
 	 * @param pF1 ComplexD
 	 * @param pF2 ComplexD
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -70,7 +69,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new ComplexD with the conjugate of the
 	 * parameter. Since the conjugate of a real number is the real number, this
 	 * method is functionally identical to #copy.
-	 * 
+	 * <p>
 	 * @param pF ComplexD
 	 * @return ComplexD
 	 */
@@ -85,13 +84,12 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * <p>
 	 * It does not perform a cardinal safety check and will throw the exception if
 	 * that test fails.
-	 * 
+	 * <p>
 	 * @param pL ComplexD[]
-	 * 
 	 * @throws FieldBinaryException This exception happens when there is a field
 	 *                              mismatch. It shouldn't happen but it is
 	 *                              technically possible because of the dependence
-	 *                              on sqMagnitude. *
+	 *                              on sqMagnitude.
 	 * @return ComplexD
 	 */
 	public final static ComplexD copyFromModuliSum(ComplexD[] pL) throws FieldBinaryException {
@@ -107,14 +105,13 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * has a value that is equal to the sum of the SQModulus of each entry on the
 	 * list. It does not perform a cardinal safety check and will throw the
 	 * exception if that test fails.
-	 * 
+	 * <p>
 	 * @param pL ComplexD[]
-	 * 
+	 * <p>
 	 * @throws FieldBinaryException This exception occurs when there is a field
 	 *                              mismatch. It should never happen but the
 	 *                              implementation uses multiplication, thus it is
 	 *                              technically possible.
-	 * 
 	 * @return ComplexD
 	 */
 	public final static ComplexD copyFromSQModuliSum(ComplexD[] pL) throws FieldBinaryException {
@@ -128,7 +125,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static method that creates a new ComplexD with a copy of the parameter. This
 	 * copy reuses the cardinal reference to ensure it will pass a type match test.
-	 * 
+	 * <p>
 	 * @param pF ComplexD
 	 * @return ComplexD
 	 */
@@ -138,9 +135,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * 
+	 * <p>
 	 * @param pR ComplexD
-	 * 
 	 * @return ComplexD
 	 */
 	public static ComplexD copyONE(UnitAbstract pR) {
@@ -149,9 +145,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * 
+	 * <p>
 	 * @param pR ComplexD
-	 * 
 	 * @return ComplexD
 	 */
 	public static ComplexD copyZERO(UnitAbstract pR) {
@@ -162,7 +157,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new ComplexD with a copy of the parameter. This
 	 * copy does not reuse a cardinal reference so it is likely to fail type
 	 * mismatch tests.
-	 * 
+	 * <p>
 	 * @param pR double
 	 * @param pI double
 	 * @return ComplexD
@@ -173,7 +168,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static divide method that creates a new ComplexD with the product pF1 / pF2.
-	 * 
+	 * <p>
 	 * @param pF1 ComplexD
 	 * @param pF2 ComplexD
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -197,7 +192,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * Check for the equality of this object with that of the argument. This checks
 	 * for exact equality using no tolerances. The FieldObject types must match
 	 * first.
-	 * 
+	 * <p>
 	 * @param pE ComplexD
 	 * @param pF ComplexD
 	 * @return boolean <i>true</i> if both components are the same; <i>false</i>,
@@ -209,7 +204,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Returns true if the real part is zero and imaginary part is not zero.
-	 * 
+	 * <p>
 	 * @param pF ComplexD
 	 * @return boolean
 	 */
@@ -219,7 +214,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if either value is infinite.
-	 * 
+	 * <p>
 	 * @param pF ComplexDF
 	 * @return boolean
 	 */
@@ -229,7 +224,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if either value is not a number at all. NAN
-	 * 
+	 * <p>
 	 * @param pF ComplexD
 	 * @return boolean
 	 */
@@ -239,7 +234,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Returns true if the imaginary part is zero
-	 * 
+	 * <p>
 	 * @param pF ComplexD
 	 * @return boolean
 	 */
@@ -249,7 +244,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the number is exactly zero.
-	 * 
+	 * <p>
 	 * @param pF ComplexD
 	 * @return boolean
 	 */
@@ -258,9 +253,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	}
 
 	/**
-	 * Static multiply method that creates a new ComplexD with the product pF1 *
-	 * pF2.
-	 * 
+	 * Static multiply method that creates a new ComplexD with product pF1 * pF2.
+	 * <p>
 	 * @param pF1 ComplexD
 	 * @param pF2 ComplexD
 	 * @throws FieldBinaryException This exception happens when there is a field
@@ -279,9 +273,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * 
+	 * <p>
 	 * @param pS String
-	 * 
 	 * @return ComplexD
 	 */
 	public static ComplexD newONE(String pS) {
@@ -290,9 +283,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * 
+	 * <p>
 	 * @param pS String
-	 * 
 	 * @return ComplexD
 	 */
 	public static ComplexD newZERO(String pS) {
@@ -301,9 +293,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * 
+	 * <p>
 	 * @param pC Cardinal
-	 * 
 	 * @return ComplexD
 	 */
 	public static ComplexD newONE(Cardinal pC) {
@@ -312,9 +303,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * 
+	 * <p>
 	 * @param pC Cardinal
-	 * 
 	 * @return ComplexD
 	 */
 	public static ComplexD newZERO(Cardinal pC) {
@@ -324,7 +314,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static subtract method that creates a new ComplexD with the difference
 	 * pF1-pF2.
-	 * 
+	 * <p>
 	 * @param pF1 ComplexD
 	 * @param pF2 ComplexD
 	 * @throws FieldBinaryException This exception occurs when there is a field
@@ -357,7 +347,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Copy Constructor that reuses the v reference.
-	 * 
+	 * <p>
 	 * @param pC ComplexD
 	 */
 	public ComplexD(ComplexD pC) {
@@ -370,7 +360,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Copy Constructor that reuses the cardinal reference while allowing the values
 	 * to be set.
-	 * 
+	 * <p>
 	 * @param pC ComplexD
 	 * @param pR double
 	 * @param pI double
@@ -384,7 +374,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the cardinal to initialize.
-	 * 
+	 * <p>
 	 * @param pT Cardinal
 	 */
 	public ComplexD(Cardinal pT) {
@@ -396,7 +386,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with everything to initialize but the imaginary.
-	 * 
+	 * <p>
 	 * @param pT Cardinal
 	 * @param pR double
 	 */
@@ -409,7 +399,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with everything to initialize it.
-	 * 
+	 * <p>
 	 * @param pT Cardinal
 	 * @param pR double
 	 * @param pI double
@@ -423,7 +413,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the number to initialize.
-	 * 
+	 * <p>
 	 * @param pR double
 	 * @param pI double
 	 */
@@ -437,11 +427,10 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when a field mismatch
 	 *                              happens
-	 * 
 	 * @return ComplexF
 	 */
 	@Override
@@ -457,7 +446,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the self-altering conjugate method. This object changes when all of
 	 * its imaginary members are set to their additive inverses.
-	 * 
+	 * <p>
 	 * @return ComplexD
 	 */
 	@Override
@@ -468,11 +457,10 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method divides real numbers and changes this object to be the result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
 	 *                              division by zero happens
-	 * 
 	 * @return ComplexD
 	 */
 	@Override
@@ -494,7 +482,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Get method for the argument of the complex number. This function uses the
 	 * arctangent function, so its range and domain are the same.
-	 * 
+	 * <p>
 	 * @return double
 	 */
 	public double getArgument() {
@@ -506,7 +494,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Get the imaginary numeric value from the value array
-	 * 
+	 * <p>
 	 * @return double
 	 */
 	public double getImg() {
@@ -516,7 +504,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
-	 * 
+	 * <p>
 	 * @return Double
 	 */
 	@Override
@@ -526,7 +514,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Get the real numeric value from the value array
-	 * 
+	 * <p>
 	 * @return double
 	 */
 	public double getReal() {
@@ -537,7 +525,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * This function delivers the sum of the squares of the numeric values. Many
 	 * times it is the modulus squared that is actually needed so it makes sense to
 	 * calculate this before the modulus itself.
-	 * 
+	 * <p>
 	 * @return Double
 	 */
 	@Override
@@ -550,10 +538,9 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method inverts real numbers.
-	 * 
+	 * <p>
 	 * @throws FieldException This exception is thrown when someone tries to invert
 	 *                        ZERO.
-	 * 
 	 * @return ComplexD
 	 */
 	@Override
@@ -570,11 +557,10 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
-	 * 
 	 * @return ComplexD
 	 */
 	@Override
@@ -590,9 +576,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Scale method multiplies the modulus by the scale
-	 * 
+	 * <p>
 	 * @param pS Number
-	 * 
 	 * @return ComplexD
 	 */
 	@Override
@@ -604,7 +589,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Set the imaginary numeric value
-	 * 
+	 * <p>
 	 * @param pimg double
 	 */
 	public void setImg(double pimg) {
@@ -613,7 +598,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Set the real numeric value
-	 * 
+	 * <p>
 	 * @param preal double
 	 */
 	public void setReal(double preal) {
@@ -622,11 +607,10 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method subtracts real numbers and changes this object to be the result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
-	 * 
 	 * @return ComplexD
 	 */
 	@Override
@@ -642,7 +626,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * 
+	 * <p>
 	 * @return String
 	 */
 	@Override
@@ -652,7 +636,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * 
+	 * <p>
 	 * @return String
 	 */
 	@Override

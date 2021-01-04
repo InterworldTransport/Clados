@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.CladosConstant<br>
  * -------------------------------------------------------------------- <p>
@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * This class just acts as a bucket for magic numbers so they aren't nightmarish
  * to find when they change in the future.
- * 
+ * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  */

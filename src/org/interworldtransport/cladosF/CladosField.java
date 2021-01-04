@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosField<br>
  * -------------------------------------------------------------------- <p>
@@ -30,18 +30,18 @@ package org.interworldtransport.cladosF;
  * any of them. This would be supported by an enumeration type that can't be
  * UnitAbstract itself because UnitAbstract is subclassed to make the four field
  * classes.
- * 
+ * <p>
  * This enum doubles up a bit as a builder. Each of its instances rely on the
  * shared static methods and have a few instance methods of their own that
  * 'switch' on their identity to determine what gets built and returned.
- * 
+ * <p>
  * This enumeration has non-static methods for each instance, but they don't
  * cause a state change. CladosField HAS NO INTERNAL STATE to change unlike the
  * Builder in the same package.
- * 
+ * <p>
  * NOTE that the methods capable of creating Cardinals in this enumeration do
  * NOT cache them. Similar methods in CladosFBuilder DO cache them.
- * 
+ * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -66,9 +66,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using the CladosField hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ONE.
-	 * 
+	 * <p>
 	 * @param pField CladosField enumeration to be used as description of UnitAbstract
 	 *               child to be created.
 	 * @param pCard  Cardinal to be re-used.
@@ -93,9 +93,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using the CladosField hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ZERO.
-	 * 
+	 * <p>
 	 * @param pField CladosField enumeration to be used as description of UnitAbstract
 	 *               child to be created.
 	 * @param pCard  Cardinal to be re-used.
@@ -120,9 +120,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ONE.
-	 * 
+	 * <p>
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
 	 *         it will always be one of the UnitAbstract children.
@@ -145,9 +145,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ONE.
-	 * 
+	 * <p>
 	 * @param pDiv Source of the Cardinal to be re-used.
 	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
 	 *         it will always be one of the UnitAbstract children.
@@ -170,9 +170,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ONE.
-	 * 
+	 * <p>
 	 * @param pCard String name of the Cardinal to be created.
 	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
 	 *         it will always be one of the UnitAbstract children.
@@ -195,9 +195,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ZERO.
-	 * 
+	 * <p>
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
 	 *         it will always be one of the UnitAbstract children.
@@ -220,9 +220,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ZERO.
-	 * 
+	 * <p>
 	 * @param pDiv Source of the Cardinal to be re-used.
 	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
 	 *         it will always be one of the UnitAbstract children.
@@ -245,9 +245,9 @@ public enum CladosField {
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
 	 * child object using this CladosField enumeration as the hint.
-	 * 
+	 * <p>
 	 * Number created has a real value of ZERO.
-	 * 
+	 * <p>
 	 * @param pCard String name of the Cardinal to be created.
 	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
 	 *         it will always be one of the UnitAbstract children.

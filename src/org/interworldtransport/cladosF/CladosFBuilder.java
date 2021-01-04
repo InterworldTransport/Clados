@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosFBuilder<br>
  * -------------------------------------------------------------------- <p>
@@ -30,12 +30,12 @@ import java.util.Optional;
  * This builder gets basic information and constructs any of the DivFields and
  * their supporting classes like a Cardinal. Some features are supported by the
  * CladosField enumeration.
- * 
+ * <p>
  * The UnitAbstract builder is a singleton enforced as an enumeration.
- * 
+ * <p>
  * This enumeration has NO non-static element for the instance, thus
  * CladosFBuilder HAS NO INTERNAL STATE that can change.
- * 
+ * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -61,10 +61,10 @@ public enum CladosFBuilder {
 	 * Method creates a new Cardinal using the string provided IF one by that name
 	 * is not present in the cache. If it IS in the cache, the cached Cardinal is
 	 * returned instead.
-	 * 
+	 * <p>
 	 * NOTE that Cardinal has a static method that does something similar. The
 	 * difference is this one also caches the cardinal.
-	 * 
+	 * <p>
 	 * @param pName String name for the associated Cardinal
 	 * @return Cardinal unit cardinal created or retrieved
 	 */
@@ -80,7 +80,7 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
-	 * 
+	 * <p>
 	 * @param pMode CladosField mode to use when creating UnitAbstract numbers
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
@@ -112,7 +112,7 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ONE using the
 	 * string provided to define and cache a Cardinal.
-	 * 
+	 * <p>
 	 * @param pMode CladosField mode to use when creating UnitAbstract numbers
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
@@ -144,26 +144,26 @@ public enum CladosFBuilder {
 	/**
 	 * Method copies the incoming number into a distinct object ensuring the ==
 	 * operation fails but equals() does not.
-	 * 
+	 * <p>
 	 * NOTE this one makes no attempt to update the cardinal cache. It is assumed to
 	 * have been done while constructing the number passed in as a parameter.
-	 * 
+	 * <p>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * 
+	 * <p>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * 
+	 * <p>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * 
+	 * <p>
 	 * @param pDiv A UnitAbstract child number to be copied
 	 * @param <T>  UnitAbstract child number with the Field and Normalizable
 	 *             interfaces too.
@@ -187,7 +187,7 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ONE using the
 	 * string provided to define and cache a Cardinal.
-	 * 
+	 * <p>
 	 * @param pS String name for the associated Cardinal
 	 * @return UnitAbstract child number created
 	 */
@@ -218,7 +218,7 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ONE using the
 	 * offered Cardinal.
-	 * 
+	 * <p>
 	 * @param pCard Cardinal to use in construction
 	 * @return UnitAbstract child number created
 	 */
@@ -244,7 +244,7 @@ public enum CladosFBuilder {
 
 	/**
 	 * Method creates a number as distinct ZERO object using default cardinal name.
-	 * 
+	 * <p>
 	 * @return UnitAbstract child number created
 	 */
 	public UnitAbstract createZERO() {
@@ -274,7 +274,7 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
-	 * 
+	 * <p>
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
@@ -305,7 +305,7 @@ public enum CladosFBuilder {
 	/**
 	 * Method creates a new number object with a real value set to ZERO using the
 	 * string provided to define and cache a Cardinal.
-	 * 
+	 * <p>
 	 * @param pS  String name for the associated Cardinal
 	 * @param <T> UnitAbstract child number with the Field interface too.
 	 * @return UnitAbstract child number created

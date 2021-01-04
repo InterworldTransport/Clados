@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosGExceptions.BadSignatureException<br>
  * -------------------------------------------------------------------- <p>
@@ -18,7 +18,8 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
-/** org.interworldtransport.cladosGExceptions.BadSignatureException  Bad signature handler for GProduct.
+/** 
+ * Bad signature handler for GProduct.
  * <p>
  * This class is designed to be the handler of signature definition exceptions.
  * GProduct can be built from simple signatures, but the string must be

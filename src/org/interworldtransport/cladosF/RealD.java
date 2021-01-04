@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.RealD<br>
  * -------------------------------------------------------------------- <p>
@@ -45,14 +45,13 @@ import org.interworldtransport.cladosFExceptions.*;
  * Ideally, this would extend java.lang.Double and implement an interface called
  * DivFieldD. That can't be done, though, because Double is final.
  * <p>
- * 
  * @version 1.0
  * @author Dr Alfred W Differ
  */
 public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
-	 * 
+	 * <p>
 	 * @param pF1 RealD
 	 * @param pF2 RealD
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -70,7 +69,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new RealD with the conjugate of the parameter.
 	 * Since the conjugate of a real number is the real number, this method is
 	 * functionally identical to #copy.
-	 * 
+	 * <p>
 	 * @param pF RealD
 	 * @return RealD
 	 */
@@ -84,9 +83,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * each entry on the list. Because these are real numbers, though, we get away
 	 * with simply summing the moduli instead. It does not perform a cardinal safety
 	 * check and will throw the exception if that test fails.
-	 * 
+	 * <p>
 	 * @param pL RealD[]
-	 * 
 	 * @throws FieldBinaryException This exception is thrown when sqMagnitude fails
 	 *                              with the RealF array
 	 * @return RealD
@@ -104,14 +102,12 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * has a value that is equal to the sum of the SQModulus of each entry on the
 	 * list. It does not perform a cardinal safety check and will throw the
 	 * exception if that test fails.
-	 * 
+	 * <p>
 	 * @param pL RealD[]
-	 * 
 	 * @throws FieldBinaryException This exception occurs when there is a field
 	 *                              mismatch. It should never happen but the
 	 *                              implementation uses multiplication, thus it is
 	 *                              technically possible.
-	 * 
 	 * @return RealD
 	 */
 	public final static RealD copyFromSQModuliSum(RealD[] pL) throws FieldBinaryException {
@@ -125,7 +121,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static method that creates a new RealD with a copy of the parameter. This
 	 * copy reuses the cardinal reference to ensure it will pass a type match test.
-	 * 
+	 * <p>
 	 * @param pF RealD
 	 * @return RealD
 	 */
@@ -135,9 +131,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * 
+	 * <p>
 	 * @param pR RealD
-	 * 
 	 * @return RealD
 	 */
 	public static RealD copyONE(UnitAbstract pR) {
@@ -146,9 +141,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * 
+	 * <p>
 	 * @param pR RealD
-	 * 
 	 * @return RealD
 	 */
 	public static RealD copyZERO(UnitAbstract pR) {
@@ -159,10 +153,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new RealD with a copy of the parameter. This
 	 * copy does not reuse a cardinal reference so it is likely to fail type
 	 * mismatch tests.
-	 * 
+	 * <p>
 	 * @param pR double
-	 * 
-	 * 
 	 * @return RealD
 	 */
 	public static RealD create(double pR) {
@@ -171,7 +163,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static divide method that creates a new RealD with the product pF1 / pF2.
-	 * 
+	 * <p>
 	 * @param pF1 RealD
 	 * @param pF2 RealD
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -191,7 +183,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * Check for the equality of this object with that of the argument. This checks
 	 * for exact equality using no tolerances. The FieldObject types must match
 	 * first.
-	 * 
+	 * <p>
 	 * @param pE RealD
 	 * @param pF RealD
 	 * @return boolean <i>true</i> if both components are the same; <i>false</i>,
@@ -204,7 +196,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the value is infinite.
-	 * 
+	 * <p>
 	 * @param pF RealD
 	 * @return boolean
 	 */
@@ -214,7 +206,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the value is not a number at all. NAN
-	 * 
+	 * <p>
 	 * @param pF RealD
 	 * @return boolean
 	 */
@@ -224,7 +216,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the number is exactly zero.
-	 * 
+	 * <p>
 	 * @param pF RealD
 	 * @return boolean
 	 */
@@ -235,7 +227,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static multiply method that creates a new RealD with the product pF1 * pF2.
 	 * product.
-	 * 
+	 * <p>
 	 * @param pF1 RealD
 	 * @param pF2 RealD
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -252,9 +244,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * 
-	 * @param pS String
-	 * 
+	 * <p>
+	 * @param pS String=
 	 * @return RealD
 	 */
 	public static RealD newONE(String pS) {
@@ -263,9 +254,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * 
+	 * <p>
 	 * @param pS String
-	 * 
 	 * @return RealD
 	 */
 	public static RealD newZERO(String pS) {
@@ -274,9 +264,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * 
+	 * <p>
 	 * @param pC Cardinal
-	 * 
 	 * @return RealD
 	 */
 	public static RealD newONE(Cardinal pC) {
@@ -285,9 +274,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * 
+	 * <p>
 	 * @param pC Cardinal
-	 * 
 	 * @return RealD
 	 */
 	public static RealD newZERO(Cardinal pC) {
@@ -296,7 +284,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static subtract method that creates a new RealD with the difference pF1-pF2.
-	 * 
+	 * <p>
 	 * @param pF1 RealD
 	 * @param pF2 RealD
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -329,7 +317,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the cardinal to initialize.
-	 * 
+	 * <p>
 	 * @param pT Cardinal
 	 */
 	public RealD(Cardinal pT) {
@@ -341,7 +329,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with everything to initialize.
-	 * 
+	 * <p>
 	 * @param pT Cardinal
 	 * @param pR double
 	 */
@@ -354,10 +342,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the number to initialize.
-	 * 
+	 * <p>
 	 * @param pR double
-	 * 
-	 * 
 	 */
 	public RealD(double pR) {
 		super(Cardinal.generate("Real"));
@@ -368,7 +354,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Copy Constructor that reuses the cardinal reference.
-	 * 
+	 * <p>
 	 * @param pR RealD
 	 */
 	public RealD(RealD pR) {
@@ -381,10 +367,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Copy Constructor that reuses the cardinal reference while allowing the value
 	 * to be set.
-	 * 
+	 * <p>
 	 * @param pR RealD
-	 * 
-	 * 
 	 * @param pD float
 	 */
 	public RealD(UnitAbstract pR, double pD) {
@@ -397,11 +381,10 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when a field mismatch
 	 *                              happens
-	 * 
 	 * @return RealD
 	 */
 	@Override
@@ -417,7 +400,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the self-altering conjugate method. This object changes when all of
 	 * its imaginary members are set to their additive inverses.
-	 * 
+	 * <p>
 	 * @return RealD
 	 */
 	@Override
@@ -428,11 +411,10 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method divides real numbers and changes this object to be the result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
 	 *                              division by zero happens
-	 * 
 	 * @return RealD
 	 */
 	@Override
@@ -451,7 +433,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
-	 * 
+	 * <p>
 	 * @return Double
 	 */
 	@Override
@@ -461,7 +443,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Get the real numeric value from the value array
-	 * 
+	 * <p>
 	 * @return double
 	 */
 	public double getReal() {
@@ -472,7 +454,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * This function delivers the sum of the squares of the numeric values. Many
 	 * times it is the modulus squared that is actually needed so it makes sense to
 	 * calculate this before the modulus itself.
-	 * 
+	 * <p>
 	 * @return Double
 	 */
 	@Override
@@ -485,10 +467,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method inverts real numbers.
-	 * 
+	 * <p>
 	 * @throws FieldException This exception is thrown if someone tries to invert a
 	 *                        ZERO.
-	 * 
 	 * @return RealD
 	 */
 	@Override
@@ -502,11 +483,10 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
-	 * 
 	 * @return RealD
 	 */
 	@Override
@@ -521,9 +501,8 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Scale method multiplies the modulus by the scale
-	 * 
+	 * <p>
 	 * @param pS Number
-	 * 
 	 * @return RealD
 	 */
 	@Override
@@ -535,7 +514,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Set the real numeric value
-	 * 
+	 * <p>
 	 * @param preal double
 	 */
 	public void setReal(double preal) {
@@ -544,11 +523,10 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method subtracts real numbers and changes this object to be the result.
-	 * 
+	 * <p>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
-	 * 
 	 * @return RealD
 	 */
 	@Override
@@ -563,7 +541,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * 
+	 * <p>
 	 * @return String
 	 */
 	@Override
@@ -573,7 +551,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * 
+	 * <p>
 	 * @return String
 	 */
 	@Override

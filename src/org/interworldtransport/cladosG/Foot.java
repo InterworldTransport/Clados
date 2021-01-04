@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Foot<br>
  * -------------------------------------------------------------------- <p>
@@ -38,13 +38,13 @@ import org.interworldtransport.cladosF.UnitAbstract;
  * use a foot point, but a simple one is still used in the cladosG package to
  * help avoid the trap of assuming transport of objects along the manifold
  * doesn't cause them to re-orient and change into other objects.
- * 
+ * <p>
  * At a minimum, a footPoint is the name of an event or a point and the type of
  * numbers used for scale along the coordinate paths. At this location it is
  * assumed the geometry of the algebra is aligned with the local geometry one
  * would assign to the coordinate space that is the manifold at that point. This
  * makes a footPoint the root reference frame.
- * 
+ * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -53,7 +53,7 @@ public final class Foot {
 	 * This factory build method produces a new Foot with an empty cardinal list. It
 	 * is intend to name an otherwise opaque constructor that creates a new Foot but
 	 * re-uses a Cardinal.
-	 * 
+	 * <p>
 	 * @param pFootName String name for the new Foot
 	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
 	 */
@@ -65,7 +65,7 @@ public final class Foot {
 	 * This factory build method produces a new Foot using the offered Cardinal. It
 	 * is intend to name an otherwise opaque constructor that creates a new Foot but
 	 * re-uses a Cardinal.
-	 * 
+	 * <p>
 	 * @param pFootName    String name for the new Foot
 	 * @param pNewCardinal Cardinal to re-use for this new Foot
 	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
@@ -86,7 +86,7 @@ public final class Foot {
 
 	/**
 	 * Build the footPoint object from scratch.
-	 * 
+	 * <p>
 	 * @param pName String This string will be the name of the foot point.
 	 */
 	public Foot(String pName) {
@@ -97,7 +97,7 @@ public final class Foot {
 
 	/**
 	 * Build the footPoint object from scratch.
-	 * 
+	 * <p>
 	 * @param pName String This string will be the name of the foot point.
 	 * @param pFT   Cardinal This object defines the kind of numbers that are
 	 *              meaningful for this foot point
@@ -110,7 +110,7 @@ public final class Foot {
 
 	/**
 	 * Build the footPoint object from scratch.
-	 * 
+	 * <p>
 	 * @param pName String This string will be the name of the foot point.
 	 * @param pF    UnitAbstract This object holds the cardinal that defines the kind of
 	 *              numbers that are meaningful for this foot point
@@ -124,12 +124,12 @@ public final class Foot {
 	/**
 	 * This method appends a Cardinal to the list of known cardinals for this foot.
 	 * It will silently terminate IF the cardinal is already in the list.
-	 * 
+	 * <p>
 	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
 	 * That means visual inspection of the cardinal list could reveal entries that
 	 * appear to be the same. They aren't, though. The cardinalList references
 	 * objects and NOT their string names. To avoid this use CladosFCache.
-	 * 
+	 * <p>
 	 * @param fN Cardinal reference to append to this Foot
 	 */
 	public void appendCardinal(Cardinal fN) {
@@ -142,7 +142,7 @@ public final class Foot {
 	/**
 	 * This method looks for the requested cardinal object in the Foot's tracking
 	 * list.
-	 * 
+	 * <p>
 	 * @param pIn Cardinal This is a reference to the Cardinal to be found in the
 	 *            Foot's cardinal list.
 	 * @return int This method looks for the requested Cardinal in the Foot's list
@@ -158,9 +158,9 @@ public final class Foot {
 
 	/**
 	 * Simple gettor for one of the cardinals associated with this Foot.
-	 * 
+	 * <p>
 	 * Note that an error condition (like indexOutOfBounds) will return null.
-	 * 
+	 * <p>
 	 * @param pIn Integer index of Cardinal in this Foot to retrieve.
 	 * @return Cardinal found at the integer index... or null.
 	 */
@@ -172,7 +172,7 @@ public final class Foot {
 
 	/**
 	 * Simple gettor for the entire list of cardinals associated with this Foot.
-	 * 
+	 * <p>
 	 * @return ArrayList of Cardinal instances associated with this Foot.
 	 */
 	public ArrayList<Cardinal> getCardinals() {
@@ -181,7 +181,7 @@ public final class Foot {
 
 	/**
 	 * Simple gettor of the Foot's name element
-	 * 
+	 * <p>
 	 * @return String name of the Foot
 	 */
 	public String getFootName() {
@@ -191,12 +191,12 @@ public final class Foot {
 	/**
 	 * This method removes a Cardinal from the list of known cardinals for this
 	 * foot. It will silently return IF the cardinal wasn't already on the list.
-	 * 
+	 * <p>
 	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
 	 * That means visual inspection of the cardinal list could reveal entries that
 	 * appear to be the same. They aren't, though. The cardinalList references
 	 * objects and NOT their string names. To avoid this use CladosFCache.
-	 * 
+	 * <p>
 	 * @param pCard Cardinal reference to remove to this Foot
 	 */
 	public void removeCardinal(Cardinal pCard) {
@@ -205,7 +205,7 @@ public final class Foot {
 
 	/**
 	 * Simple setter of the Foot's name element.
-	 * 
+	 * <p>
 	 * @param footName String name of the Foot to set here
 	 */
 	public void setFootName(String footName) {
@@ -215,7 +215,7 @@ public final class Foot {
 	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
-	 * 
+	 * <p>
 	 * @param indent String indentation to assist with human readability of output
 	 *               XML data
 	 * @return String formatted as XML containing information about the Foot

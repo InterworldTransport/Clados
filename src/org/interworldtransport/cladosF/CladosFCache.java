@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosFCache<br>
  * -------------------------------------------------------------------- <p>
@@ -33,7 +33,7 @@ import java.util.Set;
  * use of this singleton enumeration as a 'builder'. Nothing fancy here
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
- * 
+ * <p>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -54,7 +54,7 @@ public enum CladosFCache {
 	/**
 	 * Method appends offered Cardinal to cache IF one by that name is not already
 	 * present. If it IS, nothing is done and the method silently returns.
-	 * 
+	 * <p>
 	 * @param pIn Cardinal to be appended to the cache IF it isn't already present.
 	 */
 	public void appendCardinal(Cardinal pIn) {
@@ -66,7 +66,7 @@ public enum CladosFCache {
 	/**
 	 * Method appends offered Cardinals to cache IF not already present. If are ARE,
 	 * nothing is done and the method silently loops through remaining Cardinals.
-	 * 
+	 * <p>
 	 * @param pIn Cardinal to be appended to the cache IF it isn't already present.
 	 */
 	public void appendCardinal(Set<Cardinal> pIn) {
@@ -82,7 +82,7 @@ public enum CladosFCache {
 	 * the search. If found, the optional will be engaged. If not, it will be
 	 * disengaged. IF by some chance there are two cardinals in the cache by the
 	 * same name (which should NOT happen) the first one found will be returned.
-	 * 
+	 * <p>
 	 * @param pName String name of a Cardinal to be found in the cache
 	 * @return Optional of Cardinal matching the name offered.
 	 */
@@ -100,7 +100,7 @@ public enum CladosFCache {
 	/**
 	 * This is a brute force way of retrieving Cardinals in the cache. It should
 	 * rarely be used.
-	 * 
+	 * <p>
 	 * @param pLoc integer index to be used when returning the listed Cardinal
 	 * @return Cardinal at pLoc index will be returned.
 	 */
@@ -112,7 +112,7 @@ public enum CladosFCache {
 
 	/**
 	 * This method reports the size of the Cardinal cache.
-	 * 
+	 * <p>
 	 * @return int size of the Cardinal cache.
 	 */
 	public int getCardinalListSize() {
@@ -121,7 +121,7 @@ public enum CladosFCache {
 
 	/**
 	 * This method supports the removal of a Cardinal from the cache.
-	 * 
+	 * <p>
 	 * @param pCard Cardinal to be removed
 	 * @return boolean True if Cardinal found and removed. False if not found or
 	 *         removal fails.

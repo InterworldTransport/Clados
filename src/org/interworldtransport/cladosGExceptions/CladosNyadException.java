@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosGExceptions.CladosNyadException<br>
  * -------------------------------------------------------------------- <p>
@@ -25,7 +25,6 @@ import org.interworldtransport.cladosG.Nyad;
  * instances of descendants are assumed to originate from geometric objects with
  * unhandled problems. Common elements from each exception class are found here.
  * <p>
- * 
  * @version 1.0
  * @author Dr Alfred W Differ
  * 
@@ -46,11 +45,9 @@ public class CladosNyadException extends Exception
 	/**
 	 * This method is the main constructor of all Clados Exceptions. It needs
 	 * only a source NyadRealD and message.
-	 * 
-	 * @param pSource
-	 *            Nyad
-	 * @param pMessage
-	 *            String
+	 * <p>
+	 * @param pSource Nyad
+	 * @param pMessage String
 	 */
 	public CladosNyadException(Nyad pSource, String pMessage)
 	{
@@ -62,7 +59,7 @@ public class CladosNyadException extends Exception
 	/**
 	 * This method delivers a reference to the NyadRealD that originated the
 	 * Exception
-	 * 
+	 * <p>
 	 * @return Nyad
 	 */
 	public Nyad getSourceNyad()
@@ -73,7 +70,7 @@ public class CladosNyadException extends Exception
 	/**
 	 * This method delivers a the explanation from the NyadRealD that originated
 	 * the Exception
-	 * 
+	 * <p>
 	 * @return String
 	 */
 	public String getSourceMessage()

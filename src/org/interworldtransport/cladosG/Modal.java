@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Modal<br>
  * -------------------------------------------------------------------- <p>
@@ -29,16 +29,16 @@ import org.interworldtransport.cladosF.CladosField;
 /**
  * Anything implementing this interface has CladosF numbers that are expected
  * all to be of the same type.
- * 
+ * <p>
  * Nothing about Clifford Algebras requires this interface. It is about
  * computation models where one expects type consistency to avoid loss of
  * precision.
- * 
+ * <p>
  * NOTE | The primary point for this interface is to mark objects that are at
  * risk if new CladosF numbers are created. Objects implementing Modal likely
  * have methods that switch internally on CladosF.CladosField or examine number
  * objects using the 'instanceof' operator.
- * 
+ * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -47,7 +47,7 @@ public interface Modal {
 	/**
 	 * This is just a gettor, but it returns the objects modality. Is it using real
 	 * or complex numbers? Is it using single or double precision floating decimals?
-	 * 
+	 * <p>
 	 * @return CladosField Mode of the object
 	 */
 	public abstract CladosField getMode();

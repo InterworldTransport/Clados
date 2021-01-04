@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Normalizable<br>
  * -------------------------------------------------------------------- <p>
@@ -29,25 +29,24 @@ package org.interworldtransport.cladosF;
  * mathematics. Specifically, if is the portion that says the field supports the
  * notion of 'length' or 'magnitude' when several of them are used as scaling
  * factors in vector spaces.
- * 
+ * <p>
  * For real numbers this is just the idea of distance from a number line origin.
  * In a vector space where several are involved, one uses a root-mean-square
  * method to combine them. Think Pythagorus.
- * 
+ * <p>
  * For complex numbers, it is the radius in a polar representation. When several
  * are involved, it is Pythagorus again, but the squares are formed with numbers
  * and their conjugates, but computation is made easier by ignoring the
  * imaginary and just squaring the components.
- * 
+ * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
- * 
  */
 public interface Normalizable {
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
-	 * 
+	 * <p>
 	 * @return Number
 	 */
 	public abstract Number modulus();
@@ -56,7 +55,7 @@ public interface Normalizable {
 	 * This function delivers the sum of the squares of the numeric values. Many
 	 * times it is the modulus squared that is actually needed so it makes sense to
 	 * calculate this before the modulus itself.
-	 * 
+	 * <p>
 	 * @return Number
 	 */
 	public abstract Number sqModulus();

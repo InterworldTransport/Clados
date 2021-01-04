@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.BladeDuet<br>
  * -------------------------------------------------------------------- <p>
@@ -32,10 +32,10 @@ import java.util.Collections;
  * reduced in product result discovery. In Clados v1 the methods were all buried
  * in the Basis and GProduct classes. They are surfaced here in BladeDuet in
  * order to support parallelization of product table generation.
- * 
+ * <p>
  * BladeDuet makes use of streams, but intentionally avoids parallelizing
  * computations internally. Most of what each one does must be done in sequence.
- * 
+ * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -49,20 +49,20 @@ public final class BladeDuet {
 	 * destination in a Blade anyway. What we don't know immeidately is how many
 	 * transpositions are necessary to reach that sort order. That's what this
 	 * method does after removing generator duplicates.
-	 * 
+	 * <p>
 	 * The offered numeric signature is used for the reduction to handle sign flips.
 	 * Generators with a positive square appear as a one (1) while those with
 	 * negative squares appear as negative one (-1).
-	 * 
+	 * <p>
 	 * NOTE that the numeric signature representation is a departure with prior use
 	 * in Clados where zero(0) implied no sign flip and one(1) implied sign flip for
 	 * negative squared generator. Prior practice used to add up the sign flips and
 	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit'
 	 * sized data element to track signs.
-	 * 
+	 * <p>
 	 * Exception cases NOT checked because this is for CladosG internal use. The
 	 * method itself is public, but it's really for internal use.
-	 * 
+	 * <p>
 	 * @param pB1 Blade appearing on the left/row of a multiplication operation
 	 * @param pB2 Blade appearing on the right/column of a multiplication operation
 	 * @param sig signature array to use to reduce duplicate generators
@@ -81,7 +81,7 @@ public final class BladeDuet {
 	/**
 	 * This is a re-use constructor that builds this as a juxtaposition of the two
 	 * offered blades.
-	 * 
+	 * <p>
 	 * @param pB1 A Blade to re-use on the left.
 	 * @param pB2 A Blade to re-use on the right.
 	 */
@@ -106,19 +106,19 @@ public final class BladeDuet {
 	 * destination in a Blade anyway. What we don't know immediately is how many
 	 * transpositions are necessary to reach that sort order. That's what this
 	 * method does after removing generator duplicates.
-	 * 
+	 * <p>
 	 * The offered numeric signature is used for the reduction to handle sign flips.
 	 * Generators with a positive square appear as a one (1) while those with
 	 * negative squares appear as negative one (-1).
-	 * 
+	 * <p>
 	 * NOTE that the numeric signature representation is a departure with prior use
 	 * in Clados where zero(0) implied no sign flip and one(1) implied sign flip for
 	 * negative squared generator. Prior practice used to add up the sign flips and
 	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit'
 	 * sized data element to track signs.
-	 * 
+	 * <p>
 	 * Exception cases NOT checked because this is for CladosG internal use.
-	 * 
+	 * <p>
 	 * @param pSig An array of unboxed short integers that signifies when sign flips
 	 *             occur as generator pairs are removed from the internal dual list.
 	 * @return Blade [supporting stream approach]
@@ -161,9 +161,9 @@ public final class BladeDuet {
 	 * This method produces a printable and parseable string that represents the
 	 * BladeDuet in a human readable form. This is likely ONLY useful during debug
 	 * efforts.
-	 * 
+	 * <p>
 	 * This variation uses a Generator's name in the generator list.
-	 * 
+	 * <p>
 	 * @return String The XML formated String representing the BladeDuet.
 	 */
 	public String toXMLString() {

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Generator<br>
  * -------------------------------------------------------------------- <p>
@@ -32,18 +32,18 @@ import java.util.stream.Stream;
  * encoded here about magnitudes, directions, and metrics. A Generator instance
  * merely represents the existence of a direction distinct from some other
  * direction.
- * 
+ * <p>
  * This enumerator works a bit as a builder too. Each of its instances rely on
  * the shared static methods and potential instance methods that 'switch' on
  * their identity to determine what gets built and returned.
- * 
+ * <p>
  * This enumeration has non-static parts for each instance, but they don't cause
  * a state change. Generator keeps a constant single byte integer in the
  * INTERNAL STATE of each instance acting like an ordinal to support finding the
  * instance from a numeric identity AND for providing numeric bounds on
  * supported sizes of related blades. Most uses of an instance will NOT make use
  * of the internal state, though, and cannot change it either way.
- * 
+ * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -115,7 +115,7 @@ public enum Generator {
 
 	/**
 	 * This method returns an unlimited stream of generators in this enumeration.
-	 * 
+	 * <p>
 	 * @return Stream of Generator
 	 */
 	public final static Stream<Generator> stream() {
@@ -124,7 +124,7 @@ public enum Generator {
 
 	/**
 	 * This method returns an limited stream of generators in this enumeration.
-	 * 
+	 * <p>
 	 * @param pLimit byte integer limit of the stream. The stream stops when we
 	 *               reach the same ordinal value of a generator.
 	 * @return Stream of Generator
@@ -137,7 +137,7 @@ public enum Generator {
 	 * This method connects byte integers to Generator instances. It gets a
 	 * reference to the enumeration instance that has the same ordinal as the byte
 	 * integer parameter.
-	 * 
+	 * <p>
 	 * @param pS Offer a byte integer
 	 * @return and get back the corresponding Generator instance
 	 */
@@ -151,7 +151,7 @@ public enum Generator {
 	 * This method connects boxed byte integers to Generator instances. It gets a
 	 * reference to the enumeration instance that has the same ordinal as the byte
 	 * integer within the boxed parameter.
-	 * 
+	 * <p>
 	 * @param pS Byte integer offered
 	 * @return and get back the corresponding Generator instance
 	 */

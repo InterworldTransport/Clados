@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Cardinal<br>
  * -------------------------------------------------------------------- <p>
@@ -65,7 +65,7 @@ public final class Cardinal {
 	 * When one does not wish to use Cardinals much, the best bypass is to use this
 	 * factory method to create a minimal cardinal. The unit value will be set to
 	 * the name of the CladosField offered
-	 * 
+	 * <p>
 	 * @param pT CladosField Name the element of the enumeration will be re-used as
 	 *           the unit value within the Cardinal.
 	 * @return Cardinal
@@ -77,7 +77,7 @@ public final class Cardinal {
 	/**
 	 * When one does wish to use Cardinals, the best approach is to use this factory
 	 * method to create a typical cardinal. The unit value is set to the string.
-	 * 
+	 * <p>
 	 * @param pT String The Cardinal's unit value will be set to this string.
 	 * @return Cardinal
 	 */
@@ -114,7 +114,7 @@ public final class Cardinal {
 
 	/**
 	 * Simple gettor method for the name of the 'unit' represented by this Cardinal.
-	 * 
+	 * <p>
 	 * @return String This string names the 'unit type' represented by the Cardinal
 	 */
 	public String getUnit() {
@@ -130,18 +130,9 @@ public final class Cardinal {
 	}
 
 	/**
-	 * Simple settor method for the name of the 'unit' represented by this Cardinal.
-	 * 
-	 * @param pUnit String This string names the 'unit type' represented by the Cardinal
-	 */
-	//public void setUnit(String pUnit) {
-	//	unit = pUnit;
-	//}
-
-	/**
 	 * Similar to a toString() method, but it focuses upon an XML style output.
 	 * @param indent String to assist with human readability of XML output.
-	 * 
+	 * <p>
 	 * @return String XML compatible sub-unit for code relying on export-able Cardinals.
 	 */
 	public String toXMLString(String indent) {

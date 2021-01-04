@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2020 Alfred Differ.<br>
+ * <h2>Copyright</h2> © 2021 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosGExceptions.GeneratorRangeException<br>
  * -------------------------------------------------------------------- <p>
@@ -36,7 +36,6 @@ package org.interworldtransport.cladosGExceptions;
  * making the sort algorithm for Basis and GProduct reasonably efficient, but
  * asset horsepower will matter a great deal more at this end of the range.
  * <p>
- * 
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -60,7 +59,7 @@ public class GeneratorRangeException extends Exception {
 	/**
 	 * Construct this exception. This exception must have a message complaining
 	 * about the expectations of the source.
-	 * 
+	 * <p>
 	 * @param pMessage String
 	 */
 	public GeneratorRangeException(String pMessage) {
@@ -71,7 +70,7 @@ public class GeneratorRangeException extends Exception {
 	/**
 	 * This method delivers a the explanation from the source code that originated
 	 * the Exception
-	 * 
+	 * <p>
 	 * @return String
 	 */
 	public String getSourceMessage() {
