@@ -1,11 +1,11 @@
-package org.interworldtransport.cladosGTest;
+package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosG.Algebra;
 import org.interworldtransport.cladosG.CladosGBuilder;
@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
  * @author Dr Alfred Differ
  *
  */
-public class CoreNyadComplexDTest {
+public class CoreNyadRealFTest {
 	Algebra alg1, alg2;
-	final String aName = "Motion Algebra";
-	final String aName2 = "Property Algebra";
+	final String aName = "MotionAlgebra";
+	final String aName2 = "PropertyAlgebra";
 	final Cardinal charge = CladosFBuilder.createCardinal("q/dV");
 	final String footName = "YouAreHere";
 	final String frameName = "inertial";
@@ -47,10 +47,10 @@ public class CoreNyadComplexDTest {
 		Foot here = CladosGBuilder.createFootLike(footName, speed);
 		here.appendCardinal(charge);
 
-		motion = CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXD.createZERO(speed), here, mNameU,
+		motion = CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALF.createZERO(speed), here, mNameU,
 				aName, frameName, sig4D);
 
-		property = CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXD.createZERO(charge), here, mNameQ,
+		property = CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALF.createZERO(charge), here, mNameQ,
 				aName2, frameName, sig4D);
 
 	}
@@ -110,9 +110,10 @@ public class CoreNyadComplexDTest {
 		thing1.appendMonad(property);
 		assertTrue(thing1.isScalarAt(motion.getAlgebra()));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		((ComplexD) property.getCoeff(0)).setReal(1.0f);
+		((RealF) property.getCoeff(0)).setReal(1.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		property.dualLeft();
+		//System.out.println(NyadRealF.toXMLString(thing1, ""));
 		assertTrue(thing1.isPScalarAt(property.getAlgebra()));
 	}
 	
@@ -120,12 +121,12 @@ public class CoreNyadComplexDTest {
 	void testScalingAt() throws CladosNyadException, CladosMonadException, FieldBinaryException{
 		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
-		((ComplexD) property.getCoeff(0)).setReal(16.0f);
+		((RealF) property.getCoeff(0)).setReal(16.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		
-		thing1.scale(thing1.findMonad(property), ComplexD.newONE(charge).scale(16.0f));
+		thing1.scale(thing1.findMonad(property), RealF.newONE(charge).scale(16.0f));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		assertTrue(((ComplexD) property.getCoeff(0)).getReal() == 256.0f);
+		assertTrue(((RealF) property.getCoeff(0)).getReal() == 256.0f);
 	}
 
 	@Test
@@ -171,7 +172,7 @@ public class CoreNyadComplexDTest {
 	void testXMLShortOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = thing1.toXMLFullString("");
+		String printIt = thing1.toXMLString("");
 		assertTrue(printIt != null);
 		//System.out.println(printIt);
 	}

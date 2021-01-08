@@ -1,4 +1,4 @@
-package org.interworldtransport.cladosGTest;
+package org.interworldtransport.cladosG;
 
 import static org.interworldtransport.cladosG.Monad.isGrade;
 import static org.interworldtransport.cladosG.Monad.isMultiGrade;
@@ -12,9 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFListBuilder;
-import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldException;
-import org.interworldtransport.cladosG.CladosConstant;
 import org.interworldtransport.cladosG.Monad;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -22,12 +21,12 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CoreMonadRealFTest {
-	String fType = "TestMonadRealFs";
-	String mName = "Test MonadRealF ";
+class CoreMonadComplexDTest {
+	String fType = "TestMonadComplexDs";
+	String mName = "Test MonadComplexD ";
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
-	RealF[] cRF;
+	ComplexD[] cRD;
 	Monad tM0;
 	Monad tM1;
 	Monad tM2;
@@ -40,30 +39,31 @@ class CoreMonadRealFTest {
 	Monad tM9;
 
 	@BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		cRF = new RealF[16];
-		Cardinal tSpot = Cardinal.generate(fType);
-		cRF = (RealF[]) CladosFListBuilder.REALF.createONE(tSpot, cRF.length);
+	public void setUp()throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
+		cRD = new ComplexD[16];
+		Cardinal tSpot = Cardinal.generate("TestComplexDs");
+		cRD = (ComplexD[]) CladosFListBuilder.COMPLEXD.createONE(tSpot, cRD.length);
 
-		tM0 = new Monad(mName + "0", aName, "Foot Default Frame", "Test Foot 0", "-+++",
-				new RealF(Cardinal.generate("Test Float 1"), 0f));
-		tM1 = new Monad(mName + "1", aName2, "Foot Default Frame", "Test Foot 1", "-+++",
-				new RealF(Cardinal.generate("Test Float 1"), 0f));
-		tM2 = new Monad(mName + "2", tM1);
-		tM3 = new Monad(mName + "3", tM1);
+		tM0 = new Monad("Test Monad 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
+				new ComplexD(Cardinal.generate("Test Double 1"), 0d, 0d));
+		tM1 = new Monad("Test Monad 1", "Property Algebra", "Foot Default Frame", "Test Foot 1", "-+++",
+				new ComplexD(Cardinal.generate("Test Double 1"), 0d, 0d));
+		//assert(tM1.getMode() == CladosField.COMPLEXD);
+		tM2 = new Monad("Test Monad 2", tM1);
+		tM3 = new Monad("Test Monad 3", tM1);
 		tM4 = new Monad(tM0);
-		tM5 = new Monad(mName + "5", aName, "Foot Default Frame", "Test Foot 5", "-+++",
-				new RealF(Cardinal.generate("Test Float 5"), 0f), "Unit PScalar");
-		tM6 = new Monad(mName + "6", aName2, "Foot Default Frame", "Test Foot 6", "-+++", cRF[0]);
-		tM6.setCoeff(cRF);
+		tM5 = new Monad("Test Monad 5", "Motion Algebra", "Foot Default Frame", "Test Foot 5", "-+++",
+				new ComplexD(Cardinal.generate("Test Double 5"), 0d, 0d), "Unit PScalar");
+		tM6 = new Monad("Test Monad 6", "Property Algebra", "Foot Default Frame", "Test Foot 6", "-+++", cRD[0]);
+		tM6.setCoeff(cRD);
 		tM7 = new Monad(mName + "7", tM6);
 		tM8 = new Monad(mName + "8", tM6);
 		tM9 = new Monad(mName + "9", tM2);
 		
-		RealF tAdj = new RealF(tM9.getAlgebra().getCardinal(), 0.0f);
-		RealF[] tFix = (RealF[]) CladosFListBuilder.REALF.create(tAdj.getCardinal(), 16);
-		tFix[1] = new RealF(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f);
-		tFix[4] = RealF.copyOf(tFix[1]);
+		ComplexD tAdj = new ComplexD(tM9.getAlgebra().getCardinal(), 0.0f);
+		ComplexD[] tFix = (ComplexD[]) CladosFListBuilder.COMPLEXD.create(tAdj.getCardinal(), 16);
+		tFix[1] = new ComplexD(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f, 0.0f);
+		tFix[4] = ComplexD.copyOf(tFix[1]);
 		tM9.setCoeff(tFix); 
 	}
 	
@@ -72,8 +72,8 @@ class CoreMonadRealFTest {
 		assert(tM1.getAlgebra() == tM2.getAlgebra());
 		assert(tM2.getAlgebra() == tM9.getAlgebra());
 		
-		for (int m = 0; m < 100; m++) {
-			//System.out.println("RealF | " + m);
+		for (short m = 0; m < 100; m++) {
+			//System.out.println("ComplexD | " + m);
 			Monad check1 = new Monad(tM9);
 			assertTrue(tM9.isGEqual(check1));
 			check1.multiplyLeft(tM9);
@@ -84,7 +84,7 @@ class CoreMonadRealFTest {
 	@Test
 	public void testConstructionVariants() {
 		assertFalse(isReferenceMatch(tM0, tM1));
-		assertFalse(isReferenceMatch(tM1, tM4));
+		assertTrue(isReferenceMatch(tM1, tM2));
 		assertTrue(isReferenceMatch(tM1, tM3));
 		assertTrue(isReferenceMatch(tM0, tM4));
 	}
@@ -108,15 +108,21 @@ class CoreMonadRealFTest {
 
 	@Test
 	public void testUniMathOps() throws FieldException {
-		tM0.dualLeft();
-		assertTrue(tM4.isGEqual(tM0));
+		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
-		assertTrue(isGZero(tM5.scale(RealF.copyZERO((RealF) tM5.getCoeff(0)))));
+		assertTrue(isGZero(tM5.scale(ComplexD.copyZERO((ComplexD) tM5.getCoeff(0)))));
 		assertTrue(tM6.invert().invert().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
-		
-		assertTrue(RealF.isEqual((RealF) tM6.normalize().magnitude(), RealF.copyONE((RealF) tM7.getCoeff(0))));
-		
+
+		tM6.normalize();
+		if (ComplexD.isEqual((ComplexD) tM6.magnitude(), ComplexD.copyONE((ComplexD) tM7.getCoeff(0)))) {
+			assertTrue(ComplexD.isEqual((ComplexD) tM6.magnitude(), ComplexD.copyONE((ComplexD) tM7.getCoeff(0))));
+		} else {
+			ComplexD tSpot = (ComplexD) tM6.magnitude();
+			assertTrue(tSpot.getImg() == 0.0f);
+			assertTrue(Math.abs(tSpot.getReal() - 1.0f) <= 0.000001f);
+		}
+
 		assertTrue(Monad.hasGrade(tM6, 2));
 		assertTrue(Monad.hasGrade(tM7, 0));
 	}
@@ -125,58 +131,40 @@ class CoreMonadRealFTest {
 	public void testBiOpsTests() {
 		assertTrue(tM1.isGEqual(tM3));
 		assertTrue(tM1.isGEqual(tM2));
-	} 
-	
-	@Test
-	public void testBiMathOps1() throws CladosMonadException {
-		tM6.add(tM7);
-		tM7.scale(new RealF(tM6.getCoeff(0), 2.0f));
-		assertTrue(tM6.isGEqual(tM7));
-		tM6.subtract(tM7).subtract(tM7);
-		tM6.scale(new RealF(tM7.getAlgebra().getCardinal(), CladosConstant.MINUS_ONE_F));
-		assertTrue(tM6.isGEqual(tM7));
 	}
 
 	@Test
-	public void testBiMathOps2() throws CladosMonadException {
-		tM8.gradePart((byte) 4);
-		tM6.multiplyLeft(tM8);
-		tM6.dualLeft();
-		tM6.scale(new RealF(tM6.getAlgebra().getProtoNumber(), CladosConstant.MINUS_ONE_F));
+	public void testBiMathOps1() throws FieldException, CladosMonadException {
+		tM6.add(tM7);
+		tM7.scale(new ComplexD(tM6.getCoeff((short) 0), 2.0f, 0.0f));
+		assertTrue(tM6.isGEqual(tM7));
+		tM6.subtract(tM7).subtract(tM7).scale(new ComplexD(tM7.getCoeff((short) 0).getCardinal(), -1.0f));
+		assertTrue(tM6.isGEqual(tM7));
+
+	}
+
+	@Test
+	public void testBiMathOps2() throws FieldException, CladosMonadException {
+		tM8.gradePart((byte) 4).normalize();
+		tM6.multiplyLeft(tM8).dualLeft();
+		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
+		assertTrue(tM6.isGEqual(tM7));
+
+		tM6.multiplyRight(tM8).dualRight();
+		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
 		assertTrue(tM6.isGEqual(tM7));
 		
-		tM6.multiplyRight(tM8);
-		tM6.dualRight();
-		tM6.scale(new RealF(tM6.getAlgebra().getProtoNumber(), CladosConstant.MINUS_ONE_F));
-		assertTrue(tM6.isGEqual(tM7));
-
-		tM5.setCoeff((RealF[]) tM6.getCoeff());
+		tM5.setCoeff((ComplexD[]) tM6.getCoeff());
 		assertFalse(tM5.isGEqual(tM6));
-
 		tM6.multiplySymm(tM8);
-		tM6.scale(new RealF(tM6.getAlgebra().getProtoNumber(), CladosConstant.MINUS_ONE_F));
+		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
 		assertFalse(tM6.isGEqual(tM7));
 
-		tM6.setCoeff((RealF[]) tM7.getCoeff());
+		tM6.setCoeff((ComplexD[]) tM7.getCoeff());
 		tM6.multiplyAntisymm(tM8);
-		tM6.scale(new RealF(tM6.getAlgebra().getProtoNumber(), CladosConstant.MINUS_ONE_F));
+		tM6.scale(new ComplexD(tM6.getCoeff((short) 0), -1f, 0f));
+		// System.out.println(toXMLString(tM6));
 		assertFalse(tM6.isGEqual(tM7));
 	}
 
-	@Test
-	public void testNewConstructor() throws CladosMonadException {
-		for (short m = 0; m < tM0.getCoeff().length; m++)
-			assertFalse(tM0.getCoeff(m).equals(null));
-		//System.out.println(Monad.toXMLFullString(tM0, ""));
-		Monad newOne = new Monad("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getScales());
-		assertFalse(newOne.equals(null));
-		assertFalse(isReferenceMatch(tM0, newOne));
-	}
-	
-	/*
-	@Test
-	public void testXMLOutput() {
-		System.out.println(MonadRealF.toXMLString(tM6, ""));
-	}
-*/
 }

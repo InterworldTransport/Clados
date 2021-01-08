@@ -1,52 +1,52 @@
-package org.interworldtransport.cladosFTest;
+package org.interworldtransport.cladosF;
 
 import static org.interworldtransport.cladosF.UnitAbstract.isTypeMatch;
-import static org.interworldtransport.cladosF.RealF.add;
-import static org.interworldtransport.cladosF.RealF.conjugate;
-import static org.interworldtransport.cladosF.RealF.divide;
-import static org.interworldtransport.cladosF.RealF.isEqual;
-import static org.interworldtransport.cladosF.RealF.isInfinite;
-import static org.interworldtransport.cladosF.RealF.isNaN;
-import static org.interworldtransport.cladosF.RealF.isZero;
-import static org.interworldtransport.cladosF.RealF.multiply;
-import static org.interworldtransport.cladosF.RealF.subtract;
+import static org.interworldtransport.cladosF.RealD.add;
+import static org.interworldtransport.cladosF.RealD.conjugate;
+import static org.interworldtransport.cladosF.RealD.divide;
+import static org.interworldtransport.cladosF.RealD.isEqual;
+import static org.interworldtransport.cladosF.RealD.isInfinite;
+import static org.interworldtransport.cladosF.RealD.isNaN;
+import static org.interworldtransport.cladosF.RealD.isZero;
+import static org.interworldtransport.cladosF.RealD.multiply;
+import static org.interworldtransport.cladosF.RealD.subtract;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CoreRealFTest {
-	public RealF tReal0;
-	public RealF tReal1;
-	public RealF tReal1n;
-	public RealF tReal2;
-	public RealF tReal3;
-	public RealF tReal4;
-	public RealF tReal5;
-	public RealF tReal6;
-	public RealF tReal7;
-	public RealF tReal8;
-	public RealF tReal9;
-	public RealF[] tReals;
+class CoreRealDTest {
+	public RealD tReal0;
+	public RealD tReal1;
+	public RealD tReal1n;
+	public RealD tReal2;
+	public RealD tReal3;
+	public RealD tReal4;
+	public RealD tReal5;
+	public RealD tReal6;
+	public RealD tReal7;
+	public RealD tReal8;
+	public RealD tReal9;
+	public RealD[] tReals;
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		tReal0 = RealF.newZERO("Test:RealF");
-		tReal1 = RealF.newONE("Test:RealF");
-		tReal1n = new RealF(tReal1.getCardinal(), -1f);
-		tReal2 = new RealF(tReal1.getCardinal(), Float.MAX_VALUE);
-		tReal3 = new RealF(tReal1.getCardinal(), Float.MAX_EXPONENT);
-		tReal4 = new RealF(tReal1.getCardinal(), Float.NaN);
-		tReal5 = new RealF(tReal1.getCardinal(), Float.POSITIVE_INFINITY);
-		tReal6 = new RealF(tReal1.getCardinal(), Float.NEGATIVE_INFINITY);
-		tReal7 = new RealF(tReal1.getCardinal(), Float.MIN_NORMAL);
-		tReal8 = new RealF(tReal1.getCardinal(), Float.MIN_VALUE);
-		tReal9 = new RealF(tReal1.getCardinal(), Float.MIN_EXPONENT);
-		tReals = new RealF[10];
+		tReal0 = RealD.newZERO("Test:RealD");
+		tReal1 = RealD.newONE("Test:RealD");
+		tReal1n = new RealD(tReal1.getCardinal(), -1f);
+		tReal2 = new RealD(tReal1.getCardinal(), Double.MAX_VALUE);
+		tReal3 = new RealD(tReal1.getCardinal(), Double.MAX_EXPONENT);
+		tReal4 = new RealD(tReal1.getCardinal(), Double.NaN);
+		tReal5 = new RealD(tReal1.getCardinal(), Double.POSITIVE_INFINITY);
+		tReal6 = new RealD(tReal1.getCardinal(), Double.NEGATIVE_INFINITY);
+		tReal7 = new RealD(tReal1.getCardinal(), Double.MIN_NORMAL);
+		tReal8 = new RealD(tReal1.getCardinal(), Double.MIN_VALUE);
+		tReal9 = new RealD(tReal1.getCardinal(), Double.MIN_EXPONENT);
+		tReals = new RealD[10];
 		tReals[0] = tReal0;
 		tReals[1] = tReal1;
 		tReals[2] = tReal2;
@@ -100,8 +100,8 @@ class CoreRealFTest {
 
 	@Test
 	public void testGetReal() {
-		float t1 = tReal1.getReal();
-		float t1n = tReal1n.getReal();
+		double t1 = tReal1.getReal();
+		double t1n = tReal1n.getReal();
 		assertTrue(t1 == t1n * -1f);
 	}
 
@@ -109,39 +109,39 @@ class CoreRealFTest {
 	public void testGetModulus() {
 		assertTrue(tReal0.modulus() == 0f);
 		assertTrue(tReal1.modulus() > 0f);
-		assertTrue(Float.isNaN(tReal4.modulus()));
-		assertTrue(Float.isInfinite(tReal5.modulus()));
-		assertTrue(Float.isInfinite(tReal6.modulus()));
-		assertTrue(Float.isInfinite(tReal2.modulus()));
+		assertTrue(Double.isNaN(tReal4.modulus()));
+		assertTrue(Double.isInfinite(tReal5.modulus()));
+		assertTrue(Double.isInfinite(tReal6.modulus()));
+		assertTrue(Double.isInfinite(tReal2.modulus()));
 	}
 
 	@Test
 	public void testGetSQModulus() {
 		assertTrue(tReal0.modulus() == 0f);
 		assertTrue(tReal1.modulus() > 0f);
-		assertTrue(Float.isNaN(tReal4.modulus()));
-		assertTrue(Float.isInfinite(tReal5.modulus()));
-		assertTrue(Float.isInfinite(tReal6.modulus()));
-		assertTrue(Float.isInfinite(tReal2.modulus()));
+		assertTrue(Double.isNaN(tReal4.modulus()));
+		assertTrue(Double.isInfinite(tReal5.modulus()));
+		assertTrue(Double.isInfinite(tReal6.modulus()));
+		assertTrue(Double.isInfinite(tReal2.modulus()));
 	}
 
 	@Test
 	public void testConjugate() {
-		assertTrue(isEqual(tReal0.conjugate(), RealF.copyZERO(tReal0)));
+		assertTrue(isEqual(tReal0.conjugate(), RealD.copyZERO(tReal0)));
 		assertFalse(isEqual(tReal1.conjugate(), tReal1n));
-		RealF tR = conjugate(tReal0);
+		RealD tR = conjugate(tReal0);
 		assertTrue(isEqual(tR, tReal0));
 	}
 
 	@Test
 	public void testScale() {
-		assertTrue(isEqual(tReal1n.scale(Float.valueOf(-1f)), tReal1));
-		tReal1n.scale(Float.valueOf(-1f));
+		assertTrue(isEqual(tReal1n.scale(Double.valueOf(-1d)), tReal1));
+		tReal1n.scale(Double.valueOf(-1d));
 	}
 
 	@Test
 	public void testMultiplyInvert() throws FieldException {
-		tReal1n.scale(Float.valueOf(0.0f));
+		tReal1n.scale(Double.valueOf(0.0d));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tReal1n.invert(), tReal1));
 		Assertions.assertThrows(FieldException.class, () -> isEqual(tReal0.invert(), tReal5));
 	}
@@ -150,7 +150,7 @@ class CoreRealFTest {
 	public void testAdd() throws FieldException {
 		assertTrue(isZero(add(tReal1, tReal1n)));
 		assertTrue(isZero(tReal1.add(tReal1n)));
-		assertFalse(isEqual(tReal1.add(tReal1n).scale(Float.valueOf(-1f)), tReal1n));
+		assertFalse(isEqual(tReal1.add(tReal1n).scale(Double.valueOf(-1d)), tReal1n));
 	}
 
 	@Test
@@ -176,12 +176,12 @@ class CoreRealFTest {
 /*
 	@Test
 	public void testCopyFromSQModuliSum() throws FieldBinaryException {
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.isNaN(RealF.copyFromSQModuliSum(tReals)));
+		Assertions.assertThrows(FieldBinaryException.class, () -> RealD.isNaN(RealD.copyFromSQModuliSum(tReals)));
 	}
 
 	@Test
 	public void testCopyFromModuliSum() throws FieldBinaryException {
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.isNaN(RealF.copyFromModuliSum(tReals)));
+		Assertions.assertThrows(FieldBinaryException.class, () -> RealD.isNaN(RealD.copyFromModuliSum(tReals)));
 	}
 */
 }

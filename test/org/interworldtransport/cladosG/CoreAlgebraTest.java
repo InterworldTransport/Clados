@@ -1,16 +1,18 @@
-package org.interworldtransport.cladosGTest;
+package org.interworldtransport.cladosG;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosG.Algebra;
-import org.interworldtransport.cladosG.Foot;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +25,6 @@ class CoreAlgebraTest {
 	protected RealF rNumber;
 	protected Foot tFoot;
 	protected Foot tFoot2;
-	//protected GProduct gProduct;
 	protected Algebra alg1;
 	protected Algebra alg2;
 
@@ -40,20 +41,18 @@ class CoreAlgebraTest {
 
 	@Test
 	public void testSignatureLinks() throws GeneratorRangeException {
-		assertTrue(alg1.getGBasis() == alg2.getGBasis());
-		// Two algebras share a Basis?
-		//assertTrue(CladosGBuilder.INSTANCE.getBasisListSize() == 1);
-		assertFalse(alg1.getGProduct() == alg2.getGProduct()); // but not the products
-		assertFalse(alg1.getGProduct().signature().equals(alg2.getGProduct().signature()));
-		// because the signatures are different.
+		assertSame(alg1.getGBasis(), alg2.getGBasis(), "Two algebras only have different signatures.");
+		assertNotSame(alg1.getGProduct(), alg2.getGProduct(), "Two sigs ARE different forces different GProducts");
+		assertNotEquals(alg1.getGProduct().signature(), alg2.getGProduct().signature(),
+				"signature strings used in construction were different.");
 	}
-	
+
 	@Test
 	public void testAppendReferenceFrame() {
-		assertFalse(alg1.equals(null));
-		assertTrue(alg1.getReferenceFrames().size() == 1);
+		assertNotNull(alg1, "Algebra setUp properly");
+		assertEquals(alg1.getReferenceFrames().size(), 1, "Default frame (only) present after alg construction.");
 		alg1.appendFrame(fName + "-Spherical");
-		assertTrue(alg1.getReferenceFrames().size() == 2);
+		assertEquals(alg1.getReferenceFrames().size(), 2, "Appended frame makes for two present.");
 	}
 
 	@Test
@@ -70,7 +69,7 @@ class CoreAlgebraTest {
 		// removal, one should find it first.
 		assertTrue(alg2.getReferenceFrames().indexOf("Un-named frame that shouldn't be found.") == -1);
 	}
-	
+
 	@Test
 	public void testFootLinks() {
 		assertTrue(alg1.getFoot() == alg2.getFoot()); // Two algebras share the foot
