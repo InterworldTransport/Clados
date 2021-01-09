@@ -234,7 +234,7 @@ public class UnitAbstract {
 	 * @return String Flat string representation of this Field float(s) field
 	 */
 	public String toXMLString() {
-		return ("<UnitAbstract cardinal=\"" + getCardinalString() + " />");
+		return ("<UnitAbstract cardinal=\"" + getCardinalString() + "\" />");
 	}
 	
 	/**
