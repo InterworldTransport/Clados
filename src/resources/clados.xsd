@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+
+<xs:schema 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="https://interworldtransport.org"
+			xmlns="https://interworldtransport.org"
+			elementFormDefault="qualified">
+
+<xs:element 		name="Cardinal" 	type="Cardinal"/>
+<xs:complexType 	name="Cardinal">
+	<xs:attribute 	name="unit" use="optional">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"></xs:whiteSpace>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+</xs:complexType>
+
+<xs:element	 		name="Cardinals"	type="Cardinals"/>
+<xs:complexType		name="Cardinals">
+	<xs:sequence>
+		<xs:element name="Cardinal"		type="Cardinal"	minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="number" 		type="xs:nonNegativeInteger"/>
+</xs:complexType>
+
+<xs:element 		name="UnitAbstract"	type="UnitAbstract"/>
+<xs:complexType 	name="UnitAbstract">
+	<xs:attribute	name="cardinal" 	type="xs:string"/>
+</xs:complexType>
+
+<xs:element 		name="RealF" 		type="RealF"/>
+<xs:complexType 	name="RealF">
+	<xs:attribute	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element 		name="RealD" 		type="RealD"/>
+<xs:complexType 	name="RealD">
+	<xs:attribute 	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element 		name="ComplexF" 	type="ComplexF"/>
+<xs:complexType 	name="ComplexF">
+	<xs:attribute 	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+	<xs:attribute 	name="imgvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+<xs:element 		name="ComplexD" 	type="ComplexD"/>
+<xs:complexType 	name="ComplexD">
+	<xs:attribute 	name="cardinal" 	type="xs:string"/>
+	<xs:attribute 	name="realvalue" 	type="xs:decimal"/>
+	<xs:attribute 	name="imgvalue" 	type="xs:decimal"/>
+</xs:complexType>
+
+
+<xs:element 		name="Frame" 		type="Frame"/>
+<xs:complexType 	name="Frame">
+	<xs:attribute 	name="number" 		type="xs:nonNegativeInteger" use="optional"/>
+	<xs:attribute 	name="name" use="optional">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"></xs:whiteSpace>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+</xs:complexType>
+
+<xs:element	 		name="Frames"		type="Frames"/>
+<xs:complexType 	name="Frames">
+	<xs:sequence>
+		<xs:element name="Frame" 		type="Frame"	minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="number" 		type="xs:nonNegativeInteger"/>
+</xs:complexType>
+
+<xs:element 		name="Foot" 		type="Foot"/>
+<xs:complexType 	name="Foot">
+	<xs:all>
+		<xs:element	name="Name"			type="xs:string"/>
+		<xs:element name="Cardinals" 	type="Cardinals"/>
+	</xs:all>
+</xs:complexType>
+
+<xs:element 		name="Grade"		type="Grade"/>
+<xs:complexType		name="Grade">
+	<xs:attribute	name="number"		type="xs:nonNegativeInteger"/>
+	<xs:attribute	name="range"		type="xs:string"/>
+</xs:complexType>
+
+<xs:element	 		name="Grades"		type="Grades"/>
+<xs:complexType 	name="Grades">
+	<xs:sequence>
+		<xs:element name="Grade" 		type="Grade"	minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="count" 		type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element 		name="Blade"		type="Blade"/>
+<xs:complexType		name="Blade">
+	<xs:attribute	name="key"			type="xs:nonNegativeInteger"/>
+	<xs:attribute	name="bitKey"		type="xs:string"/>
+	<xs:attribute	name="sign"			type="xs:integer"/>
+	<xs:attribute	name="generators"	type="xs:string"/>
+</xs:complexType>
+
+<xs:element 		name="Blades"		type="Blades"/>
+<xs:complexType 	name="Blades">
+	<xs:sequence>
+		<xs:element name="Blade" 		type="Blade"	minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="count" 		type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element 		name="Basis"		type="Basis"/>
+<xs:complexType 	name="Basis">
+	<xs:all>
+		<xs:element	name="Grades"		type="Grades"/>
+		<xs:element name="Blades" 		type="Blades"/>
+	</xs:all>
+</xs:complexType>
+
+<xs:element 		name="row"			type="row"/>
+<xs:complexType		name="row">
+	<xs:attribute	name="number"		type="xs:nonNegativeInteger"/>
+	<xs:attribute	name="cells"		type="xs:string"/>
+</xs:complexType>
+
+<xs:element	 		name="ProductTable"	type="ProductTable"/>
+<xs:complexType 	name="ProductTable">
+	<xs:sequence>
+		<xs:element name="row" 			type="row"	minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="rows" 		type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element 		name="GProduct"		type="GProduct"/>
+<xs:complexType 	name="GProduct">
+	<xs:all>
+		<xs:element name="Signature"	type="xs:string"/>
+		<xs:element	name="Basis"		type="Basis"/>
+		<xs:element name="ProductTable" type="ProductTable"/>
+	</xs:all>
+</xs:complexType>
+
+<xs:element 		name="Algebra"		type="Algebra"/>
+<xs:complexType 	name="Algebra">
+	<xs:all>
+		<xs:element	name="Name"			type="xs:string"/>
+		<xs:element name="UnitAbstract"	type="UnitAbstract"/>
+		<xs:element name="Frames"		type="Frames"/>
+		<xs:element name="Foot"			type="Foot"/>
+		<xs:element name="GProduct"		type="GProduct"/>
+	</xs:all>
+	<xs:attribute 	name="UUID" 		type="xs:string" use="optional"/>
+</xs:complexType>
+
+<xs:element 		name="Pair"			type="Pair"/>
+<xs:complexType 	name="Pair">
+	<xs:sequence>
+		<xs:element	name="Blade"		type="Blade" minOccurs="1" maxOccurs="1"/>
+		<xs:choice>
+			<xs:element name="RealF" 	type="RealF"/>
+			<xs:element name="RealD" 	type="RealD"/>
+			<xs:element name="ComplexF"	type="ComplexF"/>
+			<xs:element name="ComplexD" type="ComplexD"/>
+		</xs:choice>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:element	 		name="Scales"		type="Scales"/>
+<xs:complexType		name="Scales">
+	<xs:sequence>
+		<xs:element name="Pair" 		type="Pair"	minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="number" 		type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element 		name="Monad"		type="Monad"/>
+<xs:complexType		name="Monad">
+	<xs:all>
+		<xs:element	name="Name"			type="xs:string"/>
+		<xs:element	name="Algebra"		type="Algebra"/>
+		<xs:element name="ReferenceFrame" type="xs:string"/>
+		<xs:element name="Scales" 		type="Scales"/>
+	</xs:all>
+	<xs:attribute 	name="gradeKey" 	type="xs:positiveInteger"/>
+	<xs:attribute 	name="sparseFlag" 	type="xs:boolean"/>
+</xs:complexType>
+
+<xs:element	 		name="MonadList"	type="MonadList"/>
+<xs:complexType		name="MonadList">
+	<xs:sequence>
+		<xs:element name="Monad" 		type="Monad" minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:element			name="AlgebraList"	type="AlgebraList"/>
+<xs:complexType		name="AlgebraList">
+	<xs:sequence>
+		<xs:element name="AlgebraName" 	type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:element			name="Nyad"			type="Nyad"/>
+<xs:complexType		name="Nyad">
+	<xs:all>
+		<xs:element	name="Name"			type="xs:string"/>
+		<xs:element	name="Foot"			type="Foot"/>
+		<xs:element name="AlgebraList" 	type="AlgebraList"/>
+		<xs:element name="MonadList" 	type="MonadList"/>
+	</xs:all>
+	<xs:attribute 	name="order" 		type="xs:positiveInteger"/>
+	<xs:attribute 	name="algorder" 	type="xs:positiveInteger"/>
+</xs:complexType>
+
+<xs:element	 		name="NyadList"		type="NyadList"/>
+<xs:complexType		name="NyadList">
+	<xs:sequence>
+		<xs:element name="Nyad" 		type="Nyad" minOccurs="1" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute 	name="size" 		type="xs:positiveInteger" use="required"/>
+</xs:complexType>
+
+</xs:schema>

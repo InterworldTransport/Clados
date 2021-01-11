@@ -1002,8 +1002,7 @@ public class Nyad implements Modal {
 		rB.append(getFoot().toXMLString(indent + "\t"));
 		rB.append(indent).append("\t<AlgebraList>\n");
 		for (Algebra point : getAlgebraList())
-			rB.append(indent).append("\t\t<Algebra>\n\t\t\t\t<Name>").append(point.getAlgebraName()).append("</Name>\n")
-					.append(indent).append("\t\t</Algebra>\n");
+			rB.append(indent).append("\t\t<AlgebraName>").append(point.getAlgebraName()).append("</AlgebraName>\n");
 		rB.append(indent).append("\t</AlgebraList>\n");
 		rB.append(indent).append("\t<MonadList>\n");
 		for (Monad tSpot : getMonadList())

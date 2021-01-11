@@ -323,7 +323,7 @@ public class Monad implements Modal {
 		rB.append(">\n");
 		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
 		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
-		rB.append(indent + "\t<Frame>\"").append(pM.getFrameName()).append("\"</Frame>\n");
+		rB.append(indent + "\t<ReferenceFrame>\"").append(pM.getFrameName()).append("\"</ReferenceFrame>\n");
 		rB.append(indent).append(pM.scales.toXMLString("\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
