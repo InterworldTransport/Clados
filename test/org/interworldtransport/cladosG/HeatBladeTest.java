@@ -1,11 +1,10 @@
 package org.interworldtransport.cladosG;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 
-import org.interworldtransport.cladosG.Blade;
-import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -36,7 +35,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -47,7 +46,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -58,7 +57,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -69,7 +68,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -80,7 +79,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -91,7 +90,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -102,7 +101,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -113,7 +112,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -124,7 +123,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -135,7 +134,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -146,7 +145,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -157,7 +156,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -168,7 +167,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -178,7 +177,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 	
@@ -188,7 +187,7 @@ class HeatBladeTest {
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
 			a0 = new Blade((byte) j.length, j);
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 

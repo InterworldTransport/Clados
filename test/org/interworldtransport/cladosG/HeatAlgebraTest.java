@@ -30,7 +30,7 @@ class HeatAlgebraTest {
 	public void testGen01() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -38,7 +38,7 @@ class HeatAlgebraTest {
 	public void testGen02() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -46,7 +46,7 @@ class HeatAlgebraTest {
 	public void testGen03() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -54,7 +54,7 @@ class HeatAlgebraTest {
 	public void testGen04() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -62,7 +62,7 @@ class HeatAlgebraTest {
 	public void testGen05() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -70,7 +70,7 @@ class HeatAlgebraTest {
 	public void testGen06() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < 100; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -78,7 +78,7 @@ class HeatAlgebraTest {
 	public void testGen07() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < 100; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -86,7 +86,7 @@ class HeatAlgebraTest {
 	public void testGen08() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < 100; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -94,7 +94,7 @@ class HeatAlgebraTest {
 	public void testGen09() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < 100; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -102,7 +102,7 @@ class HeatAlgebraTest {
 	public void testGen10() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -110,7 +110,7 @@ class HeatAlgebraTest {
 	public void testGen11() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -118,7 +118,7 @@ class HeatAlgebraTest {
 	public void testGen12() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "-+++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -126,7 +126,7 @@ class HeatAlgebraTest {
 	public void testGen13() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+-+++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -134,7 +134,7 @@ class HeatAlgebraTest {
 	public void testGen14() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "++-+++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 
@@ -142,7 +142,7 @@ class HeatAlgebraTest {
 	public void testGen15() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "+++-+++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 /*	
@@ -150,7 +150,7 @@ class HeatAlgebraTest {
 	public void testGen16() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
 			a0 = CladosGAlgebra.create(coeff, aName, ftName, "-+++-+++-+++-+++");
-			assertFalse(a0 == null);
+			assertNotNull(a0);
 		}
 	}
 */
