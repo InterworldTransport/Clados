@@ -65,7 +65,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * present in the multivector and skip potentially large blocks in the sums with
  * vanishing contributions. However, sparseness is detected using a
  * multivector's key and NOT a Blade's key. Once Blades are sorted into a basis,
- * blade keys are only one more time. This occurs when a product table is
+ * blade keys are only used one more time. This occurs when a product table is
  * constructed. Blade keys are used to identify the resulting Blade for re-use.
  * <p>
  * NOTE that Blade keys are currently kept as long integers. The key for a
@@ -222,14 +222,14 @@ public final class Basis implements CanonicalBasis {
 	 * it has no awareness of the addition and multiplication operations in an
 	 * algebra, so all it does is show the basis.
 	 * <p>
-	 * @param pGens short This is the number of generators that make up the basis
+	 * @param pGens byte This is the number of generators that make up the basis
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 the supported range. {0, 1, ..., CladosConstant.MAXGRADE}
 	 */
 	public Basis(byte pGens) throws GeneratorRangeException {
 		if (!CanonicalBasis.validateSize(pGens))
-			throw new GeneratorRangeException("Supported range is 0<->14 using 8 bit integers");
+			throw new GeneratorRangeException("Supported range is 0<->CladosConstant.MAXGRADE using 8 bit integers");
 		// ------Initialize
 		gradeCount = (byte) (pGens + 1);
 		gradeList = new ArrayList<Integer>(gradeCount);
