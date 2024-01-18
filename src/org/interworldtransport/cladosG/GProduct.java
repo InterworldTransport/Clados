@@ -41,7 +41,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * <p>
  * Most errors can be avoided by using CladosGBuilder to construct this object.
  * However, it shouldn't be necessary to construct a GProduct directly. Best
- * practice is to create an algebra and let it construct it's product.
+ * practice is to create an algebra and let it construct its product.
  * <p>
  * The implemented interface is currently all the methods available in this
  * class. That will change in the future as helper methods are built here that
@@ -86,7 +86,7 @@ public class GProduct implements CliffordProduct {
 	private final String signature;
 
 	/**
-	 * Main constructor of ProductTable with signature information passed in. It
+	 * Main constructor of GProduct with signature information passed in. It
 	 * figures out the rest of what it needs.
 	 * <p>
 	 * @param pSig String form of the signature. Looks like "-+++".
@@ -100,7 +100,7 @@ public class GProduct implements CliffordProduct {
 	}
 
 	/**
-	 * Main constructor of ProductTable with signature information passed in. It
+	 * A re-use constructor of GProduct with signature and Basis passed in. It
 	 * figures out the rest of what it needs.
 	 * <p>
 	 * @param pSig String form of the signature. Looks like "-+++".
@@ -150,7 +150,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final int getACommuteSign(int pRow, int pCol) {
-		return (result[pRow][pCol] == result[pCol][pRow] * -1) ? 1 : 0;
+		return (result[pRow][pCol] == result[pCol][pRow]) ? 0 : 1;
 	}
 
 	/**
@@ -255,7 +255,7 @@ public class GProduct implements CliffordProduct {
 	}
 
 	/**
-	 * Return the signature of the generator geometry. This lists the squares of the
+	 * Return the signature of the generating geometry. This lists the squares of the
 	 * generators in their numeric order.
 	 * <p>
 	 * @return String
