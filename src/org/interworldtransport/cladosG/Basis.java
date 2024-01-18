@@ -217,7 +217,7 @@ public final class Basis implements CanonicalBasis {
 	private final TreeMap<Long, Integer> keyIndexMap;
 
 	/**
-	 * This is the basic constructor. It takes the number of generators as it's only
+	 * This is the basic constructor. It takes the number of generators as its only
 	 * parameter. It can be instantiated on it's own for demonstration purposes, but
 	 * it has no awareness of the addition and multiplication operations in an
 	 * algebra, so all it does is show the basis.

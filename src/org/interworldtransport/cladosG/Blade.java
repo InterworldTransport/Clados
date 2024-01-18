@@ -304,12 +304,8 @@ public class Blade implements Comparable<Blade> {
 	 *                appear in this blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
-	 *                                 than 14 directions. The current maximum is 14
-	 *                                 because a Basis internal array is indexed on
-	 *                                 byte integers. If 15 generators were
-	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for byte
-	 *                                 integers.
+	 *                                 too many directions. The current maximum is 
+	 *                                 found in CladosConstant.GENERATOR_MAX.
 	 */
 	public Blade(byte pMaxGen) throws GeneratorRangeException {
 		if (!CanonicalBasis.validateSize(pMaxGen))
@@ -327,12 +323,8 @@ public class Blade implements Comparable<Blade> {
 	 * @param pDirs   Generator[] containing directions to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
-	 *                                 than 14 directions. The current maximum is 14
-	 *                                 because a Basis internal array is indexed on
-	 *                                 byte integers. If 15 generators were
-	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for byte
-	 *                                 integers.
+	 *                                 too many directions. The current maximum is 
+	 *                                 found in CladosConstant.GENERATOR_MAX.
 	 */
 	public Blade(byte pMaxGen, EnumSet<Generator> pDirs) throws GeneratorRangeException {
 		this(pMaxGen);
@@ -349,12 +341,8 @@ public class Blade implements Comparable<Blade> {
 	 * @param pDirs   Generator[] containing directions to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with more
-	 *                                 than 14 directions. The current maximum is 14
-	 *                                 because a Basis internal array is indexed on
-	 *                                 byte integers. If 15 generators were
-	 *                                 expected, the basis would need a row index
-	 *                                 from 0 to 2^15 which is one too many for byte
-	 *                                 integers.
+	 *                                 too many directions. The current maximum is 
+	 *                                 found in CladosConstant.GENERATOR_MAX.
 	 */
 	public Blade(byte pMaxGen, Generator[] pDirs) throws GeneratorRangeException {
 		this(pMaxGen);
