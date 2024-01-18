@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosG.Foot;
+//import org.interworldtransport.cladosG.Foot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

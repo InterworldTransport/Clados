@@ -2,8 +2,8 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosG.Blade;
-import org.interworldtransport.cladosG.Generator;
+//import org.interworldtransport.cladosG.Blade;
+//import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

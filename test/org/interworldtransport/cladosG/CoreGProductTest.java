@@ -2,10 +2,10 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosG.CladosGBuilder;
-import org.interworldtransport.cladosG.CladosGCache;
-import org.interworldtransport.cladosG.CliffordProduct;
-import org.interworldtransport.cladosG.GProduct;
+//import org.interworldtransport.cladosG.CladosGBuilder;
+//import org.interworldtransport.cladosG.CladosGCache;
+//import org.interworldtransport.cladosG.CliffordProduct;
+//import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
