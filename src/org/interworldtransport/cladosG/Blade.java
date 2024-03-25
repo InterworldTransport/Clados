@@ -123,7 +123,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * This is a specialty name that does the same thing as createBlade(gen), but
-	 * allows for humans to correctly read the intend of a developer when the result
+	 * allows for humans to correctly read the intent of a developer when the result
 	 * Blade is expected to be a scalar.
 	 * <p>
 	 * @param pGen This points to the highest generator that could be used.

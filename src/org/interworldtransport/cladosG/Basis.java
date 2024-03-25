@@ -218,7 +218,7 @@ public final class Basis implements CanonicalBasis {
 
 	/**
 	 * This is the basic constructor. It takes the number of generators as its only
-	 * parameter. It can be instantiated on it's own for demonstration purposes, but
+	 * parameter. It can be instantiated on its own for demonstration purposes, but
 	 * it has no awareness of the addition and multiplication operations in an
 	 * algebra, so all it does is show the basis.
 	 * <p>
