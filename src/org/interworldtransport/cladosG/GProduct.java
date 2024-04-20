@@ -69,13 +69,10 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * This array holds the geometric multiplication table for a Clifford algebra
 	 * using the associated basis. The array contains numbers that represent the
-	 * blade # one would produce with a product of blades (row+1) and (column+1) of
+	 * blade # one would produce with a product of blades (row) and (column) of
 	 * result.
 	 * <p>
 	 * Negative results in the array imply the resulting blade is scaled by -1.
-	 * <p>
-	 * The +1 offsets are present because java arrays start with an index of 0,
-	 * while the lowest rank blade is #1.
 	 */
 	private final int[][] result;
 
@@ -121,6 +118,7 @@ public class GProduct implements CliffordProduct {
 		for (char b : pSig.toCharArray()) {
 			switch (b) {
 			case '+' -> nSignature[m] = 1;
+//			case '0' -> nSignature[m] = 0;
 			case '-' -> nSignature[m] = -1;
 			}
 			m++;
