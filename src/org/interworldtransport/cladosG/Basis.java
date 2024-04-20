@@ -119,9 +119,9 @@ public final class Basis implements CanonicalBasis {
 
 	/**
 	 * This is just a factory method to help name a particular constructor. It is
-	 * used in place of 'new Basis(short)'.
+	 * used in place of 'new Basis(byte)'.
 	 * <p>
-	 * @param numberOfGenerators Short representing unique algebraic directions
+	 * @param numberOfGenerators Byte representing unique algebraic directions
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
