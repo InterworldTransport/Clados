@@ -569,6 +569,7 @@ public class Blade implements Comparable<Blade> {
 			return this;
 		else {
 			blade.removeAll(pS);
+			makeKey(); // Removing anything changes the key.
 			return this;
 		}
 	}
