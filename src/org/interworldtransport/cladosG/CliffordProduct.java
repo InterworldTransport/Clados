@@ -65,9 +65,9 @@ public interface CliffordProduct {
 				case '-' -> {
 					continue;
 				}
-				case '0' -> {
-					continue;
-				}
+//				case '0' -> {
+//					continue;
+//				}
 				default -> {
 					return false;
 				}
