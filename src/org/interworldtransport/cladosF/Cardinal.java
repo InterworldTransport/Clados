@@ -107,7 +107,7 @@ public final class Cardinal {
 		if (unit == null) {
 			if (other.unit != null)
 				return false;
-		} else if (!unit.equals(other.unit))
+		} else if (!this.getUnit().equals(other.getUnit()))
 			return false;
 		return true;
 	}
