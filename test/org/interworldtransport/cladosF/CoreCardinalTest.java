@@ -15,19 +15,19 @@ class CoreCardinalTest {
         tCard2 = Cardinal.generate(CladosField.REALF);
     }
 
-@Test
+    @Test
     public void testCardinalEquality() {
         assertFalse(tCard1.equals(tCard2)); //their unit strings do not match
         Cardinal tCard3 = tCard2;
         assertTrue(tCard3.equals(tCard2)); //object equality wins out
     }
 
-@Test
+    @Test
     public void testHashMatch() {    
         assertFalse(tCard1.hashCode() == tCard2.hashCode());
     }
 
-@Test
+    @Test
     public void testXMLOut() {
         Cardinal tCard4 = Cardinal.generate(CladosField.REALF);
         assertTrue(tCard4.equals(tCard2)); // Enum was used forcing string match
