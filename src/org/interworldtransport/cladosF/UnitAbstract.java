@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.UnitAbstract<br>
  * -------------------------------------------------------------------- <p>
@@ -27,19 +27,21 @@ package org.interworldtransport.cladosF;
 import java.util.Optional;
 
 /**
- * This class supports the concept of a Division Field from mathematics. Field
- * objects within the clados packages are used as 'numbers' in the definition of
- * an algebra. All Clados objects use UnitAbstract descendants as a result.
+ * This is the parent class of children that support the notion of a division 
+ * field from mathematics. Field objects in the package are used as 'numbers' 
+ * in the definition of an algebra. 
  * <p>
- * UnitAbstract's capture only a reference frame type, so they appear to be named.
- * However, they are named with Cardinal objects so their names can be shared as
- * references, thus survive reference frame match tests.
+ * UnitAbstract handles unit reference common to all its children. It also
+ * implements comparisons that can be overridden in the children if deep
+ * comparisons are necessary. For example, equality tests at this level only 
+ * test high level references to object and cardinal equality. This would be
+ * enough for unit type matching.
  * <p>
- * The number to be plugged in, though, doesn't appear until later in a child of
- * this class. This matters because the number of reals involved in the field
- * varies. Complex numbers require two. Quaternions would require four.
+ * The number(s) to be plugged in, though, don't appear until a child of
+ * this class. This happens because the number of reals involved in a division 
+ * field varies. Complex numbers require two. Quaternions require four.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class UnitAbstract {
@@ -166,6 +168,10 @@ public class UnitAbstract {
 	public static final boolean isTypeMatch(UnitAbstract pE, UnitAbstract pF) {
 		if (pE._card == null && pF._card == null)
 			return true;
+		if (pE._card != null && pF._card == null)
+			return false;
+		if (pE._card == null && pF._card != null)
+			return false;
 		return pE._card.getUnit() == pF._card.getUnit();
 	}
 
@@ -194,12 +200,19 @@ public class UnitAbstract {
 		if (getClass() != obj.getClass())
 			return false;
 		UnitAbstract other = (UnitAbstract) obj;
-		if (_card == null) {
-			if (other._card != null)
+		if (this.getCardinal() == null) {
+			if (other.getCardinal() == null)
+				return true;
+			else 
 				return false;
-		} else if (!_card.equals(other._card))
+		}
+		else { 
+			if (other.getCardinal() == null)
 			return false;
-		return true;
+		}
+		return getCardinal().equals(other.getCardinal());
+		
+		
 	}
 
 	/**
@@ -224,7 +237,7 @@ public class UnitAbstract {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((_card == null) ? 0 : _card.hashCode());
+		result = prime * result + ((getCardinal() == null) ? 0 : getCardinal().hashCode());
 		return result;
 	}
 
