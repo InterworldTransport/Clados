@@ -252,7 +252,9 @@ public enum CladosFListBuilder {
 	 * @return UnitAbstract[] Newly constructed ZEROS using incoming cardinal.
 	 */
 	public UnitAbstract[] create(Cardinal pCard, int pSize) {
-		CladosFCache.INSTANCE.appendCardinal(pCard); // Just in case
+		if (pCard != null) {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // Just in case
+		}
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
@@ -378,6 +380,9 @@ public enum CladosFListBuilder {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field> List<T> createListOf(Cardinal pCard, int pSize) {
+		if (pCard != null) {
+			CladosFCache.INSTANCE.appendCardinal(pCard); //Just in case.
+		}
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
@@ -409,8 +414,11 @@ public enum CladosFListBuilder {
 		}
 	}
 
+
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
+	 * <p>
+	 * This method relies on the mode of the builder called to create the number.
 	 * <p>
 	 * @param pSize The size oF the array to create.
 	 * @param <T> UnitAbstract number from CladosF with Field interface.
@@ -419,24 +427,16 @@ public enum CladosFListBuilder {
 	public <T extends UnitAbstract & Field> List<T> createListOf(int pSize) {
 		switch (this) {
 		case REALF -> {
-			Cardinal def = Cardinal.generate(CladosField.REALF);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			return REALF.createListOf(Cardinal.generate(CladosField.REALF), pSize);
 		}
 		case REALD -> {
-			Cardinal def = Cardinal.generate(CladosField.REALD);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			return REALD.createListOf(Cardinal.generate(CladosField.REALD), pSize);
 		}
 		case COMPLEXF -> {
-			Cardinal def = Cardinal.generate(CladosField.COMPLEXF);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			return COMPLEXF.createListOf(Cardinal.generate(CladosField.COMPLEXF), pSize);
 		}
 		case COMPLEXD -> {
-			Cardinal def = Cardinal.generate(CladosField.COMPLEXD);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
+			return COMPLEXD.createListOf(Cardinal.generate(CladosField.COMPLEXD), pSize);
 		}
 		default -> {
 			return null;
@@ -445,7 +445,7 @@ public enum CladosFListBuilder {
 	}
 
 	/**
-	 * This method returns an array of numbers using the default Cardinal.
+	 * This method returns an List of numbers using the string to create a Cardinal.
 	 * <p>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <p>
@@ -456,31 +456,7 @@ public enum CladosFListBuilder {
 	 * @return List of UnitAbstract children as ZEROS with default cardinals.
 	 */
 	public <T extends UnitAbstract & Field> List<T> createListOf(String pS, int pSize) {
-		switch (this) {
-		case REALF -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
-		}
-		case REALD -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
-		}
-		case COMPLEXF -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
-		}
-		case COMPLEXD -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return createListOf(def, pSize);
-		}
-		default -> {
-			return null;
-		}
-		}
+			return createListOf(Cardinal.generate(pS), pSize);		
 	}
 
 	/**
