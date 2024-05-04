@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosFBuilder<br>
  * -------------------------------------------------------------------- <p>
@@ -33,7 +33,7 @@ import java.util.List;
  * <p>
  * This is facilitated by the CladosField enumeration.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum CladosFListBuilder {
@@ -69,7 +69,7 @@ public enum CladosFListBuilder {
 	 * @param <T> UnitAbstract number from CladosF with Field interface.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static <T extends UnitAbstract & Field> List<T> copyOf(CladosField pField, List<T> pD) {
+	public final static <T extends UnitAbstract & Field> List<T> copyListOf(CladosField pField, List<T> pD) {
 		switch (pField) {
 		case REALF -> {
 			return CladosFListBuilder.REALF.copyListOf(pD);
@@ -317,7 +317,8 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the default Cardinal.
 	 * <p>
-	 * This method relies on the mode of the builder called to create the number.
+	 * This method relies on the mode of the builder called to create the number,
+	 * but not here. It shows up in this method depending on the other.
 	 * <p>
 	 * @param pS    The String name for a new cardinal to use in UnitAbstract
 	 *              children
@@ -325,31 +326,9 @@ public enum CladosFListBuilder {
 	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
 	 */
 	public UnitAbstract[] create(String pS, int pSize) {
-		switch (this) {
-		case REALF -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
-		}
-		case REALD -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
-		}
-		case COMPLEXF -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
-		}
-		case COMPLEXD -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			return create(def, pSize);
-		}
-		default -> {
-			return null;
-		}
-		}
+		Cardinal def = Cardinal.generate(pS);
+		CladosFCache.INSTANCE.appendCardinal(def);
+		return create(def, pSize);
 	}
 
 	/**
@@ -469,6 +448,9 @@ public enum CladosFListBuilder {
 	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
 	 */
 	public UnitAbstract[] createONE(Cardinal pCard, int pSize) {
+		if (pCard != null) {
+			CladosFCache.INSTANCE.appendCardinal(pCard); // Just in case
+		}
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
@@ -511,36 +493,16 @@ public enum CladosFListBuilder {
 	public UnitAbstract[] createONE(int pSize) {
 		switch (this) {
 		case REALF -> {
-			Cardinal def = Cardinal.generate(CladosField.REALF);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			RealF[] tSpot = new RealF[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealF) CladosFBuilder.REALF.createONE(def);
-			return tSpot;
+			return createONE(Cardinal.generate(CladosField.REALF), pSize);
 		}
 		case REALD -> {
-			Cardinal def = Cardinal.generate(CladosField.REALD);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			RealD[] tSpot = new RealD[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealD) CladosFBuilder.REALD.createONE(def);
-			return tSpot;
+			return createONE(Cardinal.generate(CladosField.REALD), pSize);
 		}
 		case COMPLEXF -> {
-			Cardinal def = Cardinal.generate(CladosField.COMPLEXF);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			ComplexF[] tSpot = new ComplexF[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createONE(def);
-			return tSpot;
+			return createONE(Cardinal.generate(CladosField.COMPLEXF), pSize);
 		}
 		case COMPLEXD -> {
-			Cardinal def = Cardinal.generate(CladosField.COMPLEXD);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			ComplexD[] tSpot = new ComplexD[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createONE(def);
-			return tSpot;
+			return createONE(Cardinal.generate(CladosField.COMPLEXD), pSize);
 		}
 		default -> {
 			return null;
@@ -551,49 +513,17 @@ public enum CladosFListBuilder {
 	/**
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * <p>
-	 * This method relies on the mode of the builder called to create the number.
+	 * This method relies on the mode of the builder called to create the number,
+	 * but not right in this method. It shows up in the method actually called 
+	 * by this one.
 	 * <p>
 	 * @param pS    String name for new cardinal to use in UnitAbstract children.
 	 * @param pSize The size of the array to create.
 	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
 	 */
 	public UnitAbstract[] createONE(String pS, int pSize) {
-		switch (this) {
-		case REALF -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			RealF[] tSpot = new RealF[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealF) CladosFBuilder.REALF.createONE(def);
-			return tSpot;
-		}
-		case REALD -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			RealD[] tSpot = new RealD[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealD) CladosFBuilder.REALD.createONE(def);
-			return tSpot;
-		}
-		case COMPLEXF -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			ComplexF[] tSpot = new ComplexF[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createONE(def);
-			return tSpot;
-		}
-		case COMPLEXD -> {
-			Cardinal def = Cardinal.generate(pS);
-			CladosFCache.INSTANCE.appendCardinal(def);
-			ComplexD[] tSpot = new ComplexD[pSize];
-			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createONE(def);
-			return tSpot;
-		}
-		default -> {
-			return null;
-		}
-		}
+		Cardinal def = Cardinal.generate(pS);
+		CladosFCache.INSTANCE.appendCardinal(def);
+		return createONE(def, pSize);
 	}
 }
