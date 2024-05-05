@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.CladosConstant<br>
  * -------------------------------------------------------------------- <p>
@@ -30,7 +30,7 @@ import java.util.List;
  * This class just acts as a bucket for magic numbers so they aren't nightmarish
  * to find when they change in the future.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public final class CladosConstant {
@@ -43,11 +43,10 @@ public final class CladosConstant {
 	 * can change here when Clados is reworked to support larger algebras. Changing
 	 * it here enables all support validity testing methods to refer here instead of
 	 * supporting their own 'magic numbers'.
-	 * 
-	 * At present it is as large as it can be. The internal representation for generators
-	 * involved byte integers which range from 0-15. So... Generator.EF happens to be 15.
+	 * <p>
+	 * At present it is as large as it can be for the computer being used to test it.
 	 */
-	public final static Generator GENERATOR_MAX = Generator.EF;
+	public final static Generator GENERATOR_MAX = Generator.EG;
 	/**
 	 * This is teh smallest grade supported by Clados.
 	 */

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Generator<br>
  * -------------------------------------------------------------------- <p>
@@ -107,11 +107,11 @@ public enum Generator {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	EF((byte) 15);
+	EF((byte) 15),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	//EG((byte) 16);
+	EG((byte) 16);
 
 	/**
 	 * This method returns an unlimited stream of generators in this enumeration.
