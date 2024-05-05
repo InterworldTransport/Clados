@@ -43,6 +43,9 @@ public final class CladosConstant {
 	 * can change here when Clados is reworked to support larger algebras. Changing
 	 * it here enables all support validity testing methods to refer here instead of
 	 * supporting their own 'magic numbers'.
+	 * 
+	 * At present it is as large as it can be. The internal representation for generators
+	 * involved byte integers which range from 0-15. So... Generator.EF happens to be 15.
 	 */
 	public final static Generator GENERATOR_MAX = Generator.EF;
 	/**

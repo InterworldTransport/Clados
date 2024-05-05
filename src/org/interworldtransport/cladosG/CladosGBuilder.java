@@ -73,8 +73,9 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			StringBuffer tSpot = new StringBuffer();
 			for (char j : pSig.toCharArray())
 				switch (j) {
-				case '+' -> tSpot.append(j); // good character
-				case '-' -> tSpot.append(j); // good character
+				case '+' -> tSpot.append(j); // good character (hyperbolic generator)
+			//	case '0' -> tSpot.append(j); // good character (dual generator)
+				case '-' -> tSpot.append(j); // good character (imaginary generator)
 				}
 			if (tSpot.length() > CladosConstant.MAXGRADE)
 				return tSpot.substring(0, CladosConstant.MAXGRADE).toString();

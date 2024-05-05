@@ -109,16 +109,42 @@ import org.interworldtransport.cladosFExceptions.FieldException;
 public final class Scale<D extends UnitAbstract & Field & Normalizable> implements Unitized, Modal {
 	/**
 	 * When entries appear in the internal map, they should all share the same
-	 * cardinal. That cardinal is referenced here.
+	 * cardinal. That cardinal is referenced here where it gives meaning to the weights
+	 * in this scale. This is WHY Scale implments Unitized.
 	 */
 	private Cardinal card;
+
+	/**
+	 * This basis is the reference against which these scaling weights make sense. 
+	 * For example, a list of 16 real floats is just a tuple. When coupled to a basis, 
+	 * they become weights for a sum of geometry composing a multivector.
+	 * <p>
+	 * Once set, the applicable basis should not change. Scales make sense
+	 * RELATIVE to a basis. Never on their own.
+	 */
 	private final CanonicalBasis gBasis;
+
+	/**
+	 * This hash map is that actual list of weights mapped by their applicable blade.
+	 * In use, one calls the Scale's get(Blade) to get a generic that happens to be 
+	 * a CladosF.UnitAbstract child. One can also call a number of specialized 
+	 * gettors to get weights for well named blades.
+	 * <p>
+	 * This feature used to be a simple array of particular children of UnitAbstract,
+	 * but that made for several different, but mostly related implementations of Scale
+	 * or of burying Scale in Monad and maintaining several mostly related versions 
+	 * of those. Using a map like this reduces the family of objects in CladosG at
+	 * the cost of swapping data structures from an array to a hash map.
+	 */
 	private IdentityHashMap<Blade, D> map;
 
 	/**
 	 * This is the type of UnitAbstract that should be present in the list held by
 	 * this class. For example, if mode = CladosField.REALF, then all elements in
-	 * the list will be the RealF child of UnitAbstract.
+	 * the list will be the RealF child of UnitAbstract. 
+	 * <p>
+	 * Mode ensures the scale elements all have the same precision and come from the same 
+	 * numeric field. It is also WHY Scale implements Modal.
 	 */
 	private CladosField mode;
 
@@ -669,25 +695,14 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * Remove a key/value pair in the map of coefficients. A Blade acts as key.
-	 * <p>
-	 * NOTE this doesn't ACTUALLY remove the blade from the map. The internal map
-	 * must always have a full key set, so the value at that key is zero'd.
-	 * <p>
-	 * @param pB Blade key to zero out the related coefficient
-	 * @return Scale object. Just this object after modification.
-	 */
-	@SuppressWarnings("unchecked")
-	public Scale<D> remove(Blade pB) {
-		if (pB != null & map.containsKey(pB))
-			map.put(pB, (D) CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
-		return this;
-	}
-
-	/**
 	 * This method reverses all the order of implied multiplication in blade
 	 * generators and works out the sign implications for the values in the internal
 	 * map. No typeMismatch can occur here.
+	 * <p>
+	 * This method shows that blade reversion is handled HERE and not with the sign 
+	 * of the blades themselves. The sign in Blade is ONLY for the order of the 
+	 * enumset of its generators. Grade convolutions are remembered in Scale by
+	 * flipping signs of the UnitAbstract child values in map.
 	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
@@ -695,14 +710,14 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		gBasis.gradeStream().filter(j -> (j % 4 > 1)).parallel().forEach(grade -> {
 			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
 				switch (mode) {
-				case REALF:
+				case REALF:	//Tricky here. This case falls through to the next and gets handled.
 				case COMPLEXF:
 					((Field) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-					break;
-				case REALD:
+					break;	//Both cases handled in one then break.
+				case REALD:	//Tricky here. This case falls through to the next and gets handled.
 				case COMPLEXD:
 					((Field) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-				}
+				}			//Both cases handled in one then done.
 			});
 		});
 		return this;
@@ -724,7 +739,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				try {
 					((Field) div).multiply(pIn);
 				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Can't scale with mismatched cardinal.");
+					throw new IllegalArgumentException("Can't scale with mismatched cardinal or mode.");
 				}
 			});
 		}
@@ -943,6 +958,22 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
 			map.put(blade, (D) CladosFBuilder.createZERO(mode, card));
 		});
+		return this;
+	}
+
+	/**
+	 * Zero the value at the offered blade.
+	 * <p>
+	 * NOTE this doesn't remove the blade from the map because the basis should
+	 * never change. The mapped value at that blade is zero'd.
+	 * <p>
+	 * @param pB Blade key to zero out the related coefficient
+	 * @return Scale object. Just this object after modification.
+	 */
+	@SuppressWarnings("unchecked")
+	public Scale<D> zeroAt(Blade pB) {
+		if (pB != null & map.containsKey(pB))
+			map.put(pB, (D) CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
 		return this;
 	}
 

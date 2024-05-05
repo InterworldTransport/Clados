@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Foot<br>
  * -------------------------------------------------------------------- <p>
@@ -25,7 +25,6 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
-//import java.util.ListIterator;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosFBuilder;
@@ -45,7 +44,7 @@ import org.interworldtransport.cladosF.UnitAbstract;
  * would assign to the coordinate space that is the manifold at that point. This
  * makes a footPoint the root reference frame.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public final class Foot {
@@ -80,12 +79,13 @@ public final class Foot {
 	 */
 	private ArrayList<Cardinal> cardinalList;
 	/**
-	 * This String is the name the footPoint of the Reference Frame of the Monad
+	 * This String is the name the footPoint. Think of it as naming the tangent
+	 * point between a flat algebra and the curvy manifold.
 	 */
 	private String footName;
 
 	/**
-	 * Build the footPoint object from scratch.
+	 * Build the Foot from scratch.
 	 * <p>
 	 * @param pName String This string will be the name of the foot point.
 	 */
@@ -96,7 +96,7 @@ public final class Foot {
 	}
 
 	/**
-	 * Build the footPoint object from scratch.
+	 * Build the Foot from scratch then put the Cardinal in the internal list.
 	 * <p>
 	 * @param pName String This string will be the name of the foot point.
 	 * @param pFT   Cardinal This object defines the kind of numbers that are
@@ -109,7 +109,7 @@ public final class Foot {
 	}
 
 	/**
-	 * Build the footPoint object from scratch.
+	 * Build the Foot from scratch then put the number's Cardinal in the internal list.
 	 * <p>
 	 * @param pName String This string will be the name of the foot point.
 	 * @param pF    UnitAbstract This object holds the cardinal that defines the kind of

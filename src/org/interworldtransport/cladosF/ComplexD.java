@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.ComplexD<br>
  * -------------------------------------------------------------------- <p>
@@ -45,7 +45,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * Ideally, this would extend java.lang.Double and implement an interface called
  * DivFieldD. That can't be done, though, because Double is final.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class ComplexD extends UnitAbstract implements Field, Normalizable {
@@ -61,7 +61,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	public static ComplexD add(ComplexD pF1, ComplexD pF2) throws FieldBinaryException {
 		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexD.isNaN(pF1) && !ComplexD.isNaN(pF2) && !ComplexD.isInfinite(pF1)
 				&& !ComplexD.isInfinite(pF2))
-			return new ComplexD(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
+			return ComplexD.create(pF1.getCardinal(), pF1.getReal() + pF2.getReal(), pF1.getImg() + pF2. getImg());
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
 
@@ -74,7 +74,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD conjugate(ComplexD pF) {
-		return new ComplexD(pF.getCardinal(), pF.getReal(), -1.0D * pF.getImg());
+		return ComplexD.create(pF.getCardinal(), pF.getReal(), -1.0D * pF.getImg());
 	}
 
 	/**
@@ -92,11 +92,12 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 *                              on sqMagnitude.
 	 * @return ComplexD
 	 */
-	public final static ComplexD copyFromModuliSum(ComplexD[] pL) throws FieldBinaryException {
+	public final static ComplexD copySumModulus(ComplexD[] pL) throws FieldBinaryException {
 		if (pL.length == 0) throw new IllegalArgumentException("Can't form Modulus Sum from empty array.");
 		ComplexD tR = ComplexD.copyZERO(pL[0]);
 		for (ComplexD point : pL)
 			tR.add((ComplexD.copyONE(point).scale(point.modulus())));
+		tR.setReal(Math.sqrt(tR.getReal()));
 		return tR;
 	}
 
@@ -107,14 +108,13 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * exception if that test fails.
 	 * <p>
 	 * @param pL ComplexD[]
-	 * <p>
 	 * @throws FieldBinaryException This exception occurs when there is a field
 	 *                              mismatch. It should never happen but the
 	 *                              implementation uses multiplication, thus it is
 	 *                              technically possible.
 	 * @return ComplexD
 	 */
-	public final static ComplexD copyFromSQModuliSum(ComplexD[] pL) throws FieldBinaryException {
+	public final static ComplexD copySumSQModulus(ComplexD[] pL) throws FieldBinaryException {
 		if (pL.length == 0) throw new IllegalArgumentException("Can't form SQ Modulus Sum from empty array.");
 		ComplexD tR = ComplexD.copyZERO(pL[0]);
 		for (ComplexD point : pL)
@@ -140,7 +140,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD copyONE(UnitAbstract pR) {
-		return new ComplexD(pR.getCardinal(), 1.0d, 0.0d);
+		return ComplexD.create(pR.getCardinal(), 1.0d, 0.0d);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD copyZERO(UnitAbstract pR) {
-		return new ComplexD(pR.getCardinal(), 0.0d, 0.0d);
+		return ComplexD.create(pR.getCardinal(), 0.0d, 0.0d);
 	}
 
 	/**
@@ -166,6 +166,19 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 		return new ComplexD(pR, pI);
 	}
 
+/**
+	 * Static method that creates a new ComplexD with doubles and a Cardinal. This
+	 * copy DOES reuse the cardinal so it is likely to pass type mismatch tests.
+	 * <p>
+	 * @param pCard Cardinal
+	 * @param pR double
+	 * @param pI double
+	 * @return ComplexD
+	 */
+	public static ComplexD create(Cardinal pCard, double pR, double pI) {
+		return new ComplexD(pCard, pR, pI);
+	}
+
 	/**
 	 * Static divide method that creates a new ComplexD with the product pF1 / pF2.
 	 * <p>
@@ -178,11 +191,12 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	public static ComplexD divide(ComplexD pF1, ComplexD pF2) throws FieldBinaryException {
 		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexD.isZero(pF2) && !ComplexD.isNaN(pF1) && !ComplexD.isNaN(pF2)
 				&& !ComplexD.isInfinite(pF1) && !ComplexD.isInfinite(pF2)) {
-			ComplexD tZ = new ComplexD(pF1);
-			pF2.conjugate();
-			tZ.multiply(pF2);
-			pF2.conjugate();
-			tZ.scale(Double.valueOf(1.0D / pF2.sqModulus()));
+			ComplexD tZ = ComplexD.copyOf(pF1);
+			ComplexD tZ2 = ComplexD.copyOf(pF2);
+			tZ2.conjugate();
+			tZ.multiply(tZ2);
+			tZ2.conjugate();
+			tZ.scale(Double.valueOf(1.0D / tZ2.sqModulus()));
 			return tZ;
 		}
 		throw (new FieldBinaryException(pF1, "Static Division error found", pF2));
@@ -266,7 +280,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 				&& !ComplexD.isInfinite(pF2)) {
 			double tempR = pF1.getReal() * pF2.getReal() - pF1.getImg() * pF2.getImg();
 			double tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
-			return new ComplexD(pF1.getCardinal(), tempR, tempI);
+			return ComplexD.create(pF1.getCardinal(), tempR, tempI);
 		}
 		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
@@ -278,7 +292,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD newONE(String pS) {
-		return new ComplexD(Cardinal.generate(pS), 1.0d, 0.0d);
+		return ComplexD.create(Cardinal.generate(pS), 1.0d, 0.0d);
 	}
 
 	/**
@@ -288,7 +302,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD newZERO(String pS) {
-		return new ComplexD(Cardinal.generate(pS), 0.0D, 0.0D);
+		return ComplexD.create(Cardinal.generate(pS), 0.0D, 0.0D);
 	}
 
 	/**
@@ -298,7 +312,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD newONE(Cardinal pC) {
-		return new ComplexD(pC, 1.0d, 0.0d);
+		return ComplexD.create(pC, 1.0d, 0.0d);
 	}
 
 	/**
@@ -308,7 +322,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexD
 	 */
 	public static ComplexD newZERO(Cardinal pC) {
-		return new ComplexD(pC, 0.0D, 0.0D);
+		return ComplexD.create(pC, 0.0D, 0.0D);
 	}
 
 	/**
@@ -324,7 +338,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	public static ComplexD subtract(ComplexD pF1, ComplexD pF2) throws FieldBinaryException {
 		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexD.isNaN(pF1) && !ComplexD.isNaN(pF2) && !ComplexD.isInfinite(pF1)
 				&& !ComplexD.isInfinite(pF2))
-			return new ComplexD(pF1.getCardinal(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
+			return ComplexD.create(pF1.getCardinal(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
 
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
@@ -418,7 +432,7 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 * @param pI double
 	 */
 	public ComplexD(double pR, double pI) {
-		super(Cardinal.generate("Complex"));
+		super(Cardinal.generate(CladosField.COMPLEXD));
 		vals = new double[2];
 		setReal(pR);
 		setImg(pI);
@@ -435,8 +449,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexD add(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
-				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexD.isNaN(this) || ComplexD.isNaN((ComplexD) pF)
+				|| ComplexD.isInfinite(this) || ComplexD.isInfinite((ComplexD) pF))
 			throw (new FieldBinaryException(this, "Addition failed type match test", (UnitAbstract) pF));
 		setReal(getReal() + ((ComplexD) pF).getReal());
 		setImg(getImg() + ((ComplexD) pF).getImg());
@@ -465,13 +479,13 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexD divide(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
-				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match test", (UnitAbstract) pF));
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexD.isNaN(this) || ComplexD.isNaN((ComplexD) pF)
+				|| ComplexD.isInfinite(this) || ComplexD.isInfinite((ComplexD) pF))
+			throw (new FieldBinaryException(this, "Divide failed type match or size test", (UnitAbstract) pF));
 		if (ComplexD.isZero((ComplexD) pF))
 			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
 
-		ComplexD tempZ = (ComplexD) pF;
+		ComplexD tempZ = ComplexD.copyOf((ComplexD) pF);
 		tempZ.conjugate();
 		multiply(tempZ);
 		tempZ.conjugate();
@@ -565,8 +579,8 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexD multiply(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
-				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexD.isNaN(this) || ComplexD.isNaN((ComplexD) pF)
+				|| ComplexD.isInfinite(this) || ComplexD.isInfinite((ComplexD) pF))
 			throw (new FieldBinaryException(this, "Multiply failed type match test", (UnitAbstract) pF));
 		ComplexD tempZ = (ComplexD) pF;
 		setReal(getReal() * tempZ.getReal() - getImg() * tempZ.getImg());
@@ -615,12 +629,12 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexD subtract(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !ComplexD.isNaN(this) && !ComplexD.isNaN((ComplexD) pF)
-				&& !ComplexD.isInfinite(this) && !ComplexD.isInfinite((ComplexD) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match test", (UnitAbstract) pF));
-		ComplexD tempZ = (ComplexD) pF;
-		setReal(getReal() - tempZ.getReal());
-		setImg(getImg() - tempZ.getImg());
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexD.isNaN(this) || ComplexD.isNaN((ComplexD) pF)
+				|| ComplexD.isInfinite(this) || ComplexD.isInfinite((ComplexD) pF))
+			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (UnitAbstract) pF));
+		
+		setReal(getReal() - ((ComplexD) pF).getReal());
+		setImg(getImg() - ((ComplexD) pF).getImg());
 		return this;
 	}
 

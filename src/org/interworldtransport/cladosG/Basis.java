@@ -119,9 +119,9 @@ public final class Basis implements CanonicalBasis {
 
 	/**
 	 * This is just a factory method to help name a particular constructor. It is
-	 * used in place of 'new Basis(short)'.
+	 * used in place of 'new Basis(byte)'.
 	 * <p>
-	 * @param numberOfGenerators Short representing unique algebraic directions
+	 * @param numberOfGenerators Byte representing unique algebraic directions
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
@@ -217,8 +217,8 @@ public final class Basis implements CanonicalBasis {
 	private final TreeMap<Long, Integer> keyIndexMap;
 
 	/**
-	 * This is the basic constructor. It takes the number of generators as it's only
-	 * parameter. It can be instantiated on it's own for demonstration purposes, but
+	 * This is the basic constructor. It takes the number of generators as its only
+	 * parameter. It can be instantiated on its own for demonstration purposes, but
 	 * it has no awareness of the addition and multiplication operations in an
 	 * algebra, so all it does is show the basis.
 	 * <p>

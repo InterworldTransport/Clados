@@ -43,13 +43,13 @@ public enum CladosGCache {
 	INSTANCE;
 
 	/**
-	 * Heads Up! These ArrayLists ensures this 'enumeration' is mutable. This class
+	 * Heads Up! These ArrayLists ensure this 'enumeration' is mutable. This class
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
 	private ArrayList<CanonicalBasis> listOfBases = new ArrayList<>(1);
 	/**
-	 * Heads Up! These ArrayLists ensures this 'enumeration' is mutable. This class
+	 * Heads Up! These ArrayLists ensure this 'enumeration' is mutable. This class
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */

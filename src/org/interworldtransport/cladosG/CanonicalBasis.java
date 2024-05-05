@@ -54,7 +54,7 @@ public interface CanonicalBasis {
 	 * currently supported by Clados. The point for it is to prevent internal errors
 	 * in other classes.
 	 * <p>
-	 * For example, someone attempted to create a basis with a negative number of
+	 * For example, someone attempting to create a basis with a negative number of
 	 * generators should be stopped up front without having to check for that
 	 * situation themselves.
 	 * <p>

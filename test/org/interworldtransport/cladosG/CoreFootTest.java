@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealD;
-//import org.interworldtransport.cladosG.Foot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +34,30 @@ class CoreFootTest {
 		// using the same number type.
 		// The algebras relying on these feet would fail reference checks
 		// but they are allowed to re-use each other's numbering system.
+	}
+
+	@Test
+	public void testFootStaticBuilds() {
+		Foot tStaticFoot = Foot.buildAsType("Completely Different", Cardinal.generate("Test:NumberType"));
+		assertFalse(tStaticFoot == tFoot); //Different foot name and different Cardinal objects
+		Foot tStaticFoot2 = Foot.buildAsType(fName, Cardinal.generate("Test:NumberType"));
+		assertFalse(tStaticFoot == tStaticFoot2); //Same name but different Cardinal objects with same Cardinal name.
+		Foot tStaticFoot3 = Foot.buildAsType("Completely Different", fType);
+		assertFalse(tStaticFoot3 == tFoot); //Different foot name and same Cardinal objects
+	}
+
+	@Test
+	public void testCardinalManipulation() {
+		Foot tStaticFoot2 = Foot.buildAsType(fName, Cardinal.generate("Test:NumberType"));
+		Foot tStaticFoot4 = Foot.buildAsType(fName); //Creates default cardinal using foot name
+		tStaticFoot4.appendCardinal(tStaticFoot2.getCardinal(0)); //Share a Cardinal into slot 1.
+		assertFalse(tStaticFoot4 == tStaticFoot2); //Same foot name, a shared Cardinal... shows Foot objects are tested.
+		assertTrue(tStaticFoot4.findCardinal(tStaticFoot2.getCardinal(0)) == 1); //appended Cardinal WAS appended.
+		assertTrue(tStaticFoot4.getCardinal(1) == tStaticFoot2.getCardinal(0)); //appended Cardinals ARE appended.
+		assertTrue(tStaticFoot4.getCardinals().size() == 2); //Two cardinals for Foot4. Default and the shared one.
+
+		tStaticFoot4.removeCardinal(tStaticFoot4.getCardinal(0));
+		assertTrue(tStaticFoot4.getCardinal(0) == tStaticFoot2.getCardinal(0)); // removed Cardinals shorten the list.
 	}
 
 }

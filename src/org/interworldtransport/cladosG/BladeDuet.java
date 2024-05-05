@@ -175,5 +175,4 @@ public final class BladeDuet {
 		rB.append("\" />\n");
 		return rB.toString();
 	}
-
 }

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Field<br>
  * -------------------------------------------------------------------- <p>
@@ -27,17 +27,15 @@ package org.interworldtransport.cladosF;
 import org.interworldtransport.cladosFExceptions.*;
 
 /**
- * This interface establishes the concept of the primary operations of a
- * Division Field from mathematics. Field objects within the clados packages are
- * used as 'numbers' in the definition of an algebra. All Clados objects use
- * UnitAbstract's as a result.
+ * This interface establishes the the primary operations of a division field 
+ * from mathematics. Field objects within clados packages are used as 'numbers' 
+ * in the definition of an algebra.
  * <p>
- * Field's are not named. They do not have any geometric properties. Treat
- * them as the behaviors you would expect in a simple calculator.
+ * Field's are not named. Fields are not Unitized. 
+ * They do not have any geometric properties. 
+ * Fields have the behaviors you would expect in a simple calculator.
  * <p>
- * The "Number" to be computed appears elsewhere.
- * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  * 
  */

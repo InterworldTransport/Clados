@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosFCache<br>
  * -------------------------------------------------------------------- <p>
@@ -34,13 +34,30 @@ import java.util.Set;
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
  * <p>
- * @version 1.0
+ * At present, the only thing in CladosF being cached is Cardinals. cladosG.Algebra
+ * has its protonumber which is little more than a Cardinal. cladosG.Foot has its
+ * list of cardinals too. So there are a number of places where cardinals get attached.
+ * The point of this cache, therefore, is to provide a global list to the modeler
+ * who wants to ensure object references match perfectly when they should. That is
+ * accomplished by setting the protonumber's Cardinal to one in this list BY REFERENCE
+ * instead of by string.
+ * <p>
+ * Be aware that the list of cached objects is inheriently mutable. Alteration of an
+ * object here alters it everywhere it is referenced. ALSO... because of this cache, 
+ * it is unlikely that removal of object references elsewhere (set to null) will 
+ * cause the allocated memory to be garbage collected. Any linked here in the cache
+ * will persist while the cache does or the reference to it in the cache does.
+ * <p>
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum CladosFCache {
 	/**
 	 * There is an implicit private constructor for this singleton, but we won't
 	 * override it.
+	 * <p>
+	 * This ensures only one of these is active at a time. All CladosFCache references
+	 * must refer back to this one cache.
 	 */
 	INSTANCE;
 
@@ -64,10 +81,11 @@ public enum CladosFCache {
 	}
 
 	/**
-	 * Method appends offered Cardinals to cache IF not already present. If are ARE,
-	 * nothing is done and the method silently loops through remaining Cardinals.
+	 * Method appends offered Cardinals to cache IF not already present. If any ARE,
+	 * nothing is done and the method silently loops through remaining Cardinals
+	 * inserting ones that aren't.
 	 * <p>
-	 * @param pIn Cardinal to be appended to the cache IF it isn't already present.
+	 * @param pIn Cardinal Set to be appended to the cache IF they aren't already present.
 	 */
 	public void appendCardinal(Set<Cardinal> pIn) {
 		pIn.stream().forEach(pC -> {
@@ -93,7 +111,7 @@ public enum CladosFCache {
 	/**
 	 * This method clears the Cardinal cache.
 	 */
-	public void clearCardinal() {
+	public void clearCardinals() {
 		listOfCardinals.clear();
 	}
 
@@ -105,7 +123,7 @@ public enum CladosFCache {
 	 * @return Cardinal at pLoc index will be returned.
 	 */
 	public Cardinal getCardinal(int pLoc) {
-		if (listOfCardinals.size() < 1 | listOfCardinals.size() < pLoc)
+		if (listOfCardinals.size() < 1 | listOfCardinals.size() < pLoc+1)
 			return null;
 		return listOfCardinals.get(pLoc);
 	}
@@ -117,6 +135,16 @@ public enum CladosFCache {
 	 */
 	public int getCardinalListSize() {
 		return listOfCardinals.size();
+	}
+
+	/**
+	 * This is just a pass-thru method to test whether the cache of Cardinals
+	 * is empty.
+	 * <p> 
+	 * @return boolean True if the cache of Cardinals is empty. False otherwise.
+	 */
+	public boolean isEmpty() {
+		return listOfCardinals.isEmpty();
 	}
 
 	/**

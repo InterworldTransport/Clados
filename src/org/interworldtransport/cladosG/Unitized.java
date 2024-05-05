@@ -33,6 +33,13 @@ import org.interworldtransport.cladosF.Cardinal;
  * 'units', so this contract makes a statement that a particular class adds this
  * sense of meaning on top of any others.
  * <p>
+ * This gets used with the scaling factors in Monads for now because that is the
+ * part where 'weight' is applied to geometry. What units do is allow for
+ * different kinds of weights.
+ * <p>
+ * In a nutshell, Unitized says a Scale represents units while a Cardinal
+ * associated with the UnitAbstract children names the units.
+ * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
