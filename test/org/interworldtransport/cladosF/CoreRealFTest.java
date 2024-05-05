@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreRealFTest {
@@ -138,7 +137,7 @@ class CoreRealFTest {
 	@Test
 	public void testMultiplyInvertFails() throws FieldException {
 		RealF testThis = RealF.newZERO(Cardinal.generate("not important"));
-		Assertions.assertThrows(FieldException.class, () -> RealF.isEqual(testThis.invert(), tReal1));
+		Assertions.assertThrows(FieldException.class, () -> testThis.invert());
 	}
 
 	@Test
@@ -164,8 +163,8 @@ class CoreRealFTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal4));				//adding NaN
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal5));				//adding infinity
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal6));				//adding infinity
-		Assertions.assertDoesNotThrow(() -> RealF.add(testThis1, tReal2));	//Nothing stops addition to Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.add(testThis1, tReal8));	//Nothing stops addition to Float.MIN_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.add(tReal2));	//Nothing stops addition to Float.MAX_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.add(tReal8));	//Nothing stops addition to Float.MIN_VALUE right now.
 	}
 
 	@Test
@@ -184,8 +183,8 @@ class CoreRealFTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal4));				//subtract NaN
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal5));				//subtract infinity
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal6));				//subtract infinity
-		Assertions.assertDoesNotThrow(() -> RealF.subtract(testThis1, tReal2));	//Nothing stops subtract of Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.subtract(testThis1, tReal8));	//Nothing stops subtract of Float.MIN_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tReal2));	//Nothing stops subtract of Float.MAX_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tReal8));	//Nothing stops subtract of Float.MIN_VALUE right now.
 	}
 
 	@Test
@@ -204,8 +203,8 @@ class CoreRealFTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal4));				//multiply NaN
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal5));				//multiply infinity
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal6));				//multiply infinity
-		Assertions.assertDoesNotThrow(() -> RealF.multiply(testThis1, tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.multiply(testThis1, tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
 	}
 
 	@Test
@@ -224,8 +223,8 @@ class CoreRealFTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal4));				//divide by NaN
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal5));				//divide by infinity
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal6));				//divide by infinity
-		Assertions.assertDoesNotThrow(() -> RealF.divide(testThis1, tReal2));	//Nothing stops divide by Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.divide(testThis1, tReal8));	//Nothing stops divide by Float.MIN_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.divide(tReal2));	//Nothing stops divide by Float.MAX_VALUE right now.
+		Assertions.assertDoesNotThrow(() -> testThis1.divide(tReal8));	//Nothing stops divide by Float.MIN_VALUE right now.
 	}
 
 	@Test
