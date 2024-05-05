@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.RealD<br>
  * -------------------------------------------------------------------- <p>
@@ -45,7 +45,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * Ideally, this would extend java.lang.Double and implement an interface called
  * DivFieldD. That can't be done, though, because Double is final.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class RealD extends UnitAbstract implements Field, Normalizable {
@@ -61,7 +61,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	public static RealD add(RealD pF1, RealD pF2) throws FieldBinaryException {
 		if (RealD.isTypeMatch(pF1, pF2) && !RealD.isNaN(pF1) && !RealD.isNaN(pF2) && !RealD.isInfinite(pF1)
 				&& !RealD.isInfinite(pF2))
-			return new RealD(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
+			return RealD.create(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
 
@@ -74,7 +74,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD conjugate(RealD pF) {
-		return new RealD(pF);
+		return RealD.copyOf(pF);
 	}
 
 	/**
@@ -89,11 +89,12 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 *                              with the RealF array
 	 * @return RealD
 	 */
-	public final static RealD copyFromModuliSum(RealD[] pL) throws FieldBinaryException {
+	public final static RealD copySumModulus(RealD[] pL) throws FieldBinaryException {
 		if (pL.length == 0) throw new IllegalArgumentException("Can't form Modulus Sum from empty array.");
 		RealD tR = RealD.copyZERO(pL[0]);
 		for (RealD point : pL)
-			tR.add((RealD.copyONE(point).scale(point.modulus())));
+			tR.add((RealD.copyONE(point).scale(point.sqModulus())));
+		tR.setReal(Math.sqrt(tR.getReal()));
 		return tR;
 	}
 
@@ -110,7 +111,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 *                              technically possible.
 	 * @return RealD
 	 */
-	public final static RealD copyFromSQModuliSum(RealD[] pL) throws FieldBinaryException {
+	public final static RealD copySumSQModulus(RealD[] pL) throws FieldBinaryException {
 		if (pL.length == 0) throw new IllegalArgumentException("Can't form SQ Modulus Sum from empty array.");
 		RealD tR = RealD.copyZERO(pL[0]);
 		for (RealD point : pL)
@@ -136,7 +137,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD copyONE(UnitAbstract pR) {
-		return new RealD(pR.getCardinal(), 1.0D);
+		return RealD.create(pR.getCardinal(), 1.0D);
 	}
 
 	/**
@@ -146,7 +147,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD copyZERO(UnitAbstract pR) {
-		return new RealD(pR.getCardinal(), 0.0D);
+		return RealD.create(pR.getCardinal(), 0.0D);
 	}
 
 	/**
@@ -162,6 +163,18 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	}
 
 	/**
+	 * Static method that creates a new RealD with a double and a Cardinal. This
+	 * copy DOES reuse the cardinal so it is likely to pass type mismatch tests.
+	 * <p>
+	 * @param pCard Cardinal
+	 * @param pR double
+	 * @return RealD
+	 */
+	public static RealD create(Cardinal pCard, double pR) {
+		return new RealD(pCard, pR);
+	}
+
+	/**
 	 * Static divide method that creates a new RealD with the product pF1 / pF2.
 	 * <p>
 	 * @param pF1 RealD
@@ -173,7 +186,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	public static RealD divide(RealD pF1, RealD pF2) throws FieldBinaryException {
 		if (RealD.isTypeMatch(pF1, pF2) && !RealD.isZero(pF2) && !RealD.isNaN(pF1) && !RealD.isNaN(pF2)
 				&& !RealD.isInfinite(pF1) && !RealD.isInfinite(pF2))
-			return new RealD(pF1.getCardinal(), pF1.getReal() / pF2.getReal());
+			return RealD.create(pF1.getCardinal(), pF1.getReal() / pF2.getReal());
 
 		throw (new FieldBinaryException(pF1, "Static Division error found", pF2));
 
@@ -237,7 +250,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	public static RealD multiply(RealD pF1, RealD pF2) throws FieldBinaryException {
 		if (RealD.isTypeMatch(pF1, pF2) && !RealD.isNaN(pF1) && !RealD.isNaN(pF2) && !RealD.isInfinite(pF1)
 				&& !RealD.isInfinite(pF2))
-			return new RealD(pF1.getCardinal(), pF1.getReal() * pF2.getReal());
+			return RealD.create(pF1.getCardinal(), pF1.getReal() * pF2.getReal());
 
 		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
 	}
@@ -249,7 +262,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD newONE(String pS) {
-		return new RealD(Cardinal.generate(pS), 1.0D);
+		return RealD.create(Cardinal.generate(pS), 1.0D);
 	}
 
 	/**
@@ -259,7 +272,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD newZERO(String pS) {
-		return new RealD(Cardinal.generate(pS), 0.0D);
+		return RealD.create(Cardinal.generate(pS), 0.0D);
 	}
 
 	/**
@@ -269,7 +282,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD newONE(Cardinal pC) {
-		return new RealD(pC, 1.0D);
+		return RealD.create(pC, 1.0D);
 	}
 
 	/**
@@ -279,7 +292,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @return RealD
 	 */
 	public static RealD newZERO(Cardinal pC) {
-		return new RealD(pC, 0.0D);
+		return RealD.create(pC, 0.0D);
 	}
 
 	/**
@@ -294,7 +307,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	public static RealD subtract(RealD pF1, RealD pF2) throws FieldBinaryException {
 		if (RealD.isTypeMatch(pF1, pF2) && !RealD.isNaN(pF1) && !RealD.isNaN(pF2) && !RealD.isInfinite(pF1)
 				&& !RealD.isInfinite(pF2))
-			return new RealD(pF1.getCardinal(), pF1.getReal() - pF2.getReal());
+			return RealD.create(pF1.getCardinal(), pF1.getReal() - pF2.getReal());
 
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
 	}
@@ -346,7 +359,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @param pR double
 	 */
 	public RealD(double pR) {
-		super(Cardinal.generate("Real"));
+		super(Cardinal.generate(CladosField.REALD));
 		vals = new double[1];
 		setReal(pR);
 
@@ -389,9 +402,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD add(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF)
-				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Addition failed type match test", (UnitAbstract) pF));
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Addition failed type match or size test", (UnitAbstract) pF));
 
 		setReal(getReal() + ((RealD) pF).getReal());
 		return this;
@@ -419,10 +432,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD divide(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF)
-				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match test", (UnitAbstract) pF));
-
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Divide failed type match or size test", (UnitAbstract) pF));
 		if (RealD.isZero((RealD) pF))
 			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
 
@@ -491,9 +503,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD multiply(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF)
-				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match test", (UnitAbstract) pF));
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (UnitAbstract) pF));
 
 		setReal(getReal() * ((RealD) pF).getReal());
 		return this;
@@ -531,9 +543,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD subtract(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) && !RealD.isNaN(this) && !RealD.isNaN((RealD) pF)
-				&& !RealD.isInfinite(this) && !RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match test", (UnitAbstract) pF));
+		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
+			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (UnitAbstract) pF));
 
 		setReal(getReal() - ((RealD) pF).getReal());
 		return this;
