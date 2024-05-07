@@ -234,9 +234,9 @@ public interface CanonicalBasis {
 	 * blade by its index, it is always possible for the offered integer to be out
 	 * of range.
 	 * <p>
-	 * @param pIn Short representing the integer index of the blade
+	 * @param pIn Integer representing the integer index of the blade
 	 * @return boolean True if parameter in the supported range [0, bladeCount]
 	 */
-	public abstract boolean validateBladeIndex(short pIn);
+	public abstract boolean validateBladeIndex(int pIn);
 
 }

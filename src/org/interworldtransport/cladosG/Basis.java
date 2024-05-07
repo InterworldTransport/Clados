@@ -41,11 +41,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * All geometry objects within the cladosG package have elements that form a
  * basis to span the vector space related to the algebra. This basis is
  * represented in the algebra as various products of the generators. This class
- * representation uses sets of generators as Blades and and a list of Blades. It
+ * representation uses sets of generators as Blades and a list of Blades. It
  * also maintains a few methods that help manipulate them.
  * <p>
  * The gradeCount is tracked using byte integers as it isn't expected that
- * anyone will work with algebras of more than 254 generators any time soon.
+ * anyone will work with algebras of more than 126 generators any time soon.
  * <p>
  * The bladeCount is computed as (1 &lt;&lt; gradeCount - 1) instead of stored.
  * It is reported as an integer though that DOES limit the size of a basis to 31
@@ -53,7 +53,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * <p>
  * The bladeList is stored as an ArrayList of Blades that should be no longer
  * than bladeCount. There is nothing to stop it from being longer or shorter,
- * though, so this is a potential source of errors. It really SHOULD be
+ * though, so this is a potential source of error. It really SHOULD be
  * immutable once constructed correctly. Same goes for the Blades contained in
  * the ArrayList.
  * <p>
@@ -65,8 +65,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * present in the multivector and skip potentially large blocks in the sums with
  * vanishing contributions. However, sparseness is detected using a
  * multivector's key and NOT a Blade's key. Once Blades are sorted into a basis,
- * blade keys are only used one more time. This occurs when a product table is
- * constructed. Blade keys are used to identify the resulting Blade for re-use.
+ * blade keys are only used to name them in maps.
  * <p>
  * NOTE that Blade keys are currently kept as long integers. The key for a
  * pscalar in a 14 generator basis is 2234152501943159L. For 15 generator
@@ -85,11 +84,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * to create copies within running applications. One MAY do so as no singleton
  * enforcement occurs, but every basis of the same number of generators passes
  * the equality test. A convenient cache already exists in the singleton
- * CladosGBuilder.
+ * CladosGCache.
  * <p>
- * The choice limit of 14 generators produces a maximum basis size of 16,384.
+ * The choice limit of 15 generators produces a maximum basis size of 32,768.
  * More can be used, but one must change the 'magic numbers' in the
- * CladosConstant class and recompile. (NOTE the new limit is 15.)
+ * CladosConstant class and recompile. (NOTE the new limit is 16.)
  * <p>
  * There IS a sort buried in the constructor for a Basis. After Blades are
  * generated using the private powerSet method, they are sorted on the 'natural
@@ -108,9 +107,8 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * basis with 14 geometric directions and 16384 linear dimensions that takes a
  * sizeable fraction of a minute to construct? So it is suggested that Best
  * Practice among those who build physical models is to prebuild what you need
- * and load it all to the cache in CladosGBuilder. Better yet, use
- * CladosGBuilder to do it for you. That said, it should be easy to understand
- * why the copy constructor has been removed.
+ * and load it all to the cache. Use CladosGBuilder to do it for you. 
+ * That said, it is obvious why the copy constructor was removed.
  * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -212,7 +210,14 @@ public final class Basis implements CanonicalBasis {
 
 	/**
 	 * This map connects a Blade's internal key to its indexed location in the
-	 * basis.
+	 * basis. This map is what allows us to put the indexed position in the
+	 * multiplicaton table instead of the blade's key which is longer and would 
+	 * inflate the size of the Cayley table unnecessarily.
+	 * <p>
+	 * The indexed position "1" is always the scalar of the basis. That's why
+	 * a "1" in the Cayley table (called result[][] in GProduct) refers to a 
+	 * scalar... or the 'no generators' blade. The fact that a "0" is NOT used
+	 * is what will enable the introduction of degenerate generators.
 	 */
 	private final TreeMap<Long, Integer> keyIndexMap;
 
@@ -484,22 +489,41 @@ public final class Basis implements CanonicalBasis {
 			indent = "\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Basis>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent).append("\t<Grades count=\"").append(getGradeCount() + "\">\n");
-		for (short k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
-			rB.append(indent).append("\t\t<Grade number=\"").append(k).append("\" range=\"").append(gradeList.get(k))
-					.append("-").append((gradeList.get(k + 1) - 1)).append("\" />\n");
-		// Handle last grade separate. There is no k+1 index for the largest grade
-		rB.append(indent).append("\t\t<Grade number=\"").append((getGradeCount() - 1)).append("\" range=\"")
-				.append(gradeList.get(gradeCount - 1)).append("-").append(gradeList.get(gradeCount - 1))
+		rB.append(indent)
+			.append("\t<Grades count=\"")
+			.append(getGradeCount() + "\">\n");
+		for (int k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
+			rB.append(indent)
+				.append("\t\t<Grade number=\"")
+				.append(k)
+				.append("\" range=\"")
+				.append(gradeList.get(k))
+				.append("-")
+				.append((gradeList.get(k + 1) - 1))
 				.append("\" />\n");
-		rB.append(indent).append("\t</Grades>\n");
+		// Handle last grade separate. There is no k+1 index for the largest grade
+		rB.append(indent)
+			.append("\t\t<Grade number=\"")
+			.append((getGradeCount() - 1))
+			.append("\" range=\"")
+			.append(gradeList.get(gradeCount - 1))
+			.append("-")
+			.append(gradeList.get(gradeCount - 1))
+			.append("\" />\n");
+		rB.append(indent)
+			.append("\t</Grades>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent).append("\t<Blades count=\"").append(getBladeCount()).append("\">\n");
-		for (short k = 0; k < bladeList.size(); k++) // Appending blades
+		rB.append(indent)
+			.append("\t<Blades count=\"")
+			.append(getBladeCount())
+			.append("\">\n");
+		for (int k = 0; k < bladeList.size(); k++) // Appending blades
 			rB.append(Blade.toXMLString(bladeList.get(k), indent + "\t\t"));
-		rB.append(indent).append("\t</Blades>\n");
+		rB.append(indent)
+			.append("\t</Blades>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent).append("</Basis>\n");
+		rB.append(indent)
+			.append("</Basis>\n");
 		return rB.toString();
 	}
 
@@ -512,7 +536,7 @@ public final class Basis implements CanonicalBasis {
 	 * @return boolean True if parameter in the supported range [0, bladeCount]
 	 */
 	@Override
-	public final boolean validateBladeIndex(short pIn) {
+	public final boolean validateBladeIndex(int pIn) {
 		return (pIn >= CladosConstant.SCALARGRADE & pIn < getBladeCount());
 	}
 

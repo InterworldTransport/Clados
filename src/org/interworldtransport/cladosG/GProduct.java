@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GProduct<br>
  * -------------------------------------------------------------------- <p>
@@ -197,14 +197,14 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * Get start and end index from the GradeRange array for grade pGrade.
 	 * <p>
-	 * @param pGrade short primitive = grade for which the range is needed
-	 * @return int[] start and end indexes returned as a short[] array
+	 * @param pGrade byte primitive = grade for which the range is needed
+	 * @return int[] start and end indexes returned as a int[] array
 	 */
 	@Override
 	public final int[] getGradeRange(byte pGrade) {
 		int[] tR = new int[2];
-		tR[0] = canonicalBasis.getGradeStart(pGrade);
-		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+		tR[0] = (int) canonicalBasis.getGradeStart(pGrade);
+		tR[1] = (int) ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
 				? tR[0]
 				: (canonicalBasis.getGradeStart((byte) (pGrade + 1)) - 1));
 		return tR;
@@ -274,14 +274,24 @@ public class GProduct implements CliffordProduct {
 		if (indent == null)
 			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
-		rB.append(indent).append("\t<Signature>").append(signature()).append("</Signature>\n");
+		rB.append(indent)
+			.append("\t<Signature>")
+			.append(signature())
+			.append("</Signature>\n");
 		rB.append(getBasis().toXMLString(indent + "\t"));
-		rB.append(indent).append("\t<ProductTable rows=\"").append(getBladeCount()).append("\">\n");
-		for (short k = 0; k < getBladeCount(); k++) // Appending rows
+		rB.append(indent)
+			.append("\t<ProductTable rows=\"")
+			.append(getBladeCount())
+			.append("\">\n");
+		for (int k = 0; k < getBladeCount(); k++) // Appending rows
 		{
-			rB.append(indent).append("\t\t<row number=\"").append(k).append("\" cells=\"");
-			for (short m = 0; m < getBladeCount(); m++)
-				rB.append(getResult(k, m)).append(",");
+			rB.append(indent)
+				.append("\t\t<row number=\"")
+				.append(k)
+				.append("\" cells=\"");
+			for (int m = 0; m < getBladeCount(); m++)
+				rB.append(getResult(k, m))
+				.append(",");
 			rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
 		}
