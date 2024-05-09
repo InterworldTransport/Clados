@@ -46,7 +46,7 @@ public final class CladosConstant {
 	 * <p>
 	 * At present it is as large as it can be for the computer being used to test it.
 	 */
-	public final static Generator GENERATOR_MAX = Generator.EG;
+	public final static Generator GENERATOR_MAX = Generator.EF;
 	/**
 	 * This is teh smallest grade supported by Clados.
 	 */
