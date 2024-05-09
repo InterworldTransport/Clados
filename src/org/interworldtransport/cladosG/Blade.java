@@ -70,6 +70,31 @@ public class Blade implements Comparable<Blade> {
 	protected static final byte FLIP = -1;
 
 	/**
+	 * This method will try to deliver a Blade with one more generator in its
+	 * internal set. The new Blade will have its maximum generator ordinal raised
+	 * by 1 and then all the original generators are added to the set before 
+	 * the offered one is.
+	 * <p>
+	 * If the new Blade is too big, the old blade is return with no remark.
+	 * If the old Blade already had the generator, it comes back as a copy but with 
+	 * a higher maximum generator limit. 
+	 * Note that once maxGen is set for a Blade it CANNOT be changed.
+	 * @param pB Blade offered to be augmented.
+	 * @param pG Generator offered to be added to pB.
+	 * @return Blade is returned, but there is a chance it is pB.
+	 */
+	public final static Blade augmentBlade(Blade pB, Generator pG) {
+		try {
+			Blade returnIt = new Blade((byte) (pB.maxGen + 1), pB.getGenerators());
+			returnIt.add(pG);
+			return returnIt;
+		} catch (GeneratorRangeException e) {
+			return pB;
+		}
+		
+	}
+
+	/**
 	 * Deliver a blade of the size specified by the byte integer.
 	 * <p>
 	 * A check is made of the parameter that could fail resulting in no blade being
@@ -93,16 +118,30 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * This method is very similar to createBlade(byte) but because it uses an
+	 * full Blade it can bypass the safety check for support validity. The
+	 * Generator enumeration is assumed to have ONLY generators that can be
+	 * supported by internal representations of blades, bases, and products.
+	 * <p>
+	 * @param pB This is the Blade that will be copied.
+	 * @return Blade that references all the same generators as the offered one.
+	 */
+	public final static Blade createBlade(Blade pB) {
+		return new Blade(pB);
+	}
+
+	/**
+	 * This method is very similar to createBlade(byte) but because it uses an
 	 * actual generator it can bypass the safety check for support validity. The
 	 * Generator enumeration is assumed to have ONLY generators that can be
 	 * supported by internal representations of blades, bases, and products.
 	 * <p>
 	 * @param pGen This points to the highest generator that could be used.
-	 * @return Blade with no generators contained. Basically, a scalar in the
-	 *         implied space.
+	 * @return Blade with one generator contained and a max set at the same generator.
 	 */
 	public final static Blade createBlade(Generator pGen) {
-		return new Blade(pGen);
+		Blade returnIt = new Blade(pGen);
+		returnIt.add(pGen);
+		return returnIt;
 	}
 	
 	/**
@@ -131,7 +170,7 @@ public class Blade implements Comparable<Blade> {
 	 *         implied space.
 	 */
 	public final static Blade createScalarBlade(Generator pGen) {
-		return createBlade(pGen);
+		return new Blade(pGen);
 	}
 
 	/**
@@ -143,7 +182,7 @@ public class Blade implements Comparable<Blade> {
 	 *         being tested. FALSE otherwise.
 	 */
 	public final static boolean isNBlade(Blade blade, byte n) {
-		return blade.getGenerators().size() == n;
+		return blade.rank() == n;
 	}
 
 	/**
@@ -158,7 +197,7 @@ public class Blade implements Comparable<Blade> {
 	 *         FALSE otherwise.
 	 */
 	public final static boolean isPScalar(Blade blade) {
-		return (blade.getGenerators().size() == blade.maxGen);
+		return (blade.rank() == blade.maxGenerator());
 	}
 
 	/**
@@ -190,8 +229,19 @@ public class Blade implements Comparable<Blade> {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent).append("<Blade key=\"").append(blade.key()).append("\" bitKey=\"0b").append(blade.bitKey())
-				.append("\" sign=\"").append(blade.sign()).append("\" generators=\"");
+		rB.append(indent)
+			.append("<Blade key=\"")
+			.append(blade.key())
+			.append("\" bitKey=\"0b");
+		int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
+		while (pad>0) {
+			rB.append("0");
+			pad--;
+		}
+		rB.append(Integer.toBinaryString(blade.bitKey()))
+			.append("\" sign=\"")
+			.append(blade.sign())
+			.append("\" generators=\"");
 
 		blade.getGenerators().stream().forEachOrdered(gen -> rB.append(gen.ord).append(","));
 
@@ -217,9 +267,19 @@ public class Blade implements Comparable<Blade> {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder();
-		rB.append(indent).append("<Blade key=\"").append(blade.key()).append("\" bitKey=\"0b")
-				.append(Integer.toBinaryString(blade.bitKey())).append("\" sign=\"").append(blade.sign())
-				.append("\" generators=\"");
+		rB.append(indent)
+			.append("<Blade key=\"")
+			.append(blade.key())
+			.append("\" bitKey=\"0b");
+		int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
+			while (pad>0) {
+				rB.append("0");
+				pad--;
+			}
+		rB.append(Integer.toBinaryString(blade.bitKey()))
+			.append("\" sign=\"")
+			.append(blade.sign())
+			.append("\" generators=\"");
 
 		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString()).append(","));
 
@@ -284,12 +344,10 @@ public class Blade implements Comparable<Blade> {
 	 * integers containing the same byte integer values.
 	 * <p>
 	 * @param pB The Blade to copy
-	 * @throws GeneratorRangeException This can happen a few different ways, but
-	 *                                 really really shouldn't since we are copying
-	 *                                 another Blade here.
 	 */
-	public Blade(Blade pB) throws GeneratorRangeException {
-		this(pB.maxGen);
+	public Blade(Blade pB) {
+		maxGen = pB.maxGenerator();
+		blade = EnumSet.noneOf(Generator.class);
 		blade.addAll(pB.getGenerators());
 		sign = pB.sign();
 		key = pB.key();
@@ -322,7 +380,7 @@ public class Blade implements Comparable<Blade> {
 	 *                appear in this blade.
 	 * @param pDirs   Generator[] containing directions to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
-	 *                                 typical one involves making blades with more
+	 *                                 typical one involves making blades with 
 	 *                                 too many directions. The current maximum is 
 	 *                                 found in CladosConstant.GENERATOR_MAX.
 	 */
@@ -382,6 +440,7 @@ public class Blade implements Comparable<Blade> {
 			return this;
 		else {
 			blade.addAll(pS);
+			makeKey();
 			return this;
 		}
 	}
@@ -506,13 +565,13 @@ public class Blade implements Comparable<Blade> {
 	 * <p>
 	 * @return key Returns the blade's ArrayList of boxed bytes.
 	 */
-	public EnumSet<Generator> getGenerators() {
+	protected EnumSet<Generator> getGenerators() {
 		return blade;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime = 67;
 		int result = 1;
 		result = prime * result + (int) (key ^ (key >>> 32));
 		result = prime * result + sign;
@@ -633,14 +692,15 @@ public class Blade implements Comparable<Blade> {
 		bitKey = 0;
 		int counter = 0;
 		Iterator<Generator> cursor = blade.iterator();
+		Generator g;
 		while (cursor.hasNext()) {
-			Generator g = cursor.next();
+			g = cursor.next();
 			key += g.ord * Math.pow((maxGen + 1), (blade.size() - 1 - counter));
 			bitKey += (1 << (g.ord - 1));
 			counter++;
 		}
 	}
-
+	
 	/**
 	 * Simple settor for the sign of this blade.
 	 * <p>

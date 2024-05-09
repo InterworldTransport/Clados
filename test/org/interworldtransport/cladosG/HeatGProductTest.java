@@ -110,4 +110,11 @@ class HeatGProductTest {
 		a0 = new GProduct("+++-+++-+++-+++");
 		assertNotNull(a0);
 	}
+/*
+	@Test
+	public void testGen16() throws BadSignatureException, GeneratorRangeException {
+		a0 = new GProduct("-+++-+++-+++-+++");
+		assertNotNull(a0);
+	}
+*/
 }

@@ -190,5 +190,15 @@ class HeatBladeTest {
 			assertNotNull(a0);
 		}
 	}
-
+/*
+	@Test
+	public void testGen16() throws GeneratorRangeException {
+		Generator[] j = Arrays.copyOf(Generator.values(), 16);
+		int m = 0;
+		for (m = 0; m < 10000000; m++) {
+			a0 = new Blade((byte) j.length, j);
+			assertNotNull(a0);
+		}
+	}
+*/
 }

@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Basis<br>
  * -------------------------------------------------------------------- <p>
@@ -68,8 +68,8 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * blade keys are only used to name them in maps.
  * <p>
  * NOTE that Blade keys are currently kept as long integers. The key for a
- * pscalar in a 14 generator basis is 2234152501943159L. For 15 generator
- * algebras the key is 81985529216486895L. Long integers can't hold keys much
+ * pscalar in a 14 generator basis is 2234152501943160L. For 15 generator
+ * algebras the key is 81985529216486896L. Long integers can't hold keys much
  * larger than that. At some point keys will shift to Java's BigInteger class
  * and impose another performance penalty. Not yet, though. Best practice would
  * be to avoid computations demanding heavy use of blade keys.
@@ -88,7 +88,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * <p>
  * The choice limit of 15 generators produces a maximum basis size of 32,768.
  * More can be used, but one must change the 'magic numbers' in the
- * CladosConstant class and recompile. (NOTE the new limit is 16.)
+ * CladosConstant class and recompile.
  * <p>
  * There IS a sort buried in the constructor for a Basis. After Blades are
  * generated using the private powerSet method, they are sorted on the 'natural
@@ -257,6 +257,7 @@ public final class Basis implements CanonicalBasis {
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
 			for (EnumSet<Generator> pG : powerSet(offer))
 				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
+				
 			sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
 				bladeList.add(blade); // causing bladeList to be in ascending (by key) order
 				keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
@@ -268,7 +269,7 @@ public final class Basis implements CanonicalBasis {
 			IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
 				gradeList
 						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
-			}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
+				}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
 			gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
 		}
 	}
@@ -335,7 +336,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int getBladeCount() {
-		return (1 << gradeCount - 1);
+		return bladeList.size();
 	}
 
 	/**

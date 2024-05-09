@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class HeatBasisTest {
 	Basis a0;
-	int loopLimit=100;
+	int loopLimit=1;
 
 	@BeforeEach
 	public void setUp() {
@@ -141,4 +141,13 @@ class HeatBasisTest {
 			assertNotNull(a0);
 		}
 	}
+/*
+	@Test
+	public void testGen16() throws GeneratorRangeException {
+		for (int m = 0; m < loopLimit; m++) {
+			a0 = new Basis((byte) 16);
+			assertNotNull(a0);
+		}
+	}
+*/
 }

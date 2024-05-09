@@ -57,7 +57,7 @@ public class GProduct implements CliffordProduct {
 	 * the generators to span the algebra's vector space. It is the object that Ken
 	 * Greider called the Eddington Basis.
 	 */
-	private final CanonicalBasis canonicalBasis;
+	private final CanonicalBasis canonBasis;
 
 	/**
 	 * This integer array is an internal translation of the product signature.
@@ -125,15 +125,15 @@ public class GProduct implements CliffordProduct {
 		}
 		signature = pSig;
 		// ------Get CanonicalBasis
-		canonicalBasis = (pB != null) ? pB : CladosGBuilder.createBasis((byte) pSig.length());
+		canonBasis = (pB != null) ? pB : CladosGBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
-		canonicalBasis.bladeStream().parallel().forEach(bladeLeft -> {
-			int row = canonicalBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
-			canonicalBasis.bladeStream().forEach(bladeRight -> {
-				int col = canonicalBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
+		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {
+			int row = canonBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
+			canonBasis.bladeStream().forEach(bladeRight -> {
+				int col = canonBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
 				Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
-				result[row][col] = bMult.sign() * canonicalBasis.getKeyIndexMap().get(bMult.key());
+				result[row][col] = (int) bMult.sign() * (int) canonBasis.getKeyIndexMap().get(Long.valueOf(bMult.key()));
 			});
 		});
 	}
@@ -158,7 +158,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final CanonicalBasis getBasis() {
-		return canonicalBasis;
+		return canonBasis;
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final int getBladeCount() {
-		return canonicalBasis.getBladeCount();
+		return canonBasis.getBladeCount();
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final byte getGradeCount() {
-		return canonicalBasis.getGradeCount();
+		return canonBasis.getGradeCount();
 	}
 
 	/**
@@ -203,17 +203,17 @@ public class GProduct implements CliffordProduct {
 	@Override
 	public final int[] getGradeRange(byte pGrade) {
 		int[] tR = new int[2];
-		tR[0] = (int) canonicalBasis.getGradeStart(pGrade);
-		tR[1] = (int) ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+		tR[0] = (int) canonBasis.getGradeStart(pGrade);
+		tR[1] = (int) ((pGrade == canonBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
 				? tR[0]
-				: (canonicalBasis.getGradeStart((byte) (pGrade + 1)) - 1));
+				: (canonBasis.getGradeStart((byte) (pGrade + 1)) - 1));
 		return tR;
 	}
 
 	@Override
 	public final int[] getPScalarRange() {
 		int[] tR = new int[2];
-		tR[0] = canonicalBasis.getPScalarStart();
+		tR[0] = canonBasis.getPScalarStart();
 		tR[1] = tR[0];
 		return tR;
 	}

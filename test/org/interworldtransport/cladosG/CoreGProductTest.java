@@ -22,6 +22,7 @@ class CoreGProductTest {
 	String pSig12 = "-+++-+++-+++";
 	String pSig14 = "++-+++-+++-+++";
 	String pSig15 = "+++-+++-+++-+++";
+	//String pSig16 = "-+++-+++-+++-+++";
 
 	@BeforeEach
 	public void setUp() {
@@ -228,5 +229,42 @@ class CoreGProductTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
+/* 
+	@Test
+	public void test16s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig16);
+		assertTrue(tGP.signature().equals("-+++-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 17);
+		assertTrue(tGP.getBladeCount() == (1<<16));
 
+		//long tS = 65536;
+		long tSum = 65536 * 65537 / 2;
+		
+		System.out.println("Cayley rows should sum to: "+tSum);
+
+		int[] firstRow = tGP.getResult(0);
+		long tSumP = 0;
+		for (int j = 0; j < firstRow.length; j++)
+			tSumP += (long) Math.abs(firstRow[j]);
+		System.out.println("Cayley-FirstRow---"+tSumP);
+
+		int[] lastRow = tGP.getResult(tGP.getBladeCount()-1);
+		tSumP = 0;
+		for (int j = 0; j < lastRow.length; j++)
+			tSumP += (long) Math.abs(lastRow[j]);
+		System.out.println("Cayley-LastRow---"+tSumP);
+*/
+
+		/*
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			//int[] tSpot = tGP.getResult(k);
+			long tSumP = 0;
+			for (int j = 0; j < tGP.getResult(k).length; j++)
+				tSumP += (long) Math.abs(tGP.getResult(k, j));
+
+			assertTrue(tSum == tSumP);
+		}
+		
+	}
+*/
 }

@@ -145,11 +145,11 @@ class HeatAlgebraTest {
 			assertNotNull(a0);
 		}
 	}
-/*	
+/*
 	@Test
 	public void testGen16() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
-			a0 = CladosGAlgebra.create(coeff, aName, ftName, "-+++-+++-+++-+++");
+			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "-+++-+++-+++-+++");
 			assertNotNull(a0);
 		}
 	}
