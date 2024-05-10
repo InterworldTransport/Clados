@@ -84,14 +84,7 @@ public class Blade implements Comparable<Blade> {
 	 * @return Blade is returned, but there is a chance it is pB.
 	 */
 	public final static Blade augmentBlade(Blade pB, Generator pG) {
-		try {
-			Blade returnIt = new Blade((byte) (pB.maxGen + 1), pB.getGenerators());
-			returnIt.add(pG);
-			return returnIt;
-		} catch (GeneratorRangeException e) {
-			return pB;
-		}
-		
+		return new Blade(pB, pG);
 	}
 
 	/**
@@ -340,8 +333,7 @@ public class Blade implements Comparable<Blade> {
 	private byte sign = 1;
 
 	/**
-	 * This is a copy constructor that builds an identical blade with new boxed byte
-	 * integers containing the same byte integer values.
+	 * This is a copy constructor that builds an identical blade.
 	 * <p>
 	 * @param pB The Blade to copy
 	 */
@@ -349,6 +341,29 @@ public class Blade implements Comparable<Blade> {
 		maxGen = pB.maxGenerator();
 		blade = EnumSet.noneOf(Generator.class);
 		blade.addAll(pB.getGenerators());
+		sign = pB.sign();
+		key = pB.key();
+		bitKey = pB.bitKey();
+	}
+
+/**
+	 * This is a copy constructor that builds an identical blade, but with
+	 * a maximum generator size just big enough to make room for adding the 
+	 * offered generator.
+	 * <p>
+	 * IF the new blade would be bigger than the maximum supported size then 
+	 * a copy of pB is constructed instead.
+	 * <p>
+	 * @param pB The Blade to copy
+	 * @param pGen The Generator to add to the list.
+	 */
+	public Blade(Blade pB, Generator pGen) {
+		blade = EnumSet.noneOf(Generator.class);
+		blade.addAll(pB.getGenerators());
+		if (pGen.ord <= pB.maxGenerator() + 1 && pB.maxGenerator() < CladosConstant.GENERATOR_MAX.ordinal()) {
+			maxGen = (byte) (pB.maxGenerator() + 1);
+			blade.add(pGen);
+		} else maxGen = (byte) (pB.maxGenerator());
 		sign = pB.sign();
 		key = pB.key();
 		bitKey = pB.bitKey();
