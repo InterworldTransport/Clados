@@ -3,6 +3,7 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -112,6 +113,19 @@ class CoreBladeTest {
 		assertTrue(testThis.rank() == 3);
 		Assertions.assertDoesNotThrow(() -> testThis.add(Generator.EC));
 		assertTrue(testThis.rank() == 3);
+
+		Assertions.assertDoesNotThrow(() -> Blade.augmentBlade(testThis, Generator.E5));
+		Blade testThis2 = Blade.augmentBlade(testThis, Generator.E5);
+		assertTrue(testThis2.rank() == 4); //Augment adds room for one more generator. The next one.
+		assertTrue(testThis2.maxGenerator() == 5);
+
+		Blade testThis3 = Blade.augmentBlade(testThis2, Generator.EC);
+		//System.out.println("Adding a non-consecutive blade in augment: "+Blade.toXMLString(testThis3, ""));
+		assertTrue(testThis3.maxGenerator() == 5);
+		assertFalse(testThis3.rank() > 4); //Augment adds room for one more generator, but only the next one.
+
+		Blade testThis4 = Blade.augmentBlade(testThis3, Generator.EG);
+		assertTrue(testThis4.maxGenerator() == 5);
 	}
 
 	@Test
@@ -177,15 +191,25 @@ class CoreBladeTest {
 	}
 
 	@Test
+	public void testThingsThatShouldntHappen(){
+		Optional<Generator> testThis = tB42.get(Generator.E3);
+		assertTrue(testThis.isEmpty());
+		testThis = tB42.get(Generator.E1);
+		assertTrue(testThis.isPresent());
+	}
+
+	@Test
 	public void testXMLOutput() throws GeneratorRangeException {
 		Blade tB = Blade.createBlade(gMax);
 		Generator.stream(gMax.ord).forEach(g-> tB.add(g));
-		//String ordString = "<Blade key=\"3231407272993503232\" bitKey=\"0b1111111111111111\" sign=\"1\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16\" />";
-		//String regString = "<Blade key=\"3231407272993503232\" bitKey=\"0b1111111111111111\" sign=\"1\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,EG\" />";
-		//assertTrue(Blade.toXMLString(tB,"").equals(regString));
-		//assertTrue(Blade.toXMLOrdString(tB,"").equals(ordString));
-		System.out.println("Generators    : " + Blade.toXMLString(tB,""));
-		System.out.println("Generator Ords: " + Blade.toXMLOrdString(tB,""));
+		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />";
+		String ordString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />";
+		//assertTrue(Blade.toXMLString(tB,null).compareTo(regString) == -1);
+		//assertTrue(Blade.toXMLOrdString(tB,"").compareTo(ordString) == 0);
+		System.out.println(Blade.toXMLString(tB,"\t")+"\n"+regString+"\n");
+		//System.out.println(Blade.toXMLString(tB,null).compareTo(regString));
+		
+		System.out.println(Blade.toXMLOrdString(tB,"\t")+"\n"+ordString);
+		//System.out.println(Blade.toXMLOrdString(tB,null).compareTo(ordString));
 	}
-
 }
