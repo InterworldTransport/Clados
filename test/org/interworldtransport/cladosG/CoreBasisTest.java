@@ -189,5 +189,4 @@ class CoreBasisTest {
 		//System.out.println(xml);
 		assertTrue(xml != null);
 	}
-
 }
