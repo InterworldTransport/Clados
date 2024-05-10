@@ -2,7 +2,6 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
