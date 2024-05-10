@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.CanonicalBasis<br>
  * -------------------------------------------------------------------- <p>
@@ -238,5 +238,15 @@ public interface CanonicalBasis {
 	 * @return boolean True if parameter in the supported range [0, bladeCount]
 	 */
 	public abstract boolean validateBladeIndex(int pIn);
+
+	/**
+	 * This is a validator detects grade out of range issues. If one tries to name a
+	 * grade by its index, it is always possible for the offered integer to be out
+	 * of range.
+	 * <p>
+	 * @param pIn Integer representing the integer index of the grade
+	 * @return boolean True if parameter in the supported range [0, gradeCount]
+	 */
+	public abstract boolean validateGradeIndex(int pIn);
 
 }

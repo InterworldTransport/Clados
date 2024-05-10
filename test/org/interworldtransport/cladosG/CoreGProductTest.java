@@ -35,6 +35,14 @@ class CoreGProductTest {
 		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);
 		assertTrue(tGP1 == tGP2);
 	}
+
+	@Test
+	public void testValidations() {
+		assertTrue(CanonicalBasis.validateSize(0));
+		assertFalse(CanonicalBasis.validateSize(-1));
+		assertFalse(CanonicalBasis.validateSize(17));
+		assertFalse(CanonicalBasis.validateSize(16));
+	}
 	
 	
 	@Test

@@ -287,10 +287,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public Stream<Blade> bladeOfGradeStream(byte pIn) {
-		if (pIn >= CladosConstant.SCALARGRADE & pIn <= gradeCount)
-			return bladeList.stream().filter(blade -> blade.rank() == pIn);
-		else
-			return null;
+		return bladeList.stream().filter(blade -> blade.rank() == pIn);
 	}
 
 	@Override
@@ -322,10 +319,12 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int find(Blade pIn) {
-		Integer loc = keyIndexMap.get(pIn.key());
-		if (loc == null)
-			return -1;
-		return loc.intValue();
+		if (!(pIn == null)) {
+			Integer loc = keyIndexMap.get(pIn.key());
+			if (!(loc == null))
+				return loc.intValue();
+		}
+		return -1;
 	}
 
 	/**
@@ -356,9 +355,9 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public EnumSet<Generator> getBladeSet(int p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			return EnumSet.noneOf(Generator.class);
-		return bladeList.get(p1).getGenerators();
+		if (this.validateBladeIndex(p1))
+			return bladeList.get(p1).getGenerators();
+		return EnumSet.noneOf(Generator.class);
 	}
 
 	/**
@@ -394,25 +393,25 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int getGradeStart(byte p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > gradeCount)
-			return -1;
-		return gradeList.get(p1).intValue();
+		if (this.validateGradeIndex(p1))
+			return gradeList.get(p1).intValue();
+		return -1;
 	}
 
 	/**
-	 * Return the long at p1 in the EddingtonKey array.
+	 * Return the long key for the blade at p1 in keyIndexMap.
 	 * <p>
-	 * IllegalArgumentException can be thrown if the requested blade is NOT between
-	 * 0 and bladeCount inclusive.
+	 * There is no telling what blade is at the indexed location.
+	 * This just returns the key for it assuming it is there.
 	 * <p>
-	 * @param p1 short This is the desired key at p1 .
+	 * @param p1 int This is the desired key for the value p1 .
 	 * @return long
 	 */
 	@Override
 	public long getKey(int p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			throw new IllegalArgumentException("Requested Blade # {" + p1 + "} is not in basis");
-		return bladeList.get(p1).key();
+		if (this.validateBladeIndex(p1))
+			return bladeList.get(p1).key();
+		return -1;
 	}
 
 	/**
@@ -436,7 +435,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int getPScalarStart() {
-		return gradeList.get(gradeCount);
+		return gradeList.get(gradeCount - 1);
 	}
 
 	@Override
@@ -455,19 +454,19 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public Blade getSingleBlade(int p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			return null;
-		return bladeList.get(p1);
+		if (this.validateBladeIndex(p1))
+			return bladeList.get(p1);
+		return null;
 	}
 
 	@Override
 	public IntStream gradeStream() {
-		return IntStream.rangeClosed(0, gradeCount);
+		return IntStream.rangeClosed(0, gradeCount - 1);
 	}
 
 	@Override
 	public int hashCode() {
-		return 137 + gradeCount;
+		return (int) getGradeCount();
 	}
 
 	@Override
@@ -539,6 +538,19 @@ public final class Basis implements CanonicalBasis {
 	@Override
 	public final boolean validateBladeIndex(int pIn) {
 		return (pIn >= CladosConstant.SCALARGRADE & pIn < getBladeCount());
+	}
+
+	/**
+	 * This is a validator detects grade out of range issues. If one tries to name a
+	 * grade by its index, it is always possible for the offered integer to be out
+	 * of range.
+	 * <p>
+	 * @param pIn int representing the integer index of the grade
+	 * @return boolean True if parameter in the supported range [0, bladeCount]
+	 */
+	@Override
+	public final boolean validateGradeIndex(int pIn) {
+		return (pIn >= CladosConstant.SCALARGRADE & pIn < getGradeCount());
 	}
 
 }

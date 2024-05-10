@@ -1,9 +1,14 @@
 package org.interworldtransport.cladosG;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.TreeMap;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.*;
+//import org.junit.jupiter.api.Assertions;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +16,7 @@ import org.junit.jupiter.api.Test;
 class CoreBasisTest {
 
 	CanonicalBasis tBasis0;
+	CanonicalBasis tBasis1;
 	CanonicalBasis tBasis4;
 	CanonicalBasis tBasis43;
 	CanonicalBasis tBasis8;
@@ -21,6 +27,7 @@ class CoreBasisTest {
 	@BeforeEach
 	public void setUp() throws GeneratorRangeException {
 		tBasis0 = new Basis((byte) 0);
+		tBasis1 = new Basis((byte) 1);
 		tBasis4 = new Basis((byte) 4);
 		tBasis43 = new Basis((byte) 4);
 		tBasis8 = new Basis((byte) 8);
@@ -114,12 +121,73 @@ class CoreBasisTest {
 		//	System.out.println("Asserting something for "+k+": "+(tSpot.get(k + 1) - tSpot.get(k))+" and "+(tSpot.get(17 - k ) - tSpot.get(16 - k)));
 		//		assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(16 - k + 1) - tSpot.get(16 - k));
 	}
-/*
+
+	@Test
+	public void testLooseValidations() {
+		assertFalse(tBasis8.validateBladeIndex(65536)); //Index 65536 is more appropriate for 16 generator basis.
+		assertFalse(tBasis8.validateBladeIndex(256)); //Index 256 is one too many.
+		assertFalse(tBasis8.validateBladeIndex(-1)); //Index -1 is too low.
+		assertTrue(tBasis8.validateBladeIndex(255)); //Index 255 is just right says Goldilocks.
+
+		assertNull(tBasis8.getSingleBlade(256));
+		assertTrue(tBasis8.getSingleBlade(255) instanceof Blade);
+
+		assertThrows(GeneratorRangeException.class, () -> Basis.using((byte) 17));
+
+		Stream<Blade> testThis = tBasis4.bladeStream();
+		assertTrue(testThis.count() == 16);	// 16 blades in a 4-gen basis
+		testThis = tBasis8.bladeOfGradeStream((byte) 2);
+		assertTrue(testThis.count() == 28); // 28 bivectors in an 8-gen basis
+		testThis = tBasis8.bladeOfGradeStream((byte) 17);
+		assertTrue(testThis.count() == 0); // out of range
+
+		IntStream testInts = tBasis8.gradeStream();
+		assertTrue(testInts.count() == 9); // The 9 grades add up that way. Completeness tested.
+
+		LongStream testLongs = tBasis4.keyStream();
+		assertTrue(testLongs.count() == 16);
+		testLongs = tBasis4.keyStream();
+		assertTrue(testLongs.sum() == 464);
+
+		assertTrue(tBasis4.getKeyIndexMap() instanceof TreeMap<Long, Integer>);
+		assertTrue(tBasis4.hashCode() == tBasis4.getGradeCount());
+}
+
+	@Test
+	public void testBladeReturns() {
+		Blade testThis = tBasis8.getScalarBlade();
+		assertTrue(testThis.maxGenerator()==8);
+		assertTrue(testThis.rank()==0);
+
+		testThis = tBasis8.getPScalarBlade();
+		assertTrue(testThis.maxGenerator()==8);
+		assertTrue(testThis.rank()==8);
+		assertTrue(tBasis8.getPScalarStart() == 255);
+		assertTrue(tBasis8.getKey(255) > 0);
+		assertTrue(tBasis8.getKey(256) < 0);
+
+		EnumSet<Generator> testSet = tBasis8.getBladeSet(255);
+		assertTrue(testSet instanceof EnumSet<Generator>);
+		assertTrue(testSet.size() == 8);
+
+		testSet = tBasis8.getBladeSet(256);
+		assertTrue(testSet instanceof EnumSet<Generator>);
+		assertTrue(testSet.size() == 0); 								//Out of range produces empty generator sets.
+
+		assertTrue(tBasis8.getGradeStart((byte) 8) == 255);
+		assertTrue(tBasis8.getGradeStart((byte) 9) < 0);
+
+		assertTrue(tBasis8.find(tBasis8.getPScalarBlade()) == 256); 	//Indexed position(!) and NOT array position.
+		assertTrue(tBasis8.find(null) == -1); 						//Nothing to find.
+		assertTrue(tBasis8.find(Blade.createBlade(Generator.EA)) == -1); //Not in the basis
+	}
+
+
 	@Test
 	void testXMLOutput() {
 		String xml = tBasis4.toXMLString("");
 		//System.out.println(xml);
 		assertTrue(xml != null);
 	}
-*/
+
 }

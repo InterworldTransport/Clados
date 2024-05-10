@@ -132,9 +132,7 @@ public class Blade implements Comparable<Blade> {
 	 * @return Blade with one generator contained and a max set at the same generator.
 	 */
 	public final static Blade createBlade(Generator pGen) {
-		Blade returnIt = new Blade(pGen);
-		returnIt.add(pGen);
-		return returnIt;
+		return (new Blade(pGen)).add(pGen);	 //Makes 0-blade then a 1-blade with pGen
 	}
 	
 	/**
