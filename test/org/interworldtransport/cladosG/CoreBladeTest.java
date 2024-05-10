@@ -196,6 +196,13 @@ class CoreBladeTest {
 		assertTrue(testThis.isEmpty());
 		testThis = tB42.get(Generator.E1);
 		assertTrue(testThis.isPresent());
+
+		try {
+			Blade newTest = new Blade((byte)17);
+			assertFalse(newTest instanceof Blade);
+		} catch (GeneratorRangeException e) {
+			assertTrue(e.getSourceMessage().equals("Unsupported Size for Blade 17"));
+		}
 	}
 
 	@Test

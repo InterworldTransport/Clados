@@ -205,6 +205,14 @@ class CoreRealFTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal6));				//multiply infinity
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
+
+		try {
+			testThis1.multiply(tReal4);
+		} catch (FieldBinaryException e) {
+			assertTrue(e.getSecond() == tReal4);
+			assertTrue(e.getSource() == testThis1);
+			System.out.println(e.getSourceMessage());
+		}
 	}
 
 	@Test
