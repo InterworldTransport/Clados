@@ -97,8 +97,6 @@ class CoreBladeTest {
 		assertTrue(testThis.rank() == 0);
 		assertTrue(testThis.maxGenerator() == 6);
 		assertTrue(testThis.bitKey() == ((1<<0) - 1 ));
-
-
 	}
 
 	@Test
@@ -203,6 +201,21 @@ class CoreBladeTest {
 		} catch (GeneratorRangeException e) {
 			assertTrue(e.getSourceMessage().equals("Unsupported Size for Blade 17"));
 		}
+
+		Blade left = Blade.createBlade(Generator.E1).remove(Generator.E1);
+		Blade right = Blade.createBlade(Generator.E2).remove(Generator.E2);
+		assertFalse(left.equals(right));	//Both scalar blades, but from different sized spaces.
+		assertFalse(left.equalsAbs(right));	//Both scalar blades, but from different sized spaces.
+		assertTrue(left.equalsAbs(left));	//Of course
+		assertFalse(left.equalsAbs(null)); //Of course
+		right.add(Generator.E1);
+		assertFalse(left.equalsAbs(right));	//Better not be due to key mismatch AND maxgenerator mismatch
+		
+		right.remove(Generator.E1);
+		EnumSet<Generator> tGs = EnumSet.noneOf(Generator.class);
+		Stream.of(g).forEach(gn -> tGs.add(gn));
+		right.remove(tGs);
+		assertFalse(left.equalsAbs(right));	//Both scalar blades, but from different sized spaces.
 	}
 
 	@Test

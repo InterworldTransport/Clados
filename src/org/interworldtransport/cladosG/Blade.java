@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Blade<br>
  * -------------------------------------------------------------------- <p>
@@ -236,7 +236,7 @@ public class Blade implements Comparable<Blade> {
 
 		blade.getGenerators().stream().forEachOrdered(gen -> rB.append(gen.ord).append(","));
 
-		if (blade.getGenerators().size() > 0)
+		if (blade.rank() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
 		return rB.toString();
