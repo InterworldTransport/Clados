@@ -723,7 +723,7 @@ public class Blade implements Comparable<Blade> {
 		Generator g;
 		while (cursor.hasNext()) {
 			g = cursor.next();
-			key += g.ord * Math.pow((maxGen + 1), (blade.size() - 1 - counter));
+			key += (long) g.ord * (long) Math.pow((maxGen + 1), (blade.size() - 1 - counter));
 			bitKey += (1 << (g.ord - 1));
 			counter++;
 		}

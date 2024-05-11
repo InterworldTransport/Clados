@@ -72,11 +72,36 @@ public final class BladeDuet {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);
 		return tBD.simplify(sig);
 	}
-
+	/**
+	 * These are the bitKey's of the Blades inserted.
+	 * They get used to help with the simplify algorithm.
+	 */
 	private int bitKeyLeft, bitKeyRight = 0;
+	
+	/**
+	 * This holds the combined list of generators from each blade.
+	 * Left blade goes first, then right
+	 */
 	private ArrayList<Generator> bladeDuet;
+
+	/**
+	 * This byte holds the sign of the blade to which the list of 
+	 * generators simplifies in the end. A +1 sign means a blade that 
+	 * is an even permutation of the remaining generators. A -1 sign 
+	 * means an odd permutation.
+	 * <p>
+	 * Calculating the sign ALSO gets the algebra's signature involved,
+	 * so this DOES involve the metric.
+	 */
 	private byte sign = 1;
-	private final byte maxGen; // This is NOT twice a blade's maxGrade. Just one.
+
+	/**
+	 * This is where the hint is kept for the largest possible blade in the 
+	 * basis to which the resulting blade actually belongs. It is capped by the 
+	 * maximum grade from one of the blades... which really should have the 
+	 * same maximum grade.
+	 */
+	private final byte maxGen;
 
 	/**
 	 * This is a re-use constructor that builds this as a juxtaposition of the two
@@ -154,7 +179,6 @@ public final class BladeDuet {
 			}
 		}
 		return returnIt.setSign(sign);
-		//return returnIt;
 	}
 
 	/**
