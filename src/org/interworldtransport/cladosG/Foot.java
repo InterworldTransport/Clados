@@ -149,7 +149,7 @@ public final class Foot {
 	 *         and returns the index if it is found. If not, it returns -1.
 	 */
 	public int findCardinal(Cardinal pIn) {
-		if (cardinalList == null)
+		if (cardinalList.isEmpty())
 			return -1;
 		if (cardinalList.contains(pIn))
 			return cardinalList.indexOf(pIn);
