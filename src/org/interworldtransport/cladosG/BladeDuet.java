@@ -154,7 +154,7 @@ public final class BladeDuet {
 		while (andKey > 0) {
 			if (Integer.lowestOneBit(andKey) == 1) {// andKey is odd
 				Generator eq = Generator.get(gen);
-				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? 1 : -1;
+				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? (byte) 1 : (byte) -1;
 				sign *= pSig[gen - 1];
 				bladeDuet.removeAll(Collections.singleton(eq));
 			}
@@ -173,7 +173,7 @@ public final class BladeDuet {
 				int refer = pB.indexOf(pG);
 
 				if (found != refer) {
-					sign *= -1;
+					sign *= (byte) -1;
 					Collections.swap(bladeDuet, found, refer);
 				}
 			}
