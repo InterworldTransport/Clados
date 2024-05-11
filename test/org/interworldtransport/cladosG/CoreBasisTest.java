@@ -124,6 +124,11 @@ class CoreBasisTest {
 
 	@Test
 	public void testLooseValidations() {
+		assertTrue(CanonicalBasis.validateSize(0));
+		assertFalse(CanonicalBasis.validateSize(-1));
+		assertFalse(CanonicalBasis.validateSize(17));
+		assertFalse(CanonicalBasis.validateSize(16));
+
 		assertFalse(tBasis8.validateBladeIndex(65536)); //Index 65536 is more appropriate for 16 generator basis.
 		assertFalse(tBasis8.validateBladeIndex(256)); //Index 256 is one too many.
 		assertFalse(tBasis8.validateBladeIndex(-1)); //Index -1 is too low.
@@ -133,6 +138,15 @@ class CoreBasisTest {
 		assertTrue(tBasis8.getSingleBlade(255) instanceof Blade);
 
 		assertThrows(GeneratorRangeException.class, () -> Basis.using((byte) 17));
+		assertDoesNotThrow(() -> Basis.using(Generator.EF));
+		assertThrows(GeneratorRangeException.class, () -> Basis.using(Generator.EG));
+
+		try {
+			Basis tryThisNow = Basis.using(Generator.EG);
+			assertTrue(tryThisNow.getGradeCount() == 17);
+		} catch (GeneratorRangeException egen) {
+			;
+		}
 
 		Stream<Blade> testThis = tBasis4.bladeStream();
 		assertTrue(testThis.count() == 16);	// 16 blades in a 4-gen basis

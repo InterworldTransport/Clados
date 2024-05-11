@@ -100,6 +100,10 @@ public class GProduct implements CliffordProduct {
 	 * A re-use constructor of GProduct with signature and Basis passed in. It
 	 * figures out the rest of what it needs.
 	 * <p>
+	 * The size of the signature string used to be checked using a static method
+	 * on CanonicalBasis, but that was duplicating the effort performed by CliffordProduct
+	 * when it checks the validity of the string. Size and characters ARE checked.
+	 * <p>
 	 * @param pSig String form of the signature. Looks like "-+++".
 	 * @param pB   Canonical Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
@@ -110,8 +114,6 @@ public class GProduct implements CliffordProduct {
 	public GProduct(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
-		else if (!CanonicalBasis.validateSize(pSig.length()))
-			throw new GeneratorRangeException("Signature length unsupported");
 		// ------Init signature
 		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];
 		int m = 0;
@@ -197,6 +199,9 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * Get start and end index from the GradeRange array for grade pGrade.
 	 * <p>
+	 * There is currently no protection on this method. If someone asks for a grade
+	 * that isn't in range, they WILL get -1 in the cells.
+	 * <p
 	 * @param pGrade byte primitive = grade for which the range is needed
 	 * @return int[] start and end indexes returned as a int[] array
 	 */

@@ -47,18 +47,22 @@ class CoreBladeDuetTest {
 
 		maxSize1.remove(Generator.EF);
 
-		//System.out.println("A One-a: "+Blade.toXMLString(maxSize1, ""));
-		//System.out.println("And a Two-a: "+Blade.toXMLString(maxSize2, ""));
-
 		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
 		assertTrue(together.maxGenerator() == (byte) 15);
 		assertFalse(Blade.isScalar(together));
 		assertTrue(Blade.isNBlade(together, (byte) 1));
 		assertTrue(together.key() == singlet.key());
-
-
-		//System.out.println("Together we sing: "+Blade.toXMLString(together, ""));
-
 	}
 
+	@Test
+	public void testXMLOutput() {
+		Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
+		Blade maxSize2 = Blade.createBlade((byte) 15).add(Generator.E1).add(Generator.E2);
+		BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
+		System.out.println(bduet.toXMLString());
+		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
+		//System.out.println("A One-a: "+Blade.toXMLString(maxSize1, ""));
+		//System.out.println("And a Two-a: "+Blade.toXMLString(maxSize2, ""));
+		System.out.println("Together we sing: "+Blade.toXMLString(together, ""));
+	}
 }

@@ -123,10 +123,26 @@ public final class Basis implements CanonicalBasis {
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 the supported range. 
 	 */
 	public static final Basis using(byte numberOfGenerators) throws GeneratorRangeException {
 		return new Basis(numberOfGenerators);
+	}
+
+	/**
+	 * This is just a factory method to help name a particular constructor. It is
+	 * used in place of 'new Basis(byte)'.
+	 * <p>
+	 * @param mxBlade Generator representing a pscalar with all directions.
+	 * @return Basis Factory method returns a Basis with numberOfGenerators
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range.
+	 */
+	public static final Basis using(Generator mxBlade) throws GeneratorRangeException {
+		if (CanonicalBasis.validateSize(mxBlade.ord))	// Never use Generator's ordinal
+			return new Basis(mxBlade); 
+		throw new GeneratorRangeException("Supported range is 0<->CladosConstant.MAXGRADE");
 	}
 
 	/*
@@ -271,6 +287,59 @@ public final class Basis implements CanonicalBasis {
 						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
 				}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
 			gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
+		}
+	}
+
+	/**
+	 * This is a 'from point' constructor. It takes a generator and treats it as the pscalar to factor.
+	 * It can be instantiated on its own for demonstration purposes, but it has no awareness of the 
+	 * addition and multiplication operations in an algebra, so all it does is show the basis.
+	 * <p>
+	 * @param pGen Generator This is the pscalar to factor to make up the basis
+	 */
+	public Basis(Generator pGen) {
+		// ------Initialize
+		gradeCount = (byte) (pGen.ord + 1);
+		gradeList = new ArrayList<Integer>(gradeCount);
+		bladeList = new ArrayList<Blade>(1 << pGen.ord);
+		keyIndexMap = new TreeMap<>();
+		// ------Build bladeList
+		switch (pGen.ord) {
+			case 0 -> {
+				bladeList.add(Blade.createBlade(pGen.ord));
+				gradeList.add(Integer.valueOf(0));
+				keyIndexMap.put(0L, 1);
+				break;
+			}
+			case 1 -> {
+				bladeList.add(Blade.createScalarBlade(Generator.E1));
+				gradeList.add(Integer.valueOf(0));
+				keyIndexMap.put(0L, 1);
+				bladeList.add(Blade.createPScalarBlade(Generator.E1));
+				gradeList.add(Integer.valueOf(1));
+				keyIndexMap.put(1L, 2);
+				break;
+			}
+			default -> {
+				EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, pGen);
+				TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
+				for (EnumSet<Generator> pG : powerSet(offer))
+					sorted.add(new Blade(pGen, pG)); // Adds in SORTED ORDER because... TreeSet
+				
+				sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
+					bladeList.add(blade); // causing bladeList to be in ascending (by key) order
+					keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
+				});
+
+				// ------Build gradeList
+				gradeList.add(Integer.valueOf(0)); // First entry in gradeList is for scalar grade
+				gradeList.add(Integer.valueOf(1)); // Second entry in gradeList is for vector grade
+				IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
+					gradeList
+						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
+					}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
+				gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
+			}
 		}
 	}
 

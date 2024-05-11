@@ -358,7 +358,7 @@ public class Blade implements Comparable<Blade> {
 	public Blade(Blade pB, Generator pGen) {
 		blade = EnumSet.noneOf(Generator.class);
 		blade.addAll(pB.getGenerators());
-		if (pGen.ord <= pB.maxGenerator() + 1 && pB.maxGenerator() < CladosConstant.GENERATOR_MAX.ordinal()) {
+		if (pGen.ord <= pB.maxGenerator() + 1 && pB.maxGenerator() < CladosConstant.GENERATOR_MAX.ord) {
 			maxGen = (byte) (pB.maxGenerator() + 1);
 			blade.add(pGen);
 		} else maxGen = (byte) (pB.maxGenerator());
@@ -389,9 +389,24 @@ public class Blade implements Comparable<Blade> {
 	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
 	 * <p>
+	 * @param pGen Generator used to get ordinal for the number of possible 
+	 * 				directions that might appear in this blade.
+	 * @param pDirs  EnumSet<Generator> contains generators to append to the blade.
+	 */
+	public Blade(Generator pGen, EnumSet<Generator> pDirs) {
+		this(pGen);
+		blade.add(pGen);
+		pDirs.forEach(g -> blade.add(g));
+		makeKey();
+	}
+
+	/**
+	 * This is a maximal constructor that establishes the blade's future maxGen
+	 * expectations AND provides an array of directions to load into the blade.
+	 * <p>
 	 * @param pMaxGen byte integer for the number of possible directions that might
 	 *                appear in this blade.
-	 * @param pDirs   Generator[] containing directions to append to the blade.
+	 * @param pDirs   EnumSet<Generator> contains generators to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with 
 	 *                                 too many directions. The current maximum is 
