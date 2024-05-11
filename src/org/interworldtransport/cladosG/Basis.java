@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Basis<br>
  * -------------------------------------------------------------------- <p>
@@ -41,11 +41,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * All geometry objects within the cladosG package have elements that form a
  * basis to span the vector space related to the algebra. This basis is
  * represented in the algebra as various products of the generators. This class
- * representation uses sets of generators as Blades and and a list of Blades. It
+ * representation uses sets of generators as Blades and a list of Blades. It
  * also maintains a few methods that help manipulate them.
  * <p>
  * The gradeCount is tracked using byte integers as it isn't expected that
- * anyone will work with algebras of more than 254 generators any time soon.
+ * anyone will work with algebras of more than 126 generators any time soon.
  * <p>
  * The bladeCount is computed as (1 &lt;&lt; gradeCount - 1) instead of stored.
  * It is reported as an integer though that DOES limit the size of a basis to 31
@@ -53,7 +53,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * <p>
  * The bladeList is stored as an ArrayList of Blades that should be no longer
  * than bladeCount. There is nothing to stop it from being longer or shorter,
- * though, so this is a potential source of errors. It really SHOULD be
+ * though, so this is a potential source of error. It really SHOULD be
  * immutable once constructed correctly. Same goes for the Blades contained in
  * the ArrayList.
  * <p>
@@ -65,12 +65,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * present in the multivector and skip potentially large blocks in the sums with
  * vanishing contributions. However, sparseness is detected using a
  * multivector's key and NOT a Blade's key. Once Blades are sorted into a basis,
- * blade keys are only used one more time. This occurs when a product table is
- * constructed. Blade keys are used to identify the resulting Blade for re-use.
+ * blade keys are only used to name them in maps.
  * <p>
  * NOTE that Blade keys are currently kept as long integers. The key for a
- * pscalar in a 14 generator basis is 2234152501943159L. For 15 generator
- * algebras the key is 81985529216486895L. Long integers can't hold keys much
+ * pscalar in a 14 generator basis is 2234152501943160L. For 15 generator
+ * algebras the key is 81985529216486896L. Long integers can't hold keys much
  * larger than that. At some point keys will shift to Java's BigInteger class
  * and impose another performance penalty. Not yet, though. Best practice would
  * be to avoid computations demanding heavy use of blade keys.
@@ -85,11 +84,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * to create copies within running applications. One MAY do so as no singleton
  * enforcement occurs, but every basis of the same number of generators passes
  * the equality test. A convenient cache already exists in the singleton
- * CladosGBuilder.
+ * CladosGCache.
  * <p>
- * The choice limit of 14 generators produces a maximum basis size of 16,384.
+ * The choice limit of 15 generators produces a maximum basis size of 32,768.
  * More can be used, but one must change the 'magic numbers' in the
- * CladosConstant class and recompile. (NOTE the new limit is 15.)
+ * CladosConstant class and recompile.
  * <p>
  * There IS a sort buried in the constructor for a Basis. After Blades are
  * generated using the private powerSet method, they are sorted on the 'natural
@@ -108,9 +107,8 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * basis with 14 geometric directions and 16384 linear dimensions that takes a
  * sizeable fraction of a minute to construct? So it is suggested that Best
  * Practice among those who build physical models is to prebuild what you need
- * and load it all to the cache in CladosGBuilder. Better yet, use
- * CladosGBuilder to do it for you. That said, it should be easy to understand
- * why the copy constructor has been removed.
+ * and load it all to the cache. Use CladosGBuilder to do it for you. 
+ * That said, it is obvious why the copy constructor was removed.
  * <p>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -125,10 +123,26 @@ public final class Basis implements CanonicalBasis {
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 the supported range. 
 	 */
 	public static final Basis using(byte numberOfGenerators) throws GeneratorRangeException {
 		return new Basis(numberOfGenerators);
+	}
+
+	/**
+	 * This is just a factory method to help name a particular constructor. It is
+	 * used in place of 'new Basis(byte)'.
+	 * <p>
+	 * @param mxBlade Generator representing a pscalar with all directions.
+	 * @return Basis Factory method returns a Basis with numberOfGenerators
+	 * @throws GeneratorRangeException This exception is thrown when the integer
+	 *                                 number of generators for the basis is out of
+	 *                                 the supported range.
+	 */
+	public static final Basis using(Generator mxBlade) throws GeneratorRangeException {
+		if (CanonicalBasis.validateSize(mxBlade.ord))	// Never use Generator's ordinal
+			return new Basis(mxBlade); 
+		throw new GeneratorRangeException("Supported range is 0<->CladosConstant.MAXGRADE");
 	}
 
 	/*
@@ -212,7 +226,14 @@ public final class Basis implements CanonicalBasis {
 
 	/**
 	 * This map connects a Blade's internal key to its indexed location in the
-	 * basis.
+	 * basis. This map is what allows us to put the indexed position in the
+	 * multiplicaton table instead of the blade's key which is longer and would 
+	 * inflate the size of the Cayley table unnecessarily.
+	 * <p>
+	 * The indexed position "1" is always the scalar of the basis. That's why
+	 * a "1" in the Cayley table (called result[][] in GProduct) refers to a 
+	 * scalar... or the 'no generators' blade. The fact that a "0" is NOT used
+	 * is what will enable the introduction of degenerate generators.
 	 */
 	private final TreeMap<Long, Integer> keyIndexMap;
 
@@ -252,6 +273,7 @@ public final class Basis implements CanonicalBasis {
 			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
 			for (EnumSet<Generator> pG : powerSet(offer))
 				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
+				
 			sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
 				bladeList.add(blade); // causing bladeList to be in ascending (by key) order
 				keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
@@ -263,8 +285,61 @@ public final class Basis implements CanonicalBasis {
 			IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
 				gradeList
 						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
-			}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
+				}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
 			gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
+		}
+	}
+
+	/**
+	 * This is a 'from point' constructor. It takes a generator and treats it as the pscalar to factor.
+	 * It can be instantiated on its own for demonstration purposes, but it has no awareness of the 
+	 * addition and multiplication operations in an algebra, so all it does is show the basis.
+	 * <p>
+	 * @param pGen Generator This is the pscalar to factor to make up the basis
+	 */
+	public Basis(Generator pGen) {
+		// ------Initialize
+		gradeCount = (byte) (pGen.ord + 1);
+		gradeList = new ArrayList<Integer>(gradeCount);
+		bladeList = new ArrayList<Blade>(1 << pGen.ord);
+		keyIndexMap = new TreeMap<>();
+		// ------Build bladeList
+		switch (pGen.ord) {
+			case 0 -> {
+				bladeList.add(Blade.createBlade(pGen.ord));
+				gradeList.add(Integer.valueOf(0));
+				keyIndexMap.put(0L, 1);
+				break;
+			}
+			case 1 -> {
+				bladeList.add(Blade.createScalarBlade(Generator.E1));
+				gradeList.add(Integer.valueOf(0));
+				keyIndexMap.put(0L, 1);
+				bladeList.add(Blade.createPScalarBlade(Generator.E1));
+				gradeList.add(Integer.valueOf(1));
+				keyIndexMap.put(1L, 2);
+				break;
+			}
+			default -> {
+				EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, pGen);
+				TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
+				for (EnumSet<Generator> pG : powerSet(offer))
+					sorted.add(new Blade(pGen, pG)); // Adds in SORTED ORDER because... TreeSet
+				
+				sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
+					bladeList.add(blade); // causing bladeList to be in ascending (by key) order
+					keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
+				});
+
+				// ------Build gradeList
+				gradeList.add(Integer.valueOf(0)); // First entry in gradeList is for scalar grade
+				gradeList.add(Integer.valueOf(1)); // Second entry in gradeList is for vector grade
+				IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
+					gradeList
+						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
+					}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
+				gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
+			}
 		}
 	}
 
@@ -281,10 +356,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public Stream<Blade> bladeOfGradeStream(byte pIn) {
-		if (pIn >= CladosConstant.SCALARGRADE & pIn <= gradeCount)
-			return bladeList.stream().filter(blade -> blade.rank() == pIn);
-		else
-			return null;
+		return bladeList.stream().filter(blade -> blade.rank() == pIn);
 	}
 
 	@Override
@@ -316,10 +388,12 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int find(Blade pIn) {
-		Integer loc = keyIndexMap.get(pIn.key());
-		if (loc == null)
-			return -1;
-		return loc.intValue();
+		if (!(pIn == null)) {
+			Integer loc = keyIndexMap.get(pIn.key());
+			if (!(loc == null))
+				return loc.intValue();
+		}
+		return -1;
 	}
 
 	/**
@@ -330,7 +404,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int getBladeCount() {
-		return (1 << gradeCount - 1);
+		return bladeList.size();
 	}
 
 	/**
@@ -350,9 +424,9 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public EnumSet<Generator> getBladeSet(int p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			return EnumSet.noneOf(Generator.class);
-		return bladeList.get(p1).getGenerators();
+		if (this.validateBladeIndex(p1))
+			return bladeList.get(p1).getGenerators();
+		return EnumSet.noneOf(Generator.class);
 	}
 
 	/**
@@ -388,25 +462,25 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int getGradeStart(byte p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > gradeCount)
-			return -1;
-		return gradeList.get(p1).intValue();
+		if (this.validateGradeIndex(p1))
+			return gradeList.get(p1).intValue();
+		return -1;
 	}
 
 	/**
-	 * Return the long at p1 in the EddingtonKey array.
+	 * Return the long key for the blade at p1 in keyIndexMap.
 	 * <p>
-	 * IllegalArgumentException can be thrown if the requested blade is NOT between
-	 * 0 and bladeCount inclusive.
+	 * There is no telling what blade is at the indexed location.
+	 * This just returns the key for it assuming it is there.
 	 * <p>
-	 * @param p1 short This is the desired key at p1 .
+	 * @param p1 int This is the desired key for the value p1 .
 	 * @return long
 	 */
 	@Override
 	public long getKey(int p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			throw new IllegalArgumentException("Requested Blade # {" + p1 + "} is not in basis");
-		return bladeList.get(p1).key();
+		if (this.validateBladeIndex(p1))
+			return bladeList.get(p1).key();
+		return -1;
 	}
 
 	/**
@@ -430,7 +504,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public int getPScalarStart() {
-		return gradeList.get(gradeCount);
+		return gradeList.get(gradeCount - 1);
 	}
 
 	@Override
@@ -449,19 +523,19 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public Blade getSingleBlade(int p1) {
-		if (p1 < CladosConstant.SCALARGRADE | p1 > getBladeCount())
-			return null;
-		return bladeList.get(p1);
+		if (this.validateBladeIndex(p1))
+			return bladeList.get(p1);
+		return null;
 	}
 
 	@Override
 	public IntStream gradeStream() {
-		return IntStream.rangeClosed(0, gradeCount);
+		return IntStream.rangeClosed(0, gradeCount - 1);
 	}
 
 	@Override
 	public int hashCode() {
-		return 137 + gradeCount;
+		return (int) getGradeCount();
 	}
 
 	@Override
@@ -484,22 +558,41 @@ public final class Basis implements CanonicalBasis {
 			indent = "\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Basis>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent).append("\t<Grades count=\"").append(getGradeCount() + "\">\n");
-		for (short k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
-			rB.append(indent).append("\t\t<Grade number=\"").append(k).append("\" range=\"").append(gradeList.get(k))
-					.append("-").append((gradeList.get(k + 1) - 1)).append("\" />\n");
-		// Handle last grade separate. There is no k+1 index for the largest grade
-		rB.append(indent).append("\t\t<Grade number=\"").append((getGradeCount() - 1)).append("\" range=\"")
-				.append(gradeList.get(gradeCount - 1)).append("-").append(gradeList.get(gradeCount - 1))
+		rB.append(indent)
+			.append("\t<Grades count=\"")
+			.append(getGradeCount() + "\">\n");
+		for (int k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
+			rB.append(indent)
+				.append("\t\t<Grade number=\"")
+				.append(k)
+				.append("\" range=\"")
+				.append(gradeList.get(k))
+				.append("-")
+				.append((gradeList.get(k + 1) - 1))
 				.append("\" />\n");
-		rB.append(indent).append("\t</Grades>\n");
+		// Handle last grade separate. There is no k+1 index for the largest grade
+		rB.append(indent)
+			.append("\t\t<Grade number=\"")
+			.append((getGradeCount() - 1))
+			.append("\" range=\"")
+			.append(gradeList.get(gradeCount - 1))
+			.append("-")
+			.append(gradeList.get(gradeCount - 1))
+			.append("\" />\n");
+		rB.append(indent)
+			.append("\t</Grades>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent).append("\t<Blades count=\"").append(getBladeCount()).append("\">\n");
-		for (short k = 0; k < bladeList.size(); k++) // Appending blades
+		rB.append(indent)
+			.append("\t<Blades count=\"")
+			.append(getBladeCount())
+			.append("\">\n");
+		for (int k = 0; k < bladeList.size(); k++) // Appending blades
 			rB.append(Blade.toXMLString(bladeList.get(k), indent + "\t\t"));
-		rB.append(indent).append("\t</Blades>\n");
+		rB.append(indent)
+			.append("\t</Blades>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent).append("</Basis>\n");
+		rB.append(indent)
+			.append("</Basis>\n");
 		return rB.toString();
 	}
 
@@ -512,8 +605,21 @@ public final class Basis implements CanonicalBasis {
 	 * @return boolean True if parameter in the supported range [0, bladeCount]
 	 */
 	@Override
-	public final boolean validateBladeIndex(short pIn) {
+	public final boolean validateBladeIndex(int pIn) {
 		return (pIn >= CladosConstant.SCALARGRADE & pIn < getBladeCount());
+	}
+
+	/**
+	 * This is a validator detects grade out of range issues. If one tries to name a
+	 * grade by its index, it is always possible for the offered integer to be out
+	 * of range.
+	 * <p>
+	 * @param pIn int representing the integer index of the grade
+	 * @return boolean True if parameter in the supported range [0, bladeCount]
+	 */
+	@Override
+	public final boolean validateGradeIndex(int pIn) {
+		return (pIn >= CladosConstant.SCALARGRADE & pIn < getGradeCount());
 	}
 
 }

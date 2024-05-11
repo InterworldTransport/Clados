@@ -45,6 +45,7 @@ public class CoreUnitAbstractTest {
         assertTrue(UnitAbstract.isTypeMatch(tUA1, tUA5));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testComparisons() {
         assertFalse(tUA1.equals(null));

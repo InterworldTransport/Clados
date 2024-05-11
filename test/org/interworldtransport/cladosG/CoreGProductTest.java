@@ -2,13 +2,8 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//import org.interworldtransport.cladosG.CladosGBuilder;
-//import org.interworldtransport.cladosG.CladosGCache;
-//import org.interworldtransport.cladosG.CliffordProduct;
-//import org.interworldtransport.cladosG.GProduct;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CoreGProductTest {
@@ -22,10 +17,9 @@ class CoreGProductTest {
 	String pSig12 = "-+++-+++-+++";
 	String pSig14 = "++-+++-+++-+++";
 	String pSig15 = "+++-+++-+++-+++";
+	String pSig16 = "-+++-+++-+++-+++";
 
-	@BeforeEach
-	public void setUp() {
-	}
+	String pSig30 = "+++0";
 
 	@Test
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
@@ -34,7 +28,75 @@ class CoreGProductTest {
 		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);
 		assertTrue(tGP1 == tGP2);
 	}
+
+	@Test
+	public void testValidations() {
+		assertTrue(CliffordProduct.validateSignature(pSig4));
+		assertFalse(CliffordProduct.validateSignature(pSig16)); //Beyond supported size right now.
+		assertFalse(CliffordProduct.validateSignature(pSig30)); //Can't support PGA yet.
+
+		assertTrue(CliffordProduct.validateSignature("")); //Allowed. No generators.
+		assertFalse(CliffordProduct.validateSignature(null)); //Disallowed. No Info != No generators.
+	}
 	
+	@Test
+	public void testSigns() {
+		try {
+			GProduct tGP = new GProduct(pSig4);
+			//System.out.println(tGP.toXMLString(""));
+			assertTrue(tGP.getACommuteSign(1, 2) == 1); //They anticommute
+			assertFalse(tGP.getACommuteSign(1, 12) == 1); //They commute
+			assertTrue(tGP.getCommuteSign(1, 11) == 1); //They commute
+			assertFalse(tGP.getCommuteSign(1, 3) == 1); //They anticommute
+
+			assertTrue(tGP.getSign(1, 2) == 1); //Should be positive on row 1
+			assertTrue(tGP.getSign(2, 1) == -1); //Should be neg to get anticommute
+			assertTrue(tGP.getResult(15, 15) == -1); //PScalar squares to -1.
+			assertTrue(tGP.signature().length() == 4);
+		} catch (BadSignatureException esig) {
+			;
+		} catch (GeneratorRangeException egen) {
+			;
+		}
+	}
+
+	@Test
+	public void testThrows() {
+		assertThrows(BadSignatureException.class, () -> new GProduct(pSig30));
+	}
+
+	@Test
+	public void testRanges() throws BadSignatureException, GeneratorRangeException {
+		try {
+			GProduct tGP = (GProduct) CladosGBuilder.createGProduct(pSig8);
+			int[] pRange = tGP.getPScalarRange();
+			assertTrue(pRange[0] == pRange[1]);
+			assertTrue(pRange[0] == 255);
+			pRange = tGP.getGradeRange((byte) 2);
+			assertTrue(pRange[0] == 9);
+			assertTrue(pRange[1] == 36);
+			pRange = tGP.getGradeRange((byte) 8);
+			assertTrue(pRange[0] == pRange[1]);
+			assertTrue(pRange[0] == 255);
+
+		} catch (BadSignatureException esig) {
+			;
+		} catch (GeneratorRangeException egen) {
+			;
+		}
+	}
+
+	@Test
+	public void testXMLOutput() {
+		try {
+			GProduct tGP = (GProduct) CladosGBuilder.createGProduct(pSig10);
+			System.out.println(tGP.toXMLString(""));
+		} catch (BadSignatureException esig) {
+			;
+		} catch (GeneratorRangeException egen) {
+			;
+		}
+	}
 	
 	@Test
 	public void test00s() throws BadSignatureException, GeneratorRangeException {
@@ -228,5 +290,42 @@ class CoreGProductTest {
 			assertTrue(tSum == tSumP);
 		}
 	}
+/* 
+	@Test
+	public void test16s() throws BadSignatureException, GeneratorRangeException {
+		GProduct tGP = new GProduct(pSig16);
+		assertTrue(tGP.signature().equals("-+++-+++-+++-+++"));
+		assertTrue(tGP.getGradeCount() == 17);
+		assertTrue(tGP.getBladeCount() == (1<<16));
 
+		//long tS = 65536;
+		long tSum = 65536 * 65537 / 2;
+		
+		System.out.println("Cayley rows should sum to: "+tSum);
+
+		int[] firstRow = tGP.getResult(0);
+		long tSumP = 0;
+		for (int j = 0; j < firstRow.length; j++)
+			tSumP += (long) Math.abs(firstRow[j]);
+		System.out.println("Cayley-FirstRow---"+tSumP);
+
+		int[] lastRow = tGP.getResult(tGP.getBladeCount()-1);
+		tSumP = 0;
+		for (int j = 0; j < lastRow.length; j++)
+			tSumP += (long) Math.abs(lastRow[j]);
+		System.out.println("Cayley-LastRow---"+tSumP);
+*/
+
+		/*
+		for (int k = 0; k < tGP.getBladeCount(); k++) {
+			//int[] tSpot = tGP.getResult(k);
+			long tSumP = 0;
+			for (int j = 0; j < tGP.getResult(k).length; j++)
+				tSumP += (long) Math.abs(tGP.getResult(k, j));
+
+			assertTrue(tSum == tSumP);
+		}
+		
+	}
+*/
 }

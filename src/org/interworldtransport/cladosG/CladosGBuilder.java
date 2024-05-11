@@ -245,7 +245,27 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 			CladosGCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
+	}
 
+	/**
+	 * This method creates a basis and caches it.
+	 * <p>
+	 * @param pGen Generator to use in constructing the basis.
+	 * @return CanonicalBasis constructed
+	 * @throws GeneratorRangeException This can be thrown by the constructors on
+	 *                                 which this method depends. Nothing special in
+	 *                                 this method will throw them, so look to the
+	 *                                 CanonicalBasis and see why it complains.
+	 */
+	public final static CanonicalBasis createBasis(Generator pGen) throws GeneratorRangeException {
+		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen.ord);
+		if (tB.isPresent())
+			return tB.get();
+		else {
+			CanonicalBasis tSpot = Basis.using(pGen);
+			CladosGCache.INSTANCE.appendBasis(tSpot);
+			return tSpot;
+		}
 	}
 
 	/**

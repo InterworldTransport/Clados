@@ -45,16 +45,16 @@ public class GeneratorRangeException extends Exception {
 	 * The source message is the reason given by the originating Monad for the
 	 * exception.
 	 */
-	public String SourceMessage;
+	protected String SourceMessage;
 
 	/**
 	 * Construct this exception. This exception fabricates a message complaining
 	 * about the expectations of the source.
 	 */
-	public GeneratorRangeException() {
-		super();
-		SourceMessage = "Likely blade construction attempt failed.";
-	}
+	//public GeneratorRangeException() {
+	//	super();
+	//	SourceMessage = "Likely blade construction attempt failed.";
+	//}
 
 	/**
 	 * Construct this exception. This exception must have a message complaining

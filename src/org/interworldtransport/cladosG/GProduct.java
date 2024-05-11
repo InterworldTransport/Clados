@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GProduct<br>
  * -------------------------------------------------------------------- <p>
@@ -57,7 +57,7 @@ public class GProduct implements CliffordProduct {
 	 * the generators to span the algebra's vector space. It is the object that Ken
 	 * Greider called the Eddington Basis.
 	 */
-	private final CanonicalBasis canonicalBasis;
+	private final CanonicalBasis canonBasis;
 
 	/**
 	 * This integer array is an internal translation of the product signature.
@@ -100,6 +100,10 @@ public class GProduct implements CliffordProduct {
 	 * A re-use constructor of GProduct with signature and Basis passed in. It
 	 * figures out the rest of what it needs.
 	 * <p>
+	 * The size of the signature string used to be checked using a static method
+	 * on CanonicalBasis, but that was duplicating the effort performed by CliffordProduct
+	 * when it checks the validity of the string. Size and characters ARE checked.
+	 * <p>
 	 * @param pSig String form of the signature. Looks like "-+++".
 	 * @param pB   Canonical Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
@@ -110,8 +114,6 @@ public class GProduct implements CliffordProduct {
 	public GProduct(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
-		else if (!CanonicalBasis.validateSize(pSig.length()))
-			throw new GeneratorRangeException("Signature length unsupported");
 		// ------Init signature
 		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];
 		int m = 0;
@@ -125,15 +127,15 @@ public class GProduct implements CliffordProduct {
 		}
 		signature = pSig;
 		// ------Get CanonicalBasis
-		canonicalBasis = (pB != null) ? pB : CladosGBuilder.createBasis((byte) pSig.length());
+		canonBasis = (pB != null) ? pB : CladosGBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
-		canonicalBasis.bladeStream().parallel().forEach(bladeLeft -> {
-			int row = canonicalBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
-			canonicalBasis.bladeStream().forEach(bladeRight -> {
-				int col = canonicalBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
+		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {
+			int row = canonBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
+			canonBasis.bladeStream().forEach(bladeRight -> {
+				int col = canonBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
 				Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
-				result[row][col] = bMult.sign() * canonicalBasis.getKeyIndexMap().get(bMult.key());
+				result[row][col] = (int) bMult.sign() * (int) canonBasis.getKeyIndexMap().get(Long.valueOf(bMult.key()));
 			});
 		});
 	}
@@ -158,7 +160,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final CanonicalBasis getBasis() {
-		return canonicalBasis;
+		return canonBasis;
 	}
 
 	/**
@@ -168,7 +170,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final int getBladeCount() {
-		return canonicalBasis.getBladeCount();
+		return canonBasis.getBladeCount();
 	}
 
 	/**
@@ -191,29 +193,32 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final byte getGradeCount() {
-		return canonicalBasis.getGradeCount();
+		return canonBasis.getGradeCount();
 	}
 
 	/**
 	 * Get start and end index from the GradeRange array for grade pGrade.
 	 * <p>
-	 * @param pGrade short primitive = grade for which the range is needed
-	 * @return int[] start and end indexes returned as a short[] array
+	 * There is currently no protection on this method. If someone asks for a grade
+	 * that isn't in range, they WILL get -1 in the cells.
+	 * <p
+	 * @param pGrade byte primitive = grade for which the range is needed
+	 * @return int[] start and end indexes returned as a int[] array
 	 */
 	@Override
 	public final int[] getGradeRange(byte pGrade) {
 		int[] tR = new int[2];
-		tR[0] = canonicalBasis.getGradeStart(pGrade);
-		tR[1] = ((pGrade == canonicalBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
+		tR[0] = (int) canonBasis.getGradeStart(pGrade);
+		tR[1] = (int) ((pGrade == canonBasis.getGradeCount() - 1) // is this MaxGrade? If so, top=bottom
 				? tR[0]
-				: (canonicalBasis.getGradeStart((byte) (pGrade + 1)) - 1));
+				: (canonBasis.getGradeStart((byte) (pGrade + 1)) - 1));
 		return tR;
 	}
 
 	@Override
 	public final int[] getPScalarRange() {
 		int[] tR = new int[2];
-		tR[0] = canonicalBasis.getPScalarStart();
+		tR[0] = canonBasis.getPScalarStart();
 		tR[1] = tR[0];
 		return tR;
 	}
@@ -274,14 +279,24 @@ public class GProduct implements CliffordProduct {
 		if (indent == null)
 			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
-		rB.append(indent).append("\t<Signature>").append(signature()).append("</Signature>\n");
+		rB.append(indent)
+			.append("\t<Signature>")
+			.append(signature())
+			.append("</Signature>\n");
 		rB.append(getBasis().toXMLString(indent + "\t"));
-		rB.append(indent).append("\t<ProductTable rows=\"").append(getBladeCount()).append("\">\n");
-		for (short k = 0; k < getBladeCount(); k++) // Appending rows
+		rB.append(indent)
+			.append("\t<ProductTable rows=\"")
+			.append(getBladeCount())
+			.append("\">\n");
+		for (int k = 0; k < getBladeCount(); k++) // Appending rows
 		{
-			rB.append(indent).append("\t\t<row number=\"").append(k).append("\" cells=\"");
-			for (short m = 0; m < getBladeCount(); m++)
-				rB.append(getResult(k, m)).append(",");
+			rB.append(indent)
+				.append("\t\t<row number=\"")
+				.append(k)
+				.append("\" cells=\"");
+			for (int m = 0; m < getBladeCount(); m++)
+				rB.append(getResult(k, m))
+				.append(",");
 			rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
 		}

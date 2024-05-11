@@ -529,8 +529,7 @@ public class Nyad implements Modal {
 		tempLeft.multiplyAntisymm(tempRight);
 
 		monadList.remove(pFrom);
-		// TODO RESET Algebra list or write small method that removes it being careful
-		// for weak detection
+		// RESET Algebra list
 		monadList.trimToSize();
 	}
 
@@ -552,8 +551,7 @@ public class Nyad implements Modal {
 		tempLeft.multiplySymm(tempRight);
 
 		monadList.remove(pFrom);
-		// TODO RESET Algebra list or write small method that removes it being careful
-		// for weak detection
+		// RESET Algebra list.
 		monadList.trimToSize();
 	}
 

@@ -2,9 +2,6 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//import org.interworldtransport.cladosG.Blade;
-//import org.interworldtransport.cladosG.BladeDuet;
-//import org.interworldtransport.cladosG.Generator;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +12,7 @@ class CoreBladeDuetTest {
 	Generator[] g = { Generator.E1, Generator.E2, Generator.E3 };
 	Generator[] i = { Generator.E1, Generator.E2, Generator.E3, Generator.E4 };
 	byte[] sig = { 1, 1, 1, 1 };
+	byte[] bigsig = { 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1 };
 	Blade firstB, secondB, out;
 	Blade euclidianB, minkowskiB;
 	BladeDuet tBD;
@@ -41,4 +39,30 @@ class CoreBladeDuetTest {
 		Assertions.assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
 	}
 
+	@Test
+	public void testMaxProduct() {
+		Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
+		Blade maxSize2 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
+		Blade singlet = Blade.createBlade(Generator.EF).add(Generator.EF);
+
+		maxSize1.remove(Generator.EF);
+
+		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
+		assertTrue(together.maxGenerator() == (byte) 15);
+		assertFalse(Blade.isScalar(together));
+		assertTrue(Blade.isNBlade(together, (byte) 1));
+		assertTrue(together.key() == singlet.key());
+	}
+
+	@Test
+	public void testXMLOutput() {
+		Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
+		Blade maxSize2 = Blade.createBlade((byte) 15).add(Generator.E1).add(Generator.E2);
+		BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
+		System.out.println(bduet.toXMLString());
+		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
+		//System.out.println("A One-a: "+Blade.toXMLString(maxSize1, ""));
+		//System.out.println("And a Two-a: "+Blade.toXMLString(maxSize2, ""));
+		System.out.println("Together we sing: "+Blade.toXMLString(together, ""));
+	}
 }

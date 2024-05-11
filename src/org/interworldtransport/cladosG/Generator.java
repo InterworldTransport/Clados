@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Generator<br>
  * -------------------------------------------------------------------- <p>
@@ -107,19 +107,20 @@ public enum Generator {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	EF((byte) 15);
+	EF((byte) 15),
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	//EG((byte) 16);
+	EG((byte) 16);
 
 	/**
-	 * This method returns an unlimited stream of generators in this enumeration.
+	 * This method returns a stream of generators in this enumeration up to a limit
+	 * defined in CladosConstant.
 	 * <p>
 	 * @return Stream of Generator
 	 */
 	public final static Stream<Generator> stream() {
-		return Stream.of(Generator.values());
+		return Stream.of(Generator.values()).limit(CladosConstant.GENERATOR_MAX.ord);
 	}
 
 	/**

@@ -1469,7 +1469,7 @@ public class Monad implements Modal {
 			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
 					.filter(blade -> getScales().isNotZeroAt(blade)).parallel().findAny().isPresent()) {
 				foundGrades++;
-				gradeKey += Math.pow(10, grade);
+				gradeKey += (long) Math.pow(10, grade);
 			}
 		});
 
