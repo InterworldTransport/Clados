@@ -2,9 +2,6 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealD;
 import org.junit.jupiter.api.BeforeEach;
