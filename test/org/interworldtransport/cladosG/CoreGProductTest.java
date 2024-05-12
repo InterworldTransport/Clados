@@ -24,9 +24,18 @@ class CoreGProductTest {
 	@Test
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
 		CliffordProduct tGP1 = CladosGBuilder.createGProduct(pSig3);
-		assertTrue(CladosGCache.INSTANCE.getGProductListSize()>0);
-		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);
-		assertTrue(tGP1 == tGP2);
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//The builder cached it
+		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);	//Same sig so a repeat
+		assertTrue(tGP1 == tGP2);	//The builder noticed a GP with the same sign and returned it instead
+
+		CliffordProduct tGP3 = CladosGBuilder.createGProduct(pSig4);	//Inverted sig this time. different GP.
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 2); 	//The builder cached it
+		CladosGCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//Found the first GP and removed it.
+		CladosGCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//Not found and silently handled.
+		CladosGCache.INSTANCE.removeGProduct(tGP3);						//Remove the gp named by reference.
+		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 0); 	//Found the second GP and removed it.
 	}
 
 	@Test

@@ -158,13 +158,13 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public static final Algebra createAlgebra(UnitAbstract pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (RealF) CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof RealD) {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (RealD) CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexF) {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexD) {
-			return new Algebra(pName, pFTName, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + pNumber.toXMLString());
 		}
@@ -183,7 +183,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public static final Algebra createAlgebraWithFoot(Foot pF, Cardinal pCard, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		return new Algebra(pName, pF, pCard, pSig);
+		return new Algebra(pName, pF, pSig, pCard);
 	}
 
 	/**
@@ -200,13 +200,13 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public static final Algebra createAlgebraWithFoot(Foot pF, UnitAbstract pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (RealF) CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof RealD) {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (RealD) CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexF) {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexD) {
-			return new Algebra(pName, pF, pSig, CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException(
 					"Unexpected UnitAbstract child for Algebra mode | " + pNumber.toXMLString());
@@ -223,7 +223,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @return Algebra
 	 */
 	public static final Algebra createAlgebraWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
-		return new Algebra(pName, pF, pCard, pGP);
+		return new Algebra(pName, pF, pGP, pCard);
 	}
 
 	/**

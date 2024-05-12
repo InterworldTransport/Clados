@@ -28,7 +28,14 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosField;
+import org.interworldtransport.cladosF.Field;
+import org.interworldtransport.cladosF.Normalizable;
+import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -154,7 +161,10 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	protected String name;
 	/**
 	 * The algebra's prototypical 'number'. A UnitAbstract suffices most of the time,
-	 * but there is no issue with using a child of UnitAbstract.
+	 * but there is no issue with using a child of UnitAbstract. Just be careful because
+	 * setting protoNumber with a child of UnitAbstract should also set the Mode.
+	 * <p>
+	 * This is where the primary cardinal for an algebra is found.
 	 */
 	protected UnitAbstract protoNumber;
 	/**
@@ -165,6 +175,8 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * Unique string (hopefully) that provides a machine readable name more likely
 	 * to be unique. Used by apps that need more than the human readable name to
 	 * avoid duplicating objects unnecessarily.
+	 * <p>
+	 * 
 	 */
 	protected String uuid;
 
@@ -180,7 +192,8 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @param pA This is the other Algebra to copy.
 	 */
 	public Algebra(String pS, Algebra pA) {
-		this(pS, pA.getFoot(), pA.getCardinal(), pA.getGProduct());
+		this(pS, pA.getFoot(), pA.getGProduct(), pA.getCardinal());
+		setMode(pA.getMode());
 	}
 
 	/**
@@ -196,12 +209,14 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * basis in both algebras is the same, but the name differences ensure the
 	 * mismatch needed to prevent unphysical operations.
 	 * <p>
+	 * Note that the constructed algebra has no declared Mode yet.
+	 * <p>
 	 * @param pS    This is the Algebra's name
 	 * @param pF    This is the foot being offered for reference
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public Algebra(String pS, Foot pF, Cardinal pCard, CliffordProduct pGP) {
+	public Algebra(String pS, Foot pF, CliffordProduct pGP, Cardinal pCard) {
 		setAlgebraName(pS);
 		protoNumber = new UnitAbstract(pCard);
 		setFoot(pF);
@@ -232,6 +247,8 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * imitate real or complex numbers and take on the role of 'scale' in a nyad.
 	 * [This may result in eliminating this class.]
 	 * <p>
+	 * Note that the constructed algebra has no declared Mode yet.
+	 * <p>
 	 * @param pS    This is the Algebra's name
 	 * @param pF    This is the foot being offered for reference
 	 * @param pCard This is the Cardinal to use as a protoNumber
@@ -243,9 +260,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public Algebra(String pS, Foot pF, Cardinal pCard, String pSig)
+	public Algebra(String pS, Foot pF, String pSig, Cardinal pCard)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, pCard, CladosGBuilder.createGProduct(pSig));
+		this(pS, pF, CladosGBuilder.createGProduct(pSig), pCard);
 	}
 
 	/**
@@ -266,6 +283,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * imitate real or complex numbers and take on the role of 'scale' in a nyad if
 	 * so desired.
 	 * <p>
+	 * @param <D>
 	 * @param pS   This is the Algebra's name
 	 * @param pF   This is the foot being offered for reference
 	 * @param pSig This is the signature of the GProduct
@@ -277,9 +295,11 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public Algebra(String pS, Foot pF, String pSig, UnitAbstract pDiv)
+	public <D extends UnitAbstract & Field & Normalizable> Algebra(String pS, Foot pF, String pSig, D pDiv)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, pDiv.getCardinal(), CladosGBuilder.createGProduct(pSig));
+		this(pS, pF, CladosGBuilder.createGProduct(pSig), pDiv.getCardinal());
+		protoNumber = UnitAbstract.copyMaybe((D) pDiv).get();
+		setMode(pDiv);
 	}
 
 	/**
@@ -304,10 +324,12 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public Algebra(String pS, String pFootName, String pSig, UnitAbstract pF)
+	public <D extends UnitAbstract & Field & Normalizable>  Algebra(String pS, String pFootName, String pSig, D pF)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()), pF.getCardinal(),
-				CladosGBuilder.createGProduct(pSig));
+		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()),
+				CladosGBuilder.createGProduct(pSig), pF.getCardinal());
+		protoNumber = UnitAbstract.copyMaybe((D) pF).get();
+		setMode(pF);
 	}
 
 	/**
@@ -341,7 +363,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 			else
 				return +1; // A null name is considered larger than a non-null name
 		else if (pAnother.name == null)
-			return -1;
+			return -1; // A null name is considered larger than a non-null name
 		else if (this.name.equals(pAnother.name))
 			return 0;
 		else // At this point neither name is null nor are they equal
@@ -355,33 +377,19 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 				if (first[j] > second[j])
 					return +1;
 			}
-			// At this point we know this.name and pAnother.name are
-			// the same up through all characters in the smaller one.
+			/* We know this.name and pAnother.name are the same up to all characters
+			*  in the smaller one. We also know they can't be equal.
+			*/
 			if (first.length < second.length)
 				return -1;
-			if (first.length > second.length)
-				return +1;
-			return 0; // The only way to get here is if they are actually equal.
-						// Shouldn't happen since it was caught earlier, but
-						// there is no harm catching it here too.
+			else return +1;
 		}
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Algebra other = (Algebra) obj;
-		if (uuid == null) {
-			if (other.uuid != null)
-				return false;
-		} else if (!uuid.equals(other.uuid))
-			return false;
-		return true;
+		if (this == obj) return true;
+		return false;
 	}
 
 	/**
@@ -489,10 +497,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-		return result;
+		return uuid.hashCode();
 	}
 
 	/**
@@ -532,12 +537,26 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	}
 
 	/**
-	 * Simple setter for the kind of UnitAbstract in use in the algebra as a 'number.'
+	 * Simple setter for the algebra's mode that uses an offered mode.
 	 * <p>
 	 * @param pMode CladosField instance that matches the type of UnitAbstract in use
 	 */
 	public void setMode(CladosField pMode) {
 		this.mode = pMode;
+	}
+
+	/**
+	 * Simple setter for the algebra's mode that uses a child of UnitAbstract.
+	 * to figure out the mode.
+	 * <p>
+	 * @param <D> pNumber must be a child of UnitAbstract for anything to happen here.
+	 */
+	public <D extends UnitAbstract & Field & Normalizable> void setMode(D pNumber) {
+		protoNumber = CladosFBuilder.copyOf(pNumber);
+		if (pNumber instanceof RealF) setMode(CladosField.REALF);
+		else if (pNumber instanceof RealD) setMode(CladosField.REALD);
+		else if (pNumber instanceof ComplexF) setMode(CladosField.COMPLEXF);
+		else if (pNumber instanceof ComplexD) setMode(CladosField.COMPLEXD);
 	}
 
 	/**
