@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
  * -------------------------------------------------------------------- <p>
@@ -1412,8 +1412,8 @@ public class Monad implements Modal {
 	 * @param <T>    UnitAbstract number from CladosF with the Field interface.
 	 * @return Monad after the scaling is complete.
 	 */
-	public <T extends UnitAbstract & Field> Monad scale(T pScale) {
-		scales.scale((T) pScale);
+	public <T extends UnitAbstract & Field & Normalizable> Monad scale(T pScale) {
+		scales.scale(pScale);
 		setGradeKey();
 		return this;
 	}

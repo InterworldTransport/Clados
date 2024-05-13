@@ -351,11 +351,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				switch (mode) {
 				case REALF:
 				case COMPLEXF:
-					((Field) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+					(map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
 					break;
 				case REALD:
 				case COMPLEXD:
-					((Field) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+					(map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
 				}
 			});
 		});
@@ -532,9 +532,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	@SuppressWarnings("unchecked")
 	public D modulusSum() {
+		D tR;
 		switch (mode) {
 		case REALF -> {
-			RealF tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
 			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(RealF.newONE(div.getCardinal()).scale(div.modulus()));
@@ -545,7 +546,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case REALD -> {
-			RealD tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
 			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(RealD.newONE(div.getCardinal()).scale(div.modulus()));
@@ -556,7 +557,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case COMPLEXF -> {
-			ComplexF tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
 			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.modulus()));
@@ -567,7 +568,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case COMPLEXD -> {
-			ComplexD tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
 			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.modulus()));
@@ -578,7 +579,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		default -> {
-			return null;
+			return (D) new UnitAbstract(this.getScalar().getCardinal());
 		}
 		}
 	}
@@ -642,11 +643,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				switch (mode) {
 				case REALF:	//Tricky here. This case falls through to the next and gets handled.
 				case COMPLEXF:
-					((Field) map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+					(map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
 					break;	//Both cases handled in one then break.
 				case REALD:	//Tricky here. This case falls through to the next and gets handled.
 				case COMPLEXD:
-					((Field) map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+					(map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
 				}			//Both cases handled in one then done.
 			});
 		});
@@ -667,11 +668,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param <T> UnitAbstract child generic type support. Must also implement Field.
 	 * @return Scale object. Just this object after modification.
 	 */
-	public <T extends UnitAbstract & Field> Scale<D> scale(T pIn) {
+	public <T extends UnitAbstract & Field & Normalizable> Scale<D> scale(T pIn) {
 		if (this.weightsStream().allMatch(div -> UnitAbstract.isTypeMatch(div, pIn))) {
 			this.weightsParallelStream().forEach(div -> {
 				try {
-					((Field) div).multiply(pIn);
+					div.multiply(pIn);
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Can't scale with mismatched cardinal or mode.");
 				}
@@ -744,7 +745,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @return Scale object. Just this object after modification.
 	 */
 	protected Scale<D> setCardinal(Cardinal pCard) {
-		if (card != pCard & card != null & pCard != null) {
+		if (card != pCard & pCard != null) {
 			map.clear();
 			card = pCard;
 			zeroAll();
@@ -815,12 +816,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * <p>
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @param pIn    Array of UnitAbstract Children
-	 * @param <T>    UnitAbstract child generic type support. Must also implement
-	 *               Field.
 	 * @return Scale object. Just this object after modification.
 	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends UnitAbstract & Field> Scale<D> setWeightsAtGrade(byte pGrade, T[] pIn) {
+	protected Scale<D> setWeightsAtGrade(byte pGrade, D[] pIn) {
 		if (!gBasis.validateGradeIndex(pGrade))
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
 		if (pIn == null)
@@ -879,10 +877,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * <p>
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
-	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAll() {
 		gBasis.bladeStream().forEach(b -> {
-			map.put(b, (D) CladosFBuilder.createZERO(mode, card));
+			map.put(b, CladosFBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
@@ -891,28 +888,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is a specialty method making use of setCoefficientsAtGrade for a
 	 * specific purpose of grade suppression.
 	 * <p>
-	 * Since the internal map can accept any of the CladosF.DivField children (and
-	 * UnitAbstract itself though that would be useless) there is a cast to a
-	 * 'generic' type before insertion into the map. This would normally cause
-	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type would fail at runtime.
-	 * <p>
-	 * That won't happen here because CladosField is used as a builder. It can't
-	 * build anything that is NOT a UnitAbstract child. It can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as second
-	 * parameter of the 'put' function. Thus, there is no danger of a failed cast
-	 * operation.
-	 * <p>
 	 * @param pGrade byte integer naming the grade to be preserved
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
-	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAllButGrade(byte pGrade) {
-		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
-			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
-
-		gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-			map.put(blade, (D) CladosFBuilder.createZERO(mode, card));
+		if (gBasis.validateGradeIndex(pGrade))
+			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
+				map.put(blade, CladosFBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
@@ -926,10 +908,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pB Blade key to zero out the related coefficient
 	 * @return Scale object. Just this object after modification.
 	 */
-	@SuppressWarnings("unchecked")
 	public Scale<D> zeroAt(Blade pB) {
 		if (pB != null & map.containsKey(pB))
-			map.put(pB, (D) CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
+			map.put(pB, CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
 		return this;
 	}
 
@@ -937,28 +918,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is a specialty method making use of setCoefficientsAtGrade for a
 	 * specific purpose of grade suppression.
 	 * <p>
-	 * Since the internal map can accept any of the CladosF.DivField children (and
-	 * UnitAbstract itself though that would be useless) there is a cast to a
-	 * 'generic' type before insertion into the map. This would normally cause
-	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type would fail at runtime.
-	 * <p>
-	 * That won't happen here because CladosField is used as a builder. It can't
-	 * build anything that is NOT a UnitAbstract child. It can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as second
-	 * parameter of the 'put' function. Thus, there is no danger of a failed cast
-	 * operation.
-	 * <p>
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
-	@SuppressWarnings("unchecked")
 	protected Scale<D> zeroAtGrade(byte pGrade) {
-		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
-			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
-
-		gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-			map.put(blade, (D) CladosFBuilder.createZERO(mode, card));
+		if (gBasis.validateGradeIndex(pGrade))
+			gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
+				map.put(blade, CladosFBuilder.createZERO(mode, card));
 		});
 		return this;
 	}

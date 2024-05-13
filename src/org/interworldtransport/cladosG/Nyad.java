@@ -1,5 +1,5 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Nyad<br>
  * -------------------------------------------------------------------- <p>
@@ -35,6 +35,7 @@ import org.interworldtransport.cladosF.CladosFBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosF.Field;
+import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -970,7 +971,7 @@ public class Nyad implements Modal {
 	 *                              doesn't match the nyad's field.
 	 * @return Nyad
 	 */
-	public <T extends UnitAbstract & Field> Nyad scale(int pk, T pMag) throws FieldBinaryException {
+	public <T extends UnitAbstract & Field & Normalizable> Nyad scale(int pk, T pMag) throws FieldBinaryException {
 		if (pk >= 0 && pk < monadList.size())
 			monadList.get(pk).scale(pMag);
 		return this;

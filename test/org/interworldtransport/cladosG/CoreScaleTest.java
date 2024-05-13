@@ -246,8 +246,73 @@ public class CoreScaleTest {
     
     @Test
     public void testZeroing() {
+        workScaleRF.getScalar().setReal(1.0f);
+        workScaleRD.getScalar().setReal(1.0d);
+        workScaleCF.getScalar().setReal(1.0f);
+        workScaleCF.getScalar().setImg(1.0f);
+        workScaleCD.getScalar().setReal(1.0d);
+        workScaleCD.getScalar().setImg(1.0d);
 
+        workScaleRF.getPScalar().setReal(1.0f);
+        workScaleRD.getPScalar().setReal(1.0d);
+        workScaleCF.getPScalar().setReal(1.0f);
+        workScaleCF.getPScalar().setImg(1.0f);
+        workScaleCD.getPScalar().setReal(1.0d);
+        workScaleCD.getPScalar().setImg(1.0d);
 
-        
+        workScaleRF.zeroAtGrade((byte) 8);
+        assertFalse(RealF.isZero(workScaleRF.getPScalar()));   //Grade out of range silently does nothing.
+
+        workScaleRF.zeroAtGrade((byte) 3);
+        workScaleRD.zeroAtGrade((byte) 3);
+        workScaleCF.zeroAtGrade((byte) 3);
+        workScaleCD.zeroAtGrade((byte) 3);
+
+        assertTrue(RealF.isZero(workScaleRF.getPScalar()));      
+        assertTrue(RealD.isZero(workScaleRD.getPScalar()));      
+        assertTrue(ComplexF.isZero(workScaleCF.getPScalar()));   
+        assertTrue(ComplexD.isZero(workScaleCD.getPScalar()));  
+
+        workScaleRF.zeroAt(workBasis.getScalarBlade()); //Blade usually not available. Map is.
+        workScaleRD.zeroAt(workBasis.getScalarBlade()); //Blade usually not available. Map is.
+        workScaleCF.zeroAt(workBasis.getScalarBlade()); //Blade usually not available. Map is.
+        workScaleCD.zeroAt(workBasis.getScalarBlade()); //Blade usually not available. Map is.
+
+        assertTrue(RealF.isZero(workScaleRF.getScalar()));      
+        assertTrue(RealD.isZero(workScaleRD.getScalar()));      
+        assertTrue(ComplexF.isZero(workScaleCF.getScalar()));   
+        assertTrue(ComplexD.isZero(workScaleCD.getScalar()));  
+
+        workScaleRF.getScalar().setReal(1.0f);
+        workScaleRD.getScalar().setReal(1.0d);
+        workScaleCF.getScalar().setReal(1.0f);
+        workScaleCF.getScalar().setImg(1.0f);
+        workScaleCD.getScalar().setReal(1.0d);
+        workScaleCD.getScalar().setImg(1.0d);
+
+        workScaleRF.getPScalar().setReal(1.0f);
+        workScaleRD.getPScalar().setReal(1.0d);
+        workScaleCF.getPScalar().setReal(1.0f);
+        workScaleCF.getPScalar().setImg(1.0f);
+        workScaleCD.getPScalar().setReal(1.0d);
+        workScaleCD.getPScalar().setImg(1.0d);
+
+        workScaleRF.zeroAllButGrade((byte) 8);
+        assertFalse(RealF.isZero(workScaleRF.getPScalar()));   //Grade out of range silently does nothing.
+
+        workScaleRF.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
+        workScaleRD.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
+        workScaleCF.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
+        workScaleCD.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
+
+        assertTrue(RealF.isZero(workScaleRF.getScalar()));      
+        assertTrue(RealD.isZero(workScaleRD.getScalar()));      
+        assertTrue(ComplexF.isZero(workScaleCF.getScalar()));   
+        assertTrue(ComplexD.isZero(workScaleCD.getScalar()));  
+
+        assertFalse(RealF.isZero(workScaleRF.getPScalar()));      
+        assertFalse(RealD.isZero(workScaleRD.getPScalar()));      
+        assertFalse(ComplexF.isZero(workScaleCF.getPScalar()));   
+        assertFalse(ComplexD.isZero(workScaleCD.getPScalar()));  
     }
 }
