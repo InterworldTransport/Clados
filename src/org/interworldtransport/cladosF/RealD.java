@@ -450,7 +450,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public Double modulus() {
-		return Double.valueOf((double) Math.sqrt(sqModulus().doubleValue()));
+		return Double.valueOf(Math.sqrt(sqModulus()));
 	}
 
 	/**
