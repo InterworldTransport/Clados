@@ -1,6 +1,5 @@
-
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Scale<br>
  * -------------------------------------------------------------------- <p>
@@ -25,14 +24,21 @@
  */
 package org.interworldtransport.cladosG;
 
-import static org.interworldtransport.cladosF.UnitAbstract.isTypeMatch;
-
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosF.*;
+import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.CladosField;
+import org.interworldtransport.cladosF.Field;
+import org.interworldtransport.cladosF.Normalizable;
+import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 
@@ -169,6 +175,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is the constructor to use when one already has a map built and a
 	 * reference to the basis on which the map relies for keys.
 	 * <p>
+	 * This is NOT a copy constructor. Use it when you fully intend for the offered map
+	 * to directly provide the weights in this Scale.
+	 * <p>
 	 * @param pMode  CladosField enumeration so we know what kind of UnitAbstract to
 	 *               expect from get()
 	 * @param pB     Basis to which the blades offered in the map belong.
@@ -196,50 +205,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * This is the compliment of a blade stream involving the scaling factors
-	 * 'multiplied' by blades in the sense of a division field over a vector space.
-	 * When forming a linear combination of blades to make a 'vector', these are the
-	 * 'numbers' that scale each direction.
-	 * <p>
-	 * Since the internal map can accept any of the CladosF numbers as values, there
-	 * is a cast to a 'generic' type within this method. This would normally cause
-	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * <p>
-	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
-	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
-	 * fails to update all builders.
-	 * <p>
-	 * @param <T> UnitAbstract child generic type support. Must also implement
-	 *            Field.
-	 * @return Stream of UnitAbstract children that are the coefficients represented
-	 *         as values in the internal map.
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> Stream<T> coefficientStream() {
-		return (Stream<T>) map.values().stream();
-	}
-
-	/**
 	 * This method conjugates all the values in the internal map, but leaves the
 	 * blades of the algebra untouched.
 	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> conjugate() {
-		gBasis.bladeStream().parallel().forEach(blade -> {
-			switch (mode) {
-			case REALF:
-			case REALD:
-				break; // Do nothing for real numbers
-			case COMPLEXF:
-			case COMPLEXD:
-				((Field) map.get(blade)).conjugate();
-			}
-		});
+		this.weightsParallelStream().forEach(w -> w.conjugate());
 		return this;
 	}
 
@@ -299,25 +271,14 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @return an array of UnitAbstract children.
 	 */
 	@SuppressWarnings("unchecked")
-	public D[] getCoefficients() {
+	public D[] getWeights() {
 		switch (mode) {
-		case REALF -> {
-			return (D[]) map.values().toArray(RealF[]::new);
+			case REALF : return (D[]) map.values().toArray(RealF[]::new);
+			case REALD : return (D[]) map.values().toArray(RealD[]::new);
+			case COMPLEXF : return (D[]) map.values().toArray(ComplexF[]::new);
+			case COMPLEXD : return (D[]) map.values().toArray(ComplexD[]::new);
+			default : return null;
 		}
-		case REALD -> {
-			return (D[]) map.values().toArray(RealD[]::new);
-		}
-		case COMPLEXF -> {
-			return (D[]) map.values().toArray(ComplexF[]::new);
-		}
-		case COMPLEXD -> {
-			return (D[]) map.values().toArray(ComplexD[]::new);
-		}
-		default -> {
-			return null;
-		}
-		}
-
 	}
 
 	/**
@@ -376,8 +337,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * This method inverts all generators in each blade and works out the sign
-	 * implications for the values in the internal map. No typeMismatch can occur.
+	 * This method imitations the inversion of all generators in each blade and works out the sign
+	 * implications for the values in the internal map. No typeMismatch can occur. 
+	 * <p>
+	 * This is what we called a parity inversion where generator.# goes to -1.0 * generator.#, 
+	 * but that's not a good name for it going forward.
 	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
@@ -414,21 +378,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	public boolean isNotZeroAt(Blade pB) {
 		switch (mode) {
-		case COMPLEXD -> {
-			return !ComplexD.isZero((ComplexD) map.get(pB));
-		}
-		case COMPLEXF -> {
-			return !ComplexF.isZero((ComplexF) map.get(pB));
-		}
-		case REALD -> {
-			return !RealD.isZero((RealD) map.get(pB));
-		}
-		case REALF -> {
-			return !RealF.isZero((RealF) map.get(pB));
-		}
-		default -> {
-			return true;
-		}
+			case COMPLEXD :	return !ComplexD.isZero((ComplexD) map.get(pB));
+			case COMPLEXF : return !ComplexF.isZero((ComplexF) map.get(pB));
+			case REALD : return !RealD.isZero((RealD) map.get(pB));
+			case REALF : return !RealF.isZero((RealF) map.get(pB));
+			default : return true;
 		}
 	}
 
@@ -442,21 +396,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	public boolean isPScalarZero() {
 		switch (mode) {
-		case COMPLEXD -> {
-			return ComplexD.isZero((ComplexD) getPScalar());
-		}
-		case COMPLEXF -> {
-			return ComplexF.isZero((ComplexF) getPScalar());
-		}
-		case REALD -> {
-			return RealD.isZero((RealD) getPScalar());
-		}
-		case REALF -> {
-			return RealF.isZero((RealF) getPScalar());
-		}
-		default -> {
-			return false;
-		}
+			case COMPLEXD : return ComplexD.isZero((ComplexD) getPScalar());
+			case COMPLEXF :	return ComplexF.isZero((ComplexF) getPScalar());
+			case REALD : return RealD.isZero((RealD) getPScalar());
+			case REALF : return RealF.isZero((RealF) getPScalar());
+			default : return false;
 		}
 	}
 
@@ -470,21 +414,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	public boolean isScalarZero() {
 		switch (mode) {
-		case COMPLEXD -> {
-			return ComplexD.isZero((ComplexD) getScalar());
-		}
-		case COMPLEXF -> {
-			return ComplexF.isZero((ComplexF) getScalar());
-		}
-		case REALD -> {
-			return RealD.isZero((RealD) getScalar());
-		}
-		case REALF -> {
-			return RealF.isZero((RealF) getScalar());
-		}
-		default -> {
-			return false;
-		}
+			case COMPLEXD : return ComplexD.isZero((ComplexD) getScalar());
+			case COMPLEXF : return ComplexF.isZero((ComplexF) getScalar());
+			case REALD : return RealD.isZero((RealD) getScalar());
+			case REALF : return RealF.isZero((RealF) getScalar());
+			default : return false;
 		}
 	}
 
@@ -517,10 +451,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	@SuppressWarnings("unchecked")
 	public D modulusSQSum() {
+		D tR;
 		switch (mode) {
 		case REALF -> {
-			D tR = (D) CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			weightsStream().forEach(div -> {
 				try {
 					tR.add(RealF.newONE(div.getCardinal()).scale(div.sqModulus()));
 				} catch (FieldBinaryException e) {
@@ -530,8 +465,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return tR;
 		}
 		case REALD -> {
-			D tR = (D) CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			weightsStream().forEach(div -> {
 				try {
 					tR.add(RealD.newONE(div.getCardinal()).scale(div.sqModulus()));
 				} catch (FieldBinaryException e) {
@@ -541,8 +476,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return tR;
 		}
 		case COMPLEXF -> {
-			D tR = (D) CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			weightsStream().forEach(div -> {
 				try {
 					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.sqModulus()));
 				} catch (FieldBinaryException e) {
@@ -552,8 +487,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return tR;
 		}
 		case COMPLEXD -> {
-			D tR = (D) CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			weightsStream().forEach(div -> {
 				try {
 					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.sqModulus()));
 				} catch (FieldBinaryException e) {
@@ -563,7 +498,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return tR;
 		}
 		default -> {
-			return null;
+			return (D) new UnitAbstract(this.getScalar().getCardinal());
 		}
 		}
 	}
@@ -599,48 +534,48 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	public D modulusSum() {
 		switch (mode) {
 		case REALF -> {
-			D tR = (D) CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			RealF tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(RealF.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
 			});
-			return tR;
+			return (D) tR;
 		}
 		case REALD -> {
-			D tR = (D) CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			RealD tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(RealD.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
 			});
-			return tR;
+			return (D) tR;
 		}
 		case COMPLEXF -> {
-			D tR = (D) CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			ComplexF tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
 			});
-			return tR;
+			return (D) tR;
 		}
 		case COMPLEXD -> {
-			D tR = (D) CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
-			coefficientStream().forEach(div -> {
+			ComplexD tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			weightsParallelStream().forEach(div -> {
 				try {
 					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
 			});
-			return tR;
+			return (D) tR;
 		}
 		default -> {
 			return null;
@@ -667,15 +602,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
 	 * <p>
-	 * @param <T> UnitAbstract child generic type support. Must also implement Field
-	 *            AND Normalizable.
 	 * @throws FieldException This happens when normalizing something that has a
 	 *                        zero magnitude. The exception is thrown by the
 	 *                        invert() method and passed along here.
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> void normalize() throws FieldException {
-		this.scale((T) modulusSum().invert());
+	@SuppressWarnings({ "unchecked"})
+	public void normalize() throws FieldException {
+		scale((D) modulusSum().invert());
 	}
 
 	/**
@@ -684,13 +617,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * <p>
 	 * @param pB  Blade acting as key in the internal map
 	 * @param pD  UnitAbstract child acting as the coefficient.
-	 * @param <T> UnitAbstract child generic type support. Must also implement
-	 *            Field.
-	 * @return Scale object. Just this object after modification if it occurs.
+	 * @return Scale<D> object. Just this object after modification if it occurs.
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field> Scale<D> put(Blade pB, T pD) {
-		map.put(pB, (D) pD);
+	public Scale<D> put(Blade pB, D pD) {
+		map.put(pB, pD);
 		return this;
 	}
 
@@ -725,17 +655,21 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 	/**
 	 * This method scales all values in the internal map by the value offered
-	 * provided there is no typeMatch failure.
+	 * provided there is no typeMatch failure. When there IS a type mismatch the 
+	 * number simply does not get scaled.
 	 * <p>
-	 * @param pIn UnitAbstract child to use as a scaling element. Mode and cardinal
-	 *            MUST match values in map.
-	 * @param <T> UnitAbstract child generic type support. Must also implement
-	 *            Field.
+	 * The first stream filters for weights that pass the match test.
+	 * The second stream scales them.
+	 * That means the embedded IllegalARgumentException will never be thrown.
+	 * <p>
+	 * @param pIn UnitAbstract child to use as a scaling element. 
+	 * 				Mode and cardinal MUST match values in map.
+	 * @param <T> UnitAbstract child generic type support. Must also implement Field.
 	 * @return Scale object. Just this object after modification.
 	 */
 	public <T extends UnitAbstract & Field> Scale<D> scale(T pIn) {
-		if (map.values().stream().allMatch(div -> isTypeMatch(div, pIn))) {
-			map.values().parallelStream().forEach(div -> {
+		if (this.weightsStream().allMatch(div -> UnitAbstract.isTypeMatch(div, pIn))) {
+			this.weightsParallelStream().forEach(div -> {
 				try {
 					((Field) div).multiply(pIn);
 				} catch (FieldBinaryException e) {
@@ -794,19 +728,27 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @return deliver the internal coefficients as the internal map.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> Map<Blade, T> getMap() {
+	protected <T extends UnitAbstract & Field & Normalizable> Map<Blade, T> getMap() {
 		return (Map<Blade, T>) map;
 	}
 
 	/**
-	 * The settor method supporting Modal interface that isn't actually in the
-	 * interface.
+	 * The settor method supporting Unitized interface that isn't actually in the
+	 * interface. If the cardinal to be set is different from the one already present,
+	 * the weights are cleared out and set to zero. If the cardinal is the same one,
+	 * nothing is done and this Scale is returned.
 	 * <p>
+	 * Once a Cardinal is set, it basically can't be removed. It can be changed, but
+	 * not eliminated entirely.
 	 * @param pCard CladosField element to set as the mode.
 	 * @return Scale object. Just this object after modification.
 	 */
 	protected Scale<D> setCardinal(Cardinal pCard) {
-		card = (pCard == null) ? card : pCard;
+		if (card != pCard & card != null & pCard != null) {
+			map.clear();
+			card = pCard;
+			zeroAll();
+		}
 		return this;
 	}
 
@@ -820,21 +762,18 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * method that way, copy your coefficients first.
 	 * <p>
 	 * @param pIn Array of UnitAbstract children
-	 * @param <T> UnitAbstract child generic type support. Must also implement
-	 *            Field.
 	 * @return Scale object. Just this object after modification.
 	 * @throws IllegalArgumentException This happens if the offered array does not
 	 *                                  have the same size as the basis. Good enough
 	 *                                  to ensure all blades are covered.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends UnitAbstract & Field> Scale<D> setCoefficientArray(T[] pIn) {
-		if (pIn.length != gBasis.getBladeCount())
-			throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
-
-		gBasis.bladeStream().forEach(blade -> {
-			map.put(blade, (D) pIn[gBasis.find(blade) - 1]);
-		});
+	protected <T extends UnitAbstract & Field & Normalizable> Scale<D> setWeightsArray(T[] pIn) {
+		if (pIn.length == gBasis.getBladeCount())
+			gBasis.bladeStream().forEach(blade -> {
+				map.put(blade, (D) pIn[gBasis.find(blade) - 1]);
+				});
+		else	throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
 		return this;
 	}
 
@@ -854,7 +793,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 *                                  to ensure all blades are covered because Map
 	 *                                  doesn't allow duplicate keys.
 	 */
-	protected Scale<D> setCoefficientMap(Map<Blade, D> pInMap) {
+	protected Scale<D> setWeightsMap(Map<Blade, D> pInMap) {
 		if (pInMap.size() != gBasis.getBladeCount())
 			throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
 
@@ -867,8 +806,8 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This coefficient settor accepts an array of UnitAbstract numbers, assumes
 	 * they are in basis index order, and then inserts them into the internal map by
-	 * blade at that index offset by the amount necessary to cover ONLY the grade
-	 * suggested by the byte integer parameter.
+	 * blade at that index offset in the amount necessary to cover ONLY the grade
+	 * suggested by the byte parameter.
 	 * <p>
 	 * NOTE | Do NOT use this method if you intend the offered coefficient array to
 	 * be disconnected from this object. It won't be. If you really must use this
@@ -881,17 +820,16 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @return Scale object. Just this object after modification.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends UnitAbstract & Field> Scale<D> setCoefficientsAtGrade(byte pGrade, T[] pIn) {
-		if (pGrade < CladosConstant.SCALARGRADE | pGrade > gBasis.getGradeCount())
+	protected <T extends UnitAbstract & Field> Scale<D> setWeightsAtGrade(byte pGrade, T[] pIn) {
+		if (!gBasis.validateGradeIndex(pGrade))
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
-		else if (pIn == null)
-			throw new IllegalArgumentException("Offered array can't ever be null.");
-		int grdRng = (gBasis.getGradeStart((byte) (pGrade + 1)) > -1)
-				? gBasis.getGradeStart(pGrade) - gBasis.getGradeStart((byte) (pGrade + 1))
-				: 0;
-		if (grdRng != pIn.length - 1)
-			throw new IllegalArgumentException("Offered array must cover the blades in the suggested grade.");
+		if (pIn == null)
+			return this;	//Do absolutely nothing... silently... if no weights are offered.
 
+		long grdRnge = gBasis.bladeOfGradeStream(pGrade).count();
+		if (grdRnge != (long)(pIn.length -1))
+			throw new IllegalArgumentException("Offered array must cover the blades in the suggested grade.");
+		
 		int init = gBasis.getGradeStart(pGrade);
 		gBasis.bladeOfGradeStream(pGrade).forEach(blade -> {
 			map.put(blade, (D) pIn[gBasis.find(blade) - init]);
@@ -899,22 +837,40 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		return this;
 	}
 
-	/**
-	 * Simple settor method altering the Scale's internal mode. IF the new mode
-	 * involves a change, the internal list is cleared too. What is NOT cleared is
-	 * the cardinal as this ensures the new coefficients retain their unit meanings.
+    /**
+	 * This is the compliment of a blade stream involving the scaling factors
+	 * 'multiplied' by blades in the sense of a division field over a vector space.
+	 * When forming a linear combination of blades to make a 'vector', these are the
+	 * 'numbers' that scale each direction.
 	 * <p>
-	 * @param pMode CladosField element hinting at what UnitAbstract children are
-	 *              expected internally.
-	 * @return Scale of UnitAbstract children of the type named in the mode.
+	 * Since the internal map can accept any of the CladosF numbers as values, there
+	 * is a cast to a 'generic' type within this method. This would normally cause
+	 * warnings by the compiler since the generic named in the internal map IS a
+	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * <p>
+	 * That won't happen here when CladosF builders are used. They can't build
+	 * anything that is NOT a UnitAbstract child. They can't even build a
+	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed
+	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * fails to update all builders.
+	 * <p>
+	 * @return Stream of UnitAbstract children that are the coefficients represented
+	 *         as values in the internal map.
 	 */
-	protected Scale<D> setMode(CladosField pMode) {
-		if (this.mode != pMode & this.mode != null & pMode != null) {
-			map.clear();
-			mode = pMode;
-			zeroAll();
-		}
-		return this;
+	protected Stream<D> weightsStream() {
+		return map.values().stream();
+	}
+
+	/**
+	 * This method returns a parallelizable stream of the weights in this scale. 
+	 * It is intended for wholesale operations on the weights that may be done
+	 * in any order. It is mostly for use by the owning object of this Scale.
+	 * <p>
+	 * @return A stream of weights as children of UnitAbstract.
+	 */
+	protected Stream<D> weightsParallelStream() {
+		return map.values().parallelStream();
 	}
 
 	/**
