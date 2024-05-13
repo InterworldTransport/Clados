@@ -95,24 +95,14 @@ public enum CladosFBuilder {
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
-	public final static UnitAbstract createZERO(CladosField pMode, Cardinal pCard) {
+	public final static <D extends UnitAbstract & Field & Normalizable> D createZERO(CladosField pMode, Cardinal pCard) {
 		CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
 		switch (pMode) {
-		case REALF -> {
-			return CladosFBuilder.REALF.createZERO(pCard);
-		}
-		case REALD -> {
-			return CladosFBuilder.REALD.createZERO(pCard);
-		}
-		case COMPLEXF -> {
-			return CladosFBuilder.COMPLEXF.createZERO(pCard);
-		}
-		case COMPLEXD -> {
-			return CladosFBuilder.COMPLEXD.createZERO(pCard);
-		}
-		default -> {
-			return null;
-		}
+		case REALF : return CladosFBuilder.REALF.createZERO(pCard);
+		case REALD : return CladosFBuilder.REALD.createZERO(pCard);
+		case COMPLEXF : return CladosFBuilder.COMPLEXF.createZERO(pCard);
+		case COMPLEXD : return CladosFBuilder.COMPLEXD.createZERO(pCard);
+		default : return null;
 		}
 	}
 
@@ -127,24 +117,14 @@ public enum CladosFBuilder {
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
-	public final static UnitAbstract createONE(CladosField pMode, Cardinal pCard) {
+	public final static <D extends UnitAbstract & Field & Normalizable> D createONE(CladosField pMode, Cardinal pCard) {
 		CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
 		switch (pMode) {
-		case REALF -> {
-			return CladosFBuilder.REALF.createONE(pCard);
-		}
-		case REALD -> {
-			return CladosFBuilder.REALD.createONE(pCard);
-		}
-		case COMPLEXF -> {
-			return CladosFBuilder.COMPLEXF.createONE(pCard);
-		}
-		case COMPLEXD -> {
-			return CladosFBuilder.COMPLEXD.createONE(pCard);
-		}
-		default -> {
-			return null;
-		}
+			case REALF : return CladosFBuilder.REALF.createONE(pCard);
+			case REALD : return CladosFBuilder.REALD.createONE(pCard);
+			case COMPLEXF : return CladosFBuilder.COMPLEXF.createONE(pCard);
+			case COMPLEXD : return CladosFBuilder.COMPLEXD.createONE(pCard);
+			default : return null;
 		}
 	}
 
@@ -200,29 +180,17 @@ public enum CladosFBuilder {
 	 * This method relies on the mode of the builder called to create the number.
 	 * <p>
 	 * @param pS String name for the associated Cardinal
-	 * @return UnitAbstract child number created
+	 * @return  <D> child number created
 	 */
-	public UnitAbstract createONE(String pS) {
+	@SuppressWarnings("unchecked")
+	public <D extends UnitAbstract & Field & Normalizable> D createONE(String pS) {
+		Cardinal toCache = createCardinal(pS);
 		switch (this) {
-		case REALF -> {
-			Cardinal toCache = createCardinal(pS);
-			return RealF.newONE(toCache);
-		}
-		case REALD -> {
-			Cardinal toCache = createCardinal(pS);
-			return RealD.newONE(toCache);
-		}
-		case COMPLEXF -> {
-			Cardinal toCache = createCardinal(pS);
-			return ComplexF.newONE(toCache);
-		}
-		case COMPLEXD -> {
-			Cardinal toCache = createCardinal(pS);
-			return ComplexD.newONE(toCache);
-		}
-		default -> {
-			return null;
-		}
+			case REALF : return (D) RealF.newONE(toCache);
+			case REALD : return (D) RealD.newONE(toCache);
+			case COMPLEXF : return (D) ComplexF.newONE(toCache);
+			case COMPLEXD :	return (D) ComplexD.newONE(toCache);
+		default : return null;
 		}
 	}
 
@@ -233,25 +201,16 @@ public enum CladosFBuilder {
 	 * This method relies on the mode of the builder called to create the number.
 	 * <p>
 	 * @param pCard Cardinal to use in construction
-	 * @return UnitAbstract child number created
+	 * @return <D> child number created
 	 */
-	public UnitAbstract createONE(Cardinal pCard) {
+	@SuppressWarnings("unchecked")
+	public <D extends UnitAbstract & Field & Normalizable> D createONE(Cardinal pCard) {
 		switch (this) {
-		case REALF -> {
-			return RealF.newONE(pCard);
-		}
-		case REALD -> {
-			return RealD.newONE(pCard);
-		}
-		case COMPLEXF -> {
-			return ComplexF.newONE(pCard);
-		}
-		case COMPLEXD -> {
-			return ComplexD.newONE(pCard);
-		}
-		default -> {
-			return null;
-		}
+			case REALF : return (D) RealF.newONE(pCard);
+			case REALD : return (D) RealD.newONE(pCard);
+			case COMPLEXF : return (D) ComplexF.newONE(pCard);
+			case COMPLEXD :	return (D) ComplexD.newONE(pCard);
+			default : return null;
 		}
 	}
 
@@ -260,25 +219,26 @@ public enum CladosFBuilder {
 	 * <p>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <p>
-	 * @return UnitAbstract child number created
+	 * @return <D> child number created
 	 */
-	public UnitAbstract createZERO() {
+	@SuppressWarnings("unchecked")
+	public <D extends UnitAbstract & Field & Normalizable> D createZERO() {
 		switch (this) {
 		case REALF -> {
 			Cardinal toCache = createCardinal(CladosField.REALF.name());
-			return RealF.newZERO(toCache);
+			return (D) RealF.newZERO(toCache);
 		}
 		case REALD -> {
 			Cardinal toCache = createCardinal(CladosField.REALD.name());
-			return RealD.newZERO(toCache);
+			return (D) RealD.newZERO(toCache);
 		}
 		case COMPLEXF -> {
 			Cardinal toCache = createCardinal(CladosField.COMPLEXF.name());
-			return ComplexF.newZERO(toCache);
+			return (D) ComplexF.newZERO(toCache);
 		}
 		case COMPLEXD -> {
 			Cardinal toCache = createCardinal(CladosField.COMPLEXD.name());
-			return ComplexD.newZERO(toCache);
+			return (D) ComplexD.newZERO(toCache);
 		}
 		default -> {
 			return null;
@@ -295,23 +255,24 @@ public enum CladosFBuilder {
 	 * @param pCard Cardinal to be re-used.
 	 * @return UnitAbstract child number created
 	 */
-	public UnitAbstract createZERO(Cardinal pCard) {
+	@SuppressWarnings("unchecked")
+	public <D extends UnitAbstract & Field & Normalizable> D createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
-			return RealF.newZERO(pCard);
+			return (D) RealF.newZERO(pCard);
 		}
 		case REALD -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
-			return RealD.newZERO(pCard);
+			return (D) RealD.newZERO(pCard);
 		}
 		case COMPLEXF -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
-			return ComplexF.newZERO(pCard);
+			return (D) ComplexF.newZERO(pCard);
 		}
 		case COMPLEXD -> {
 			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
-			return ComplexD.newZERO(pCard);
+			return (D) ComplexD.newZERO(pCard);
 		}
 		default -> {
 			return null;
@@ -326,30 +287,18 @@ public enum CladosFBuilder {
 	 * This method relies on the mode of the builder called to create the number.
 	 * <p>
 	 * @param pS  String name for the associated Cardinal
-	 * @param <T> UnitAbstract child number with the Field interface too.
+	 * @param <D> UnitAbstract child number with the Field interface too.
 	 * @return UnitAbstract child number created
 	 */
-	public <T extends UnitAbstract & Field> UnitAbstract createZERO(String pS) {
+	@SuppressWarnings("unchecked")
+	public <D extends UnitAbstract & Field> D createZERO(String pS) {
+		Cardinal toCache = createCardinal(pS);
 		switch (this) {
-		case REALF -> {
-			Cardinal toCache = createCardinal(pS);
-			return RealF.newZERO(toCache);
-		}
-		case REALD -> {
-			Cardinal toCache = createCardinal(pS);
-			return RealD.newZERO(toCache);
-		}
-		case COMPLEXF -> {
-			Cardinal toCache = createCardinal(pS);
-			return ComplexF.newZERO(toCache);
-		}
-		case COMPLEXD -> {
-			Cardinal toCache = createCardinal(pS);
-			return ComplexD.newZERO(toCache);
-		}
-		default -> {
-			return null;
-		}
+			case REALF : return (D) RealF.newZERO(toCache);
+			case REALD : return (D) RealD.newZERO(toCache);
+			case COMPLEXF : return (D) ComplexF.newZERO(toCache);
+			case COMPLEXD : return (D) ComplexD.newZERO(toCache);
+			default : return null;
 		}
 	}
 }
