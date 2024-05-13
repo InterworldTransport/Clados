@@ -788,7 +788,7 @@ public class Monad implements Modal {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract> T[] getCoeff() {
-		return (T[]) scales.getCoefficients();
+		return (T[]) scales.getWeights();
 	}
 
 	/**
@@ -1049,6 +1049,7 @@ public class Monad implements Modal {
 	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return Monad
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Left multiply fails reference match.");
@@ -1072,7 +1073,7 @@ public class Monad implements Modal {
 										.multiply((ComplexD) getScales().get(blade),
 												(ComplexD) pM.getScales().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1083,7 +1084,7 @@ public class Monad implements Modal {
 										.multiply((ComplexF) getScales().get(blade),
 												(ComplexF) pM.getScales().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1093,7 +1094,7 @@ public class Monad implements Modal {
 								RealD tAgg = RealD
 										.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1103,7 +1104,7 @@ public class Monad implements Modal {
 								RealF tAgg = RealF
 										.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1128,7 +1129,7 @@ public class Monad implements Modal {
 							ComplexD tAgg = ComplexD
 									.multiply((ComplexD) getScales().get(blade), (ComplexD) pM.getScales().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1138,7 +1139,7 @@ public class Monad implements Modal {
 							ComplexF tAgg = ComplexF
 									.multiply((ComplexF) getScales().get(blade), (ComplexF) pM.getScales().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1148,7 +1149,7 @@ public class Monad implements Modal {
 							RealD tAgg = RealD
 									.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1158,7 +1159,7 @@ public class Monad implements Modal {
 							RealF tAgg = RealF
 									.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1200,6 +1201,7 @@ public class Monad implements Modal {
 	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return Monad
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new IllegalArgumentException("Right multiply fails reference match.");
@@ -1223,7 +1225,7 @@ public class Monad implements Modal {
 										.multiply((ComplexD) getScales().get(blade),
 												(ComplexD) pM.getScales().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1234,7 +1236,7 @@ public class Monad implements Modal {
 										.multiply((ComplexF) getScales().get(blade),
 												(ComplexF) pM.getScales().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1244,7 +1246,7 @@ public class Monad implements Modal {
 								RealD tAgg = RealD
 										.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1254,7 +1256,7 @@ public class Monad implements Modal {
 								RealF tAgg = RealF
 										.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-								newScales.put(bMult, tAgg);
+								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
@@ -1279,7 +1281,7 @@ public class Monad implements Modal {
 							ComplexD tAgg = ComplexD
 									.multiply((ComplexD) getScales().get(blade), (ComplexD) pM.getScales().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1289,7 +1291,7 @@ public class Monad implements Modal {
 							ComplexF tAgg = ComplexF
 									.multiply((ComplexF) getScales().get(blade), (ComplexF) pM.getScales().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1299,7 +1301,7 @@ public class Monad implements Modal {
 							RealD tAgg = RealD
 									.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1309,7 +1311,7 @@ public class Monad implements Modal {
 							RealF tAgg = RealF
 									.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
-							newScales.put(bMult, tAgg);
+							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
@@ -1426,8 +1428,7 @@ public class Monad implements Modal {
 	 * Caution is advised if this method is used while frequent reuse should be
 	 * considered bad form.
 	 * <p>
-	 * @param <T> UnitAbstract child
-	 * @param ppC UnitAbstract child array
+	 * @param ppC UnitAbstract child array for weights
 	 * @return Monad after setting the coefficients to the offered array.
 	 * @throws CladosMonadException This exception is thrown when the array offered
 	 *                              for coordinates is of the wrong length.
@@ -1435,7 +1436,7 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
-		scales.setCoefficientArray(CladosFListBuilder.copyOf(mode, (T[]) ppC));
+		scales.setWeightsArray(CladosFListBuilder.copyOf(mode, ppC));
 		setGradeKey();
 		return this;
 	}
