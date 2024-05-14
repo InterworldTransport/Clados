@@ -395,7 +395,6 @@ public class Blade implements Comparable<Blade> {
 	 */
 	public Blade(Generator pGen, EnumSet<Generator> pDirs) {
 		this(pGen);
-		blade.add(pGen);
 		pDirs.forEach(g -> blade.add(g));
 		makeKey();
 	}
