@@ -15,7 +15,7 @@ public class CoreCladosFieldTest {
 
     @BeforeEach
 	public void setUp() throws Exception {
-        tCard0 = CladosFBuilder.createCardinal("Howz about this?");
+        tCard0 = FBuilder.createCardinal("Howz about this?");
     }
 
     @Test

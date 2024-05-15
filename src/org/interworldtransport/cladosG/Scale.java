@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
@@ -200,7 +200,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	public Scale(Scale<D> pIn) {
 		this(pIn.getMode(), pIn.gBasis, pIn.getCardinal());
 		gBasis.bladeStream().forEach(blade -> {
-			map.put(blade, CladosFBuilder.copyOf(pIn.get(blade)));
+			map.put(blade, FBuilder.copyOf(pIn.get(blade)));
 		});
 	}
 
@@ -454,7 +454,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		D tR;
 		switch (mode) {
 			case REALF -> {
-				tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.REALF.createZERO(this.getScalar().getCardinal());
 				weightsStream().forEach(div -> {
 					try {
 						tR.add(RealF.newONE(div.getCardinal()).scale(div.sqModulus()));
@@ -465,7 +465,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			case REALD -> {
-				tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.REALD.createZERO(this.getScalar().getCardinal());
 				weightsStream().forEach(div -> {
 					try {
 						tR.add(RealD.newONE(div.getCardinal()).scale(div.sqModulus()));
@@ -476,7 +476,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			case COMPLEXF -> {
-				tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
 				weightsStream().forEach(div -> {
 					try {
 						tR.add(ComplexF.newONE(div.getCardinal()).scale(div.sqModulus()));
@@ -487,7 +487,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			case COMPLEXD -> {
-				tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
 				weightsStream().forEach(div -> {
 					try {
 						tR.add(ComplexD.newONE(div.getCardinal()).scale(div.sqModulus()));
@@ -535,7 +535,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		D tR;
 		switch (mode) {
 		case REALF -> {
-			tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.REALF.createZERO(this.getScalar().getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(RealF.newONE(div.getCardinal()).scale(div.modulus()));
@@ -546,7 +546,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case REALD -> {
-			tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.REALD.createZERO(this.getScalar().getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(RealD.newONE(div.getCardinal()).scale(div.modulus()));
@@ -557,7 +557,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case COMPLEXF -> {
-			tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.modulus()));
@@ -568,7 +568,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case COMPLEXD -> {
-			tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.modulus()));
@@ -799,7 +799,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
 
 		Map<Blade, D> mapCopy = pInMap.entrySet().parallelStream()
-				.collect(Collectors.toMap(e -> e.getKey(), e -> CladosFBuilder.copyOf((D) e.getValue())));
+				.collect(Collectors.toMap(e -> e.getKey(), e -> FBuilder.copyOf((D) e.getValue())));
 		map.putAll(mapCopy);
 		return this;
 	}
@@ -879,7 +879,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	protected Scale<D> zeroAll() {
 		gBasis.bladeStream().forEach(b -> {
-			map.put(b, CladosFBuilder.createZERO(mode, card));
+			map.put(b, FBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
@@ -894,7 +894,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	protected Scale<D> zeroAllButGrade(byte pGrade) {
 		if (gBasis.validateGradeIndex(pGrade))
 			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-				map.put(blade, CladosFBuilder.createZERO(mode, card));
+				map.put(blade, FBuilder.createZERO(mode, card));
 		});
 		return this;
 	}
@@ -910,7 +910,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	public Scale<D> zeroAt(Blade pB) {
 		if (pB != null & map.containsKey(pB))
-			map.put(pB, CladosFBuilder.createZERO(mode, map.get(pB).getCardinal()));
+			map.put(pB, FBuilder.createZERO(mode, map.get(pB).getCardinal()));
 		return this;
 	}
 
@@ -924,7 +924,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	protected Scale<D> zeroAtGrade(byte pGrade) {
 		if (gBasis.validateGradeIndex(pGrade))
 			gBasis.bladeStream().filter(blade -> blade.rank() == pGrade).forEach(blade -> {
-				map.put(blade, CladosFBuilder.createZERO(mode, card));
+				map.put(blade, FBuilder.createZERO(mode, card));
 		});
 		return this;
 	}

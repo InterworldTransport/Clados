@@ -36,29 +36,29 @@ class CoreBasisTest {
 
 	@Test
 	public void testCachePrefill() throws GeneratorRangeException {
-		CladosGCache.INSTANCE.clearBases();
+		GCache.INSTANCE.clearBases();
 		for (byte k = 0; k < 11; k++)
-			CladosGBuilder.createBasis(k);
-		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 11);
+			GBuilder.createBasis(k);
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 11);
 		for (byte k = 0; k < 11; k++)
-			CladosGCache.INSTANCE.removeBasis(k);
-		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 0);
+			GCache.INSTANCE.removeBasis(k);
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 0);
 	}
 	
 	@Test
 	public void testCachedBasis() throws GeneratorRangeException {
-		CladosGCache.INSTANCE.clearBases();
-		CanonicalBasis tB1 = CladosGBuilder.createBasis((byte) 3);	//Builder cached it
-		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 1); 	
-		CanonicalBasis tB2 = CladosGBuilder.createBasis((byte) 3); 	//Building another like it
+		GCache.INSTANCE.clearBases();
+		CanonicalBasis tB1 = GBuilder.createBasis((byte) 3);	//Builder cached it
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 	
+		CanonicalBasis tB2 = GBuilder.createBasis((byte) 3); 	//Building another like it
 		assertTrue(tB1 == tB2);		//Builder noticed identical size and returned first one instead.
-		CladosGBuilder.createBasis(Generator.EA);					//Builder cached it
-		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 2);	//Two now
-		CladosGCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
-		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 1); 
-		Optional<CanonicalBasis> get10 = CladosGCache.INSTANCE.findBasisList((byte) 10);
+		GBuilder.createBasis(Generator.EA);					//Builder cached it
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 2);	//Two now
+		GCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 
+		Optional<CanonicalBasis> get10 = GCache.INSTANCE.findBasisList((byte) 10);
 		assertTrue(get10.isPresent()); //Earlier removal got rid of the correct one.
-		assertTrue(CladosGCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
+		assertTrue(GCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
 	}
 
 	@Test

@@ -6,8 +6,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.FBuilder;
+import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
@@ -38,7 +38,7 @@ public class CoreScaleTest {
 
     @BeforeEach
     public void setUp() throws GeneratorRangeException {
-        workCard = CladosFBuilder.createCardinal("WorkingItOut");
+        workCard = FBuilder.createCardinal("WorkingItOut");
         workBasis = Basis.using(Generator.E3);
         workScaleRF = new Scale<>(CladosField.REALF, workBasis, workCard);
         workScaleRD = new Scale<>(CladosField.REALD, workBasis, workCard);
@@ -139,10 +139,10 @@ public class CoreScaleTest {
 
     @Test
     public void testModulusSQSum() {
-        RealF[] tRF = (RealF[]) CladosFListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-        RealD[] tRD = (RealD[]) CladosFListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-        ComplexF[] tCF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-        ComplexD[] tCD = (ComplexD[]) CladosFListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+        RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
+        RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
+        ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
+        ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
 
         workScaleRF.setWeightsArray(tRF);
         workScaleRD.setWeightsArray(tRD);
@@ -362,10 +362,10 @@ public class CoreScaleTest {
 
     @Test
     public void testSettingWeights() {
-        RealF[] tRF = (RealF[]) CladosFListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-        RealD[] tRD = (RealD[]) CladosFListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-        ComplexF[] tCF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-        ComplexD[] tCD = (ComplexD[]) CladosFListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+        RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
+        RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
+        ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
+        ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
 
         workScaleRF.setWeightsArray(tRF);
         workScaleRD.setWeightsArray(tRD);
@@ -377,10 +377,10 @@ public class CoreScaleTest {
         assertTrue(workScaleRF.getScalar() == tRF[0]);
         assertTrue(workScaleRF.getScalar() == tRF[0]);
 
-        tRF = (RealF[]) CladosFListBuilder.REALF.create(workCard, 3);            //new RealF[3];
-        tRD = (RealD[]) CladosFListBuilder.REALD.create(workCard, 3);            //new RealD[3];
-        tCF = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(workCard, 3);   //new ComplexF[3];
-        tCD = (ComplexD[]) CladosFListBuilder.COMPLEXD.create(workCard, 3);   //new ComplexD[3];
+        tRF = (RealF[]) FListBuilder.REALF.create(workCard, 3);            //new RealF[3];
+        tRD = (RealD[]) FListBuilder.REALD.create(workCard, 3);            //new RealD[3];
+        tCF = (ComplexF[]) FListBuilder.COMPLEXF.create(workCard, 3);   //new ComplexF[3];
+        tCD = (ComplexD[]) FListBuilder.COMPLEXD.create(workCard, 3);   //new ComplexD[3];
 
         assertDoesNotThrow(() -> workScaleRF.setWeightsAtGrade((byte) 2, null)); //Do Nothing!
 
@@ -394,10 +394,10 @@ public class CoreScaleTest {
         workBasis.bladeOfGradeStream((byte) 2).forEach(blade -> assertFalse(workScaleCF.isNotZeroAt(blade)));
         workBasis.bladeOfGradeStream((byte) 2).forEach(blade -> assertFalse(workScaleCD.isNotZeroAt(blade)));
 
-        workScaleRF.put(workBasis.getScalarBlade(), CladosFBuilder.REALF.createZERO(workCard));
-        workScaleRD.put(workBasis.getScalarBlade(), CladosFBuilder.REALD.createZERO(workCard));
-        workScaleCF.put(workBasis.getScalarBlade(), CladosFBuilder.COMPLEXF.createZERO(workCard));
-        workScaleCD.put(workBasis.getScalarBlade(), CladosFBuilder.COMPLEXD.createZERO(workCard));
+        workScaleRF.put(workBasis.getScalarBlade(), FBuilder.REALF.createZERO(workCard));
+        workScaleRD.put(workBasis.getScalarBlade(), FBuilder.REALD.createZERO(workCard));
+        workScaleCF.put(workBasis.getScalarBlade(), FBuilder.COMPLEXF.createZERO(workCard));
+        workScaleCD.put(workBasis.getScalarBlade(), FBuilder.COMPLEXD.createZERO(workCard));
 
         assertTrue(RealF.isZero(workScaleRF.getScalar()));
         assertTrue(RealD.isZero(workScaleRD.getScalar()));
@@ -407,10 +407,10 @@ public class CoreScaleTest {
 
     @Test
     public void testSetWeightsMap() {
-        RealF[] tRF = (RealF[]) CladosFListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-        RealD[] tRD = (RealD[]) CladosFListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-        ComplexF[] tCF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-        ComplexD[] tCD = (ComplexD[]) CladosFListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+        RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
+        RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
+        ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
+        ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
 
         Map<Blade, RealF> mapRF = new IdentityHashMap<>(tRF.length);
         Map<Blade, RealD> mapRD = new IdentityHashMap<>(tRD.length);

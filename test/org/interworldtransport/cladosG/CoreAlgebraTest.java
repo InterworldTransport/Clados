@@ -3,7 +3,7 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
@@ -172,7 +172,7 @@ class CoreAlgebraTest {
 		assertTrue(alg3.getMode() == null);
 
 		RealF oldProto = (RealF) alg1.getProtoNumber();
-		RealD tryThis = (RealD) CladosFBuilder.REALD.createONE("Howz About This One");
+		RealD tryThis = (RealD) FBuilder.REALD.createONE("Howz About This One");
 		alg1.setMode(tryThis);
 		assertTrue(alg1.getMode() == CladosField.REALD);
 		assertFalse(alg1.getProtoNumber() == oldProto);

@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosFBuilder<br>
+ * ---org.interworldtransport.cladosF.FBuilder<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosFBuilder<br>
+ * ---org.interworldtransport.cladosF.FBuilder<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
@@ -43,7 +43,7 @@ import java.util.Optional;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public enum CladosFBuilder {
+public enum FBuilder {
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
@@ -76,10 +76,10 @@ public enum CladosFBuilder {
 	 * @return Cardinal unit cardinal created or retrieved
 	 */
 	public final static Cardinal createCardinal(String pName) {
-		Optional<Cardinal> test = CladosFCache.INSTANCE.findCardinal(pName);
+		Optional<Cardinal> test = FCache.INSTANCE.findCardinal(pName);
 		if (test.isEmpty()) {
 			test = Optional.ofNullable(Cardinal.generate(pName));
-			CladosFCache.INSTANCE.appendCardinal(test.get());
+			FCache.INSTANCE.appendCardinal(test.get());
 		}
 		return test.get();
 	}
@@ -96,12 +96,12 @@ public enum CladosFBuilder {
 	 * @return UnitAbstract child number created
 	 */
 	public final static <D extends UnitAbstract & Field & Normalizable> D createZERO(CladosField pMode, Cardinal pCard) {
-		CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+		FCache.INSTANCE.appendCardinal(pCard); // just in case.
 		switch (pMode) {
-		case REALF : return CladosFBuilder.REALF.createZERO(pCard);
-		case REALD : return CladosFBuilder.REALD.createZERO(pCard);
-		case COMPLEXF : return CladosFBuilder.COMPLEXF.createZERO(pCard);
-		case COMPLEXD : return CladosFBuilder.COMPLEXD.createZERO(pCard);
+		case REALF : return FBuilder.REALF.createZERO(pCard);
+		case REALD : return FBuilder.REALD.createZERO(pCard);
+		case COMPLEXF : return FBuilder.COMPLEXF.createZERO(pCard);
+		case COMPLEXD : return FBuilder.COMPLEXD.createZERO(pCard);
 		default : return null;
 		}
 	}
@@ -118,12 +118,12 @@ public enum CladosFBuilder {
 	 * @return UnitAbstract child number created
 	 */
 	public final static <D extends UnitAbstract & Field & Normalizable> D createONE(CladosField pMode, Cardinal pCard) {
-		CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+		FCache.INSTANCE.appendCardinal(pCard); // just in case.
 		switch (pMode) {
-			case REALF : return CladosFBuilder.REALF.createONE(pCard);
-			case REALD : return CladosFBuilder.REALD.createONE(pCard);
-			case COMPLEXF : return CladosFBuilder.COMPLEXF.createONE(pCard);
-			case COMPLEXD : return CladosFBuilder.COMPLEXD.createONE(pCard);
+			case REALF : return FBuilder.REALF.createONE(pCard);
+			case REALD : return FBuilder.REALD.createONE(pCard);
+			case COMPLEXF : return FBuilder.COMPLEXF.createONE(pCard);
+			case COMPLEXD : return FBuilder.COMPLEXD.createONE(pCard);
 			default : return null;
 		}
 	}
@@ -259,19 +259,19 @@ public enum CladosFBuilder {
 	public <D extends UnitAbstract & Field & Normalizable> D createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
-			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			FCache.INSTANCE.appendCardinal(pCard); // just in case.
 			return (D) RealF.newZERO(pCard);
 		}
 		case REALD -> {
-			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			FCache.INSTANCE.appendCardinal(pCard); // just in case.
 			return (D) RealD.newZERO(pCard);
 		}
 		case COMPLEXF -> {
-			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			FCache.INSTANCE.appendCardinal(pCard); // just in case.
 			return (D) ComplexF.newZERO(pCard);
 		}
 		case COMPLEXD -> {
-			CladosFCache.INSTANCE.appendCardinal(pCard); // just in case.
+			FCache.INSTANCE.appendCardinal(pCard); // just in case.
 			return (D) ComplexD.newZERO(pCard);
 		}
 		default -> {

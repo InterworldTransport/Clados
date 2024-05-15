@@ -127,7 +127,7 @@ public class GProduct implements CliffordProduct {
 		}
 		signature = pSig;
 		// ------Get CanonicalBasis
-		canonBasis = (pB != null) ? pB : CladosGBuilder.createBasis((byte) pSig.length());
+		canonBasis = (pB != null) ? pB : GBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
 		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {

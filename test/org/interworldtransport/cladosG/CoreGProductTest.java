@@ -23,20 +23,20 @@ class CoreGProductTest {
 
 	@Test
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
-		CladosGCache.INSTANCE.clearGProducts();
-		CliffordProduct tGP1 = CladosGBuilder.createGProduct(pSig3);
-		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//The builder cached it
-		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);	//Same sig so a repeat
+		GCache.INSTANCE.clearGProducts();
+		CliffordProduct tGP1 = GBuilder.createGProduct(pSig3);
+		assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	//The builder cached it
+		CliffordProduct tGP2 = GBuilder.createGProduct(pSig3);	//Same sig so a repeat
 		assertTrue(tGP1 == tGP2);	//The builder noticed a GP with the same sign and returned it instead
 
-		CliffordProduct tGP3 = CladosGBuilder.createGProduct(pSig4);	//Inverted sig this time. different GP.
-		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 2); 	//The builder cached it
-		CladosGCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
-		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//Found the first GP and removed it.
-		CladosGCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
-		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//Not found and silently handled.
-		CladosGCache.INSTANCE.removeGProduct(tGP3);						//Remove the gp named by reference.
-		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 0); 	//Found the second GP and removed it.
+		CliffordProduct tGP3 = GBuilder.createGProduct(pSig4);	//Inverted sig this time. different GP.
+		assertTrue(GCache.INSTANCE.getGProductListSize() == 2); 	//The builder cached it
+		GCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
+		assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	//Found the first GP and removed it.
+		GCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
+		assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	//Not found and silently handled.
+		GCache.INSTANCE.removeGProduct(tGP3);						//Remove the gp named by reference.
+		assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	//Found the second GP and removed it.
 	}
 
 	@Test
@@ -78,7 +78,7 @@ class CoreGProductTest {
 	@Test
 	public void testRanges() throws BadSignatureException, GeneratorRangeException {
 		try {
-			GProduct tGP = (GProduct) CladosGBuilder.createGProduct(pSig8);
+			GProduct tGP = (GProduct) GBuilder.createGProduct(pSig8);
 			int[] pRange = tGP.getPScalarRange();
 			assertTrue(pRange[0] == pRange[1]);
 			assertTrue(pRange[0] == 255);
@@ -99,7 +99,7 @@ class CoreGProductTest {
 	@Test
 	public void testXMLOutput() {
 		try {
-			GProduct tGP = (GProduct) CladosGBuilder.createGProduct(pSig10);
+			GProduct tGP = (GProduct) GBuilder.createGProduct(pSig10);
 			System.out.println(tGP.toXMLString(""));
 		} catch (BadSignatureException esig) {
 			;

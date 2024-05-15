@@ -8,9 +8,9 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CoreCladosFCacheTest {
+public class CoreFCacheTest {
 
-    public CladosFCache cache = CladosFCache.INSTANCE;
+    public FCache cache = FCache.INSTANCE;
     public Cardinal tCard2;
     public Cardinal tCard3;
 

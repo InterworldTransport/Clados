@@ -276,11 +276,11 @@ class CoreComplexFTest {
 	
 		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexF.copySumSQModulus(tComplexs));
 	
-		ComplexF[] whatsThis = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(16);		//Default Cardinal
+		ComplexF[] whatsThis = (ComplexF[]) FListBuilder.COMPLEXF.create(16);		//Default Cardinal
 		Assertions.assertDoesNotThrow(() -> ComplexF.copySumSQModulus(whatsThis));
 		assertTrue(ComplexF.isZero(ComplexF.copySumSQModulus(whatsThis)));
 
-		ComplexF[] whatsThis2 = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(16);	//Default Cardinal
+		ComplexF[] whatsThis2 = (ComplexF[]) FListBuilder.COMPLEXF.createONE(16);	//Default Cardinal
 		ComplexF testThis = ComplexF.copySumSQModulus(whatsThis2);
 		assertFalse(ComplexF.isZero(testThis));
 		assertTrue(testThis.getReal() == 16.0F);
@@ -299,11 +299,11 @@ class CoreComplexFTest {
 
 		Assertions.assertThrows(FieldBinaryException.class, () ->ComplexF.copySumModulus(tComplexs));
 
-		ComplexF[] whatsThis = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(16);		//Default Cardinal
+		ComplexF[] whatsThis = (ComplexF[]) FListBuilder.COMPLEXF.create(16);		//Default Cardinal
 		Assertions.assertDoesNotThrow(() -> ComplexF.copySumModulus(whatsThis));
 		assertTrue(ComplexF.isZero(ComplexF.copySumModulus(whatsThis)));
 
-		ComplexF[] whatsThis2 = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(16);	//Default Cardinal
+		ComplexF[] whatsThis2 = (ComplexF[]) FListBuilder.COMPLEXF.createONE(16);	//Default Cardinal
 		ComplexF testThis = ComplexF.copySumModulus(whatsThis2);
 		assertFalse(ComplexF.isZero(testThis));
 		assertTrue(testThis.getReal() == 4.0F);

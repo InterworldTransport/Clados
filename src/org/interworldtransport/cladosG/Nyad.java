@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.UnitAbstract;
 import org.interworldtransport.cladosF.Field;
@@ -506,7 +506,7 @@ public class Nyad implements Modal {
 
 		// Add Monad to the ArrayList
 		monadList.ensureCapacity(monadList.size() + 1);
-		monadList.add((Monad) CladosGBuilder.copyOfMonad(pM));
+		monadList.add((Monad) GBuilder.copyOfMonad(pM));
 		resetAlgebraList();
 		return this;
 	}
@@ -584,17 +584,17 @@ public class Nyad implements Modal {
 	public Nyad createMonad(String pMonadName, String pAlgebraName, String pFrameName, String pSig, String pCard)
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
 
-		Cardinal tCard = (pCard == null) ? CladosFBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
-				: CladosFBuilder.createCardinal(pCard);
+		Cardinal tCard = (pCard == null) ? FBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
+				: FBuilder.createCardinal(pCard);
 
 		switch (mode) {
-		case COMPLEXD -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXD.createZERO(tCard),
+		case COMPLEXD -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.COMPLEXD.createZERO(tCard),
 				getFoot(), pMonadName, pAlgebraName, pFrameName, pSig));
-		case COMPLEXF -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(tCard),
+		case COMPLEXF -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.COMPLEXF.createZERO(tCard),
 				getFoot(), pMonadName, pAlgebraName, pFrameName, pSig));
-		case REALD -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALD.createZERO(tCard), getFoot(),
+		case REALD -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.REALD.createZERO(tCard), getFoot(),
 				pMonadName, pAlgebraName, pFrameName, pSig));
-		case REALF -> appendMonad(CladosGBuilder.createMonadWithFoot(CladosFBuilder.REALF.createZERO(tCard), getFoot(),
+		case REALF -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.REALF.createZERO(tCard), getFoot(),
 				pMonadName, pAlgebraName, pFrameName, pSig));
 		default -> {
 		}

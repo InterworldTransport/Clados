@@ -28,8 +28,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.FBuilder;
+import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
@@ -167,7 +167,7 @@ public class Monad implements Modal {
 	public static boolean isIdempotent(Monad pM) {
 		if (isGZero(pM))
 			return true;
-		return CladosGBuilder.copyOfMonad(pM).multiplyLeft(pM).isGEqual(pM);
+		return GBuilder.copyOfMonad(pM).multiplyLeft(pM).isGEqual(pM);
 	}
 
 	/**
@@ -208,13 +208,13 @@ public class Monad implements Modal {
 		else if (Monad.isNilpotent(pM, 2))
 			return false;
 
-		Monad check1 = CladosGBuilder.copyOfMonad(pM);
+		Monad check1 = GBuilder.copyOfMonad(pM);
 		check1.multiplyLeft(check1);
 		Optional<Blade> first = check1.bladeStream().filter(blade -> check1.getScales().isNotZeroAt(blade)).sequential()
 				.findFirst();
 		if (first.isPresent()) {
-			return isIdempotent(CladosGBuilder.copyOfMonad(pM)
-					.scale((T) CladosFBuilder.copyOf(check1.getScales().get(first.get())).invert()));
+			return isIdempotent(GBuilder.copyOfMonad(pM)
+					.scale((T) FBuilder.copyOf(check1.getScales().get(first.get())).invert()));
 		} else
 			return false;
 	}
@@ -229,7 +229,7 @@ public class Monad implements Modal {
 	public static boolean isNilpotent(Monad pM, int pPower) {
 		if (isGZero(pM))
 			return true;
-		Monad check1 = CladosGBuilder.copyOfMonad(pM);
+		Monad check1 = GBuilder.copyOfMonad(pM);
 		while (pPower > 1) {
 			check1.multiplyLeft(pM);
 			if (isGZero(check1))
@@ -450,7 +450,7 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, pAlgebraName, pFrameName, CladosGBuilder.createFootLike(pFootName, pF), pSig, pF);
+		this(pMonadName, pAlgebraName, pFrameName, GBuilder.createFootLike(pFootName, pF), pSig, pF);
 	}
 
 	/**
@@ -479,7 +479,7 @@ public class Monad implements Modal {
 			String pFrameName, Foot pFoot, String pSig, T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
-		setAlgebra(CladosGBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
+		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 		setFrameName(pFrameName);
 
 		if (pF instanceof RealF)
@@ -608,7 +608,7 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, CladosGBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName,
+		this(pMonadName, GBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName,
 				pScale);
 	}
 
@@ -711,7 +711,7 @@ public class Monad implements Modal {
 			int col = tBasis.find(blade) - 1; // col points at a non-zero blade
 			Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
 			newScales.put(bMult,
-					(T) CladosFBuilder.copyOf(getScales().get(blade)).scale(Float.valueOf(tProd.getSign(row, col))));
+					(T) FBuilder.copyOf(getScales().get(blade)).scale(Float.valueOf(tProd.getSign(row, col))));
 		});
 		scales = newScales;
 
@@ -749,7 +749,7 @@ public class Monad implements Modal {
 			int col = tBasis.find(blade) - 1; // col points at a non-zero blade
 			Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
 			newScales.put(bMult,
-					(T) CladosFBuilder.copyOf(getScales().get(blade)).scale(Float.valueOf(tProd.getSign(col, row))));
+					(T) FBuilder.copyOf(getScales().get(blade)).scale(Float.valueOf(tProd.getSign(col, row))));
 		});
 		scales = newScales;
 
@@ -1002,7 +1002,7 @@ public class Monad implements Modal {
 	public Monad multiplyAntisymm(Monad pM) {
 		if (!isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Symm multiply fails reference match.");
-		Monad halfTwo = CladosGBuilder.copyOfMonad(this).multiplyRight(pM);
+		Monad halfTwo = GBuilder.copyOfMonad(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
 			multiplyLeft(pM).subtract(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
@@ -1336,7 +1336,7 @@ public class Monad implements Modal {
 	public Monad multiplySymm(Monad pM) {
 		if (!isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Symm multiply fails reference match.");
-		Monad halfTwo = CladosGBuilder.copyOfMonad(this).multiplyRight(pM);
+		Monad halfTwo = GBuilder.copyOfMonad(this).multiplyRight(pM);
 		switch (pM.getScales().getMode()) {
 		case COMPLEXD -> {
 			multiplyLeft(pM).add(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
@@ -1436,7 +1436,7 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
-		scales.setWeightsArray(CladosFListBuilder.copyOf(mode, ppC));
+		scales.setWeightsArray(FListBuilder.copyOf(mode, ppC));
 		setGradeKey();
 		return this;
 	}

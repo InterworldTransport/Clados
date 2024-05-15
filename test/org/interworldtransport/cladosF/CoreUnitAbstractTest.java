@@ -22,7 +22,7 @@ public class CoreUnitAbstractTest {
 
     @BeforeEach
 	public void setUp() throws Exception {
-        tCard0 = CladosFBuilder.createCardinal("Howz about this?");
+        tCard0 = FBuilder.createCardinal("Howz about this?");
         tCard1 = Cardinal.generate(CladosField.REALF);
         tCard2 = Cardinal.generate(CladosField.REALD);
         tCard3 = Cardinal.generate(CladosField.COMPLEXF);

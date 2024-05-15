@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
@@ -262,7 +262,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	public Algebra(String pS, Foot pF, String pSig, Cardinal pCard)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, CladosGBuilder.createGProduct(pSig), pCard);
+		this(pS, pF, GBuilder.createGProduct(pSig), pCard);
 	}
 
 	/**
@@ -297,7 +297,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	public <D extends UnitAbstract & Field & Normalizable> Algebra(String pS, Foot pF, String pSig, D pDiv)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, CladosGBuilder.createGProduct(pSig), pDiv.getCardinal());
+		this(pS, pF, GBuilder.createGProduct(pSig), pDiv.getCardinal());
 		protoNumber = UnitAbstract.copyMaybe((D) pDiv).get();
 		setMode(pDiv);
 	}
@@ -326,8 +326,8 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	public <D extends UnitAbstract & Field & Normalizable>  Algebra(String pS, String pFootName, String pSig, D pF)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, CladosGBuilder.createFoot(pFootName, pF.getCardinalString()),
-				CladosGBuilder.createGProduct(pSig), pF.getCardinal());
+		this(pS, GBuilder.createFoot(pFootName, pF.getCardinalString()),
+				GBuilder.createGProduct(pSig), pF.getCardinal());
 		protoNumber = UnitAbstract.copyMaybe((D) pF).get();
 		setMode(pF);
 	}
@@ -552,7 +552,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @param <D> pNumber must be a child of UnitAbstract for anything to happen here.
 	 */
 	public <D extends UnitAbstract & Field & Normalizable> void setMode(D pNumber) {
-		protoNumber = CladosFBuilder.copyOf(pNumber);
+		protoNumber = FBuilder.copyOf(pNumber);
 		if (pNumber instanceof RealF) setMode(CladosField.REALF);
 		else if (pNumber instanceof RealD) setMode(CladosField.REALD);
 		else if (pNumber instanceof ComplexF) setMode(CladosField.COMPLEXF);

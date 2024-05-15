@@ -11,7 +11,7 @@ import static org.interworldtransport.cladosG.Monad.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -41,7 +41,7 @@ class CoreMonadComplexFTest {
 	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		cRF = new ComplexF[16];
 		Cardinal tSpot = Cardinal.generate("TestComplexFs");
-		cRF = (ComplexF[]) CladosFListBuilder.COMPLEXF.createONE(tSpot, cRF.length);
+		cRF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tSpot, cRF.length);
 
 		tM0 = new Monad("Test MonadComplexF 0", "Motion Algebra", "Foot Default Frame", "Test Foot 0", "-+++",
 				new ComplexF(Cardinal.generate("Test Float 1"), 0f, 0f));
@@ -59,7 +59,7 @@ class CoreMonadComplexFTest {
 		tM9 = new Monad(mName + "9", tM2);
 		
 		ComplexF tAdj = new ComplexF(tM9.getAlgebra().getCardinal(), 0.0f);
-		ComplexF[] tFix = (ComplexF[]) CladosFListBuilder.COMPLEXF.create(tAdj.getCardinal(), 16);
+		ComplexF[] tFix = (ComplexF[]) FListBuilder.COMPLEXF.create(tAdj.getCardinal(), 16);
 		tFix[1] = new ComplexF(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f, 0.0f);
 		tFix[4] = ComplexF.copyOf(tFix[1]);
 		tM9.setCoeff(tFix); 

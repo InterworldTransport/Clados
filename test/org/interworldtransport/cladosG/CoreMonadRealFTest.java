@@ -11,7 +11,7 @@ import static org.interworldtransport.cladosG.Monad.isScaledIdempotent;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFListBuilder;
+import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -41,7 +41,7 @@ class CoreMonadRealFTest {
 	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		cRF = new RealF[16];
 		Cardinal tSpot = Cardinal.generate(fType);
-		cRF = (RealF[]) CladosFListBuilder.REALF.createONE(tSpot, cRF.length);
+		cRF = (RealF[]) FListBuilder.REALF.createONE(tSpot, cRF.length);
 
 		tM0 = new Monad(mName + "0", aName, "Foot Default Frame", "Test Foot 0", "-+++",
 				new RealF(Cardinal.generate("Test Float 1"), 0f));
@@ -59,7 +59,7 @@ class CoreMonadRealFTest {
 		tM9 = new Monad(mName + "9", tM2);
 		
 		RealF tAdj = new RealF(tM9.getAlgebra().getCardinal(), 0.0f);
-		RealF[] tFix = (RealF[]) CladosFListBuilder.REALF.create(tAdj.getCardinal(), 16);
+		RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tAdj.getCardinal(), 16);
 		tFix[1] = new RealF(tM9.getAlgebra().getFoot().getCardinal(0), 1.0f);
 		tFix[4] = RealF.copyOf(tFix[1]);
 		tM9.setCoeff(tFix); 

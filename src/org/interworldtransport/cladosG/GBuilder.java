@@ -1,7 +1,7 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosGBuilder<br>
+ * ---org.interworldtransport.cladosG.GBuilder<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosGBuilder<br>
+ * ---org.interworldtransport.cladosG.GBuilder<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -27,8 +27,8 @@ package org.interworldtransport.cladosG;
 import java.util.Optional;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
-import org.interworldtransport.cladosF.CladosFCache;
+import org.interworldtransport.cladosF.FBuilder;
+import org.interworldtransport.cladosF.FCache;
 import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.Field;
@@ -48,10 +48,10 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * This enumeration has NO non-static element for the instance, thus
  * CladosGBuilder HAS NO INTERNAL STATE that can change.
  * <p>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
-public enum CladosGBuilder { // This has an implicit private constructor we won't override.
+public enum GBuilder { // This has an implicit private constructor we won't override.
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
@@ -158,13 +158,13 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public static final Algebra createAlgebra(UnitAbstract pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
-			return new Algebra(pName, pFTName, pSig, (RealF) CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (RealF) FBuilder.REALF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof RealD) {
-			return new Algebra(pName, pFTName, pSig, (RealD) CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (RealD) FBuilder.REALD.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexF) {
-			return new Algebra(pName, pFTName, pSig, (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (ComplexF) FBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexD) {
-			return new Algebra(pName, pFTName, pSig, (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pFTName, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + pNumber.toXMLString());
 		}
@@ -200,13 +200,13 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	public static final Algebra createAlgebraWithFoot(Foot pF, UnitAbstract pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
-			return new Algebra(pName, pF, pSig, (RealF) CladosFBuilder.REALF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (RealF) FBuilder.REALF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof RealD) {
-			return new Algebra(pName, pF, pSig, (RealD) CladosFBuilder.REALD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (RealD) FBuilder.REALD.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexF) {
-			return new Algebra(pName, pF, pSig, (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (ComplexF) FBuilder.COMPLEXF.createZERO(pNumber.getCardinal()));
 		} else if (pNumber instanceof ComplexD) {
-			return new Algebra(pName, pF, pSig, (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
+			return new Algebra(pName, pF, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException(
 					"Unexpected UnitAbstract child for Algebra mode | " + pNumber.toXMLString());
@@ -237,12 +237,12 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 *                                 CanonicalBasis and see why it complains.
 	 */
 	public final static CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen);
+		Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList(pGen);
 		if (tB.isPresent())
 			return tB.get();
 		else {
 			CanonicalBasis tSpot = Basis.using(pGen);
-			CladosGCache.INSTANCE.appendBasis(tSpot);
+			GCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
 	}
@@ -258,12 +258,12 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 *                                 CanonicalBasis and see why it complains.
 	 */
 	public final static CanonicalBasis createBasis(Generator pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList(pGen.ord);
+		Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList(pGen.ord);
 		if (tB.isPresent())
 			return tB.get();
 		else {
 			CanonicalBasis tSpot = Basis.using(pGen);
-			CladosGCache.INSTANCE.appendBasis(tSpot);
+			GCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
 	}
@@ -279,7 +279,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 * @return Foot (new instance)
 	 */
 	public final static Foot createFoot(String pName, String pCardName) {
-		Optional<Cardinal> find = CladosFCache.INSTANCE.findCardinal(pCardName);
+		Optional<Cardinal> find = FCache.INSTANCE.findCardinal(pCardName);
 		if (find.isPresent())
 			return createFootLike(pName, find.get());
 		return Foot.buildAsType(pName, Cardinal.generate(pCardName));
@@ -341,12 +341,12 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public final static CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		Optional<CliffordProduct> tSpot = CladosGCache.INSTANCE.findGProductMap(pSig);
+		Optional<CliffordProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get();
 		else {
 			if (pB != null)
-				CladosGCache.INSTANCE.appendBasis(pB); // won't have to pass it now.
+				GCache.INSTANCE.appendBasis(pB); // won't have to pass it now.
 			tSpot = Optional.ofNullable(createGProduct(pSig));
 			return tSpot.get();
 		}
@@ -370,12 +370,12 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 	 */
 	public final static CliffordProduct createGProduct(String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		Optional<CliffordProduct> tSpot = CladosGCache.INSTANCE.findGProductMap(pSig);
+		Optional<CliffordProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.
 		else {
 			// Create a new GProduct, but might still find a cached Basis.
-			Optional<CanonicalBasis> tB = CladosGCache.INSTANCE.findBasisList((byte) pSig.length());
+			Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList((byte) pSig.length());
 			CliffordProduct tSpot2;
 			if (tB.isPresent())
 				tSpot2 = new GProduct(tB.get(), pSig);
@@ -383,8 +383,8 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 				tSpot2 = new GProduct(pSig);
 
 			if (tSpot2 != null) {
-				CladosGCache.INSTANCE.appendBasis(tSpot2.getBasis());
-				CladosGCache.INSTANCE.appendGProduct(tSpot2);
+				GCache.INSTANCE.appendBasis(tSpot2.getBasis());
+				GCache.INSTANCE.appendGProduct(tSpot2);
 			}
 			return tSpot2;
 		}
@@ -534,7 +534,7 @@ public enum CladosGBuilder { // This has an implicit private constructor we won'
 		return CliffordProduct.validateSignature(pSig);
 	}
 
-	private CladosGBuilder() {
+	private GBuilder() {
 		;
 	}
 

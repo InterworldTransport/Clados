@@ -27,7 +27,7 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.UnitAbstract;
 
 /**
@@ -92,7 +92,7 @@ public final class Foot {
 	public Foot(String pName) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
-		cardinalList.add(CladosFBuilder.createCardinal(pName));
+		cardinalList.add(FBuilder.createCardinal(pName));
 	}
 
 	/**

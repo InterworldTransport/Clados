@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosFBuilder<br>
+ * ---org.interworldtransport.cladosF.FBuilder<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosFBuilder<br>
+ * ---org.interworldtransport.cladosF.FBuilder<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
@@ -36,7 +36,7 @@ import java.util.List;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public enum CladosFListBuilder {
+public enum FListBuilder {
 	/**
 	 * The implicit private constructor will not be overridden.
 	 */
@@ -72,16 +72,16 @@ public enum CladosFListBuilder {
 	public final static <T extends UnitAbstract & Field> List<T> copyListOf(CladosField pField, List<T> pD) {
 		switch (pField) {
 		case REALF -> {
-			return CladosFListBuilder.REALF.copyListOf(pD);
+			return FListBuilder.REALF.copyListOf(pD);
 		}
 		case REALD -> {
-			return CladosFListBuilder.REALD.copyListOf(pD);
+			return FListBuilder.REALD.copyListOf(pD);
 		}
 		case COMPLEXF -> {
-			return CladosFListBuilder.COMPLEXF.copyListOf(pD);
+			return FListBuilder.COMPLEXF.copyListOf(pD);
 		}
 		case COMPLEXD -> {
-			return CladosFListBuilder.COMPLEXD.copyListOf(pD);
+			return FListBuilder.COMPLEXD.copyListOf(pD);
 		}
 		default -> {
 			return null;
@@ -106,16 +106,16 @@ public enum CladosFListBuilder {
 	public final static <T extends UnitAbstract & Field & Normalizable> T[] copyOf(CladosField pField, T[] pD) {
 		switch (pField) {
 		case REALF -> {
-			return (T[]) CladosFListBuilder.REALF.copyOf(pD);
+			return (T[]) FListBuilder.REALF.copyOf(pD);
 		}
 		case REALD -> {
-			return (T[]) CladosFListBuilder.REALD.copyOf(pD);
+			return (T[]) FListBuilder.REALD.copyOf(pD);
 		}
 		case COMPLEXF -> {
-			return (T[]) CladosFListBuilder.COMPLEXF.copyOf(pD);
+			return (T[]) FListBuilder.COMPLEXF.copyOf(pD);
 		}
 		case COMPLEXD -> {
-			return (T[]) CladosFListBuilder.COMPLEXD.copyOf(pD);
+			return (T[]) FListBuilder.COMPLEXD.copyOf(pD);
 		}
 		default -> {
 			return null;
@@ -156,25 +156,25 @@ public enum CladosFListBuilder {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = CladosFBuilder.copyOf((RealF) pDV.get(j));
+				tSpot[j] = FBuilder.copyOf((RealF) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = CladosFBuilder.copyOf((RealD) pDV.get(j));
+				tSpot[j] = FBuilder.copyOf((RealD) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = CladosFBuilder.copyOf((ComplexF) pDV.get(j));
+				tSpot[j] = FBuilder.copyOf((ComplexF) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pDV.size()];
 			for (int j = 0; j < pDV.size(); j++)
-				tSpot[j] = CladosFBuilder.copyOf((ComplexD) pDV.get(j));
+				tSpot[j] = FBuilder.copyOf((ComplexD) pDV.get(j));
 			return (List<T>) List.of(tSpot);
 		}
 		default -> {
@@ -215,25 +215,25 @@ public enum CladosFListBuilder {
 		case REALF -> {
 			T[] tSpot = (T[]) new RealF[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
+				tSpot[j] = FBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		case REALD -> {
 			T[] tSpot = (T[]) new RealD[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
+				tSpot[j] = FBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		case COMPLEXF -> {
 			T[] tSpot = (T[]) new ComplexF[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
+				tSpot[j] = FBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		case COMPLEXD -> {
 			T[] tSpot = (T[]) new ComplexD[pDV.length];
 			for (int j = 0; j < pDV.length; j++)
-				tSpot[j] = CladosFBuilder.copyOf((T) pDV[j]);
+				tSpot[j] = FBuilder.copyOf((T) pDV[j]);
 			return tSpot;
 		}
 		default -> {
@@ -253,31 +253,31 @@ public enum CladosFListBuilder {
 	 */
 	public UnitAbstract[] create(Cardinal pCard, int pSize) {
 		if (pCard != null) {
-			CladosFCache.INSTANCE.appendCardinal(pCard); // Just in case
+			FCache.INSTANCE.appendCardinal(pCard); // Just in case
 		}
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealF) CladosFBuilder.REALF.createZERO(pCard);
+				tSpot[j] = (RealF) FBuilder.REALF.createZERO(pCard);
 			return tSpot;
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealD) CladosFBuilder.REALD.createZERO(pCard);
+				tSpot[j] = (RealD) FBuilder.REALD.createZERO(pCard);
 			return tSpot;
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pCard);
+				tSpot[j] = (ComplexF) FBuilder.COMPLEXF.createZERO(pCard);
 			return tSpot;
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pCard);
+				tSpot[j] = (ComplexD) FBuilder.COMPLEXD.createZERO(pCard);
 			return tSpot;
 		}
 		default -> {
@@ -327,7 +327,7 @@ public enum CladosFListBuilder {
 	 */
 	public UnitAbstract[] create(String pS, int pSize) {
 		Cardinal def = Cardinal.generate(pS);
-		CladosFCache.INSTANCE.appendCardinal(def);
+		FCache.INSTANCE.appendCardinal(def);
 		return create(def, pSize);
 	}
 
@@ -360,31 +360,31 @@ public enum CladosFListBuilder {
 	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field> List<T> createListOf(Cardinal pCard, int pSize) {
 		if (pCard != null) {
-			CladosFCache.INSTANCE.appendCardinal(pCard); //Just in case.
+			FCache.INSTANCE.appendCardinal(pCard); //Just in case.
 		}
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealF) CladosFBuilder.REALF.createZERO(pCard);
+				tSpot[j] = (RealF) FBuilder.REALF.createZERO(pCard);
 			return (List<T>) List.of(tSpot);
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealD) CladosFBuilder.REALD.createZERO(pCard);
+				tSpot[j] = (RealD) FBuilder.REALD.createZERO(pCard);
 			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createZERO(pCard);
+				tSpot[j] = (ComplexF) FBuilder.COMPLEXF.createZERO(pCard);
 			return (List<T>) List.of(tSpot);
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createZERO(pCard);
+				tSpot[j] = (ComplexD) FBuilder.COMPLEXD.createZERO(pCard);
 			return (List<T>) List.of(tSpot);
 		}
 		default -> {
@@ -449,31 +449,31 @@ public enum CladosFListBuilder {
 	 */
 	public UnitAbstract[] createONE(Cardinal pCard, int pSize) {
 		if (pCard != null) {
-			CladosFCache.INSTANCE.appendCardinal(pCard); // Just in case
+			FCache.INSTANCE.appendCardinal(pCard); // Just in case
 		}
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealF) CladosFBuilder.REALF.createONE(pCard);
+				tSpot[j] = (RealF) FBuilder.REALF.createONE(pCard);
 			return tSpot;
 		}
 		case REALD -> {
 			RealD[] tSpot = new RealD[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (RealD) CladosFBuilder.REALD.createONE(pCard);
+				tSpot[j] = (RealD) FBuilder.REALD.createONE(pCard);
 			return tSpot;
 		}
 		case COMPLEXF -> {
 			ComplexF[] tSpot = new ComplexF[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexF) CladosFBuilder.COMPLEXF.createONE(pCard);
+				tSpot[j] = (ComplexF) FBuilder.COMPLEXF.createONE(pCard);
 			return tSpot;
 		}
 		case COMPLEXD -> {
 			ComplexD[] tSpot = new ComplexD[pSize];
 			for (int j = 0; j < pSize; j++)
-				tSpot[j] = (ComplexD) CladosFBuilder.COMPLEXD.createONE(pCard);
+				tSpot[j] = (ComplexD) FBuilder.COMPLEXD.createONE(pCard);
 			return tSpot;
 		}
 		default -> {
@@ -523,7 +523,7 @@ public enum CladosFListBuilder {
 	 */
 	public UnitAbstract[] createONE(String pS, int pSize) {
 		Cardinal def = Cardinal.generate(pS);
-		CladosFCache.INSTANCE.appendCardinal(def);
+		FCache.INSTANCE.appendCardinal(def);
 		return createONE(def, pSize);
 	}
 }
