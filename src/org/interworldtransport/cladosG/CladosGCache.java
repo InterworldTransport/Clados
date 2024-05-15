@@ -103,6 +103,24 @@ public enum CladosGCache {
 	}
 
 	/**
+	 * This is for resetting the cache of basis objects. It should rarely be used
+	 * since they don't take up a lot of space, but it is faster than removing one
+	 * at a time.
+	 */
+	public void clearBases() {
+		listOfBases = new ArrayList<>(1);
+	}
+
+	/**
+	 * This is for resetting the cache of gproduct objects. It should be used sparingly
+	 * since gproducts can be time consuming to recreate for large algebras. It 
+	 * shouldn't HAVE to be done, but it is faster than removing one at a time.
+	 */
+	public void clearGProducts() {
+		new ArrayList<>(1);
+	}
+
+	/**
 	 * This method returns an Optional of CanonicalBasis using the integer number of
 	 * generators offered for the search. If found, the optional will be engaged. If
 	 * not, it will be disengaged. IF by some chance there are two basis instances
