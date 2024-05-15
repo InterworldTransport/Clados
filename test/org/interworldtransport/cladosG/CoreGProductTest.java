@@ -23,6 +23,7 @@ class CoreGProductTest {
 
 	@Test
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
+		CladosGCache.INSTANCE.clearGProducts();
 		CliffordProduct tGP1 = CladosGBuilder.createGProduct(pSig3);
 		assertTrue(CladosGCache.INSTANCE.getGProductListSize() == 1); 	//The builder cached it
 		CliffordProduct tGP2 = CladosGBuilder.createGProduct(pSig3);	//Same sig so a repeat

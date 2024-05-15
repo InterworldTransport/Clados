@@ -36,6 +36,7 @@ class CoreBasisTest {
 
 	@Test
 	public void testCachePrefill() throws GeneratorRangeException {
+		CladosGCache.INSTANCE.clearBases();
 		for (byte k = 0; k < 11; k++)
 			CladosGBuilder.createBasis(k);
 		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 11);
@@ -46,6 +47,7 @@ class CoreBasisTest {
 	
 	@Test
 	public void testCachedBasis() throws GeneratorRangeException {
+		CladosGCache.INSTANCE.clearBases();
 		CanonicalBasis tB1 = CladosGBuilder.createBasis((byte) 3);	//Builder cached it
 		assertTrue(CladosGCache.INSTANCE.getBasisListSize() == 1); 	
 		CanonicalBasis tB2 = CladosGBuilder.createBasis((byte) 3); 	//Building another like it
