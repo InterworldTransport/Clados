@@ -453,53 +453,53 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	public D modulusSQSum() {
 		D tR;
 		switch (mode) {
-		case REALF -> {
-			tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
-			weightsStream().forEach(div -> {
-				try {
-					tR.add(RealF.newONE(div.getCardinal()).scale(div.sqModulus()));
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
-				}
-			});
-			return tR;
-		}
-		case REALD -> {
-			tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
-			weightsStream().forEach(div -> {
-				try {
-					tR.add(RealD.newONE(div.getCardinal()).scale(div.sqModulus()));
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
-				}
-			});
-			return tR;
-		}
-		case COMPLEXF -> {
-			tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
-			weightsStream().forEach(div -> {
-				try {
-					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.sqModulus()));
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
-				}
-			});
-			return tR;
-		}
-		case COMPLEXD -> {
-			tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
-			weightsStream().forEach(div -> {
-				try {
-					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.sqModulus()));
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
-				}
-			});
-			return tR;
-		}
-		default -> {
-			return (D) new UnitAbstract(this.getScalar().getCardinal());
-		}
+			case REALF -> {
+				tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
+				weightsStream().forEach(div -> {
+					try {
+						tR.add(RealF.newONE(div.getCardinal()).scale(div.sqModulus()));
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					}
+				});
+				return tR;
+			}
+			case REALD -> {
+				tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
+				weightsStream().forEach(div -> {
+					try {
+						tR.add(RealD.newONE(div.getCardinal()).scale(div.sqModulus()));
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					}
+				});
+				return tR;
+			}
+			case COMPLEXF -> {
+				tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+				weightsStream().forEach(div -> {
+					try {
+						tR.add(ComplexF.newONE(div.getCardinal()).scale(div.sqModulus()));
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					}
+				});
+				return tR;
+			}
+			case COMPLEXD -> {
+				tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+				weightsStream().forEach(div -> {
+					try {
+						tR.add(ComplexD.newONE(div.getCardinal()).scale(div.sqModulus()));
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
+					}
+				});
+				return tR;
+			}
+			default -> {
+				return (D) new UnitAbstract(this.getScalar().getCardinal());
+			}
 		}
 	}
 
@@ -536,7 +536,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		switch (mode) {
 		case REALF -> {
 			tR = CladosFBuilder.REALF.createZERO(this.getScalar().getCardinal());
-			weightsParallelStream().forEach(div -> {
+			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(RealF.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
@@ -547,7 +547,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		}
 		case REALD -> {
 			tR = CladosFBuilder.REALD.createZERO(this.getScalar().getCardinal());
-			weightsParallelStream().forEach(div -> {
+			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(RealD.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
@@ -558,7 +558,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		}
 		case COMPLEXF -> {
 			tR = CladosFBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
-			weightsParallelStream().forEach(div -> {
+			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
@@ -569,7 +569,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		}
 		case COMPLEXD -> {
 			tR = CladosFBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
-			weightsParallelStream().forEach(div -> {
+			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
 					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
@@ -607,9 +607,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 *                        zero magnitude. The exception is thrown by the
 	 *                        invert() method and passed along here.
 	 */
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings("unchecked")
 	public void normalize() throws FieldException {
-		scale((D) modulusSum().invert());
+		this.scale((D) modulusSum().invert());
 	}
 
 	/**
@@ -805,7 +805,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * This coefficient settor accepts an array of UnitAbstract numbers, assumes
+	 * This coefficient settor accepts an array of UnitAbstract children, assumes
 	 * they are in basis index order, and then inserts them into the internal map by
 	 * blade at that index offset in the amount necessary to cover ONLY the grade
 	 * suggested by the byte parameter.
@@ -825,12 +825,12 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return this;	//Do absolutely nothing... silently... if no weights are offered.
 
 		long grdRnge = gBasis.bladeOfGradeStream(pGrade).count();
-		if (grdRnge != (long)(pIn.length -1))
+		if (grdRnge != (long) pIn.length)
 			throw new IllegalArgumentException("Offered array must cover the blades in the suggested grade.");
 		
 		int init = gBasis.getGradeStart(pGrade);
 		gBasis.bladeOfGradeStream(pGrade).forEach(blade -> {
-			map.put(blade, (D) pIn[gBasis.find(blade) - init]);
+			map.put(blade, (D) pIn[gBasis.find(blade) - init - 1]);
 		});
 		return this;
 	}
