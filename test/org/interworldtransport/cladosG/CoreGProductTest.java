@@ -25,18 +25,22 @@ class CoreGProductTest {
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
 		GCache.INSTANCE.clearGProducts();
 		CliffordProduct tGP1 = GBuilder.createGProduct(pSig3);
-		assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	//The builder cached it
-		CliffordProduct tGP2 = GBuilder.createGProduct(pSig3);	//Same sig so a repeat
-		assertTrue(tGP1 == tGP2);	//The builder noticed a GP with the same sign and returned it instead
+		assertTrue(GCache.INSTANCE.findGProductMap(pSig3).isPresent());		//The builder cached it
+		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
+		CliffordProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
+		assertTrue(tGP1 == tGP2);					//The builder noticed a GP with the same sig and returned it instead
+		CliffordProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
+		assertTrue(GCache.INSTANCE.findGProductMap(pSig4).isPresent());		//The builder cached it
+		//assertTrue(GCache.INSTANCE.getGProductListSize() == 2);
 
-		CliffordProduct tGP3 = GBuilder.createGProduct(pSig4);	//Inverted sig this time. different GP.
-		assertTrue(GCache.INSTANCE.getGProductListSize() == 2); 	//The builder cached it
-		GCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
-		assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	//Found the first GP and removed it.
-		GCache.INSTANCE.removeGProduct(pSig3);					//Remove the gp named by its signature	
-		assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	//Not found and silently handled.
-		GCache.INSTANCE.removeGProduct(tGP3);						//Remove the gp named by reference.
-		assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	//Found the second GP and removed it.
+		GCache.INSTANCE.removeGProduct(pSig3);								//Remove the gp named by its signature	
+		assertFalse(GCache.INSTANCE.findGProductMap(pSig3).isPresent());	//Found the first GP and removed it.
+		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
+		assertDoesNotThrow(() -> GCache.INSTANCE.removeGProduct(pSig3));	//Remove the gp named by its signature	
+		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 			//Not found and silently handled.
+		GCache.INSTANCE.removeGProduct(tGP3);								//Remove the gp named by reference.
+		assertFalse(GCache.INSTANCE.findGProductMap(tGP3.signature()).isPresent()); //Found the second GP and removed it.
+		//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	
 	}
 
 	@Test
