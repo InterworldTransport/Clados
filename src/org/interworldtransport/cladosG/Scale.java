@@ -454,10 +454,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		D tR;
 		switch (mode) {
 			case REALF -> {
-				tR = FBuilder.REALF.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.REALF.createZERO(this.getCardinal());
 				weightsStream().forEach(div -> {
 					try {
-						tR.add(RealF.newONE(div.getCardinal()).scale(div.sqModulus()));
+						tR.add(RealF.newONE(this.getCardinal()).scale(div.sqModulus()));
 					} catch (FieldBinaryException e) {
 						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
 					}
@@ -465,10 +465,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			case REALD -> {
-				tR = FBuilder.REALD.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.REALD.createZERO(this.getCardinal());
 				weightsStream().forEach(div -> {
 					try {
-						tR.add(RealD.newONE(div.getCardinal()).scale(div.sqModulus()));
+						tR.add(RealD.newONE(this.getCardinal()).scale(div.sqModulus()));
 					} catch (FieldBinaryException e) {
 						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
 					}
@@ -476,10 +476,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			case COMPLEXF -> {
-				tR = FBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.COMPLEXF.createZERO(this.getCardinal());
 				weightsStream().forEach(div -> {
 					try {
-						tR.add(ComplexF.newONE(div.getCardinal()).scale(div.sqModulus()));
+						tR.add(ComplexF.newONE(this.getCardinal()).scale(div.sqModulus()));
 					} catch (FieldBinaryException e) {
 						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
 					}
@@ -487,10 +487,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			case COMPLEXD -> {
-				tR = FBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+				tR = FBuilder.COMPLEXD.createZERO(this.getCardinal());
 				weightsStream().forEach(div -> {
 					try {
-						tR.add(ComplexD.newONE(div.getCardinal()).scale(div.sqModulus()));
+						tR.add(ComplexD.newONE(this.getCardinal()).scale(div.sqModulus()));
 					} catch (FieldBinaryException e) {
 						throw new IllegalArgumentException("Cardinal mismatch when forming modulus sum.");
 					}
@@ -498,7 +498,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			default -> {
-				return (D) new UnitAbstract(this.getScalar().getCardinal());
+				return (D) new UnitAbstract(this.getCardinal());
 			}
 		}
 	}
@@ -535,10 +535,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		D tR;
 		switch (mode) {
 		case REALF -> {
-			tR = FBuilder.REALF.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.REALF.createZERO(this.getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
-					tR.add(RealF.newONE(div.getCardinal()).scale(div.modulus()));
+					tR.add(RealF.newONE(this.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
@@ -546,10 +546,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case REALD -> {
-			tR = FBuilder.REALD.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.REALD.createZERO(this.getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
-					tR.add(RealD.newONE(div.getCardinal()).scale(div.modulus()));
+					tR.add(RealD.newONE(this.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
@@ -557,10 +557,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case COMPLEXF -> {
-			tR = FBuilder.COMPLEXF.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.COMPLEXF.createZERO(this.getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
-					tR.add(ComplexF.newONE(div.getCardinal()).scale(div.modulus()));
+					tR.add(ComplexF.newONE(this.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
@@ -568,10 +568,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		case COMPLEXD -> {
-			tR = FBuilder.COMPLEXD.createZERO(this.getScalar().getCardinal());
+			tR = FBuilder.COMPLEXD.createZERO(this.getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
-					tR.add(ComplexD.newONE(div.getCardinal()).scale(div.modulus()));
+					tR.add(ComplexD.newONE(this.getCardinal()).scale(div.modulus()));
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
@@ -579,7 +579,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		default -> {
-			return (D) new UnitAbstract(this.getScalar().getCardinal());
+			return (D) new UnitAbstract(this.getCardinal());
 		}
 		}
 	}
