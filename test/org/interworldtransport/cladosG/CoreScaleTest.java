@@ -161,6 +161,29 @@ public class CoreScaleTest {
     }
 
     @Test
+    public void testModulusSum() {
+        RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
+        RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
+        ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
+        ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+
+        workScaleRF.setWeightsArray(tRF);
+        workScaleRD.setWeightsArray(tRD);
+        workScaleCF.setWeightsArray(tCF);
+        workScaleCD.setWeightsArray(tCD);
+
+        RealF testItRF = workScaleRF.modulusSum();
+        RealD testItRD = workScaleRD.modulusSum();
+        ComplexF testItCF = workScaleCF.modulusSum();
+        ComplexD testItCD = workScaleCD.modulusSum();
+
+        assertTrue(testItRF.getReal() == 8.0F);
+        assertTrue(testItRD.getReal() == 8.0D);
+        assertTrue(testItCF.getReal() == 8.0F);
+        assertTrue(testItCD.getReal() == 8.0D);
+    }
+
+    @Test
     public void testConjugate() {
         workScaleRF.getScalar().setReal(1.0f);
         workScaleRD.getScalar().setReal(1.0d);
