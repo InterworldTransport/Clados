@@ -29,16 +29,20 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.interworldtransport.cladosG.CladosConstant.*;
-import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.FListBuilder;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.UnitAbstract;
-import org.interworldtransport.cladosF.Field;
-import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
+
+import org.interworldtransport.cladosF.FBuilder;		//Number builder
+import org.interworldtransport.cladosF.FListBuilder;	//List of numbers builder
+import org.interworldtransport.cladosF.CladosField;		//Numeric modes enumerated
+import org.interworldtransport.cladosF.ComplexD;		//Complex doubles
+import org.interworldtransport.cladosF.ComplexF;		//Complex floats
+import org.interworldtransport.cladosF.RealD;			//Real doubles
+import org.interworldtransport.cladosF.RealF;			//Real floats
+import org.interworldtransport.cladosF.UnitAbstract;	//Unitized Number parent
+import org.interworldtransport.cladosF.Field;			//Contract specifying division field
+import org.interworldtransport.cladosF.Normalizable;	//Contract for modulus construction
+														//Numbers obeying both contracts
+														//are used as monad weights.
+
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -216,13 +220,13 @@ public class Monad implements Modal {
 
 		Monad check1 = GBuilder.copyOfMonad(pM);
 		check1.multiplyLeft(check1);
-		Optional<Blade> first = check1.bladeStream().filter(blade -> check1.getWeights().isNotZeroAt(blade)).sequential()
-				.findFirst();
-		if (first.isPresent()) {
+		Optional<Blade> first = check1.bladeStream().filter(blade -> 
+									check1.getWeights().isNotZeroAt(blade)).sequential().findFirst();
+		if (first.isPresent())
 			return isIdempotent(GBuilder.copyOfMonad(pM)
-					.scale((T) FBuilder.copyOf(check1.getWeights().get(first.get())).invert()));
-		} else
-			return false;
+									.scale((T) FBuilder.copyOf(check1.getWeights().get(first.get()))
+										.invert()));
+		return false;
 	}
 
 	/**
