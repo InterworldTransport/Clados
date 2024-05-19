@@ -2,6 +2,7 @@ package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -32,13 +33,32 @@ class CoreBasisTest {
 		tBasis43 = new Basis((byte) 4);
 		tBasis8 = new Basis((byte) 8);
 	}
+
+	@Test
+	public void testCachePrefill() throws GeneratorRangeException {
+		GCache.INSTANCE.clearBases();
+		for (byte k = 0; k < 11; k++)
+			GBuilder.createBasis(k);
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 11);
+		for (byte k = 0; k < 11; k++)
+			GCache.INSTANCE.removeBasis(k);
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 0);
+	}
 	
 	@Test
 	public void testCachedBasis() throws GeneratorRangeException {
-		CanonicalBasis tB1 = CladosGBuilder.createBasis((byte) 3);
-		assertTrue(CladosGCache.INSTANCE.getBasisListSize()>0);
-		CanonicalBasis tB2 = CladosGBuilder.createBasis((byte) 3);
-		assertTrue(tB1 == tB2);
+		GCache.INSTANCE.clearBases();
+		CanonicalBasis tB1 = GBuilder.createBasis((byte) 3);	//Builder cached it
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 	
+		CanonicalBasis tB2 = GBuilder.createBasis((byte) 3); 	//Building another like it
+		assertTrue(tB1 == tB2);		//Builder noticed identical size and returned first one instead.
+		GBuilder.createBasis(Generator.EA);					//Builder cached it
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 2);	//Two now
+		GCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
+		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 
+		Optional<CanonicalBasis> get10 = GCache.INSTANCE.findBasisList((byte) 10);
+		assertTrue(get10.isPresent()); //Earlier removal got rid of the correct one.
+		assertTrue(GCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
 	}
 
 	@Test
@@ -123,6 +143,72 @@ class CoreBasisTest {
 	}
 
 	@Test
+	public void testEveryConstruction() throws GeneratorRangeException {
+
+		Basis tryThisNow = Basis.using(Generator.E1);
+		assertTrue(tryThisNow.getGradeCount() == 2);
+		assertTrue(tryThisNow.getBladeCount() == 2);
+
+		tryThisNow = Basis.using(Generator.E2);
+		assertTrue(tryThisNow.getGradeCount() == 3);
+		assertTrue(tryThisNow.getBladeCount() == 4);
+
+		tryThisNow = Basis.using(Generator.E3);
+		assertTrue(tryThisNow.getGradeCount() == 4);
+		assertTrue(tryThisNow.getBladeCount() == 8);
+
+		tryThisNow = Basis.using(Generator.E4);
+		assertTrue(tryThisNow.getGradeCount() == 5);
+		assertTrue(tryThisNow.getBladeCount() == 16);
+
+		tryThisNow = Basis.using(Generator.E5);
+		assertTrue(tryThisNow.getGradeCount() == 6);
+		assertTrue(tryThisNow.getBladeCount() == 32);
+
+		tryThisNow = Basis.using(Generator.E6);
+		assertTrue(tryThisNow.getGradeCount() == 7);
+		assertTrue(tryThisNow.getBladeCount() == 64);
+
+		tryThisNow = Basis.using(Generator.E7);
+		assertTrue(tryThisNow.getGradeCount() == 8);
+		assertTrue(tryThisNow.getBladeCount() == 128);
+
+		tryThisNow = Basis.using(Generator.E8);
+		assertTrue(tryThisNow.getGradeCount() == 9);
+		assertTrue(tryThisNow.getBladeCount() == 256);
+
+		tryThisNow = Basis.using(Generator.E9);
+		assertTrue(tryThisNow.getGradeCount() == 10);
+		assertTrue(tryThisNow.getBladeCount() == 512);
+
+		tryThisNow = Basis.using(Generator.EA);
+		assertTrue(tryThisNow.getGradeCount() == 11);
+		assertTrue(tryThisNow.getBladeCount() == 1024);
+
+		tryThisNow = Basis.using(Generator.EB);
+		assertTrue(tryThisNow.getGradeCount() == 12);
+		assertTrue(tryThisNow.getBladeCount() == 2048);
+
+		tryThisNow = Basis.using(Generator.EC);
+		assertTrue(tryThisNow.getGradeCount() == 13);
+		assertTrue(tryThisNow.getBladeCount() == 4096);
+
+		tryThisNow = Basis.using(Generator.ED);
+		assertTrue(tryThisNow.getGradeCount() == 14);
+		assertTrue(tryThisNow.getBladeCount() == 8192);
+
+		tryThisNow = Basis.using(Generator.EE);
+		assertTrue(tryThisNow.getGradeCount() == 15);
+		assertTrue(tryThisNow.getBladeCount() == 16384);
+
+		tryThisNow = Basis.using(Generator.EF);
+		assertTrue(tryThisNow.getGradeCount() == 16);
+		assertTrue(tryThisNow.getBladeCount() == 32768);
+
+		assertThrows(GeneratorRangeException.class, () -> Basis.using(Generator.EG));
+	}
+
+	@Test
 	public void testLooseValidations() {
 		assertTrue(CanonicalBasis.validateSize(0));
 		assertFalse(CanonicalBasis.validateSize(-1));
@@ -140,13 +226,6 @@ class CoreBasisTest {
 		assertThrows(GeneratorRangeException.class, () -> Basis.using((byte) 17));
 		assertDoesNotThrow(() -> Basis.using(Generator.EF));
 		assertThrows(GeneratorRangeException.class, () -> Basis.using(Generator.EG));
-
-		try {
-			Basis tryThisNow = Basis.using(Generator.EG);
-			assertTrue(tryThisNow.getGradeCount() == 17);
-		} catch (GeneratorRangeException egen) {
-			;
-		}
 
 		Stream<Blade> testThis = tBasis4.bladeStream();
 		assertTrue(testThis.count() == 16);	// 16 blades in a 4-gen basis

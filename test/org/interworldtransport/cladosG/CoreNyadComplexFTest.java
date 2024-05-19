@@ -4,14 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosFBuilder;
+import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
-//import org.interworldtransport.cladosG.Algebra;
-//import org.interworldtransport.cladosG.CladosGBuilder;
-//import org.interworldtransport.cladosG.Foot;
-//import org.interworldtransport.cladosG.Monad;
-//import org.interworldtransport.cladosG.Nyad;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
@@ -27,14 +22,14 @@ public class CoreNyadComplexFTest {
 	Algebra alg1, alg2;
 	final String aName = "Motion Algebra";
 	final String aName2 = "Property Algebra";
-	final Cardinal charge = CladosFBuilder.createCardinal("q/dV");
+	final Cardinal charge = FBuilder.createCardinal("q/dV");
 	final String footName = "YouAreHere";
 	final String frameName = "inertial";
 	final String mNameQ = "ChargeDensity";
 	final String mNameU = "4-Velocity";
 	Monad motion, property;
 	final String sig4D = "-+++";
-	final Cardinal speed = CladosFBuilder.createCardinal("c=1");
+	final Cardinal speed = FBuilder.createCardinal("c=1");
 	Nyad thing1, thing2;
 
 	/**
@@ -44,20 +39,20 @@ public class CoreNyadComplexFTest {
 	 */
 	@BeforeEach
 	void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		Foot here = CladosGBuilder.createFootLike(footName, speed);
+		Foot here = GBuilder.createFootLike(footName, speed);
 		here.appendCardinal(charge);
 
-		motion = CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(speed), here, mNameU,
+		motion = GBuilder.createMonadWithFoot(FBuilder.COMPLEXF.createZERO(speed), here, mNameU,
 				aName, frameName, sig4D);
 
-		property = CladosGBuilder.createMonadWithFoot(CladosFBuilder.COMPLEXF.createZERO(charge), here, mNameQ,
+		property = GBuilder.createMonadWithFoot(FBuilder.COMPLEXF.createZERO(charge), here, mNameQ,
 				aName2, frameName, sig4D);
 
 	}
 	
 	@Test
 	void testAlgebraHunt() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		assertFalse(thing1.findAlgebra(property.getAlgebra()) >= 0);
 		assertTrue(Nyad.hasAlgebra(thing1, motion.getAlgebra()));
 		thing1.appendMonad(property);
@@ -68,7 +63,7 @@ public class CoreNyadComplexFTest {
 	
 	@Test
 	void testConstructOrders() throws CladosMonadException, CladosNyadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		assertTrue(thing1.getNyadOrder() == 1);
 		assertTrue(thing1.getNyadAlgebraOrder() == 1);
 		thing1.appendMonad(property);
@@ -79,7 +74,7 @@ public class CoreNyadComplexFTest {
 	
 	@Test
 	void testFindByName() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
 		assertTrue(thing1.findName(mNameU)>=0);
 		assertFalse(thing1.findName("unused name")>=0);
@@ -87,7 +82,7 @@ public class CoreNyadComplexFTest {
 
 	@Test
 	void testFindMonad() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
 		assertTrue(thing1.findMonad(motion)>=0);
 		assertTrue(thing1.findMonad(property)>=0);
@@ -97,28 +92,28 @@ public class CoreNyadComplexFTest {
 
 	@Test
 	void testInteriorEquality() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
-		thing2 = CladosGBuilder.INSTANCE.createNyadUsingMonad(property, "");
+		thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
 		thing2.appendMonad(motion);
 		assertTrue(Nyad.isMEqual(thing1, thing2));
 	}
 
 	@Test
 	void testScalarAt() throws CladosNyadException, CladosMonadException{
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
 		assertTrue(thing1.isScalarAt(motion.getAlgebra()));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		((ComplexF) property.getCoeff(0)).setReal(1.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		property.dualLeft();
+		property.multiplyByPSLeft();
 		assertTrue(thing1.isPScalarAt(property.getAlgebra()));
 	}
 	
 	@Test
 	void testScalingAt() throws CladosNyadException, CladosMonadException, FieldBinaryException{
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
 		((ComplexF) property.getCoeff(0)).setReal(16.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
@@ -130,16 +125,16 @@ public class CoreNyadComplexFTest {
 
 	@Test
 	void testStrongReferenceMatch() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
-		thing2 = CladosGBuilder.INSTANCE.createNyadUsingMonad(property, "");
+		thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
 		thing2.appendMonad(motion);
 		assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));
 	}
 
 	@Test
 	void testWeakness() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonadCopy(motion);
 		thing1.appendMonad(property);
 		thing1.appendMonadCopy(property);
@@ -150,9 +145,9 @@ public class CoreNyadComplexFTest {
 
 	@Test
 	void testWeakReferenceMatch() throws CladosNyadException, CladosMonadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
-		thing2 = CladosGBuilder.INSTANCE.createNyadUsingMonad(property, "");
+		thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
 		// thing2.appendMonad(motion);
 		assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));
 		assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
@@ -160,7 +155,7 @@ public class CoreNyadComplexFTest {
 	
 	@Test
 	void testXMLFullOutput() throws CladosMonadException, CladosNyadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
 		String printIt = thing1.toXMLFullString("");
 		assertTrue(printIt != null);
@@ -169,7 +164,7 @@ public class CoreNyadComplexFTest {
 	
 	@Test
 	void testXMLShortOutput() throws CladosMonadException, CladosNyadException {
-		thing1 = CladosGBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
+		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
 		String printIt = thing1.toXMLFullString("");
 		assertTrue(printIt != null);

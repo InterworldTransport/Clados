@@ -1,7 +1,7 @@
 /*
  * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosFCache<br>
+ * ---org.interworldtransport.cladosF.FCache<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosFCache<br>
+ * ---org.interworldtransport.cladosF.FCache<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
@@ -51,7 +51,7 @@ import java.util.Set;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public enum CladosFCache {
+public enum FCache {
 	/**
 	 * There is an implicit private constructor for this singleton, but we won't
 	 * override it.

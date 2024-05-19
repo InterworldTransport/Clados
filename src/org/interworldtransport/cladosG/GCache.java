@@ -1,7 +1,7 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2024 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosGCache<br>
+ * ---org.interworldtransport.cladosG.GCache<br>
  * -------------------------------------------------------------------- <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.CladosGCache<br>
+ * ---org.interworldtransport.cladosG.GCache<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosG;
@@ -36,7 +36,7 @@ import java.util.Optional;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public enum CladosGCache {
+public enum GCache {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
@@ -100,6 +100,24 @@ public enum CladosGCache {
 	public void appendGProduct(CliffordProduct pGP) {
 		if (!listOfGProducts.contains(pGP))
 			listOfGProducts.add(pGP);
+	}
+
+	/**
+	 * This is for resetting the cache of basis objects. It should rarely be used
+	 * since they don't take up a lot of space, but it is faster than removing one
+	 * at a time.
+	 */
+	public void clearBases() {
+		listOfBases = new ArrayList<>(1);
+	}
+
+	/**
+	 * This is for resetting the cache of gproduct objects. It should be used sparingly
+	 * since gproducts can be time consuming to recreate for large algebras. It 
+	 * shouldn't HAVE to be done, but it is faster than removing one at a time.
+	 */
+	public void clearGProducts() {
+		new ArrayList<>(1);
 	}
 
 	/**

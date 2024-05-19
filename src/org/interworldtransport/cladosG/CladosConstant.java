@@ -80,11 +80,11 @@ public final class CladosConstant {
 	/**
 	 * This is just an alias for 0.5f
 	 */
-	public final static Float BY2_F = Float.valueOf(1/2);
+	public final static Float BY2_F = Float.valueOf(0.5f);
 	/**
 	 * This is just an alias for 0.5d
 	 */
-	public final static Double BY2_D = Double.valueOf(1/2);
+	public final static Double BY2_D = Double.valueOf(0.5d);
 
 	private CladosConstant() {
 		;

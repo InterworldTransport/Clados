@@ -275,11 +275,11 @@ class CoreRealFTest {
 	
 		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.copySumSQModulus(tReals));
 	
-		RealF[] whatsThis = (RealF[]) CladosFListBuilder.REALF.create(16);		//Default Cardinal
+		RealF[] whatsThis = (RealF[]) FListBuilder.REALF.create(16);		//Default Cardinal
 		Assertions.assertDoesNotThrow(() -> RealF.copySumSQModulus(whatsThis));
 		assertTrue(RealF.isZero(RealF.copySumSQModulus(whatsThis)));
 
-		RealF[] whatsThis2 = (RealF[]) CladosFListBuilder.REALF.createONE(16);	//Default Cardinal
+		RealF[] whatsThis2 = (RealF[]) FListBuilder.REALF.createONE(16);	//Default Cardinal
 		RealF testThis = RealF.copySumSQModulus(whatsThis2);
 		assertFalse(RealF.isZero(testThis));
 		assertTrue(testThis.getReal() == 16.0F);
@@ -298,11 +298,11 @@ class CoreRealFTest {
 
 		Assertions.assertThrows(FieldBinaryException.class, () ->RealF.copySumModulus(tReals));
 
-		RealF[] whatsThis = (RealF[]) CladosFListBuilder.REALF.create(16);		//Default Cardinal
+		RealF[] whatsThis = (RealF[]) FListBuilder.REALF.create(16);		//Default Cardinal
 		Assertions.assertDoesNotThrow(() -> RealF.copySumModulus(whatsThis));
 		assertTrue(RealF.isZero(RealF.copySumModulus(whatsThis)));
 
-		RealF[] whatsThis2 = (RealF[]) CladosFListBuilder.REALF.createONE(16);	//Default Cardinal
+		RealF[] whatsThis2 = (RealF[]) FListBuilder.REALF.createONE(16);	//Default Cardinal
 		RealF testThis = RealF.copySumModulus(whatsThis2);
 		assertFalse(RealF.isZero(testThis));
 		assertTrue(testThis.getReal() == 4.0F);
