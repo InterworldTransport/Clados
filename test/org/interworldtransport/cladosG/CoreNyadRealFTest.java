@@ -134,7 +134,7 @@ public class CoreNyadRealFTest {
 			assertTrue(thing1.isScalarAt(property.getAlgebra()));
 			((RealF) property.getCoeff(0)).setReal(1.0f);
 			assertTrue(thing1.isScalarAt(property.getAlgebra()));
-			property.dualLeft();
+			property.multiplyByPSLeft();
 			// System.out.println(NyadRealF.toXMLString(thing1, ""));
 			assertTrue(thing1.isPScalarAt(property.getAlgebra()));
 		}

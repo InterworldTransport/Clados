@@ -761,7 +761,7 @@ public class Monad implements Modal {
 	 * <p>
 	 * @return Monad after operation.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad dualLeft() {	
+	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyByPSLeft() {	
 		this.multiplyLeft(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
@@ -775,7 +775,7 @@ public class Monad implements Modal {
 	 * <p>
 	 * @return Monad after operation.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad dualRight() {
+	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyByPSRight() {
 		this.multiplyRight(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;

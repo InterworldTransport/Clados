@@ -107,7 +107,7 @@ public class CoreNyadComplexFTest {
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
 		((ComplexF) property.getCoeff(0)).setReal(1.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		property.dualLeft();
+		property.multiplyByPSLeft();
 		assertTrue(thing1.isPScalarAt(property.getAlgebra()));
 	}
 	

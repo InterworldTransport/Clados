@@ -371,20 +371,20 @@ public class CoreMonadComplexFTest {
     @Test
 	public void testPSMultiplication() {
         tM8 = new Monad(tM6);
-        assertDoesNotThrow(() -> tM8.dualLeft());                           //Not sparse multiply
+        assertDoesNotThrow(() -> tM8.multiplyByPSLeft());                           //Not sparse multiply
         assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == -1.0f);
         assertTrue(((ComplexF) tM8.scales.getPScalar()).getReal() == 1.0f);
 
-        tM8.dualLeft();
+        tM8.multiplyByPSLeft();
         assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == -1.0f);
         assertTrue(((ComplexF) tM8.scales.getPScalar()).getReal() == -1.0f);
 
         tM8 = new Monad(tM6);
-        assertDoesNotThrow(() -> tM8.dualRight());                           //Not sparse multiply
+        assertDoesNotThrow(() -> tM8.multiplyByPSRight());                           //Not sparse multiply
         assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == -1.0f);
         assertTrue(((ComplexF) tM8.scales.getPScalar()).getReal() == 1.0f);
 
-        tM8.dualRight();
+        tM8.multiplyByPSRight();
         assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == -1.0f);
         assertTrue(((ComplexF) tM8.scales.getPScalar()).getReal() == -1.0f);
     }

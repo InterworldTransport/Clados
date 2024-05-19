@@ -610,7 +610,7 @@ public class Nyad implements Modal {
 	 */
 	public Nyad dualLeft() {
 		for (Monad tSpot : monadList)
-			tSpot.dualLeft();
+			tSpot.multiplyByPSLeft();
 		return this;
 	}
 
@@ -621,7 +621,7 @@ public class Nyad implements Modal {
 	 */
 	public Nyad dualRight() {
 		for (Monad tSpot : monadList)
-			tSpot.dualRight();
+			tSpot.multiplyByPSRight();
 		return this;
 	}
 
