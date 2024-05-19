@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.interworldtransport.cladosG.CladosConstant.*;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.CladosField;
@@ -118,16 +119,18 @@ public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
 	 * <p>
+	 * The grade key is checked using a bit of trickery with integer math.
+	 * Divide the key by 10^grade and toss the remainder. If the result is odd
+	 * the grade is present. If even, it isn't. The depends on the technique used
+	 * to build the key in the first place.
 	 * @param pM     Monad
 	 * @param pGrade int
 	 * @return boolean
 	 */
 	public static boolean hasGrade(Monad pM, int pGrade) {
-		if (pM.getGradeKey() == 1 & pGrade == 0)
-			return true;
-
-		long tSpot = (pM.getGradeKey()) / ((long) Math.pow(10, pGrade));
-		if (tSpot % 2 == 1)
+		if (pM.getGradeKey() == 1 & pGrade == 0) 	//Monads have scalar parts
+			return true;							//if they have no other parts
+		if (((long) (pM.getGradeKey()) / ((long) Math.pow(10, pGrade))) % 2 == 1)
 			return true;
 
 		return false;
@@ -136,6 +139,9 @@ public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is the grade of the Monad. False
 	 * is returned otherwise.
+	 * <p>
+	 * The grade key is checked. A simple power of 10 is a single grade. No special 
+	 * carve-out is needed for the scalar because 10^0 == 1.
 	 * <p>
 	 * @param pM     Monad
 	 * @param pGrade int
@@ -155,7 +161,7 @@ public class Monad implements Modal {
 	 * @return boolean
 	 */
 	public static boolean isGZero(Monad pM) {
-		return (pM.getGradeKey() == 1 & pM.getScales().isScalarZero());
+		return (pM.getGradeKey() == 1 & pM.getWeights().isScalarZero());
 	}
 
 	/**
@@ -210,11 +216,11 @@ public class Monad implements Modal {
 
 		Monad check1 = GBuilder.copyOfMonad(pM);
 		check1.multiplyLeft(check1);
-		Optional<Blade> first = check1.bladeStream().filter(blade -> check1.getScales().isNotZeroAt(blade)).sequential()
+		Optional<Blade> first = check1.bladeStream().filter(blade -> check1.getWeights().isNotZeroAt(blade)).sequential()
 				.findFirst();
 		if (first.isPresent()) {
 			return isIdempotent(GBuilder.copyOfMonad(pM)
-					.scale((T) FBuilder.copyOf(check1.getScales().get(first.get())).invert()));
+					.scale((T) FBuilder.copyOf(check1.getWeights().get(first.get())).invert()));
 		} else
 			return false;
 	}
@@ -249,14 +255,13 @@ public class Monad implements Modal {
 	 * @return boolean
 	 */
 	public static boolean isMultiGrade(Monad pM) {
-		if (pM.getGradeKey() != 0) {
-			double temp = Math.log10(pM.getGradeKey());
-			if (Math.floor(temp) == temp)
-				return false;
+		if (pM.getGradeKey() == 0)	//Special case should never happen, 
+			return false;			//but if it does it is fatal.
+		float temp = (float) Math.log10(pM.getGradeKey());
+		if (Math.floor(temp) == temp)	//This avoids precision trap?
+			return false;
 
-			return true;
-		}
-		return false; // Special case of a zero Monad which is not multigrade.
+		return true;
 	}
 
 	/**
@@ -278,11 +283,9 @@ public class Monad implements Modal {
 		else if (!pM.getFrameName().equals(pN.getFrameName()))
 			return false;
 
-		// There is a possibility that the coefficients are of different field
-		// types but that is unlikely if the algebras match. The problem is that
-		// someone can write new coefficients and break the consistency with the
-		// Algebra's protonumber.
-		else if (!pM.getScales().getCardinal().equals(pN.getScales().getCardinal()))
+		// There is a possibility that the weights share different cardinals.
+		// If so, we'd be comparing apples to oranges.
+		else if (!pM.getWeights().getCardinal().equals(pN.getWeights().getCardinal()))
 			return false;
 
 		return true;
@@ -297,14 +300,13 @@ public class Monad implements Modal {
 	 * @return boolean
 	 */
 	public static boolean isUniGrade(Monad pM) {
-		if (pM.getGradeKey() != 0) {
-			double temp = Math.log10(pM.getGradeKey());
-			if (Math.floor(temp) == temp)
-				return true;
+		if (pM.getGradeKey() == 0)	//Special case should never happen, 
+			return false;			//but if it does it is fatal.
+		float temp = (float) Math.log10(pM.getGradeKey());
+		if (Math.floor(temp) == temp)	//This avoids precision trap?
+			return true;
 
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -317,14 +319,23 @@ public class Monad implements Modal {
 	public static String toXMLFullString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
-		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
-		rB.append(">\n");
-		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
+		StringBuilder rB = (new StringBuilder(indent + "<Monad "))
+			.append("gradeKey=\"")
+			.append(pM.getGradeKey())
+			.append("\" ")
+			.append("sparseFlag=\"")
+			.append(pM.getSparseFlag())
+			.append("\" ")
+			.append(">\n");
+		rB.append(indent + "\t<Name>")
+			.append(pM.getName())
+			.append("</Name>\n");
 		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
-		rB.append(indent + "\t<ReferenceFrame>\"").append(pM.getFrameName()).append("\"</ReferenceFrame>\n");
-		rB.append(indent).append(pM.scales.toXMLString("\t"));
+		rB.append(indent + "\t<ReferenceFrame>\"")
+			.append(pM.getFrameName())
+			.append("\"</ReferenceFrame>\n");
+		rB.append(indent)
+			.append(pM.scales.toXMLString("\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -340,13 +351,24 @@ public class Monad implements Modal {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("algebra=\"").append(pM.getAlgebra().getAlgebraName()).append("\" ");
-		rB.append("frame=\"").append(pM.getFrameName()).append("\" ");
-		rB.append("gradeKey=\"").append(pM.getGradeKey()).append("\" ");
-		rB.append("sparseFlag=\"").append(pM.getSparseFlag()).append("\" ");
-		rB.append(">\n");
-		rB.append(indent + "\t<Name>").append(pM.getName()).append("</Name>\n");
-		rB.append(indent).append(pM.scales.toXMLString("\t"));
+		rB.append("algebra=\"")
+			.append(pM.getAlgebra().getAlgebraName())
+			.append("\" ");
+		rB.append("frame=\"")
+			.append(pM.getFrameName())
+			.append("\" ")
+			.append("gradeKey=\"")	
+			.append(pM.getGradeKey())
+			.append("\" ")
+			.append("sparseFlag=\"")
+			.append(pM.getSparseFlag())
+			.append("\" ")
+			.append(">\n");
+		rB.append(indent + "\t<Name>")
+			.append(pM.getName())
+			.append("</Name>\n");
+		rB.append(indent)
+			.append(pM.scales.toXMLString("\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -356,6 +378,9 @@ public class Monad implements Modal {
 	 */
 	protected Algebra algebra;
 
+	/*
+	 * Grades found among the parts of this monad.
+	 */
 	private byte foundGrades;
 
 	/**
@@ -408,7 +433,7 @@ public class Monad implements Modal {
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
 		mode = pM.mode;
-		scales = new Scale<T>((Scale<T>) pM.getScales());
+		scales = new Scale<T>((Scale<T>) pM.getWeights());
 		setGradeKey();
 	}
 
@@ -473,7 +498,7 @@ public class Monad implements Modal {
 	 *                                 coefficient array of the wrong size.
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
 	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, Foot pFoot, String pSig, T pF)
@@ -482,35 +507,30 @@ public class Monad implements Modal {
 		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
 		setFrameName(pFrameName);
 
-		if (pF instanceof RealF)
-			mode = CladosField.REALF;
-		else if (pF instanceof RealD)
-			mode = CladosField.REALD;
-		else if (pF instanceof ComplexF)
-			mode = CladosField.COMPLEXF;
-		else if (pF instanceof ComplexD)
-			mode = CladosField.COMPLEXD;
-		else
-			throw new IllegalArgumentException("Offered Number must be a child of CladosF/UnitAbstract");
-
-		switch (mode) {
-		case COMPLEXD -> {
-			scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
+		switch (pF.getClass().getCanonicalName()){
+			case "org.interworldtransport.cladosF.RealF" -> {
+				mode = CladosField.REALF;
+				scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				break;
+			}
+			case "org.interworldtransport.cladosF.RealD" -> {
+				mode = CladosField.REALD;
+				scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				break;
+			}
+			case "org.interworldtransport.cladosF.ComplexF" -> {
+				mode = CladosField.COMPLEXF;
+				scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				break;
+			}
+			case "org.interworldtransport.cladosF.ComplexD" -> {
+				mode = CladosField.COMPLEXD;
+				scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				break;
+			}
+			default -> throw new IllegalArgumentException("Offered Number must be a child of CladosF/UnitAbstract");
 		}
-		case COMPLEXF -> {
-			scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		case REALD -> {
-			scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		case REALF -> {
-			scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
-			setGradeKey();
-		}
-		}
+		setGradeKey();
 	}
 
 	/**
@@ -544,43 +564,91 @@ public class Monad implements Modal {
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
 		// Default ZERO Monad is constructed already. Now handle the special cases.
-		if (CladosConstant.MONAD_SPECIAL_CASES.contains(pSpecial)) {
+		if (MONAD_SPECIAL_CASES.contains(pSpecial)) {
 			switch (mode) {
-			case COMPLEXD -> {
-				switch (pSpecial) {
-				case "Unit Scalar" -> ((ComplexD) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -Scalar" -> ((ComplexD) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				case "Unit PScalar" -> ((ComplexD) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -PScalar" -> ((ComplexD) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
+				case COMPLEXD -> {
+					switch (pSpecial) {
+						case "Unit Scalar" -> {
+							((ComplexD) scales.getScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -Scalar" -> {
+							((ComplexD) scales.getScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+						case "Unit PScalar" -> {
+							((ComplexD) scales.getPScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -PScalar" -> {
+							((ComplexD) scales.getPScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+					}
+					break;
+				}
+				case COMPLEXF -> {
+					switch (pSpecial) {
+						case "Unit Scalar" -> {
+							((ComplexF) scales.getScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -Scalar" -> {
+							((ComplexF) scales.getScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+						case "Unit PScalar" -> {
+							((ComplexF) scales.getPScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -PScalar" -> {
+							((ComplexF) scales.getPScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+					}
+				}
+				case REALD -> {
+					switch (pSpecial) {
+						case "Unit Scalar" -> {
+							((RealD) scales.getScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -Scalar" -> {
+							((RealD) scales.getScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+						case "Unit PScalar" -> {
+							((RealD) scales.getPScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -PScalar" -> {
+							((RealD) scales.getPScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+					}
+				}
+				case REALF -> {
+					switch (pSpecial) {
+						case "Unit Scalar" -> {
+							((RealF) scales.getScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -Scalar" -> {
+							((RealF) scales.getScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+						case "Unit PScalar" -> {
+							((RealF) scales.getPScalar()).setReal(PLUS_ONE_F);
+							break;
+						}
+						case "Unit -PScalar" -> {
+							((RealF) scales.getPScalar()).setReal(MINUS_ONE_F);
+							break;
+						}
+					}
 				}
 			}
-			case COMPLEXF -> {
-				switch (pSpecial) {
-				case "Unit Scalar" -> ((ComplexF) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -Scalar" -> ((ComplexF) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				case "Unit PScalar" -> ((ComplexF) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -PScalar" -> ((ComplexF) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				}
-			}
-			case REALD -> {
-				switch (pSpecial) {
-				case "Unit Scalar" -> ((RealD) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -Scalar" -> ((RealD) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				case "Unit PScalar" -> ((RealD) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -PScalar" -> ((RealD) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				}
-			}
-			case REALF -> {
-				switch (pSpecial) {
-				case "Unit Scalar" -> ((RealF) scales.getScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -Scalar" -> ((RealF) scales.getScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				case "Unit PScalar" -> ((RealF) scales.getPScalar()).setReal(CladosConstant.PLUS_ONE_F);
-				case "Unit -PScalar" -> ((RealF) scales.getPScalar()).setReal(CladosConstant.MINUS_ONE_F);
-				}
-			}
-			}
-		} // failure to find matching special case defaults to ZERO monad by doing
-			// nothing.
+		} // failure to find matching special case defaults to ZERO monad by doing nothing.
 		setGradeKey();
 	}
 
@@ -684,75 +752,27 @@ public class Monad implements Modal {
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
 	 * <p>
-	 * Since the map internal to Scale can accept any of the CladosF numbers as
-	 * values, there is a cast to a 'generic' type within this method. This would
-	 * normally cause warnings by the compiler since the generic named in the
-	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
-	 * at runtime.
+	 * In metrics where one or more of the generators squares to zero, this isn't really
+	 * a dual operation.
 	 * <p>
-	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
-	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
-	 * fails to update all builders.
-	 * <p>
-	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return Monad after operation.
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> Monad dualLeft() {
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
-
-		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
-		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
-		bladeStream().filter(blade -> getScales().isNotZeroAt(blade)).parallel().forEach(blade -> {
-			int col = tBasis.find(blade) - 1; // col points at a non-zero blade
-			Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
-			newScales.put(bMult,
-					(T) FBuilder.copyOf(getScales().get(blade)).scale(Float.valueOf(tProd.getSign(row, col))));
-		});
-		scales = newScales;
-
+	public <T extends UnitAbstract & Field & Normalizable> Monad dualLeft() {	
+		this.multiplyLeft(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
 	}
 
 	/**
-	 * The Monad is turned into its Dual with left side multiplication by pscalar.
+	 * The Monad is turned into its Dual with right side multiplication by pscalar.
 	 * <p>
-	 * Since the map internal to Scale can accept any of the CladosF numbers as
-	 * values, there is a cast to a 'generic' type within this method. This would
-	 * normally cause warnings by the compiler since the generic named in the
-	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
-	 * at runtime.
+	 * In metrics where one or more of the generators squares to zero, this isn't really
+	 * a dual operation.
 	 * <p>
-	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
-	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
-	 * fails to update all builders.
-	 * <p>
-	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return Monad after operation.
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends UnitAbstract & Field & Normalizable> Monad dualRight() {
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
-
-		int row = tBasis.getBladeCount() - 1; // row points at the PScalar blade
-		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
-		bladeStream().filter(blade -> getScales().isNotZeroAt(blade)).parallel().forEach(blade -> {
-			int col = tBasis.find(blade) - 1; // col points at a non-zero blade
-			Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
-			newScales.put(bMult,
-					(T) FBuilder.copyOf(getScales().get(blade)).scale(Float.valueOf(tProd.getSign(col, row))));
-		});
-		scales = newScales;
-
+		this.multiplyRight(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
 	}
@@ -814,9 +834,9 @@ public class Monad implements Modal {
 	 * @return UnitAbstract
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract> T getCoeff(int i) {
+	public <T extends UnitAbstract & Field & Normalizable> T getCoeff(int i) {
 		if (i >= 0 & i < getAlgebra().getBladeCount())
-			return (T) scales.get(getAlgebra().getGBasis().getSingleBlade(i));
+			return (T) scales.getWeights()[i];
 		return null;
 	}
 
@@ -864,7 +884,7 @@ public class Monad implements Modal {
 	 * @return Scale of Blades and UnitAbstract children. This is the 'coefficients'
 	 *         object.
 	 */
-	public Scale<? extends UnitAbstract> getScales() {
+	public Scale<? extends UnitAbstract> getWeights() {
 		return scales;
 	}
 
@@ -885,7 +905,7 @@ public class Monad implements Modal {
 	 * @return Monad but in practice it will always be a child of MonadAbtract
 	 */
 	public Monad gradePart(byte pGrade) {
-		if (pGrade < 0 | pGrade >= getAlgebra().getGradeCount())
+		if (pGrade >= getAlgebra().getGradeCount() | pGrade < 0)
 			return this;
 		scales.zeroAllButGrade(pGrade);
 		setGradeKey();
@@ -919,10 +939,10 @@ public class Monad implements Modal {
 	/**
 	 * Mirror the sense of all geometry generators in the Monad.
 	 * <p>
-	 * @return Monad but in practice it will always be a child of MonadAbtract
+	 * @return Monad after the main involution is complete.
 	 */
-	public Monad invert() {
-		scales.invert();
+	public Monad mainInvolution() {
+		scales.mainInvolution();
 		return this;
 	}
 
@@ -944,25 +964,16 @@ public class Monad implements Modal {
 		if (!Monad.isReferenceMatch(this, pM))
 			return false;
 		switch (scales.getMode()) {
-		case COMPLEXD -> {
-			return bladeStream()
-					.allMatch(blade -> ComplexD.isEqual((ComplexD) scales.get(blade), (ComplexD) pM.scales.get(blade)));
-		}
-		case COMPLEXF -> {
-			return bladeStream()
-					.allMatch(blade -> ComplexF.isEqual((ComplexF) scales.get(blade), (ComplexF) pM.scales.get(blade)));
-		}
-		case REALD -> {
-			return bladeStream()
-					.allMatch(blade -> RealD.isEqual((RealD) scales.get(blade), (RealD) pM.scales.get(blade)));
-		}
-		case REALF -> {
-			return bladeStream()
-					.allMatch(blade -> RealF.isEqual((RealF) scales.get(blade), (RealF) pM.scales.get(blade)));
-		}
-		default -> {
-			return false;
-		}
+			case COMPLEXD : return bladeStream().allMatch(blade -> 
+							ComplexD.isEqual((ComplexD) scales.get(blade), (ComplexD) pM.scales.get(blade)));
+			case COMPLEXF : return bladeStream().allMatch(blade -> 
+							ComplexF.isEqual((ComplexF) scales.get(blade), (ComplexF) pM.scales.get(blade)));
+			case REALD : return bladeStream().allMatch(blade -> 
+							RealD.isEqual((RealD) scales.get(blade), (RealD) pM.scales.get(blade)));
+			case REALF : return bladeStream().allMatch(blade -> 
+							RealF.isEqual((RealF) scales.get(blade), (RealF) pM.scales.get(blade)));
+			default : return false;
+		
 		}
 	}
 
@@ -1002,20 +1013,25 @@ public class Monad implements Modal {
 	public Monad multiplyAntisymm(Monad pM) {
 		if (!isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Symm multiply fails reference match.");
-		Monad halfTwo = GBuilder.copyOfMonad(this).multiplyRight(pM);
-		switch (pM.getScales().getMode()) {
-		case COMPLEXD -> {
-			multiplyLeft(pM).subtract(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
-		}
-		case COMPLEXF -> {
-			multiplyLeft(pM).subtract(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
-		}
-		case REALD -> {
-			multiplyLeft(pM).subtract(halfTwo).scale(RealD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
-		}
-		case REALF -> {
-			multiplyLeft(pM).subtract(halfTwo).scale(RealF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
-		}
+		Monad halfTwoRight = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
+		(this.multiplyLeft(pM)).subtract(halfTwoRight);
+		switch (pM.getWeights().getMode()) {
+			case COMPLEXD -> {
+				scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
+				break;
+			}
+			case COMPLEXF -> {
+				scale( ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
+				break;
+			}
+			case REALD -> {
+				scale((RealD.newONE(scales.getCardinal()).scale(BY2_D)));
+				break;
+			}
+			case REALF -> {
+				scale((RealF.newONE(scales.getCardinal()).scale(BY2_F)));
+				break;
+			}
 		}
 		setGradeKey();
 		return this;
@@ -1061,53 +1077,57 @@ public class Monad implements Modal {
 			long slideKey = gradeKey;
 			byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
 			while (logKey >= 0) {
-				tBasis.bladeOfGradeStream(logKey).filter(blade -> getScales().isNotZeroAt(blade)).forEach(blade -> {
+				tBasis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
 					int col = tBasis.find(blade) - 1;
-					pM.bladeStream().filter(blade2 -> pM.getScales().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
+					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 						int row = tBasis.find(blade2) - 1;
 						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
 						switch (mode) {
 						case COMPLEXD -> {
 							try {
 								ComplexD tAgg = ComplexD
-										.multiply((ComplexD) getScales().get(blade),
-												(ComplexD) pM.getScales().get(blade2))
+										.multiply((ComplexD) getWeights().get(blade),
+												(ComplexD) pM.getWeights().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						case COMPLEXF -> {
 							try {
 								ComplexF tAgg = ComplexF
-										.multiply((ComplexF) getScales().get(blade),
-												(ComplexF) pM.getScales().get(blade2))
+										.multiply((ComplexF) getWeights().get(blade),
+												(ComplexF) pM.getWeights().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						case REALD -> {
 							try {
 								RealD tAgg = RealD
-										.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
+										.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						case REALF -> {
 							try {
 								RealF tAgg = RealF
-										.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
+										.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						}
 					});
@@ -1118,51 +1138,55 @@ public class Monad implements Modal {
 				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 			} // while loop completion -> all grades in 'this' processed
 		} else {
-			bladeStream().filter(blade -> getScales().isNotZeroAt(blade)).forEach(blade -> {
+			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
 				int col = tBasis.find(blade) - 1;
-				pM.bladeStream().filter(blade2 -> pM.getScales().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
+				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 					int row = tBasis.find(blade2) - 1;
 					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
 					switch (mode) {
 					case COMPLEXD -> {
 						try {
 							ComplexD tAgg = ComplexD
-									.multiply((ComplexD) getScales().get(blade), (ComplexD) pM.getScales().get(blade2))
+									.multiply((ComplexD) getWeights().get(blade), (ComplexD) pM.getWeights().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					case COMPLEXF -> {
 						try {
 							ComplexF tAgg = ComplexF
-									.multiply((ComplexF) getScales().get(blade), (ComplexF) pM.getScales().get(blade2))
+									.multiply((ComplexF) getWeights().get(blade), (ComplexF) pM.getWeights().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					case REALD -> {
 						try {
 							RealD tAgg = RealD
-									.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
+									.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					case REALF -> {
 						try {
 							RealF tAgg = RealF
-									.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
+									.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(row, col))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					}
 				});
@@ -1213,53 +1237,57 @@ public class Monad implements Modal {
 			long slideKey = gradeKey;
 			byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
 			while (logKey >= 0) {
-				tBasis.bladeOfGradeStream(logKey).filter(blade -> getScales().isNotZeroAt(blade)).forEach(blade -> {
+				tBasis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
 					int col = tBasis.find(blade) - 1;
-					pM.bladeStream().filter(blade2 -> pM.getScales().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
+					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 						int row = tBasis.find(blade2) - 1;
 						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
 						switch (mode) {
 						case COMPLEXD -> {
 							try {
 								ComplexD tAgg = ComplexD
-										.multiply((ComplexD) getScales().get(blade),
-												(ComplexD) pM.getScales().get(blade2))
+										.multiply((ComplexD) getWeights().get(blade),
+												(ComplexD) pM.getWeights().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						case COMPLEXF -> {
 							try {
 								ComplexF tAgg = ComplexF
-										.multiply((ComplexF) getScales().get(blade),
-												(ComplexF) pM.getScales().get(blade2))
+										.multiply((ComplexF) getWeights().get(blade),
+												(ComplexF) pM.getWeights().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						case REALD -> {
 							try {
 								RealD tAgg = RealD
-										.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
+										.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
 										.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						case REALF -> {
 							try {
 								RealF tAgg = RealF
-										.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
+										.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
 										.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
 								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 							}
+							break;
 						}
 						}
 					});
@@ -1270,51 +1298,55 @@ public class Monad implements Modal {
 				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
 			} // while loop completion -> all grades in 'this' processed
 		} else {
-			bladeStream().filter(blade -> getScales().isNotZeroAt(blade)).forEach(blade -> {
+			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
 				int col = tBasis.find(blade) - 1;
-				pM.bladeStream().filter(blade2 -> pM.getScales().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
+				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 					int row = tBasis.find(blade2) - 1;
 					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
 					switch (mode) {
 					case COMPLEXD -> {
 						try {
 							ComplexD tAgg = ComplexD
-									.multiply((ComplexD) getScales().get(blade), (ComplexD) pM.getScales().get(blade2))
+									.multiply((ComplexD) getWeights().get(blade), (ComplexD) pM.getWeights().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					case COMPLEXF -> {
 						try {
 							ComplexF tAgg = ComplexF
-									.multiply((ComplexF) getScales().get(blade), (ComplexF) pM.getScales().get(blade2))
+									.multiply((ComplexF) getWeights().get(blade), (ComplexF) pM.getWeights().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					case REALD -> {
 						try {
 							RealD tAgg = RealD
-									.multiply((RealD) getScales().get(blade), (RealD) pM.getScales().get(blade2))
+									.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
 									.scale(Double.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					case REALF -> {
 						try {
 							RealF tAgg = RealF
-									.multiply((RealF) getScales().get(blade), (RealF) pM.getScales().get(blade2))
+									.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
 									.scale(Float.valueOf(tProd.getSign(col, row))).add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
 							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
 						}
+						break;
 					}
 					}
 				});
@@ -1336,20 +1368,26 @@ public class Monad implements Modal {
 	public Monad multiplySymm(Monad pM) {
 		if (!isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Symm multiply fails reference match.");
-		Monad halfTwo = GBuilder.copyOfMonad(this).multiplyRight(pM);
-		switch (pM.getScales().getMode()) {
-		case COMPLEXD -> {
-			multiplyLeft(pM).add(halfTwo).scale(ComplexD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
-		}
-		case COMPLEXF -> {
-			multiplyLeft(pM).add(halfTwo).scale(ComplexF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
-		}
-		case REALD -> {
-			multiplyLeft(pM).add(halfTwo).scale(RealD.newONE(scales.getCardinal()).scale(CladosConstant.BY2_D));
-		}
-		case REALF -> {
-			multiplyLeft(pM).add(halfTwo).scale(RealF.newONE(scales.getCardinal()).scale(CladosConstant.BY2_F));
-		}
+		Monad halfTwoRight = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
+		(this.multiplyLeft(pM)).add(halfTwoRight);
+
+		switch (pM.getWeights().getMode()) {
+			case COMPLEXD -> {
+				scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
+				break;
+			}
+			case COMPLEXF -> {
+				scale(ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
+				break;
+			}
+			case REALD -> {
+				scale(RealD.newONE(scales.getCardinal()).scale(BY2_D));
+				break;
+			}
+			case REALF -> {
+				scale(RealF.newONE(scales.getCardinal()).scale(BY2_F));
+				break;
+			}
 		}
 		setGradeKey();
 		return this;
@@ -1359,26 +1397,14 @@ public class Monad implements Modal {
 	 * Normalize the monad. A <b>CladosMonadException</b> is thrown if the Monad has
 	 * a zero magnitude.
 	 * <p>
-	 * @return Monad but in practice it will always be a child of MonadAbtract
+	 * @return Monad after normalization effort is attempted.
 	 * @throws FieldException This exception is thrown when normalizing a zero or
-	 *                        field conflicted monad is tried.
+	 *                        field conflicted monad is tried. The object throwing it
+	 * 						  is the Scale<UnitAbstract Children>
 	 */
 	public Monad normalize() throws FieldException {
-		if (gradeKey == 0L & scales.isScalarZero())
-			throw new FieldException(null, "Normalizing a zero magnitude Monad isn't possible");
 		scales.normalize();
 		return this;
-	}
-
-	/**
-	 * This method is a concession to the old notation for the PScalar Part of a
-	 * monad. It returns the pscalar part coefficient.
-	 * <p>
-	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
-	 */
-	@Deprecated
-	public UnitAbstract PSPc() {
-		return scales.getPScalar();
 	}
 
 	/**
@@ -1387,7 +1413,7 @@ public class Monad implements Modal {
 	 * the permutation, so the easiest thing to do is to change the coefficients
 	 * instead.
 	 * <p>
-	 * @return Monad but in practice it will always be a child of MonadAbtract
+	 * @return Monad returns itself when done to support streaming operations.
 	 */
 	public Monad reverse() {
 		scales.reverse();
@@ -1448,10 +1474,11 @@ public class Monad implements Modal {
 	 * <p>
 	 * @param pRName String
 	 */
-	public void setFrameName(String pRName) {
+	public Monad setFrameName(String pRName) {
 		getAlgebra().removeFrame(frameName);
 		frameName = pRName;
 		getAlgebra().appendFrame(pRName);
+		return this;
 	}
 
 	/**
@@ -1462,19 +1489,19 @@ public class Monad implements Modal {
 	 * loop that fills gradeKey is a grade detector, so if foundGrade is less than
 	 * or equal to half gradeCount, sparseFlag is set to true and false otherwise.
 	 */
-	public void setGradeKey() {
+	private void setGradeKey() {
 		foundGrades = 0;
 		gradeKey = 0;
 
 		gradeStream().forEach(grade -> {
 			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-					.filter(blade -> getScales().isNotZeroAt(blade)).parallel().findAny().isPresent()) {
+					.filter(blade -> getWeights().isNotZeroAt(blade)).parallel().findAny().isPresent()) {
 				foundGrades++;
 				gradeKey += (long) Math.pow(10, grade);
 			}
 		});
 
-		if (gradeKey == 0) {
+		if (gradeKey == 0) {	//Special case for scalars. If no grades detected, scalar it must be.
 			foundGrades++;
 			gradeKey++;
 		}
@@ -1486,19 +1513,9 @@ public class Monad implements Modal {
 	 * <p>
 	 * @param pName String name of the monad to set
 	 */
-	public void setName(String pName) {
+	public Monad setName(String pName) {
 		name = pName;
-	}
-
-	/**
-	 * This method is a concession to the old notation for the Scalar Part of a
-	 * monad. It returns the scalar part coefficient.
-	 * <p>
-	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
-	 */
-	@Deprecated
-	public UnitAbstract SPc() {
-		return scales.getScalar();
+		return this;
 	}
 
 	/**
@@ -1554,8 +1571,9 @@ public class Monad implements Modal {
 	 * <p>
 	 * @param pA Algebra to set
 	 */
-	protected void setAlgebra(Algebra pA) {
+	protected Monad setAlgebra(Algebra pA) {
 		algebra = pA;
+		return this;
 	}
 
 	/**
@@ -1585,7 +1603,7 @@ public class Monad implements Modal {
 	 *                to avoid UnitAbstract confusion. Since a monad can be sparse
 	 *                or not independent of the UnitAbstract used, the method is
 	 *                placed here in the abstract parent.
-	 */
+
 	protected void setSparseFlag(byte pGrades) {
 		long slideKey = gradeKey;
 		byte logSlide = (byte) Math.log10(slideKey); // highest grade found
@@ -1602,9 +1620,13 @@ public class Monad implements Modal {
 		}
 		if (gradeKey > 1)
 			foundGrades--; // Don't get credit for scalar when other grades present.
-		if (foundGrades < pGrades / 2)
-			sparseFlag = true;
-		else
-			sparseFlag = false;
+
+		sparseFlag = (foundGrades < pGrades / 2) ? true : false;
+
+		//if (foundGrades < pGrades / 2)
+		//	sparseFlag = true;
+		//else
+		//	sparseFlag = false;
 	}
+	*/
 }

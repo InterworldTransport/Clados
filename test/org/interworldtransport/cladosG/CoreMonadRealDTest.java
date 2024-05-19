@@ -110,7 +110,7 @@ class CoreMonadRealDTest {
 		assertTrue(tM4.isGEqual(tM0));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
 		assertTrue(isGZero(tM5.scale(RealD.copyZERO((RealD) tM5.getCoeff(0)))));
-		assertTrue(tM6.invert().invert().isGEqual(tM7));
+		assertTrue(tM6.mainInvolution().mainInvolution().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 		
 		assertTrue(RealD.isEqual((RealD) tM6.normalize().magnitude(), RealD.copyONE((RealD) tM7.getCoeff(0))));
@@ -166,7 +166,7 @@ class CoreMonadRealDTest {
 		for (short m = 0; m < tM0.getCoeff().length; m++)
 			assertFalse(tM0.getCoeff(m).equals(null));
 
-		Monad newOne = new Monad("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getScales());
+		Monad newOne = new Monad("newName", tM0.getAlgebra(), "unimportantFrameName", tM0.getWeights());
 		assertFalse(newOne.equals(null));
 		assertFalse(isReferenceMatch(tM0, newOne));
 	}

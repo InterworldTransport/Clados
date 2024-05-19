@@ -337,15 +337,15 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * This method imitations the inversion of all generators in each blade and works out the sign
-	 * implications for the values in the internal map. No typeMismatch can occur. 
+	 * This method imitations the main involution. All generators in each blade flip sign, so the
+	 * implications for the values in the internal map are worked out. No typeMismatch can occur. 
 	 * <p>
 	 * This is what we called a parity inversion where generator.# goes to -1.0 * generator.#, 
 	 * but that's not a good name for it going forward.
 	 * <p>
 	 * @return Scale object. Just this object after modification.
 	 */
-	public Scale<D> invert() {
+	public Scale<D> mainInvolution() {
 		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(grade -> {
 			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
 				switch (mode) {
@@ -750,6 +750,34 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			card = pCard;
 			zeroAll();
 		}
+		return this;
+	}
+
+	/**
+	 * This method just sets the pscalar weight with a number that should satisfy type matches. If it
+	 * does not get past the type match check, nothing is done to change any weights.
+	 * <p>
+	 * @param <T> is a child of UnitAbstract used as the generic identity of the weights in this object.
+	 * @param pIn D is a child of UnitAbstract to use as the pscalar weight.
+	 * @return Scale<T> for use in streaming operations if desired.
+	 */
+	protected <T extends UnitAbstract & Field & Normalizable> Scale<D> setPScalarWeight(D pIn) {
+		if (UnitAbstract.isTypeMatch(this.getPScalar(), pIn))
+			map.put(gBasis.getPScalarBlade(), pIn);
+		return this;
+	}
+
+	/**
+	 * This method just sets the scalar weight with a number that should satisfy type matches. If it
+	 * does not get past the type match check, nothing is done to change any weights.
+	 * <p>
+	 * @param <T> is a child of UnitAbstract used as the generic identity of the weights in this object.
+	 * @param pIn D is a child of UnitAbstract to use as the pscalar weight.
+	 * @return Scale<T> for use in streaming operations if desired.
+	 */
+	protected <T extends UnitAbstract & Field & Normalizable> Scale<D> setScalarWeight(D pIn) {
+		if (UnitAbstract.isTypeMatch(this.getScalar(), pIn))
+			map.put(gBasis.getScalarBlade(), pIn);
 		return this;
 	}
 

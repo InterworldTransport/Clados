@@ -129,6 +129,26 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	}
 
 	/**
+	 * This method builds a copy of the offered monad with a slightly different name
+	 * and then completely swaps out the weights to ensure it is a pscalar that otherwise
+	 * passes all reference tests.
+	 * <p>
+	 * @param <T>
+	 * @param pM Monad to be mostly copied in constructing a pscalar for it.
+	 * @return Monad that is a unit pscalar that otherwise matches the offered Monad.
+	 * @throws CladosMonadException
+	 */
+	@SuppressWarnings("unchecked")
+	public static final <T extends UnitAbstract & Field & Normalizable> Monad pscalarOfMonad(Monad pM) {
+		Scale<T> tempScales = (Scale<T>) GBuilder.copyOfScale(pM.getWeights());
+		tempScales.zeroAllButGrade((byte) (pM.getAlgebra().getGradeCount() - 1));
+		tempScales.setPScalarWeight((T) FBuilder.createONE(pM.getMode(), pM.getWeights().getCardinal()));
+		Monad returnThis = GBuilder.copyOfMonad(pM, pM.getName()+"-PScalarOf");
+		returnThis.scales = tempScales;
+		return returnThis;
+	}
+
+	/**
 	 * Simple copy method. Offer a Scale, get a copy of it back as far as mapped values go.
 	 * <p>
 	 * @param <T> generic description of a CladosF number. Descends from

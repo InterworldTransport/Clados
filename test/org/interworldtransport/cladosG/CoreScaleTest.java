@@ -214,10 +214,10 @@ public class CoreScaleTest {
         workScaleCD.getPScalar().setReal(1.0d);
         workScaleCD.getPScalar().setImg(1.0d);
 
-        workScaleRF.invert();
-        workScaleRD.invert();
-        workScaleCF.invert();
-        workScaleCD.invert();
+        workScaleRF.mainInvolution();
+        workScaleRD.mainInvolution();
+        workScaleCF.mainInvolution();
+        workScaleCD.mainInvolution();
 
         assertTrue(workScaleRF.getPScalar().getReal() == -1.0f);
         assertTrue(workScaleRD.getPScalar().getReal() == -1.0d);
@@ -426,6 +426,33 @@ public class CoreScaleTest {
         assertTrue(RealD.isZero(workScaleRD.getScalar()));
         assertTrue(ComplexF.isZero(workScaleCF.getScalar()));
         assertTrue(ComplexD.isZero(workScaleCD.getScalar()));
+
+
+        workScaleRF.setPScalarWeight(FBuilder.REALF.createONE(workScaleRF.getScalar().getCardinal()));
+        workScaleRD.setPScalarWeight(FBuilder.REALD.createONE(workScaleRD.getScalar().getCardinal()));
+        workScaleCF.setPScalarWeight(FBuilder.COMPLEXF.createONE(workScaleCF.getScalar().getCardinal()));
+        workScaleCD.setPScalarWeight(FBuilder.COMPLEXD.createONE(workScaleCD.getScalar().getCardinal()));
+
+        assertFalse(RealF.isZero(workScaleRF.getPScalar()));
+        assertFalse(RealD.isZero(workScaleRD.getPScalar()));
+        assertFalse(ComplexF.isZero(workScaleCF.getPScalar()));
+        assertFalse(ComplexD.isZero(workScaleCD.getPScalar()));
+
+        workScaleRF.setPScalarWeight(FBuilder.REALF.createZERO(Cardinal.generate("cannotMatch")));
+        assertFalse(RealF.isZero(workScaleRF.getPScalar()));
+
+        workScaleRF.setScalarWeight(FBuilder.REALF.createONE(Cardinal.generate("cannotMatch")));
+        assertTrue(RealF.isZero(workScaleRF.getScalar()));
+
+        workScaleRF.setScalarWeight(FBuilder.REALF.createONE(workScaleRF.getPScalar().getCardinal()));
+        workScaleRD.setScalarWeight(FBuilder.REALD.createONE(workScaleRD.getPScalar().getCardinal()));
+        workScaleCF.setScalarWeight(FBuilder.COMPLEXF.createONE(workScaleCF.getPScalar().getCardinal()));
+        workScaleCD.setScalarWeight(FBuilder.COMPLEXD.createONE(workScaleCD.getPScalar().getCardinal()));
+
+        assertFalse(RealF.isZero(workScaleRF.getScalar()));
+        assertFalse(RealD.isZero(workScaleRD.getScalar()));
+        assertFalse(ComplexF.isZero(workScaleCF.getScalar()));
+        assertFalse(ComplexD.isZero(workScaleCD.getScalar()));
     }
 
     @Test

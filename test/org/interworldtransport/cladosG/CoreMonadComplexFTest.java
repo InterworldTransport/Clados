@@ -110,7 +110,7 @@ class CoreMonadComplexFTest {
 		assertTrue(tM4.isGEqual(tM0.dualLeft()));
 		assertTrue(tM4.isGEqual(tM0.dualRight()));
 		assertTrue(isGZero(tM5.scale(ComplexF.copyZERO((ComplexF) tM5.getCoeff(0)))));
-		assertTrue(tM6.invert().invert().isGEqual(tM7));
+		assertTrue(tM6.mainInvolution().mainInvolution().isGEqual(tM7));
 		assertTrue(tM6.reverse().reverse().isGEqual(tM7));
 
 		tM6.normalize();
