@@ -4,11 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FListBuilder;
-import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -27,9 +24,6 @@ public class CoreMonadRealFTest {
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
 	RealF[] cRF;
-    RealD[] cRD;
-    ComplexF[] cCF;
-    ComplexD[] cCD;
 	Monad tM0, tM1, tM2, tM3, tM4;
 	Monad tM5, tM6, tM7, tM8, tM9;
 	Monad tM10, tM11;
@@ -172,7 +166,7 @@ public class CoreMonadRealFTest {
 		assertFalse(Monad.isIdempotent(tM9));           //Because it is nilpotent.
 
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
-		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(0.5f);
+		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
         tFix[2] = RealF.copyOf(tFix[0]);
 		assertDoesNotThrow(() -> tM4.setCoeff(tFix));         //Makes tM4 idempotent 
 
@@ -233,7 +227,7 @@ public class CoreMonadRealFTest {
     }
 
     @Test
-    public void testInvert() {
+    public void testMainInvolution() {
         Cardinal testCard = tM6.getWeights().getCardinal();
         Monad testThis = (new Monad(tM6)).mainInvolution();
         tM6.isGEqual(testThis.scale(RealF.create(testCard, CladosConstant.MINUS_ONE_F)));
