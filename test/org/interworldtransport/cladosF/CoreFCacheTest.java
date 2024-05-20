@@ -46,7 +46,7 @@ public class CoreFCacheTest {
     public void testAppendCardinalSet() {
         cache.clearCardinals();
         Cardinal tCard1 = Cardinal.generate(tCard2.getUnit()); //Same string, different object
-        Set<Cardinal> cards = new HashSet<Cardinal>();
+        Set<Cardinal> cards = new HashSet<Cardinal>(4, 0.75f);
         cards.add(tCard3);
         cards.add(tCard2);
         cards.add(tCard1);  // Three in the set now
@@ -59,7 +59,7 @@ public class CoreFCacheTest {
     public void testRemoveCardinal() {
         cache.clearCardinals();
         Cardinal tCard1 = Cardinal.generate(tCard2.getUnit()); //Same string, different object
-        Set<Cardinal> cards = new HashSet<Cardinal>();
+        Set<Cardinal> cards = new HashSet<Cardinal>(4, 0.75f);
         cards.add(tCard3);
         cards.add(tCard2);
         cards.add(tCard1);  // Three in the set now
@@ -72,7 +72,7 @@ public class CoreFCacheTest {
     public void testGetCardinal() {
         cache.clearCardinals();
         Cardinal tCard1 = Cardinal.generate(tCard2.getUnit()); //Same string, different object
-        Set<Cardinal> cards = new HashSet<Cardinal>();
+        Set<Cardinal> cards = new HashSet<Cardinal>(4, 0.75f);
         cards.add(tCard3);
         cards.add(tCard2);
         cards.add(tCard1);  // Three in the set now

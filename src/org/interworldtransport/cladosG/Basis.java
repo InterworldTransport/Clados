@@ -152,7 +152,7 @@ public final class Basis implements CanonicalBasis {
 	 * This is O(n^2), so improvements here matter.
 	 */
 	private final static Set<EnumSet<Generator>> powerSet(Set<Generator> inSet) {
-		Set<EnumSet<Generator>> sets = new HashSet<EnumSet<Generator>>();
+		Set<EnumSet<Generator>> sets = new HashSet<EnumSet<Generator>>(inSet.size(), 0.75f);
 		if (inSet.isEmpty()) {
 			sets.add(EnumSet.noneOf(Generator.class));
 			return sets;

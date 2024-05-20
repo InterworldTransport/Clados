@@ -164,13 +164,22 @@ class CoreBladeTest {
 		tB15.add(Generator.EA); // generator already there, so silently ignore the add.
 		assertTrue(tB15.rank() == 13);
 		assertFalse(tB15.key() == previousKey);
-
+		
 		tB15.add(Generator.EC);
 		assertTrue(tB15.rank() == 14);
 		assertTrue(tB15.key() == previousKey);
 		assertTrue(Blade.isNBlade(tB15, (byte) 14));
 		assertFalse(Blade.isNBlade(tB10, (byte) 9));
-		assertTrue(tB15.hashCode() == 280203286);
+	}
+	
+	@Test
+	public void testHashes() throws GeneratorRangeException{
+		Blade tB4N = Blade.createPScalarBlade(Generator.E4);
+		Blade tB5 = Blade.createPScalarBlade(Generator.E5);
+		assertTrue(tB4N.hashCode() == 17488);
+		assertTrue(tB5.hashCode() == 129445);
+		tB5.remove(Generator.E5);
+		assertFalse(tB4N.hashCode() == tB5.hashCode());
 	}
 
 	@Test
