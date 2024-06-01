@@ -61,9 +61,9 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * This integer array is an internal translation of the product signature.
-	 * Generators with a positive square appear as a one (1) while those with
-	 * negative squares appear as minus one (-1). This array is kept to increase the
-	 * speed of product calculations.
+	 * Generators with a positive square appear as a one (1), those with
+	 * negative squares appear as minus one (-1) and degenerate ones appear as (0).
+	 * This array is kept to increase the speed of product calculations.
 	 */
 	private final byte[] nSignature;
 	/**
@@ -86,7 +86,7 @@ public class GProduct implements CliffordProduct {
 	 * Main constructor of GProduct with signature information passed in. It
 	 * figures out the rest of what it needs.
 	 * <p>
-	 * @param pSig String form of the signature. Looks like "-+++".
+	 * @param pSig String form of the signature. Looks like "-+++0".
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
 	 *                                 some internal call demands a generator not in
 	 *                                 the supported list.
@@ -120,7 +120,7 @@ public class GProduct implements CliffordProduct {
 		for (char b : pSig.toCharArray()) {
 			switch (b) {
 			case '+' -> nSignature[m] = 1;
-//			case '0' -> nSignature[m] = 0;
+			case '0' -> nSignature[m] = 0;
 			case '-' -> nSignature[m] = -1;
 			}
 			m++;

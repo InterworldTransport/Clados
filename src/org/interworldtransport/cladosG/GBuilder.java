@@ -74,7 +74,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 			for (char j : pSig.toCharArray())
 				switch (j) {
 				case '+' -> tSpot.append(j); // good character (hyperbolic generator)
-			//	case '0' -> tSpot.append(j); // good character (dual generator)
+				case '0' -> tSpot.append(j); // good character (dual generator)
 				case '-' -> tSpot.append(j); // good character (imaginary generator)
 				}
 			if (tSpot.length() > CladosConstant.MAXGRADE)
