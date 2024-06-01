@@ -235,9 +235,9 @@ public enum GCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeGProduct(String pSig) {
-		Optional<CliffordProduct> GP = findGProductMap(pSig); // This function validates the passed signature
+		Optional<CliffordProduct> GP = findGProductMap(pSig); // This function tries to find the passed signature
 		if (GP.isEmpty())
-			return true;
+			return true;									  // If not found, no worries. It is 'removed'.
 		return removeGProduct(GP.get());
 	}
 }
