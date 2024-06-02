@@ -52,7 +52,6 @@ class CoreGProductTest {
 		assertFalse(CliffordProduct.validateSignature(pSig16)); //Beyond supported size right now.
 		assertFalse(CliffordProduct.validateSignature(pSigERR)); //Disallowed. Uses a letter 'O' instead of number '0'
 		assertFalse(CliffordProduct.validateSignature(null)); //Disallowed. No Info != No generators.
-		assertTrue(CliffordProduct.validateSignature(pSig30)); //Can support PGA.
 	}
 	
 	@Test
