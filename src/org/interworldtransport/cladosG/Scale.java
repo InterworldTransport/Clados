@@ -694,10 +694,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		StringBuilder rB = new StringBuilder(indent).append("<Scales number=\"").append(map.size()).append("\">\n");
 
 		gBasis.bladeStream().forEach(blade -> {
-			rB.append(indent).append("\t\t\t<Pair>\n");
+			rB.append(indent).append("\t<Pair>\n");
 			rB.append(indent + "\t\t").append(Blade.toXMLString(blade, "\t\t"));
 			rB.append(indent + "\t\t\t\t").append(map.get(blade).toXMLString()).append("\n");
-			rB.append(indent).append("\t\t\t</Pair>\n");
+			rB.append(indent).append("\t</Pair>\n");
 		});
 
 		rB.append(indent).append("\t\t</Scales>\n");

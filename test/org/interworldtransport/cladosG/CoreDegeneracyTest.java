@@ -35,17 +35,12 @@ public class CoreDegeneracyTest {
         public void testStaticPGASimplify() throws GeneratorRangeException {
             firstB = new Blade((byte) 4, g);
             secondB = new Blade((byte) 4, i);
-            //System.out.print(Blade.toXMLString(firstB, "first: "));
-            //System.out.println(Blade.toXMLString(secondB, "second: "));
 
             out = BladeDuet.simplify(firstB, firstB, pgasig);
 		    assertTrue(Blade.isScalar(out));
 
             BladeDuet intermed = new BladeDuet(firstB, secondB);
-            //System.out.print(intermed.toXMLString());
             out = intermed.simplify(pgasig);
-            //System.out.println(Blade.toXMLString(out, ""));
-            //System.out.println(pgasig[0]+", "+pgasig[1]+", "+pgasig[2]+", "+pgasig[3]);
 
             assertTrue(Blade.isScalar(out));
         }
@@ -60,15 +55,9 @@ public class CoreDegeneracyTest {
 		    assertTrue(Blade.isScalar(out));
 
             out = BladeDuet.simplify(firstB, secondB, stapesig);
-        //    System.out.println(Blade.toXMLString(firstB, ""));
-        //    System.out.println(Blade.toXMLString(secondB, ""));
-        //    System.out.println(Blade.toXMLString(out, ""));
             assertTrue(Blade.isScalar(out));            //It should be because signature of one pair is zero.
 
             out = BladeDuet.simplify(firstB, thirdB, stapesig);
-        //    System.out.println(Blade.toXMLString(firstB, ""));
-        //    System.out.println(Blade.toXMLString(secondB, ""));
-        //    System.out.println(Blade.toXMLString(out, ""));
             assertTrue(Blade.isScalar(out));            //It should be because signature of one pair is zero.
         }
 
@@ -82,17 +71,10 @@ public class CoreDegeneracyTest {
             assertTrue(Blade.isScalar(out));
 
             out = BladeDuet.simplify(firstB, secondB, stapwsig);
-        //    System.out.println(Blade.toXMLString(firstB, ""));
-        //    System.out.println(Blade.toXMLString(secondB, ""));
-        //    System.out.println(Blade.toXMLString(out, ""));
             assertTrue(Blade.isScalar(out));            //It should be because signature of one pair is zero.
 
             out = BladeDuet.simplify(firstB, thirdB, stapwsig);
-        //    System.out.println(Blade.toXMLString(firstB, ""));
-        //    System.out.println(Blade.toXMLString(secondB, ""));
-        //    System.out.println(Blade.toXMLString(out, ""));
             assertTrue(Blade.isScalar(out));            //It should be because signature of one pair is zero.
-            
         }
     }
 
@@ -118,7 +100,7 @@ public class CoreDegeneracyTest {
 
         @Test
         public void testXMLOutput() throws BadSignatureException, GeneratorRangeException {
-            GProduct printThis = new GProduct(pSig131);
+            GProduct printThis = new GProduct(pSig301);
             System.out.println(printThis.toXMLString(""));
         }
     }
