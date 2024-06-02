@@ -368,8 +368,9 @@ public class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * This is a minimal constructor that establishes the blade's future
-	 * expectations regarding how many generators it might have to add to the set.
+	 * This is a minimal constructor that establishes the blade's future expectations 
+	 * regarding how many generators it might have to add to the set. This one is SO
+	 * minimal it winds up on its own producing a scalar blade, but with room to expand.
 	 * <p>
 	 * @param pMaxGen byte integer for the number of possible directions that might
 	 *                appear in this blade.
@@ -731,11 +732,11 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * Simple settor for the sign of this blade.
 	 * <p>
-	 * @param pSign byte integer should be +1 or -1. If it isn't, nothing is done.
+	 * @param pSign byte integer should be +1, -1, or 0. If it isn't, sign is set to 0.
 	 * @return this blade
 	 */
 	protected Blade setSign(byte pSign) {
-		sign = (pSign == (byte) 1) ? (byte) 1 : ((pSign == (byte) -1) ? (byte) -1 : sign);
+		sign = (pSign == (byte) 1) ? (byte) 1 : ((pSign == (byte) -1) ? (byte) -1 : (byte) 0);
 		return this;
 	}
 

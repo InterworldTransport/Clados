@@ -135,7 +135,10 @@ public class GProduct implements CliffordProduct {
 			canonBasis.bladeStream().forEach(bladeRight -> {
 				int col = canonBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
 				Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
-				result[row][col] = (int) bMult.sign() * (int) canonBasis.getKeyIndexMap().get(Long.valueOf(bMult.key()));
+				result[row][col] = ((int) bMult.sign() != 0) ? 
+							(int) bMult.sign() * (int) canonBasis.getKeyIndexMap().get(Long.valueOf(bMult.key())) 
+							: 
+							1 ;
 			});
 		});
 	}

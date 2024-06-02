@@ -150,20 +150,26 @@ public final class BladeDuet {
 	 */
 	protected Blade simplify(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
-		byte gen = 1;
-		while (andKey > 0) {
-			if (Integer.lowestOneBit(andKey) == 1) {// andKey is odd
-				Generator eq = Generator.get(gen);
+		byte gen = 1;										//start with lowest generator
+		while (andKey > 0) {								//while any duplicate generators present
+			if (Integer.lowestOneBit(andKey) == 1) {		//andKey is odd => low bit points at duplicate generator
+				Generator eq = Generator.get(gen);			//find generator for that lowest bit
 				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? (byte) 1 : (byte) -1;
+															//lastIndexOf = right-most. indexOf = left-most.
+															//We won't be in this section unless there are exactly two.
+															//This permutes indexes getting both generators next to each other.
 				sign *= pSig[gen - 1];
 				bladeDuet.removeAll(Collections.singleton(eq));
 			}
-			gen++;
-			andKey = andKey >>> 1;
+			gen++;											//move up to the next generator to test
+			andKey = andKey >>> 1;							//shift andKey right dropping lowest bit
 		}
-		Blade returnIt = Blade.createBlade(maxGen); // Technically this can be null, but shouldn't happen.
-		bladeDuet.stream().forEach(g -> returnIt.add(g));
-		// returnIt has all the correct generators, but might have the wrong sign
+		Blade returnIt = Blade.createBlade(maxGen); 		//A scalar blade with room to expand.
+		if (sign == 0)							
+			return returnIt.setSign((byte) 0);				//In the degenerate case, we are done!
+		
+		bladeDuet.stream().forEach(g -> returnIt.add(g));	//Load remaining generators IF NO paired generator was degenerate
+															//returnIt has the correct generators, but might have the wrong sign
 		andKey = bitKeyLeft & bitKeyRight;
 		// if either residue key vanishes, the bladeDuet is already in SORT order.
 		if ((bitKeyLeft - andKey) != 0 & (bitKeyRight - andKey) != 0) {
