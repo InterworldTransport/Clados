@@ -3,13 +3,11 @@ package org.interworldtransport.cladosG;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-//import org.junit.jupiter.api.Assertions;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -242,7 +240,7 @@ class CoreBasisTest {
 		testLongs = tBasis4.keyStream();
 		assertTrue(testLongs.sum() == 464);
 
-		assertTrue(tBasis4.getKeyIndexMap() instanceof TreeMap<Long, Integer>);
+		//assertTrue(tBasis4.getKeyIndexMap() instanceof TreeMap<Long, Integer>);
 		assertTrue(tBasis4.hashCode() == tBasis4.getGradeCount());
 }
 

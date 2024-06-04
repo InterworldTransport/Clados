@@ -483,15 +483,6 @@ public final class Basis implements CanonicalBasis {
 		return -1;
 	}
 
-	/**
-	 * Simple gettor method for the Map connecting Blade keys to their indexed
-	 * position in a basis.
-	 */
-	@Override
-	public TreeMap<Long, Integer> getKeyIndexMap() {
-		return keyIndexMap;
-	}
-
 	@Override
 	public Blade getPScalarBlade() {
 		return bladeList.get(getBladeCount() - 1);

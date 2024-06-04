@@ -26,7 +26,6 @@ package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -158,15 +157,6 @@ public interface CanonicalBasis {
 	 * @return long
 	 */
 	public abstract long getKey(int p1);
-
-	/**
-	 * Simple gettor method for the Map connecting Blade keys to their indexed
-	 * position in a basis.
-	 * <p>
-	 * @return TreeMap of Long blade keys and their Integer indexed positions in the
-	 *         internal list of blades in this basis.
-	 */
-	public abstract TreeMap<Long, Integer> getKeyIndexMap();
 
 	/**
 	 * This is a short-hand method for getSingleBlade('last'). It just returns the
