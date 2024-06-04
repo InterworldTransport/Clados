@@ -218,19 +218,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This method imitates the 'get()' method in a map. Offer a key and receive a
 	 * value in return. In this particular case, keys are blades from the basis and
-	 * values are coefficients that scale blades.
-	 * <p>
-	 * Since the internal map can accept any of the CladosF numbers as values, there
-	 * is a cast to a 'generic' type within this method. This would normally cause
-	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
-	 * <p>
-	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
-	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
-	 * fails to update all builders.
+	 * values are weights of those blades.
 	 * <p>
 	 * @param pB Blade to use as key in internal map
 	 * @return A UnitAbstract child related to this blade
