@@ -131,14 +131,14 @@ public class GProduct implements CliffordProduct {
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
 		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {
-			int row = canonBasis.getKeyIndexMap().get(bladeLeft.key()) - 1;
+			int row = canonBasis.find(bladeLeft) - 1;
 			canonBasis.bladeStream().forEach(bladeRight -> {
-				int col = canonBasis.getKeyIndexMap().get(bladeRight.key()) - 1;
+				int col = canonBasis.find(bladeRight) - 1;
 				Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
 				result[row][col] = ((int) bMult.sign() != 0) ? 
-							(int) bMult.sign() * (int) canonBasis.getKeyIndexMap().get(Long.valueOf(bMult.key())) 
+							(int) bMult.sign() * (int) canonBasis.find(bMult)
 							: 
-							1 ;
+							0;		//This case happens when the two blades share a generator that is degenerate.
 			});
 		});
 	}
@@ -257,7 +257,7 @@ public class GProduct implements CliffordProduct {
 	 */
 	@Override
 	public final int getSign(int pRow, int pCol) {
-		return (result[pRow][pCol] < 0) ? -1 : 1;
+		return (result[pRow][pCol] < 0) ? -1 : (result[pRow][pCol] > 0) ? 1 : 0;
 	}
 
 	/**

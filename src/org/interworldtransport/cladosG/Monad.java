@@ -177,7 +177,7 @@ public class Monad implements Modal {
 	public static boolean isIdempotent(Monad pM) {
 		if (isGZero(pM))
 			return true;
-		return GBuilder.copyOfMonad(pM).multiplyLeft(pM).isGEqual(pM);
+		return (GBuilder.copyOfMonad(pM)).multiplyLeft(pM).isGEqual(pM);
 	}
 
 	/**
@@ -1085,7 +1085,9 @@ public class Monad implements Modal {
 					int col = tBasis.find(blade) - 1;
 					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 						int row = tBasis.find(blade2) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
+						int treturnBlade = Math.abs(tProd.getResult(row, col)) - 1;		//Recover Cayley table entry as index
+						if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
+						Blade bMult = tBasis.getSingleBlade(treturnBlade);
 						switch (mode) {
 						case COMPLEXD -> {
 							try {
@@ -1148,7 +1150,9 @@ public class Monad implements Modal {
 				int col = tBasis.find(blade) - 1;
 				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 					int row = tBasis.find(blade2) - 1;
-					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(row, col)) - 1);
+					int treturnBlade = Math.abs(tProd.getResult(row, col)) - 1;		//Recover Cayley table entry as index
+					if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
+					Blade bMult = tBasis.getSingleBlade(treturnBlade);
 					switch (mode) {
 					case COMPLEXD -> {
 						try {
@@ -1251,7 +1255,9 @@ public class Monad implements Modal {
 					int col = tBasis.find(blade) - 1;
 					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 						int row = tBasis.find(blade2) - 1;
-						Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
+						int treturnBlade = Math.abs(tProd.getResult(col, row)) - 1;		//Recover Cayley table entry as index
+						if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
+						Blade bMult = tBasis.getSingleBlade(treturnBlade);
 						switch (mode) {
 						case COMPLEXD -> {
 							try {
@@ -1314,7 +1320,9 @@ public class Monad implements Modal {
 				int col = tBasis.find(blade) - 1;
 				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
 					int row = tBasis.find(blade2) - 1;
-					Blade bMult = tBasis.getSingleBlade(Math.abs(tProd.getResult(col, row)) - 1);
+					int treturnBlade = Math.abs(tProd.getResult(col, row)) - 1;		//Recover Cayley table entry as index
+					if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
+					Blade bMult = tBasis.getSingleBlade(treturnBlade);
 					switch (mode) {
 					case COMPLEXD -> {
 						try {

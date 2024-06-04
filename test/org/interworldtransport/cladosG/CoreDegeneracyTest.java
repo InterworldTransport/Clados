@@ -168,8 +168,8 @@ public class CoreDegeneracyTest {
 
                 assertTrue(tGP.getSign(1, 2) == 1);             //Should be positive on row 1
                 assertTrue(tGP.getSign(2, 1) == -1);            //Should be neg to get anticommute
-                assertTrue(tGP.getSign(15, 15) == 1);           //+1 for all degenerate cases.
-                assertTrue(tGP.getResult(15, 15) == 1);         //PScalar squares to 0.
+                assertTrue(tGP.getSign(15, 15) == 0);           //+1 for all degenerate cases.
+                assertTrue(tGP.getResult(15, 15) == 0);         //PScalar squares to 0.
                 assertTrue(tGP.signature().length() == 4);
             } catch (BadSignatureException esig) {
                 ;
@@ -193,11 +193,11 @@ public class CoreDegeneracyTest {
                 int tScalarCount = 0;
 				for (int j = 0; j < tSpot.length; j++) {
 					tSumP += Math.abs(tSpot[j]);
-                    if (Math.abs(tSpot[j]) == 1)
+                    if (Math.abs(tSpot[j]) == 0)
                         tScalarCount++;
                 }
 				assertTrue(tSum >= tSumP);
-                assertTrue(tScalarCount == 1 | tScalarCount == tGP.getBladeCount()/2);
+                assertTrue(tScalarCount == 0 | tScalarCount == tGP.getBladeCount()/2);
 			}
 		}
 
@@ -216,11 +216,11 @@ public class CoreDegeneracyTest {
                 int tScalarCount = 0;
 				for (int j = 0; j < tSpot.length; j++){
 					tSumP += Math.abs(tSpot[j]);
-                    if (Math.abs(tSpot[j]) == 1)
+                    if (Math.abs(tSpot[j]) == 0)
                         tScalarCount++;
                 }
 				assertTrue(tSum >= tSumP);
-                assertTrue(tScalarCount == 1 | tScalarCount == tGP.getBladeCount()/2);
+                assertTrue(tScalarCount == 0 | tScalarCount == tGP.getBladeCount()/2);
 			}
 		}
 
@@ -239,11 +239,11 @@ public class CoreDegeneracyTest {
                 int tScalarCount = 0;
 				for (int j = 0; j < tSpot.length; j++){
 					tSumP += Math.abs(tSpot[j]);
-                    if (Math.abs(tSpot[j]) == 1)
+                    if (Math.abs(tSpot[j]) == 0)
                         tScalarCount++;
                 }
 				assertTrue(tSum >= tSumP);
-                assertTrue(tScalarCount == 1 | tScalarCount == tGP.getBladeCount()/2);
+                assertTrue(tScalarCount == 0 | tScalarCount == tGP.getBladeCount()/2);
 			}
 		}
 
@@ -262,11 +262,11 @@ public class CoreDegeneracyTest {
                 int tScalarCount = 0;
 				for (int j = 0; j < tSpot.length; j++){
 					tSumP += Math.abs(tSpot[j]);
-                    if (Math.abs(tSpot[j]) == 1)
+                    if (Math.abs(tSpot[j]) == 0)
                         tScalarCount++;
                 }
 				assertTrue(tSum >= tSumP);
-                assertTrue(tScalarCount == 1 | tScalarCount == tGP.getBladeCount()/2);
+                assertTrue(tScalarCount == 0 | tScalarCount == tGP.getBladeCount()/2);
 			}
 		}
 
