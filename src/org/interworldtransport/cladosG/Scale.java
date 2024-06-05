@@ -548,7 +548,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			tR = FBuilder.COMPLEXF.createZERO(this.getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
-					tR.add(ComplexF.newONE(this.getCardinal()).scale(div.modulus()));
+					tR.add(ComplexF.newONE(this.getCardinal()).scale(div.modulus()));	 //Conjugate built in
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
@@ -559,7 +559,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			tR = FBuilder.COMPLEXD.createZERO(this.getCardinal());
 			weightsStream().forEach(div -> {  //Do not go parallel in this stream
 				try {
-					tR.add(ComplexD.newONE(this.getCardinal()).scale(div.modulus()));
+					tR.add(ComplexD.newONE(this.getCardinal()).scale(div.modulus()));	 //Conjugate built in
 				} catch (FieldBinaryException e) {
 					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
 				}
