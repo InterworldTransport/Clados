@@ -275,9 +275,9 @@ public class CoreMonadComplexDTest {
         testThis = (ComplexD) tM6.scales.modulusSQSum();
         assertTrue(testThis.getReal() == 64);
 
-        assertThrows(FieldException.class, () -> tM0.normalize());
+        assertThrows(FieldException.class, () -> tM0.normalizeOnVS());
         
-        assertDoesNotThrow(() -> tM6.normalize()); //divides coeff's by 32 (=modulusSum).
+        assertDoesNotThrow(() -> tM6.normalizeOnVS()); //divides coeff's by 32 (=modulusSum).
         testThis = tM6.magnitude();
         assertTrue(testThis.getReal() == 1.0d);
 
@@ -285,7 +285,7 @@ public class CoreMonadComplexDTest {
         tM6.gradeSuppress((byte) 0);
         testThis = tM6.magnitude();
         assertTrue(testThis.getReal() == 30.0d);
-        assertDoesNotThrow(() -> tM6.normalize()); //divides coeff's by 30 (=modulusSum).
+        assertDoesNotThrow(() -> tM6.normalizeOnVS()); //divides coeff's by 30 (=modulusSum).
         testThis = tM6.magnitude();
         assertTrue((testThis.getReal() - 1.0d) <=  0.00000000000000001 );
 		assertTrue((testThis.getImg()) <=  0.00000000000000001 );

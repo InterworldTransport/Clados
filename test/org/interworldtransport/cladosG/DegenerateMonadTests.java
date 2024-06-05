@@ -7,6 +7,7 @@ import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -50,8 +51,6 @@ public class DegenerateMonadTests {
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
 		tFix[4] = RealF.copyOf(tFix[0]);
-        //tFix[8] = RealF.copyOf(tFix[0]);
-        //tFix[14] = RealF.copyOf(tFix[0]);
 		tM4.setCoeff(tFix);                     //Makes tM4 idempotent
     }
 
@@ -89,6 +88,46 @@ public class DegenerateMonadTests {
         assertDoesNotThrow(() -> tM4.setCoeff(tFix));   //Makes tM4 an idempotent IF E1 wasn't degenerate... but it is
         System.out.println(Monad.toXMLFullString(tM4, ""));
         assertFalse(Monad.isIdempotent(tM4));           //Prove it does NOT square to itself.
+    }
+
+    @Test
+    public void testNorms() throws CladosMonadException{
+        RealF testThis = tM3.sqMagnitude();
+        assertTrue(testThis.getReal() == 16);
+        testThis = tM3.magnitude();
+        assertTrue(testThis.getReal() == 16);
+        testThis = (RealF) tM3.scales.modulusSum();
+        assertTrue(testThis.getReal() == 16);
+        testThis = (RealF) tM3.scales.modulusSQSum();
+        assertTrue(testThis.getReal() == 16);
+
+        RealF cRFBit = RealF.create(tCard, 2.0f);
+        for (int k=0; k<16; k++)
+            cRF[k] = RealF.copyOf(cRFBit);
+        tM3.setCoeff(cRF);
+        
+        testThis = tM3.sqMagnitude();
+        assertTrue(testThis.getReal() == 64);
+        testThis = tM3.magnitude();
+        assertTrue(testThis.getReal() == 32);
+        testThis = (RealF) tM3.scales.modulusSum();
+        assertTrue(testThis.getReal() == 32);
+        testThis = (RealF) tM3.scales.modulusSQSum();
+        assertTrue(testThis.getReal() == 64);
+
+        assertThrows(FieldException.class, () -> tM0.normalizeOnVS());
+        
+        assertDoesNotThrow(() -> tM3.normalizeOnVS()); //divides coeff's by 32 (=modulusSum).
+        testThis = tM3.magnitude();
+        assertTrue(testThis.getReal() == 1.0f);
+
+        tM3.setCoeff(cRF);
+        tM3.gradeSuppress((byte) 0);
+        testThis = tM3.magnitude();
+        assertTrue(testThis.getReal() == 30.0f);
+        assertDoesNotThrow(() -> tM3.normalizeOnVS()); //divides coeff's by 30 (=modulusSum).
+        testThis = tM3.magnitude();
+        assertTrue(testThis.getReal() == 1.0f);
     }
 
 }

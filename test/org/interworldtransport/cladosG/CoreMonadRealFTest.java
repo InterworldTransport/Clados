@@ -275,9 +275,9 @@ public class CoreMonadRealFTest {
         testThis = (RealF) tM6.scales.modulusSQSum();
         assertTrue(testThis.getReal() == 64);
 
-        assertThrows(FieldException.class, () -> tM0.normalize());
+        assertThrows(FieldException.class, () -> tM0.normalizeOnVS());
         
-        assertDoesNotThrow(() -> tM6.normalize()); //divides coeff's by 32 (=modulusSum).
+        assertDoesNotThrow(() -> tM6.normalizeOnVS()); //divides coeff's by 32 (=modulusSum).
         testThis = tM6.magnitude();
         assertTrue(testThis.getReal() == 1.0f);
 
@@ -285,7 +285,7 @@ public class CoreMonadRealFTest {
         tM6.gradeSuppress((byte) 0);
         testThis = tM6.magnitude();
         assertTrue(testThis.getReal() == 30.0f);
-        assertDoesNotThrow(() -> tM6.normalize()); //divides coeff's by 30 (=modulusSum).
+        assertDoesNotThrow(() -> tM6.normalizeOnVS()); //divides coeff's by 30 (=modulusSum).
         testThis = tM6.magnitude();
         assertTrue(testThis.getReal() == 1.0f);
     }

@@ -1418,15 +1418,51 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Normalize the monad. A <b>CladosMonadException</b> is thrown if the Monad has
-	 * a zero magnitude.
-	 * <p>
-	 * @return Monad after normalization effort is attempted.
-	 * @throws FieldException This exception is thrown when normalizing a zero or
-	 *                        field conflicted monad is tried. The object throwing it
-	 * 						  is the Scale<UnitAbstract Children>
+	 * Normalize the monad using the definition that involves 
+	 * @return Monad this after the operation is complete
+	 * @throws FieldException 
 	 */
 	public Monad normalize() throws FieldException {
+		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();
+		tRev.multiplyRight(this).gradePart((byte) 0); 	//The scalar part will be real.
+
+		switch (this.getMode()) {
+			case COMPLEXD -> {
+				ComplexD tMagCD = ((ComplexD) tRev.getWeights().getScalar().invert()); //img part == 0
+				tMagCD.setReal(Math.sqrt(Math.abs(tMagCD.getReal())));
+				this.scale(tMagCD);
+			}	
+			case COMPLEXF -> {
+				ComplexF tMagCF = ((ComplexF) tRev.getWeights().getScalar().invert()); //img part == 0
+				tMagCF.setReal((float) Math.sqrt(Math.abs(tMagCF.getReal())));
+				this.scale(tMagCF);		
+			}
+			case REALD -> {
+				RealD tMagRD = ((RealD) tRev.getWeights().getScalar().invert());
+				tMagRD.setReal(Math.sqrt(Math.abs(tMagRD.getReal())));
+				this.scale(tMagRD);				
+			}
+			case REALF -> {
+				RealF tMagRF = ((RealF) tRev.getWeights().getScalar().invert());
+				tMagRF.setReal((float) Math.sqrt(Math.abs(tMagRF.getReal())));
+				this.scale(tMagRF);
+			}
+			default -> {}
+		}
+		return this;
+	}
+
+	/**
+	 * Normalize the monad as if all its basis blades were 'vectors' in the 
+	 * 2^n-dimensional vector space we can form using the basis from the 
+	 * n-dimensional algebra.
+	 * <p>
+	 * @return Monad after normalization effort is attempted.
+	 * @throws FieldException This exception is thrown when normalizing a zero-sized
+	 *                        or field-conflicted monad. The object throwing it
+	 * 						  is the Scale<of UnitAbstract children>
+	 */
+	public Monad normalizeOnVS() throws FieldException {
 		scales.normalize();
 		return this;
 	}

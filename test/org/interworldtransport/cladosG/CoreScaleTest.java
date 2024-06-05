@@ -263,10 +263,10 @@ public class CoreScaleTest {
         workScaleCD2.getScalar().setReal(1.0d);
         workScaleCD2.getScalar().setImg(1.0d);
 
-        Assertions.assertDoesNotThrow(() -> workScaleRF2.normalize());
-        Assertions.assertDoesNotThrow(() -> workScaleRD2.normalize());
-        Assertions.assertDoesNotThrow(() -> workScaleCF2.normalize());
-        Assertions.assertDoesNotThrow(() -> workScaleCD2.normalize());
+        Assertions.assertDoesNotThrow(() -> workScaleRF2.normalizeOnVS());
+        Assertions.assertDoesNotThrow(() -> workScaleRD2.normalizeOnVS());
+        Assertions.assertDoesNotThrow(() -> workScaleCF2.normalizeOnVS());
+        Assertions.assertDoesNotThrow(() -> workScaleCD2.normalizeOnVS());
 
         assertTrue(workScaleRF2.getScalar().getReal() == 1.0f);
         assertTrue(workScaleRD2.getScalar().getReal() == 1.0d);
