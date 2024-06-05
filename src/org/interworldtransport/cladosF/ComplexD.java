@@ -536,9 +536,9 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	}
 
 	/**
-	 * This function delivers the sum of the squares of the numeric values. Many
-	 * times it is the modulus squared that is actually needed so it makes sense to
-	 * calculate this before the modulus itself.
+	 * This function delivers the sum of the squares of the numeric values. (x^2+y^2)
+	 * Many times it is the modulus squared that is actually needed so it makes 
+	 * sense to calculate this before the modulus itself.
 	 * <p>
 	 * @return Double
 	 */
