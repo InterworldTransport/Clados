@@ -1420,7 +1420,9 @@ public class Monad implements Modal {
 	/**
 	 * Normalize the monad using the definition that involves 
 	 * @return Monad this after the operation is complete
-	 * @throws FieldException 
+	 * @throws FieldException This exception is thrown when normalizing a zero-sized
+	 *                        or field-conflicted monad. The object throwing it
+	 * 						  is one of the UnitAbstract children in Scale<T>
 	 */
 	public Monad normalize() throws FieldException {
 		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();
@@ -1460,7 +1462,8 @@ public class Monad implements Modal {
 	 * @return Monad after normalization effort is attempted.
 	 * @throws FieldException This exception is thrown when normalizing a zero-sized
 	 *                        or field-conflicted monad. The object throwing it
-	 * 						  is the Scale<of UnitAbstract children>
+	 * 						  is the Scale<of UnitAbstract children> on behalf of one
+	 * 						  of its entries.
 	 */
 	public Monad normalizeOnVS() throws FieldException {
 		scales.normalize();
