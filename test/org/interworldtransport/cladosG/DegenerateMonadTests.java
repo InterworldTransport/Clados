@@ -130,4 +130,32 @@ public class DegenerateMonadTests {
         assertTrue(testThis.getReal() == 1.0f);
     }
 
+    @Test
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+        cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 8); //new RealF[8];
+        Monad tryThis = new Monad(mName + "RF0", 
+                                    aName, 
+                                    "Foot Default Frame", 
+                                    "Test Foot 0", 
+                                    "0++",
+                                    FBuilder.REALF.createONE(tCard));   //A protonumber
+        tryThis.setCoeff(cRF);
+        tryThis.normalize();
+        assertTrue(((RealF) tryThis.getWeights().getScalar()).getReal() == (float) (1.0/Math.sqrt(4)));
+        assertTrue(((RealF) tryThis.getWeights().getPScalar()).getReal() == (float) (1.0/Math.sqrt(4)));
+        // Normalize by scaling by 1/2 (1/sqrt(4)) instead of 1/sqrt(8) because half of the blades don't contribute.
+
+        tryThis.setCoeff(cRF);
+        tryThis.gradeSuppress((byte) 3);
+        tryThis.normalize();
+        assertTrue(((RealF) tryThis.getWeights().getScalar()).getReal() == (float) (1.0/Math.sqrt(4)));
+        //suppressing grade 3 doesn't matter. It wasn't contributing.
+
+        tryThis.setCoeff(cRF);
+        tryThis.gradeSuppress((byte) 3).gradeSuppress((byte) 2);
+        tryThis.normalize();
+        assertTrue(((RealF) tryThis.getWeights().getScalar()).getReal() == (float) (1.0/Math.sqrt(3)));
+        //suppressing grade 2 does matter because one of those blades was contributing.
+    }
+
 }

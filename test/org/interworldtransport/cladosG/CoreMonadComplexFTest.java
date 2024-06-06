@@ -292,6 +292,33 @@ public class CoreMonadComplexFTest {
     }
 
     @Test
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+        cCF = (ComplexF[]) FListBuilder.COMPLEXF.create(tCard, 4); //new ComplexF[4];
+        for (int i=0; i<4; i++){            //Modulus will still be one for each weight, but conjugate will matter here.
+            cCF[i].setImg(1.0f);
+            cCF[i].setReal(0.0f);
+        }
+        Monad tryThis = new Monad(mName + "CF0", 
+                                    aName, 
+                                    "Foot Default Frame", 
+                                    "Test Foot 0", 
+                                    "++",
+                                    FBuilder.COMPLEXF.createONE(tCard));   //A protonumber
+        tryThis.setCoeff(cCF);
+        tryThis.normalize();
+        assertTrue(((ComplexF) tryThis.getWeights().getScalar()).getReal() == 0.0f);    //Because normalize() uses conjugate weights.
+        assertTrue(((ComplexF) tryThis.getWeights().getScalar()).getImg() == 0.5f);     //Because all four components weigh in.
+        assertTrue(((ComplexF) tryThis.getWeights().getPScalar()).getReal() == 0.0f);   //Because normalize() uses conjugate weights.
+        assertTrue(((ComplexF) tryThis.getWeights().getPScalar()).getImg() == 0.5f);    //Because all four components weigh in.
+
+        tryThis.setCoeff(cCF);
+        tryThis.gradeSuppress((byte) 2);
+        tryThis.normalize();
+        assertTrue(((ComplexF) tryThis.getWeights().getScalar()).getImg() == (float) (1.0/Math.sqrt(3)));
+        assertTrue(((ComplexF) tryThis.getWeights().getScalar()).getReal() == 0.0f);
+    }
+
+    @Test
 	public void testMultiplication() {
         assertTrue(tM0.getSparseFlag());    //ZERO
         assertTrue(tM1.getSparseFlag());    //ZERO

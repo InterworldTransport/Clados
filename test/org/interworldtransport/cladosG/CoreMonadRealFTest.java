@@ -291,6 +291,26 @@ public class CoreMonadRealFTest {
     }
 
     @Test
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+        cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 4); //new RealF[4];
+        Monad tryThis = new Monad(mName + "RF0", 
+                                    aName, 
+                                    "Foot Default Frame", 
+                                    "Test Foot 0", 
+                                    "++",
+                                    FBuilder.REALF.createONE(tCard));   //A protonumber
+        tryThis.setCoeff(cRF);
+        tryThis.normalize();
+        assertTrue(((RealF) tryThis.getWeights().getScalar()).getReal() == 0.5f);
+        assertTrue(((RealF) tryThis.getWeights().getPScalar()).getReal() == 0.5f);
+
+        tryThis.setCoeff(cRF);
+        tryThis.gradeSuppress((byte) 2);
+        tryThis.normalize();
+        assertTrue(((RealF) tryThis.getWeights().getScalar()).getReal() == (float) (1.0/Math.sqrt(3)));
+    }
+
+    @Test
 	public void testMultiplication() {
         assertTrue(tM0.getSparseFlag());    //ZERO
         assertTrue(tM1.getSparseFlag());    //ZERO
