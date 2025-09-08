@@ -80,7 +80,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * an old tradition when physicists wrote linear transformations as dyads. Two
  * vectors were written side by side, but no simplifying action could be taken.
  * The dyad was described as an operator, so the vectors were applied to another
- * operand rathan than each other. Few textbooks do that anymore (we have matrix
+ * operand rather than each other. Few textbooks do that anymore (we have matrix
  * algebra now) and the name has fallen into dis-use. It is revived here because
  * we need something short and useful. A 'dyad' will be two monads in a list
  * which is generalized in another CladosG class called nyad.
@@ -104,15 +104,15 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * Scale object containing a mondad's coefficients. The copyOf() functions will
  * faithfully copy them as they are. The scale() methods and others will
  * faithfully pass them to a Scale object to be used as appropriate there. For
- * example, Scale's scale() method will will try to use them as given. What
+ * example, Scale's scale() method will try to use them as given. What
  * happens, though, is the inbound number gets multiplied against others AS THEY
  * UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right
  * unless one thought the scaling was between two complex numbers. THAT'S why
- * Scale AND Monad implement Modal, but nothing is not enforced yet.
+ * Scale AND Monad implement Modal, but nothing is enforced yet.
  * <p>
  * 2. If someone invents a new UnitAbstract child, there is a ton of work to do
  * as the builders and other enumerations have to be adapted. Any class
- * implementing Model might have methods that switch on CladosField values.
+ * implementing Modal might have methods that switch on CladosField values.
  * So... be cautious about inventing new CladosF numbers. Lots of work will have
  * to be done.
  * <p>

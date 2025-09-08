@@ -21,7 +21,7 @@ public class DegenerateMonadTests {
     Foot pFoot1 = new Foot("Foot1", tCard);
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
-    String pgasig = "0+++";
+    String pgasig = "+++0";
     RealF[] cRF;
     Monad tM0, tM1, tM2, tM3, tM4;
 
@@ -50,7 +50,7 @@ public class DegenerateMonadTests {
 		tM4 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
-		tFix[4] = RealF.copyOf(tFix[0]);
+		tFix[1] = RealF.copyOf(tFix[0]);
 		tM4.setCoeff(tFix);                     //Makes tM4 idempotent
     }
 
@@ -82,9 +82,10 @@ public class DegenerateMonadTests {
         assertFalse(Monad.isGZero(tM3));		        //Prove we altered it.
 
 		assertTrue(Monad.isIdempotent(tM4));            //Prove it squares to itself.
+        System.out.println(Monad.toXMLFullString(tM4, ""));
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
-		tFix[1] = RealF.copyOf(tFix[0]);
+		tFix[4] = RealF.copyOf(tFix[0]);
         assertDoesNotThrow(() -> tM4.setCoeff(tFix));   //Makes tM4 an idempotent IF E1 wasn't degenerate... but it is
         System.out.println(Monad.toXMLFullString(tM4, ""));
         assertFalse(Monad.isIdempotent(tM4));           //Prove it does NOT square to itself.
