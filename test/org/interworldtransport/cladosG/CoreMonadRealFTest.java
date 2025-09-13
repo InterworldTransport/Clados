@@ -14,8 +14,6 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-
 public class CoreMonadRealFTest {
     Cardinal tCard = Cardinal.generate("TestMonads");
     Cardinal altCard1 = Cardinal.generate("Test Float 1");
@@ -27,6 +25,9 @@ public class CoreMonadRealFTest {
 	Monad tM0, tM1, tM2, tM3, tM4;
 	Monad tM5, tM6, tM7, tM8, tM9;
 	Monad tM10, tM11;
+
+
+
 
     @BeforeEach
 	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -47,7 +48,8 @@ public class CoreMonadRealFTest {
                         FBuilder.REALF.createZERO(altCard1));   //A protonumber
 		tM2 = new Monad(mName + "RF2", tM1);    //Copy of tM1 but with a different name
 		tM3 = new Monad(mName + "RF3", tM1);    //Deep Copy of tM1 with different Scale and name
-		tM4 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
+
+        tM4 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
 		tM5 = new Monad(mName + "RF5", 
                         aName, 
                         "Foot Default Frame", 

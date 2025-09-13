@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 public class DegenerateMonadTests {
     Cardinal tCard = Cardinal.generate("TestMonads");
+    Cardinal altCard1 = Cardinal.generate("Test Float 1");
+    Cardinal altCard5 = Cardinal.generate("Test Float 5");
     String mName = "Monad-";
     Foot pFoot0 = new Foot("Foot0", tCard);
     Foot pFoot1 = new Foot("Foot1", tCard);
@@ -23,7 +25,8 @@ public class DegenerateMonadTests {
 	String aName2 = "Property Algebra";
     String pgasig = "+++0";
     RealF[] cRF;
-    Monad tM0, tM1, tM2, tM3, tM4;
+    Monad tM0, tM1, tM2, tM3, tM4, tM5, tM6;
+	//Monad tM7, tM8, tM9, tM10;
 
     @BeforeEach
 	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -43,56 +46,102 @@ public class DegenerateMonadTests {
                         pgasig,                 //But same signature
                         FBuilder.REALF.createZERO(tCard));   //A protonumber
 		tM2 = new Monad(mName + "RF2", tM1);    //Copy of tM1 but with a different name
-
 		tM3 = new Monad(mName + "RF3", tM1);    //Deep Copy of tM1 with different Scale and name
         tM3.setCoeff(cRF);                      //Weights all set to ONE.
-
 		tM4 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
 		tFix[1] = RealF.copyOf(tFix[0]);
 		tM4.setCoeff(tFix);                     //Makes tM4 idempotent
+        tFix[0] = RealF.copyOf(tFix[2]);
+        tFix[1] = FBuilder.REALF.createONE(tCard);
+        tFix[5] = FBuilder.REALF.createONE(tCard);
+        tM5 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
+        tM5.setCoeff(tFix);                     //Makes tM5 nilppotent order 2
+
+        tFix[5] = RealF.copyOf(tFix[2]);
+        tFix[7] = FBuilder.REALF.createONE(tCard); //Leaving E1 and E14 with a coefficient of 1.
+        tM6 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
+        tM6.setCoeff(tFix);                     //Makes tM6 look like a nilppotent order 2
+                                                //when it really isn't because E4 is degenerate.
     }
 
-    @Test
-     public void testMode() {
-         assertTrue(tM4.getMode() == CladosField.REALF);
-     }
+    //@Test
+    //public void testMode() {          // This test isn't needed because mode is independent of degeneracy in the signature.
+    //}
+
+    //@Test
+	//public void testReferenceMatches() {  // This test isn't needed because reference matching is 
+                                            // independent of degeneracy in the signature.
+    //}
+
+    //@Test
+    //public void testhasGrade() {      // This test isn't needed because grade detection is 
+                                        // independent of degeneracy in the signature. 
+    //}
+
+    //@Test
+	//public void testisGrade() {       // This test isn't needed because grade detection is 
+                                        // independent of degeneracy in the signature.
+    //}
+
+    //@Test
+	//public void testisMultiGrade() {  // This test isn't needed because multigrade detection is 
+                                        // independent of degeneracy in the signature.
+    //}
+
+    //@Test
+	//public void testisUniGrade() {    // This test isn't needed because unigrade detection is
+                                        // independent of degeneracy in the signature.
+    //}
+
+    //@Test
+	//public void testIsGEqual() {      // This test isn't needed because geometric equality is 
+                                        // independent of degeneracy in the signature. 
+                                        // Only reference match and weight match is checked.
+    //}
+
+    //@Test
+    //public void testIsGZero(){        // This test isn't needed because geometric zero is 
+                                        // independent of degeneracy in the signature.
+                                        // Weight match is checked and the grade key. That's all.
+    //}
 
     @Test
-    public void testhasGrade() {
-        assertTrue(Monad.hasGrade(tM0, 0));     //tM0 is ZERO, so defaults to scalar grade
-        assertFalse(Monad.hasGrade(tM0, 1));    //tM0 is ZERO, so defaults to scalar grade
-
-        assertTrue(Monad.hasGrade(tM3, 4));     //tM0 is ONE, so has all grades
+    public void testIsNilpotent(){
+		assertTrue(Monad.isNilpotent(tM2, 2));   // Because it is ZERO.
         
-    }
+		assertTrue(Monad.isNilpotent(tM5, 2));   // Prove it squares to zero.
+		assertFalse(Monad.isNilpotent(tM5, 1));  // Prove we have to actually multiply
+                                                        // to detect it because tM5 is not ZERO. 
 
-    @Test
-	public void testisGrade() {
-        assertTrue(Monad.isGrade(tM0, 0));      //tM0 is ZERO, so defaults to scalar grade
-		assertFalse(Monad.isGrade(tM3, 0));     //Because they were all set to ONE
-
-		assertFalse(Monad.isGrade(tM4, tM4.getAlgebra().getGradeCount() - 1)); //Detect PScalar
+        assertFalse(Monad.isNilpotent(tM6, 2));  // Prove it does NOT square to zero 
+                                                        // because E4 is degenerate.
     }
 
     @Test
     public void testIsIdempotent(){
-		assertTrue(Monad.isNilpotent(tM2, 2));   //Because it is ZERO.
+		assertTrue(Monad.isIdempotent(tM2));            //Because it is ZERO. Duh.
         assertFalse(Monad.isGZero(tM3));		        //Prove we altered it.
 
 		assertTrue(Monad.isIdempotent(tM4));            //Prove it squares to itself.
-        System.out.println(Monad.toXMLFullString(tM4, ""));
+        //System.out.println(Monad.toXMLFullString(tM4, ""));
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
 		tFix[4] = RealF.copyOf(tFix[0]);
         assertDoesNotThrow(() -> tM4.setCoeff(tFix));   //Makes tM4 an idempotent IF E1 wasn't degenerate... but it is
-        System.out.println(Monad.toXMLFullString(tM4, ""));
+        //System.out.println(Monad.toXMLFullString(tM4, ""));
         assertFalse(Monad.isIdempotent(tM4));           //Prove it does NOT square to itself.
     }
 
+    //@Test
+    //public void testIsScaledIdempotent() throws FieldException{   // This test isn't needed because scaled idempotency is
+                                                                    // independent of degeneracy in the signature.
+                                                                    // Only nilpotent and idempotent checks are made.    
+    //}
+
     @Test
-    public void testNorms() throws CladosMonadException{
+    public void testNorms1() throws CladosMonadException{
         RealF testThis = tM3.sqMagnitude();
         assertTrue(testThis.getReal() == 16);
         testThis = tM3.magnitude();
@@ -129,6 +178,37 @@ public class DegenerateMonadTests {
         assertDoesNotThrow(() -> tM3.normalizeOnVS()); //divides coeff's by 30 (=modulusSum).
         testThis = tM3.magnitude();
         assertTrue(testThis.getReal() == 1.0f);
+    }
+
+    @Test
+    public void testNorms2() throws CladosMonadException{
+        RealF testThis = tM6.sqMagnitude();
+        assertTrue(testThis.getReal() == 2);
+        testThis = tM6.magnitude();
+        assertTrue(testThis.getReal() == 2);
+        testThis = (RealF) tM6.scales.modulusSum();
+        assertTrue(testThis.getReal() == 2);
+        testThis = (RealF) tM6.scales.modulusSQSum();
+        assertTrue(testThis.getReal() == 2);
+
+        tM6.scale(RealF.create(tM6.getWeights().getCardinal(), 2.0f));  // A mouthful just to double all coeff's. 
+
+        testThis = tM6.sqMagnitude();
+        assertTrue(testThis.getReal() == 8);
+        testThis = tM6.magnitude();
+        assertTrue(testThis.getReal() == 4);
+        testThis = (RealF) tM6.scales.modulusSum();
+        assertTrue(testThis.getReal() == 4);
+        testThis = (RealF) tM6.scales.modulusSQSum();
+        assertTrue(testThis.getReal() == 8);
+
+        assertDoesNotThrow(() -> tM6.normalizeOnVS());
+        testThis = tM6.magnitude(); // One of the blades squares to zero and that changes nothing.
+        assertTrue(testThis.getReal() == 1.0f);
+
+        tM6.gradeSuppress((byte) 2); // Suppressing the one blade that squares to zero.
+        testThis = tM6.magnitude();
+        assertTrue(testThis.getReal() == 0.5f); // because it was normalized before suppressing.
     }
 
     @Test
