@@ -688,7 +688,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			rB.append(indent).append("\t</Pair>\n");
 		});
 
-		rB.append(indent).append("\t\t</Scales>\n");
+		rB.append(indent).append("</Scales>\n");
 		return rB.toString();
 	}
 
