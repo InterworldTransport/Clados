@@ -3,7 +3,7 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosField;
+//import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.RealF;
@@ -25,8 +25,7 @@ public class DegenerateMonadTests {
 	String aName2 = "Property Algebra";
     String pgasig = "+++0";
     RealF[] cRF;
-    Monad tM0, tM1, tM2, tM3, tM4, tM5, tM6;
-	//Monad tM7, tM8, tM9, tM10;
+    Monad tM0, tM1, tM2, tM3, tM4, tM5, tM6, tM8;
 
     @BeforeEach
 	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
@@ -130,7 +129,7 @@ public class DegenerateMonadTests {
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
 		tFix[4] = RealF.copyOf(tFix[0]);
         assertDoesNotThrow(() -> tM4.setCoeff(tFix));   //Makes tM4 an idempotent IF E1 wasn't degenerate... but it is
-        //System.out.println(Monad.toXMLFullString(tM4, ""));
+        
         assertFalse(Monad.isIdempotent(tM4));           //Prove it does NOT square to itself.
     }
 
@@ -238,5 +237,63 @@ public class DegenerateMonadTests {
         assertTrue(((RealF) tryThis.getWeights().getScalar()).getReal() == (float) (1.0/Math.sqrt(3)));
         //suppressing grade 2 does matter because one of those blades was contributing.
     }
+
+    @Test
+	public void testMultiplication() {
+        assertTrue(tM0.getSparseFlag());    //ZERO
+        assertTrue(tM1.getSparseFlag());    //ZERO
+        assertTrue(tM2.getSparseFlag());    //ZERO
+        assertFalse(tM3.getSparseFlag());   //ONE
+
+        //System.out.println(Monad.toXMLFullString(tM4, ""));
+        assertFalse(tM4.getSparseFlag());   //Idempotent, but in a small algebra... so half the grades are present.
+        assertFalse(tM5.getSparseFlag());   //Nilpotent... so same issue.
+        assertFalse(tM6.getSparseFlag());   //Fake nilpotent in a small algebra...
+
+        assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM0)));
+		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM0)));
+        assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplySymm(tM0)));
+		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyAntisymm(tM0)));
+
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM1))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyLeft(tM0))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM1))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyRight(tM0))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplySymm(tM0))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyAntisymm(tM0))); //different feet and algebras
+
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM5)));   //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyLeft(tM0)));   //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM5)));  //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyRight(tM0)));  //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplySymm(tM5)));   //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyAntisymm(tM0))); //reference match succeeds
+
+        tM8 = new Monad(tM6);                                               // Another fake nilpotent.
+        assertDoesNotThrow(() -> tM8.multiplyRight(tM6));                   // Not sparse multiply
+        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 1.0f);
+        assertTrue(Monad.isGrade(tM8, 0));                           // Proves that E14*E14=0
+
+        tM8 = new Monad( tM6);                                              // Another fake nilpotent.
+        assertDoesNotThrow(() -> tM8.multiplySymm(tM6));                    //Not sparse multiply. Also tests addition.
+        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 1.0f);
+        assertTrue(Monad.isGrade(tM8, 0));                           // Proves that E14*E14=0
+        //System.out.println(Monad.toXMLFullString(tM8, ""));
+
+        tM8 = new Monad(tM6);
+        assertDoesNotThrow(() -> tM8.multiplyAntisymm(tM6));                //Not sparse multiply. Also tests subtraction.
+        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 0.0f);
+        assertTrue(Monad.isGrade(tM8, 0)); 
+ 
+        //No need to check sparse multiplication because the degenerate signature doesn't invalidate the sparse 
+        //multiplication tests of the core monad unit tests.
+
+
+    }
+
+    //@Test
+	//public void testPSMultiplication() {  // This test isn't needed because pseudoscalar multiplication is 
+                                            // independent of degeneracy in the signature.
+    //}
 
 }
