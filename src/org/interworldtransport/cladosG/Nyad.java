@@ -989,22 +989,23 @@ public class Nyad implements Modal {
 	/**
 	 * Display XML string that represents the Nyad and all its internal details
 	 * <p>
+	 * @param pN The Nyad to be exported as XML
 	 * @param indent String of tab characters to assist with human readability.
 	 * @return String
 	 */
-	public final String toXMLFullString(String indent) {
+	public static String toXMLFullString(Nyad pN, String indent) {
 		if (indent == null)
 			indent = "\t";
-		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(getNyadOrder()).append("\" ");
-		rB.append("algorder=\"").append(getNyadAlgebraOrder()).append("\" >\n");
-		rB.append(indent).append("\t<Name>").append(getName()).append("</Name>\n");
-		rB.append(getFoot().toXMLString(indent + "\t"));
+		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(pN.getNyadOrder()).append("\" ");
+		rB.append("algorder=\"").append(pN.getNyadAlgebraOrder()).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pN.getName()).append("</Name>\n");
+		rB.append(pN.getFoot().toXMLString(indent + "\t"));
 		rB.append(indent).append("\t<AlgebraList>\n");
-		for (Algebra point : getAlgebraList())
+		for (Algebra point : pN.getAlgebraList())
 			rB.append(indent).append("\t\t<AlgebraName>").append(point.getAlgebraName()).append("</AlgebraName>\n");
 		rB.append(indent).append("\t</AlgebraList>\n");
 		rB.append(indent).append("\t<MonadList>\n");
-		for (Monad tSpot : getMonadList())
+		for (Monad tSpot : pN.getMonadList())
 			rB.append(Monad.toXMLFullString(tSpot, indent + "\t\t"));
 		rB.append(indent).append("\t</MonadList>\n");
 		rB.append(indent).append("</Nyad>\n");
@@ -1014,18 +1015,19 @@ public class Nyad implements Modal {
 	/**
 	 * Display XML string that represents the Nyad
 	 * <p>
+	 * @param pN The Nyad to be exported as XML
 	 * @param indent String of tab characters to assist with human readability.
 	 * @return String
 	 */
-	public final String toXMLString(String indent) {
+	public static String toXMLString(Nyad pN, String indent) {
 		if (indent == null)
 			indent = "\t";
-		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(getNyadOrder()).append("\" ");
-		rB.append("algorder=\"").append(getNyadAlgebraOrder()).append("\" >\n");
-		rB.append(indent).append("\t<Name>").append(getName()).append("</Name>\n");
-		rB.append(getFoot().toXMLString(indent + "\t"));
+		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(pN.getNyadOrder()).append("\" ");
+		rB.append("algorder=\"").append(pN.getNyadAlgebraOrder()).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pN.getName()).append("</Name>\n");
+		rB.append(pN.getFoot().toXMLString(indent + "\t"));
 		rB.append(indent + "\t<MonadList>\n");
-		for (Monad tSpot : getMonadList())
+		for (Monad tSpot : pN.getMonadList())
 			rB.append(Monad.toXMLString(tSpot, indent + "\t\t"));
 		rB.append(indent).append("\t</MonadList>\n");
 		rB.append(indent).append("</Nyad>\n");

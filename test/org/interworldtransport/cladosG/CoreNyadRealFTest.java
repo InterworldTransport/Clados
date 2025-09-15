@@ -48,7 +48,6 @@ public class CoreNyadRealFTest {
 
 		property = GBuilder.createMonadWithFoot(FBuilder.REALF.createZERO(charge), here, mNameQ, aName2,
 				frameName, sig4D);
-
 	}
 
 	@Nested
@@ -128,14 +127,14 @@ public class CoreNyadRealFTest {
 
 		@Test
 		void testScalarAt() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing1.appendMonad(property);
+			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");	//motion happens to be ZERO
+			thing1.appendMonad(property);										//property happens to be ZERO
 			assertTrue(thing1.isScalarAt(motion.getAlgebra()));
 			assertTrue(thing1.isScalarAt(property.getAlgebra()));
-			((RealF) property.getCoeff(0)).setReal(1.0f);
+
+			((RealF) property.getWeights().getScalar()).setReal(1.0f);
 			assertTrue(thing1.isScalarAt(property.getAlgebra()));
 			property.multiplyByPSLeft();
-			// System.out.println(NyadRealF.toXMLString(thing1, ""));
 			assertTrue(thing1.isPScalarAt(property.getAlgebra()));
 		}
 	}
@@ -155,19 +154,18 @@ public class CoreNyadRealFTest {
 	void testScalingAt() throws CladosNyadException, CladosMonadException, FieldBinaryException {
 		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 		thing1.appendMonad(property);
-		((RealF) property.getCoeff(0)).setReal(16.0f);
+		((RealF) property.getWeights().getScalar()).setReal(16.0f);
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-
 		thing1.scale(thing1.findMonad(property), RealF.newONE(charge).scale(16.0f));
 		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		assertTrue(((RealF) property.getCoeff(0)).getReal() == 256.0f);
+		assertTrue(((RealF) property.getWeights().getScalar()).getReal() == 256.0f);
 	}
 
 	@Test
 	void testXMLFullOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = thing1.toXMLFullString("");
+		String printIt = Nyad.toXMLFullString(thing1, "");
 		assertTrue(printIt != null);
 		// System.out.println(printIt);
 	}
@@ -176,7 +174,7 @@ public class CoreNyadRealFTest {
 	void testXMLShortOutput() throws CladosMonadException, CladosNyadException {
 		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
 		thing1.appendMonad(property);
-		String printIt = thing1.toXMLString("");
+		String printIt = Nyad.toXMLString(thing1, "");
 		assertTrue(printIt != null);
 		// System.out.println(printIt);
 	}
