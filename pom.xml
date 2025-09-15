@@ -102,7 +102,7 @@
 			<plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>@{-Xmx2048m}</argLine>
+                    <argLine>@{-Xmx16382m}</argLine>
                 </configuration>
             </plugin>
         </plugins>
