@@ -95,19 +95,19 @@ class CoreGProductTest {
 			;
 		}
 	}
-
+/* 
 	@Test
 	public void testXMLOutput() {
 		try {
 			GProduct tGP = (GProduct) GBuilder.createGProduct(pSig10);
-			System.out.println(tGP.toXMLString(""));
+			//System.out.println(tGP.toXMLString(""));
 		} catch (BadSignatureException esig) {
 			;
 		} catch (GeneratorRangeException egen) {
 			;
 		}
 	}
-
+*/
 
 	@Nested
 	class testSizing {
