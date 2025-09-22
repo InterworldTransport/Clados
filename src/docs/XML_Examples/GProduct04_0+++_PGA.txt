@@ -1,0 +1,48 @@
+<GProduct>
+	<Signature>+++0</Signature>
+	<Basis>
+		<Grades count="5">
+			<Grade number="0" range="0-0" />
+			<Grade number="1" range="1-4" />
+			<Grade number="2" range="5-10" />
+			<Grade number="3" range="11-14" />
+			<Grade number="4" range="15-15" />
+		</Grades>
+		<Blades count="16">
+			<Blade key="0"   bitKey="0b0000" sign="1" generators="           " />
+			<Blade key="1"   bitKey="0b0001" sign="1" generators="E1         " />
+			<Blade key="2"   bitKey="0b0010" sign="1" generators="   E2      " />
+			<Blade key="3"   bitKey="0b0100" sign="1" generators="      E3   " />
+			<Blade key="4"   bitKey="0b1000" sign="1" generators="         E4" />
+			<Blade key="7"   bitKey="0b0011" sign="1" generators="E1,E2      " />
+			<Blade key="8"   bitKey="0b0101" sign="1" generators="E1,   E3   " />
+			<Blade key="9"   bitKey="0b1001" sign="1" generators="E1,      E4" />
+			<Blade key="13"  bitKey="0b0110" sign="1" generators="   E2,E3   " />
+			<Blade key="14"  bitKey="0b1010" sign="1" generators="   E2,   E4" />
+			<Blade key="19"  bitKey="0b1100" sign="1" generators="      E3,E4" />
+			<Blade key="38"  bitKey="0b0111" sign="1" generators="E1,E2,E3   " />
+			<Blade key="39"  bitKey="0b1011" sign="1" generators="E1,E2,   E4" />
+			<Blade key="44"  bitKey="0b1101" sign="1" generators="E1,   E3,E4" />
+			<Blade key="69"  bitKey="0b1110" sign="1" generators="   E2,E3,E4" />
+			<Blade key="194" bitKey="0b1111" sign="1" generators="E1,E2,E3,E4" />
+		</Blades>
+	</Basis>
+	<ProductTable rows="16">
+		<row number="0"  cells="  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16" />
+		<row number="1"  cells="  2,  1,  6,  7,  8,  3,  4,  5, 12, 13, 14,  9, 10, 11, 16, 15" />
+		<row number="2"  cells="  3,- 6,  1,  9, 10,- 2,-12,-13,  4,  5, 15,- 7,- 8,-16, 11,-14" />
+		<row number="3"  cells="  4,- 7,- 9,  1, 11, 12,- 2,-14,- 3,-15,  5,  6, 16,- 8,-10, 13" />
+		<row number="4"  cells="  5,- 8,-10,-11,  0, 13, 14,  0, 15,  0,  0,-16,  0,  0,  0,  0" />
+		<row number="5"  cells="  6,- 3,  2, 12, 13,- 1,- 9,-10,  7,  8, 16,- 4,- 5,-15, 14,-11" />
+		<row number="6"  cells="  7,- 4,-12,  2, 14,  9,- 1,-11,- 6,-16,  8,  3, 15,- 5,-13, 10" />
+		<row number="7"  cells="  8,- 5,-13,-14,  0, 10, 11,  0, 16,  0,  0,-15,  0,  0,  0,  0" />
+		<row number="8"  cells="  9, 12,- 4,  3, 15,- 7,  6, 16,- 1,-11, 10,- 2,-14, 13,- 5,- 8" />
+		<row number="9"  cells=" 10, 13,- 5,-15,  0,- 8,-16,  0, 11,  0,  0, 14,  0,  0,  0,  0" />
+		<row number="10" cells=" 11, 14, 15,- 5,  0, 16,- 8,  0,-10,  0,  0,-13,  0,  0,  0,  0" />
+		<row number="11" cells=" 12,  9,- 7,  6, 16,- 4,  3, 15,- 2,-14, 13,- 1,-11, 10,- 8,- 5" />
+		<row number="12" cells=" 13, 10,- 8,-16,  0,- 5,-15,  0, 14,  0,  0, 11,  0,  0,  0,  0" />
+		<row number="13" cells=" 14, 11, 16,- 8,  0, 15,- 5,  0,-13,  0,  0,-10,  0,  0,  0,  0" />
+		<row number="14" cells=" 15,-16, 11,-10,  0,-14, 13,  0,- 5,  0,  0,  8,  0,  0,  0,  0" />
+		<row number="15" cells=" 16,-15, 14,-13,  0,-11, 10,  0,- 8,  0,  0,  5,  0,  0,  0,  0" />
+	</ProductTable>
+</GProduct>
