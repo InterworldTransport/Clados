@@ -1,7 +1,7 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
     "java.test.config": {
-        "args": [-Xmx16382m
+        "args": ["-Xmx16G"
             
         ],
     }
