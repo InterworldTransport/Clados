@@ -501,10 +501,10 @@ public class CoreScaleTest {
         }
     }
 
-    @Test
-    public void testXMLString() {
-        System.out.println("Scale of real floats is:");
-        System.out.println(workScaleRF.toXMLString(""));
-    }
+    //@Test
+    //public void testXMLString() {
+    //    System.out.println("Scale of real floats is:");
+    //    System.out.println(workScaleRF.toXMLString(""));
+    //}
 
 }

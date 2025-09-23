@@ -158,7 +158,7 @@ public class CoreDegeneracyTest {
         public void testSigns() {
             try {
                 GProduct tGP = new GProduct(pSig301);
-                System.out.println(tGP.toXMLString(""));
+                //System.out.println(tGP.toXMLString(""));
                 assertTrue(tGP.getACommuteSign(1, 2) == 1);     //They anticommute
                 assertTrue(tGP.getCommuteSign(1, 9) == 1);      //They commute
                 assertTrue(tGP.getCommuteSign(2, 6) == 1);      //They commute
@@ -270,10 +270,10 @@ public class CoreDegeneracyTest {
 			}
 		}
 
-        @Test
-        public void testXMLOutput() throws BadSignatureException, GeneratorRangeException {
-            GProduct printThis = new GProduct(pSig301);
-            System.out.println(printThis.toXMLString(""));
-        }
+        //@Test
+        //public void testXMLOutput() throws BadSignatureException, GeneratorRangeException {
+            //GProduct printThis = new GProduct(pSig301);
+            //System.out.println(printThis.toXMLString(""));
+        //}
     }
 }
