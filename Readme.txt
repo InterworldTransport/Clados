@@ -52,7 +52,7 @@ Installation:
 Clados is a collection of packages meant to be used as a math library in other 
 applications. Place clados.jar where you normally place 3rd party libraries.
 
-Don't have the jar file? Build it. Use Ant tasks in build.xml to do it.
+Don't have the jar file? Build it. Or ask me to build one.
 ------------------------------------------------------------------------
 
 Credits:
