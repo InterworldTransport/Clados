@@ -3,12 +3,12 @@ Copyright © 2024 Alfred Differ
 Welcome to Clados …so what is it? 
 
 It is a set of java packages that implement multi-vectors in Clifford Algebras.
-	cladosG			- The geometry package
-	cladosF			- The number package
+	cladosG				- The geometry package
+	cladosF				- The number package
 	cladosGExceptions	- The geometry exception package
 	cladosFExceptions	- The number exception package
-	cladosGTest		- The JUnit tests that support cladosG
-	cladosFTest		- The JUnit tests that support cladosF
+	cladosGTest			- The JUnit tests that support cladosG
+	cladosFTest			- The JUnit tests that support cladosF
 
 If you don't know what a Clifford Algebra is, consider yourself encouraged to 
 read about them.  Geometric Algebras are a modeling choice variations, so don't 
@@ -52,7 +52,7 @@ Installation:
 Clados is a collection of packages meant to be used as a math library in other 
 applications. Place clados.jar where you normally place 3rd party libraries.
 
-Don't have the jar file? Build it. Use Ant tasks in build.xml to do it.
+Don't have the jar file? Build it. Or ask me to build one.
 ------------------------------------------------------------------------
 
 Credits:
