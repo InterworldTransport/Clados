@@ -194,6 +194,13 @@ class CoreComplexFTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex6));				//subtract infinity
 		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tComplex2));	//Nothing stops subtract of Float.MAX_VALUE right now.
 		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tComplex8));	//Nothing stops subtract of Float.MIN_VALUE right now.
+
+		try {
+			testThis1.multiply(tComplex4); //Already known that the exception is thrown.
+		} catch (FieldBinaryException e) {
+			assertTrue(e.getSecond() == tComplex4); //Prove that the exception references objects correctly.
+			assertTrue(e.getSource() == testThis1);
+		}
 	}
 
 	@Test

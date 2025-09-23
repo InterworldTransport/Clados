@@ -207,11 +207,10 @@ class CoreRealFTest {
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
 
 		try {
-			testThis1.multiply(tReal4);
+			testThis1.multiply(tReal4); //Already known that the exception is thrown.
 		} catch (FieldBinaryException e) {
-			assertTrue(e.getSecond() == tReal4);
+			assertTrue(e.getSecond() == tReal4); //Prove that the exception references objects correctly.
 			assertTrue(e.getSource() == testThis1);
-			System.out.println(e.getSourceMessage());
 		}
 	}
 
