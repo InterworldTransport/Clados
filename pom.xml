@@ -36,45 +36,45 @@
 			<plugins>
 				<!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
 				<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.3.0</version>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.5.0</version>
 				</plugin>
 				<!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
 				<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.3.1</version>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.3.1</version>
 				</plugin>
 				<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.13.0</version>
 				</plugin>
 				<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.5.4</version>
 					<configuration>
-        				<argLine>-Xmx16384m</argLine> <!-- Adjust the value as needed -->
-    				</configuration>
+						<argLine>-Xmx16G</argLine> <!-- Adjust the value as needed -->
+					</configuration>	
 				</plugin>
 				<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.3.0</version>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.3.0</version>
 				</plugin>
 				<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>3.1.1</version>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>3.1.1</version>
 				</plugin>
 				<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.1</version>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.1.1</version>
 				</plugin>
 				<!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
 				<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>4.0.0-M13</version>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>4.0.0-M13</version>
 				</plugin>
 				<plugin>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>3.5.0</version>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>3.5.0</version>
 				</plugin>
 			</plugins>
 			</pluginManagement>
@@ -99,14 +99,18 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>@{-Xmx16382m}</argLine>
-                </configuration>
-            </plugin>
+
         </plugins>
 	</build>
 
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.5.4</version>
+			</plugin>
+		</plugins>
+	</reporting>
 	
 </project>
