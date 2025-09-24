@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Nyad<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Nyad<br>
@@ -52,19 +52,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * the monads is multiplied against a different monad resulting in a scalar, the
  * nyad can be contracted to one monad. There are other ways to accomplish this
  * contraction as well and all of them imitate operations upon an operand.
- * <p>
+ * <br>
  * The Nyad class in it's current form is immature. The list capability works,
  * but the operation behaviors are yet to be written. This will most likely be
  * done as the library gets used in physical models for field theories that
  * require multi-algebra currents and potentials. The expected physical behavior
  * of a 'classical' field theory from physics will inform the behaviors expected
  * of CladosG Nyads.
- * <p>
+ * <br>
  * Nyads ARE Modal because they contain modal objects. Nothing in the List
  * nature of Nyads requires Modal, but specific Monad handling behavior does.
- * <p>
+ * <br>
  * (Single monad nyads are essentially monads, but can be expanded.)
- * <p>
+ * <br>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -73,7 +73,7 @@ public class Nyad implements Modal {
 	 * Return a boolean stating whether or not the nyad covers the algebra named in
 	 * the parameter. Coverage is true if a monad can be found in the nyad that
 	 * belongs to the algebra.
-	 * <p>
+	 * <br>
 	 * @param pN   Nyad
 	 * @param pAlg String
 	 * @return boolean
@@ -89,12 +89,12 @@ public class Nyad implements Modal {
 	 * If the monads listed within a nyad are all of the same algebra, the
 	 * strongFlag should be set to false AND the oneAlgebra flag should be set to
 	 * True. This method returns that the oneAlgebra flag.
-	 * <p>
+	 * <br>
 	 * In the future, the Frame classes will override this as it is likely that
 	 * other tests are required to ensure a monad list is actually a reference
 	 * frame. At the Nyad leve, therefore, it is best to to think of a true response
 	 * to this method as suggesting the nyad is a frame candidate.
-	 * <p>
+	 * <br>
 	 * @param pN Nyad to be tested
 	 * @return boolean True if nyad's monads are all of the same algebra
 	 */
@@ -109,11 +109,11 @@ public class Nyad implements Modal {
 	 * reference matches. Only monads sharing the same algebra name need to be
 	 * checked against each other. No check is to be made for equality between the
 	 * monad names.
-	 * <p>
+	 * <br>
 	 * This method is needed to compare Nyads since comparing instances via their
 	 * variable names only checks to see if both variables reference the same place
 	 * in memory
-	 * <p>
+	 * <br>
 	 * @param pTs NyadRealF
 	 * @param pN  NyadRealF
 	 * @return boolean
@@ -200,7 +200,7 @@ public class Nyad implements Modal {
 	/**
 	 * If the monads listed within a nyad are all of a different algebra, the
 	 * strongFlag should be set to true. This method returns that flag.
-	 * <p>
+	 * <br>
 	 * @param pN Nyad to be tested
 	 * @return boolean True if nyad is strong meaning each Monad is of a different
 	 *         algebra False if nyad's monads double up on any particular algebra
@@ -217,7 +217,7 @@ public class Nyad implements Modal {
 	 * identical to within sorting. Only monads sharing the same algebra name need
 	 * to be checked against each other for reference matches. For those in the same
 	 * algebra, we make use of the isRefereceMatch method and compare the two.
-	 * <p>
+	 * <br>
 	 * @param pTs Nyad
 	 * @param pN  Nyad
 	 * @return boolean
@@ -283,7 +283,7 @@ public class Nyad implements Modal {
 	 * If the monads listed within a nyad are all of a different algebra, the
 	 * strongFlag should be set to true. This method returns that the inverse of
 	 * that flag.
-	 * <p>
+	 * <br>
 	 * @param pN Nyad to be tested
 	 * @return boolean False if nyad is strong meaning each Monad is of a different
 	 *         algebra True if nyad's monads double up on any particular algebra
@@ -302,7 +302,7 @@ public class Nyad implements Modal {
 	 * monads sharing the same algebra name need to be checked against each other
 	 * for reference matches. For those in the same algebra, we make use of the
 	 * isRefereceMatch method and compare the two.
-	 * <p>
+	 * <br>
 	 * @param pTs Nyad
 	 * @param pN  Nyad
 	 * @return boolean
@@ -377,7 +377,7 @@ public class Nyad implements Modal {
 	 * Simple copy constructor of a Nyad. The passed Nyad will be copied in detail.
 	 * This contructor is used most often to get around operations that alter one of
 	 * the nyads when the developer does not wish it to be altered.
-	 * <p>
+	 * <br>
 	 * @param pN Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
@@ -393,7 +393,7 @@ public class Nyad implements Modal {
 	 * A basic constructor of a Nyad that starts with a Monad. The Monad will be
 	 * copied and placed at the top of the list OR reused based on pCopy The Foot,
 	 * however, will be used exactly as is either way.
-	 * <p>
+	 * <br>
 	 * @param pName String
 	 * @param pM    Monad
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
@@ -419,14 +419,14 @@ public class Nyad implements Modal {
 	 * A simple copy constructor of a Nyad. The passed NyadComplexD will be copied
 	 * without the name. This constructor is used most often to clone other objects
 	 * in every way except name.
-	 * <p>
+	 * <br>
 	 * The Foot object is re-used. The Algebra object is re-used. The Nyad's
 	 * proto-number object is re-used. The Nyad's monad objects are copyied OR
 	 * re-used depending on pCopy. but... re-use the monad's algebra object copy the
 	 * monad's frame name create new RealF's that clone the monad's coefficients
 	 * such that they... re-use the RealF's Cardinal object merely copy the val
 	 * array.
-	 * <p>
+	 * <br>
 	 * @param pName String
 	 * @param pN    Nyad
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
@@ -457,7 +457,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * This is just an alias for algebraList.stream().
-	 * <p>
+	 * <br>
 	 * @return Stream of distinct algebras in use in this Nyad.
 	 */
 	public Stream<Algebra> algebraStream() {
@@ -467,7 +467,7 @@ public class Nyad implements Modal {
 	/**
 	 * Add another Monad to the list of monads in this nyad. This method re-uses the
 	 * Monad offered as a parameter, so the NyadRealF DOES reference it.
-	 * <p>
+	 * <br>
 	 * @param pM Monad=
 	 * @throws CladosNyadException This exception is thrown if the foot of the new
 	 *                             monad fails to match
@@ -489,7 +489,7 @@ public class Nyad implements Modal {
 	 * Add another Monad to the list of monads in this nyad. This method creates a
 	 * new copy of the Monad offered as a parameter, so the NyadComplexD does not
 	 * wind up referencing the passed Monad.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Nyad
 	 * @throws CladosNyadException  This exception is thrown if the foot of the new
@@ -516,7 +516,7 @@ public class Nyad implements Modal {
 	 * in the same algebra and antisymmetrically multiplied to eachother. A
 	 * reference match test must pass for both after the algebra names have been
 	 * changed.
-	 * <p>
+	 * <br>
 	 * @param pInto int
 	 * @param pFrom int
 	 * @throws FieldBinaryException This exception is thrown when the monads to be
@@ -538,7 +538,7 @@ public class Nyad implements Modal {
 	 * Dyad symmetric compression: 1/2 (left right + right left) Monads are placed
 	 * in the same algebra and symmetrically multiplied to each other. A reference
 	 * match test must pass for both after the algebra names have been changed.
-	 * <p>
+	 * <br>
 	 * @param pInto int
 	 * @param pFrom int
 	 * @throws FieldBinaryException This exception is thrown when the scale field
@@ -562,7 +562,7 @@ public class Nyad implements Modal {
 	 * the list. This method creates a new algebra using the offered name and
 	 * signature. It also creates a new frame using the offered name. It is not a
 	 * copy method.
-	 * <p>
+	 * <br>
 	 * @param pMonadName    String
 	 * @param pAlgebraName String
 	 * @param pFrameName   String
@@ -605,7 +605,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Each of the Monads is turned into its Dual from the left.
-	 * <p>
+	 * <br>
 	 * @return Nyad
 	 */
 	public Nyad dualLeft() {
@@ -616,7 +616,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Each of the Monads is turned into its Dual from the right.
-	 * <p>
+	 * <br>
 	 * @return Nyad
 	 */
 	public Nyad dualRight() {
@@ -628,7 +628,7 @@ public class Nyad implements Modal {
 	/**
 	 * Return an integer pointing to a monad in the nyad that uses the algebra
 	 * referenced in the parameter.
-	 * <p>
+	 * <br>
 	 * @param pAlg Algebra
 	 * @return int
 	 */
@@ -642,7 +642,7 @@ public class Nyad implements Modal {
 	/**
 	 * Return an integer pointing to the part of the nyad expressed in the frame
 	 * named in the parameter.
-	 * <p>
+	 * <br>
 	 * @param pFrame String
 	 * @return boolean
 	 */
@@ -655,7 +655,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the index for monad within the nyad if found.
-	 * <p>
+	 * <br>
 	 * @param pIn Monad
 	 * @return int
 	 */
@@ -668,7 +668,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the index for monad matching requested name within the nyad if found.
-	 * <p>
+	 * <br>
 	 * @param pName String
 	 * @return int
 	 */
@@ -682,7 +682,7 @@ public class Nyad implements Modal {
 	/**
 	 * Return an integer larger than pStart pointing to a monad in the nyad that
 	 * uses the algebra referenced in the parameter.
-	 * <p>
+	 * <br>
 	 * @param pAlg   Algebra
 	 * @param pStart int
 	 * @return int
@@ -698,7 +698,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the element of the array of Algebras at the jth index.
-	 * <p>
+	 * <br>
 	 * @param pj int
 	 * @return Algebra
 	 */
@@ -708,7 +708,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the array of Algebras
-	 * <p>
+	 * <br>
 	 * @return ArrayList (of Algebras)
 	 */
 	public ArrayList<Algebra> getAlgebraList() {
@@ -717,7 +717,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Simple getter for the Foot for which the nyad relies
-	 * <p>
+	 * <br>
 	 * @return Foot
 	 */
 	public Foot getFoot() {
@@ -731,7 +731,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the array of Monads
-	 * <p>
+	 * <br>
 	 * @return ArrayList (of Monads)
 	 */
 	public ArrayList<Monad> getMonadList() {
@@ -740,7 +740,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the element of the array of Monads at the jth index.
-	 * <p>
+	 * <br>
 	 * @param pj int
 	 * @return Monad
 	 */
@@ -750,7 +750,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Simple getter method of the name of a nyad.
-	 * <p>
+	 * <br>
 	 * @return String name of the nyad.
 	 */
 	public String getName() {
@@ -759,7 +759,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the algebra order of this Nyad
-	 * <p>
+	 * <br>
 	 * @return short
 	 */
 	public int getNyadAlgebraOrder() {
@@ -768,7 +768,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the order of this Nyad
-	 * <p>
+	 * <br>
 	 * @return int
 	 */
 	public int getNyadOrder() {
@@ -778,7 +778,7 @@ public class Nyad implements Modal {
 	/**
 	 * Return a boolean stating whether or not the nyad is expressed in the frame
 	 * named in the parameter.
-	 * <p>
+	 * <br>
 	 * @param pFrame String
 	 * @return boolean
 	 */
@@ -791,7 +791,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return a boolean stating whether or not the nyad contained the named monad.
-	 * <p>
+	 * <br>
 	 * @param pName String
 	 * @return boolean
 	 */
@@ -805,7 +805,7 @@ public class Nyad implements Modal {
 	/**
 	 * This method finds how often a particular algebra shows up in use by monads in
 	 * the nyad. Results could range from zero to nyadOrder.
-	 * <p>
+	 * <br>
 	 * @param pAlg Algebra
 	 * @return int This method counts how many instances of the algebra are present
 	 *         in monads in the nyad
@@ -830,7 +830,7 @@ public class Nyad implements Modal {
 	/**
 	 * This method determines whether or not the Nyad is a pscalar in the algebra in
 	 * question. It works essentially the same way as isScalarAt.
-	 * <p>
+	 * <br>
 	 * @param pAlg Algebra
 	 * @return boolean
 	 */
@@ -854,14 +854,14 @@ public class Nyad implements Modal {
 
 	/**
 	 * This method determines whether the Nyad is a scalar in the algebra in question.
-	 * <p>
+	 * <br>
 	 * The method looks for Algebra matches in the monad list. If none are found the
 	 * test fails. If one is found and the related monad is a scalar, the test is
 	 * temporarily true, but the search continues until one exhausts the monad list
 	 * for algebra matches. If exhaustion occurs before another match is found with
 	 * a non-scalar monad, the test is solidly true. If a non-scalar is found before
 	 * the monad list is exhausted, the test fails.
-	 * <p>
+	 * <br>
 	 * @param pAlg Algebra
 	 * @return boolean
 	 */
@@ -887,7 +887,7 @@ public class Nyad implements Modal {
 	 * the one in the k-1 position if there is one there. If the the key points to
 	 * the first Monad, this function silently fails to pop it since it can't be
 	 * popped.
-	 * <p>
+	 * <br>
 	 * @param key int
 	 * @return Nyad
 	 */
@@ -904,7 +904,7 @@ public class Nyad implements Modal {
 	 * This method takes the Monad at the k'th position in the list and swaps it for
 	 * the one in the k+1 position there is one there. If the the key points to the
 	 * last Monad, this function silently fails to push it since it can't be pushed.
-	 * <p>
+	 * <br>
 	 * @param key int=
 	 * @return Nyad
 	 */
@@ -919,7 +919,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Remove a Monad on the list of monads in this nyad.
-	 * <p>
+	 * <br>
 	 * @param pthisone int
 	 * @throws CladosNyadException This exception is thrown when the monad to be
 	 *                             removed can't be found.
@@ -942,7 +942,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Remove a Monad on the list of monads in this nyad.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @throws CladosNyadException This exception is thrown when the monad to be
 	 *                             removed can't be found.
@@ -963,7 +963,7 @@ public class Nyad implements Modal {
 	 * The scaling is effectively performed against a 'zero' monad for the algebra
 	 * not represented in the list since much monads can be appended to the list
 	 * without really changing the nature of the nyad.
-	 * <p>
+	 * <br>
 	 * @param pk   int
 	 * @param pMag UnitAbstract child object
 	 * @param <T> UnitAbstract child object generic type support
@@ -979,7 +979,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Set the name of this Nyad
-	 * <p>
+	 * <br>
 	 * @param name String
 	 */
 	public void setName(String name) {
@@ -988,7 +988,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Display XML string that represents the Nyad and all its internal details
-	 * <p>
+	 * <br>
 	 * @param pN The Nyad to be exported as XML
 	 * @param indent String of tab characters to assist with human readability.
 	 * @return String
@@ -1014,7 +1014,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Display XML string that represents the Nyad
-	 * <p>
+	 * <br>
 	 * @param pN The Nyad to be exported as XML
 	 * @param indent String of tab characters to assist with human readability.
 	 * @return String
@@ -1038,7 +1038,7 @@ public class Nyad implements Modal {
 	 * This method simply resets the internal list of algebras associated with the
 	 * nyad. It sifts through the monad list and builds a list of references to
 	 * unique algebras found along the way.
-	 * <p>
+	 * <br>
 	 * At the end, this method ALSO sets the strongFlag and oneAlgebra flag.
 	 */
 	protected void resetAlgebraList() {
@@ -1070,7 +1070,7 @@ public class Nyad implements Modal {
 	/**
 	 * Set the Foot for the nyad using this method. A Foot merely labels where an
 	 * algebra is expected to be tangent to an underlying manifold.
-	 * <p>
+	 * <br>
 	 * @param pF Foot to set for the nyad.
 	 */
 	protected void setFoot(Foot pF) {
@@ -1080,7 +1080,7 @@ public class Nyad implements Modal {
 	/**
 	 * Set the Monad List array of this Nyad. A new ArrayList is created, but the
 	 * Monads list the list are reused.
-	 * <p>
+	 * <br>
 	 * @param pML ArrayList Contains the list of monads for the nyad
 	 */
 	protected void setMonadList(ArrayList<Monad> pML) {

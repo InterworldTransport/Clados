@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.ComplexF<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.ComplexF<br>
@@ -31,27 +31,27 @@ import org.interworldtransport.cladosFExceptions.*;
  * objects within the cladosF package are used as 'numbers' in the definition of
  * an algebra. All Clados objects use DivFieldElements and ComplexF is one
  * possibility.
- * <p>
+ * <br>
  * There is no doubt that the overhead related to this class is a waste of
  * resources. However, it allows one to plug fields into the algebra classes
  * without having to maintain many different types of monads and nyads. If Java
  * came with primitive types for complex and quaternion fields, and other
  * primitives implemented a 'Field' interface, I wouldn't bother writing this
  * object or any of the other descendants of DivFieldF.
- * <p>
+ * <br>
  * Applications requiring speed should use the monads and nyads that implement
  * numbers as primitives. Those classes are marked as such within the library.
- * <p>
+ * <br>
  * Ideally, this would extend java.lang.Float and implement an interface called
  * DivFieldF. That can't be done, though, because Float is final.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new ComplexF with the sum pF1 + pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 ComplexF
 	 * @param pF2 ComplexF
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -69,7 +69,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new ComplexF with the conjugate of the
 	 * parameter. Since the conjugate of a real number is the real number, this
 	 * method is functionally identical to #copy.
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return ComplexF
 	 */
@@ -81,10 +81,10 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * This static method takes a list of ComplexF objects and returns one ComplexF
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each entry on the list.
-	 * <p>
+	 * <br>
 	 * It does not perform a cardinal safety check and will throw the exception if
 	 * that test fails.
-	 * <p>
+	 * <br>
 	 * @param pL ComplexF[]
 	 * @throws FieldBinaryException This exception happens when there is a field
 	 *                              mismatch. It shouldn't happen but it is
@@ -106,7 +106,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * has a value that is equal to the sum of the SQModulus of each entry on the
 	 * list. It does not perform a cardinal safety check and will throw the
 	 * exception if that test fails.
-	 * <p>
+	 * <br>
 	 * @param pL ComplexF[]
 	 * @throws FieldBinaryException This exception occurs when there is a field
 	 *                              mismatch. It should never happen but the
@@ -125,7 +125,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static method that creates a new ComplexF with a copy of the parameter. This
 	 * copy reuses the cardinal reference to ensure it will pass a type match test.
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return ComplexF
 	 */
@@ -135,7 +135,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * <p>
+	 * <br>
 	 * @param pR ComplexF
 	 * @return ComplexF
 	 */
@@ -145,7 +145,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * <p>
+	 * <br>
 	 * @param pR ComplexF
 	 * @return ComplexF
 	 */
@@ -157,7 +157,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new ComplexF with a copy of the parameter. This
 	 * copy does not reuse a cardinal reference so it is likely to fail type
 	 * mismatch tests.
-	 * <p>
+	 * <br>
 	 * @param pR float
 	 * @param pI float
 	 * @return ComplexF
@@ -169,7 +169,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static method that creates a new ComplexF with floats and a Cardinal. This
 	 * copy DOES reuse the cardinal so it is likely to pass type mismatch tests.
-	 * <p>
+	 * <br>
 	 * @param pCard Cardinal
 	 * @param pR float
 	 * @param pI float
@@ -181,7 +181,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static divide method that creates a new ComplexF with the product pF1 / pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 ComplexF
 	 * @param pF2 ComplexF
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -206,7 +206,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * Check for the equality of this object with that of the argument. This checks
 	 * for exact equality using no tolerances. The FieldObject types must match
 	 * first.
-	 * <p>
+	 * <br>
 	 * @param pE ComplexF
 	 * @param pF ComplexF
 	 * @return boolean <i>true</i> if both components are the same; <i>false</i>,
@@ -218,7 +218,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Returns true if the real part is zero and imaginary part is not zero.
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return boolean
 	 */
@@ -228,7 +228,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if either value is infinite.
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return boolean
 	 */
@@ -238,7 +238,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if either value is not a number at all. NAN
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return boolean
 	 */
@@ -248,7 +248,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Returns true if the imaginary part is zero
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return boolean
 	 */
@@ -258,7 +258,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the number is exactly zero.
-	 * <p>
+	 * <br>
 	 * @param pF ComplexF
 	 * @return boolean
 	 */
@@ -269,7 +269,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static multiply method that creates a new ComplexF with the product pF1 *
 	 * pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 ComplexF
 	 * @param pF2 ComplexF
 	 * @throws FieldBinaryException This exception happens when there is a field
@@ -288,7 +288,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * <p>
+	 * <br>
 	 * @param pS String
 	 * @return ComplexF
 	 */
@@ -298,7 +298,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * <p>
+	 * <br>
 	 * @param pS String
 	 * @return ComplexF
 	 */
@@ -308,7 +308,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * <p>
+	 * <br>
 	 * @param pC Cardinal
 	 * @return ComplexF
 	 */
@@ -318,7 +318,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * <p>
+	 * <br>
 	 * @param pC Cardinal
 	 * @return ComplexF
 	 */
@@ -329,7 +329,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static subtract method that creates a new ComplexF with the difference
 	 * pF1-pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 ComplexF
 	 * @param pF2 ComplexF
 	 * @throws FieldBinaryException This exception occurs when there is a field
@@ -362,7 +362,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Copy Constructor that reuses the cardinal reference.
-	 * <p>
+	 * <br>
 	 * @param pC ComplexF
 	 */
 	public ComplexF(ComplexF pC) {
@@ -375,7 +375,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Copy Constructor that reuses the cardinal reference while allowing the values
 	 * to be set.
-	 * <p>
+	 * <br>
 	 * @param pC ComplexF
 	 * @param pR float
 	 * @param pI float
@@ -390,7 +390,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the cardinal to initialize.
-	 * <p>
+	 * <br>
 	 * @param pT Cardinal
 	 */
 	public ComplexF(Cardinal pT) {
@@ -402,7 +402,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with everything to initialize but the imaginary.
-	 * <p>
+	 * <br>
 	 * @param pT Cardinal
 	 * @param pR float
 	 */
@@ -415,7 +415,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with everything to initialize it.
-	 * <p>
+	 * <br>
 	 * @param pT Cardinal
 	 * @param pR float
 	 * @param pI float
@@ -429,7 +429,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the number to initialize.
-	 * <p>
+	 * <br>
 	 * @param pR float
 	 * @param pI float
 	 */
@@ -443,7 +443,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
-	 *<p>
+	 *<br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when a field mismatch
 	 *                              happens
@@ -462,7 +462,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the self-altering conjugate method. This object changes when all of
 	 * its imaginary members are set to their additive inverses.
-	 * <p>
+	 * <br>
 	 * @return ComplexF
 	 */
 	@Override
@@ -473,7 +473,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method divides real numbers and changes this object to be the result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
 	 *                              division by zero happens
@@ -498,7 +498,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Get method for the argument of the complex number. This function uses the
 	 * arctangent function, so its range and domain are the same.
-	 * <p>
+	 * <br>
 	 * @return float
 	 */
 	public float getArgument() {
@@ -510,7 +510,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Get the imaginary numeric value from the value array
-	 * <p>
+	 * <br>
 	 * @return float
 	 */
 	public float getImg() {
@@ -520,7 +520,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
-	 * <p>
+	 * <br>
 	 * @return Float
 	 */
 	@Override
@@ -530,7 +530,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Get the real numeric value from the value array
-	 * <p>
+	 * <br>
 	 * @return float
 	 */
 	public float getReal() {
@@ -541,7 +541,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * This function delivers the sum of the squares of the numeric values. (x^2+y^2)
 	 * Many times it is the modulus squared that is actually needed so it makes 
 	 * sense to calculate this before the modulus itself.
-	 * <p>
+	 * <br>
 	 * @return Float
 	 */
 	@Override
@@ -554,7 +554,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method inverts real numbers.
-	 * <p>
+	 * <br>
 	 * @throws FieldException This exception is thrown when someone tries to invert
 	 *                        ZERO.
 	 * @return ComplexF
@@ -573,7 +573,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
@@ -592,7 +592,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Scale method multiplies the modulus by the scale
-	 * <p>
+	 * <br>
 	 * @param pS Number
 	 * @return ComplexF
 	 */
@@ -605,7 +605,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Set the imaginary numeric value
-	 * <p>
+	 * <br>
 	 * @param pimg float
 	 */
 	public void setImg(float pimg) {
@@ -614,7 +614,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Set the real numeric value
-	 * <p>
+	 * <br>
 	 * @param preal float
 	 */
 	public void setReal(float preal) {
@@ -623,7 +623,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method subtracts real numbers and changes this object to be the result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
@@ -642,7 +642,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	@Override
@@ -652,7 +652,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	@Override

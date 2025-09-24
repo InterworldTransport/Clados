@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
@@ -54,19 +54,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * with geometric algebras. Think of them as vectors, but with higher ranked
  * elements also represented. There is more to it than that, but that is the
  * nutshell version.
- * <p>
+ * <br>
  * Caution | To the software community, 'vector' is generally understood to be a
  * dynamic array data structure. To a physicist, it is a thing that belongs to a
  * vector space and follows extra rules regarding allowed transformations. It's
  * 'thing' nature is much more important than how it acts as a data structure.
- * <p>
+ * <br>
  * The 'allowed' transformations are operations that do not change the 'thing'
  * nature of the object represented. For example, a meter stick is what it is no
  * matter how a coordinate system used to represent it is rotated. A
  * representation of the meter stick would have to be identifiable as the same
  * thing after a rotation, meaning many apparently different sets of data in the
  * structure are actually the same thing.
- * <p>
+ * <br>
  * A 'multivector' can represent 'things' that are of higher geometric rank than
  * lines. A monad has a data structure inside to support both coordinates and
  * reference information. 'Allowed' transformations on the reference frame
@@ -74,7 +74,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * it was from an external perspective. That's HOW a monad represents a thing.
  * It is expected to be invariant under 'allowed' transformations of the
  * contained data.
- * <p>
+ * <br>
  * Why 'monad' instead of 'multivector'? Try typing it yourself a few thousand
  * times and you'll understand. The name doesn't actually matter, but it is from
  * an old tradition when physicists wrote linear transformations as dyads. Two
@@ -84,14 +84,14 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * algebra now) and the name has fallen into dis-use. It is revived here because
  * we need something short and useful. A 'dyad' will be two monads in a list
  * which is generalized in another CladosG class called nyad.
- * <p>
+ * <br>
  * Doesn't 'monad' conflict with mathemetician's usage in Category Theory and
  * with Functional Programming advocates bringing that mathematics to the real
  * world? Yes. What the functional programmers are doing is terribly important,
  * so don't confuse their monad with what a physicist needs. This shouldn't be
  * too hard. Y'all have been doing it for 'vector' for a few decades. You'd
  * rather something else? 'Unad'? Make your case by helping out.
- * <p>
+ * <br>
  * NOTE | Regarding suppressed unchecked type casting warnings, they are
  * restricted to the casting that happens in CladosFBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
@@ -99,7 +99,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * coefficients in a monad are valid UnitAbstract children implementing Field
  * and Normalizable, the copyOf() functions will work fine. There are two cases
  * where things can go awry, though.
- * <p>
+ * <br>
  * 1. It is probably possible for someone to mix UnitAbstract children in a
  * Scale object containing a mondad's coefficients. The copyOf() functions will
  * faithfully copy them as they are. The scale() methods and others will
@@ -109,20 +109,20 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right
  * unless one thought the scaling was between two complex numbers. THAT'S why
  * Scale AND Monad implement Modal, but nothing is enforced yet.
- * <p>
+ * <br>
  * 2. If someone invents a new UnitAbstract child, there is a ton of work to do
  * as the builders and other enumerations have to be adapted. Any class
  * implementing Modal might have methods that switch on CladosField values.
  * So... be cautious about inventing new CladosF numbers. Lots of work will have
  * to be done.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
-	 * <p>
+	 * <br>
 	 * The grade key is checked using a bit of trickery with integer math.
 	 * Divide the key by 10^grade and toss the remainder. If the result is odd
 	 * the grade is present. If even, it isn't. The depends on the technique used
@@ -143,10 +143,10 @@ public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is the grade of the Monad. False
 	 * is returned otherwise.
-	 * <p>
+	 * <br>
 	 * The grade key is checked. A simple power of 10 is a single grade. No special 
 	 * carve-out is needed for the scalar because 10^0 == 1.
-	 * <p>
+	 * <br>
 	 * @param pM     Monad
 	 * @param pGrade int
 	 * @return boolean
@@ -160,7 +160,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if more the monad is a ZERO scalar.
-	 * <p>
+	 * <br>
 	 * @param pM MonadComplexD This is the monad to be tested.
 	 * @return boolean
 	 */
@@ -170,7 +170,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad an idempotent
-	 * <p>
+	 * <br>
 	 * @return boolean
 	 * @param pM Monad
 	 */
@@ -182,28 +182,28 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad is a multiple of an idempotent
-	 * <p>
+	 * <br>
 	 * The strategy for this method is as follows.
-	 * <p>
+	 * <br>
 	 * 1. If the monad is an actual idempotent, return true. This is trivial case.
 	 * 2. If not, find first non-zero coefficient of the square of the monad and...
 	 * a) re-scale monad by inverse of that coefficient. Use copy to avoid change.
 	 * b) test the re-scaled monad to see if it is idenpotent. If so, return true.
 	 * 3. Return false.
-	 * <p>
+	 * <br>
 	 * Since the map internal to a Monad's Scale can accept any of the CladosF
 	 * numbers as values, there is a cast to a 'generic' type within this method.
 	 * This would normally cause warnings by the compiler since the generic named in
 	 * the internal map IS a UnitAbstract child AND casting an unchecked type could
 	 * fail at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param pM  Monad
 	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return boolean
@@ -231,7 +231,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad is nilpotent at a particular integer power.
-	 * <p>
+	 * <br>
 	 * @return boolean
 	 * @param pM     Monad The monad to be tested
 	 * @param pPower int The integer power to test
@@ -254,7 +254,7 @@ public class Monad implements Modal {
 	 * use of the grade key which is a sum of powers of 10, thus the base-10
 	 * logarithm will be an integer for pure grade monads and a non-integer for
 	 * multigrade monads.
-	 * <p>
+	 * <br>
 	 * @param pM This parameter offers the Monad being tested.
 	 * @return boolean
 	 */
@@ -273,7 +273,7 @@ public class Monad implements Modal {
 	 * A check is made on frameName, FootName, Signature, and FrameFoot for
 	 * equality. No check is made for equality between Mnames and Coeffs and the
 	 * product Table
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @param pN Monad
 	 * @return boolean
@@ -299,7 +299,7 @@ public class Monad implements Modal {
 	 * Return true if one blade is present in the Monad. This method makes use of
 	 * the grade key which is a sum of powers of 10, thus the base-10 logarithm will
 	 * be an integer for pure grade monads and a non-integer for multigrade monads.
-	 * <p>
+	 * <br>
 	 * @param pM This parameter offers the Monad being tested.
 	 * @return boolean
 	 */
@@ -315,7 +315,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Display XML string that represents the Monad
-	 * <p>
+	 * <br>
 	 * @param pM     MonadRealF This is the monad to be converted to XML.
 	 * @param indent String of tab characters to assign with human readability
 	 * @return String
@@ -346,7 +346,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Display XML string that represents the Monad
-	 * <p>
+	 * <br>
 	 * @param pM     Monad This is the monad to be converted to XML.
 	 * @param indent String of tab characters to assign with human readability
 	 * @return String
@@ -426,7 +426,7 @@ public class Monad implements Modal {
 	 * Simple copy constructor of Monad. Passed Monad will be copied in all details.
 	 * This contructor is used most often to get around operations that alter a
 	 * Monad when the developer does not wish it to be altered.
-	 * <p>
+	 * <br>
 	 * @param <T> CladosF number is a UnitAbstract child that implemnts Field and
 	 *            Normalizable.
 	 * @param pM  Monad
@@ -445,7 +445,7 @@ public class Monad implements Modal {
 	 * Main copy constructor of Monad. Passed Monad will be copied in all details
 	 * except its name. This constructor is used most often as a starting point to
 	 * generate new Monads based on an old one.
-	 * <p>
+	 * <br>
 	 * @param pName String
 	 * @param pM    Monad
 	 */
@@ -457,7 +457,7 @@ public class Monad implements Modal {
 	/**
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create the default 'Zero' Monad.
-	 * <p>
+	 * <br>
 	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
@@ -485,7 +485,7 @@ public class Monad implements Modal {
 	/**
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create a default 'Zero' Monad while re-using the Foot of another.
-	 * <p>
+	 * <br>
 	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
@@ -542,7 +542,7 @@ public class Monad implements Modal {
 	 * strings determine the coefficients automatically. 'Unit Scalar' and 'Unit
 	 * PScalar' are recognized special cases. All unrecognized strings create a
 	 * 'Zero' Monad by default.
-	 * <p>
+	 * <br>
 	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
@@ -658,7 +658,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Main constructor of Monad with all information passed in.
-	 * <p>
+	 * <br>
 	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
@@ -687,7 +687,7 @@ public class Monad implements Modal {
 	/**
 	 * Main constructor of Monad with pre-constructed objects not already part of
 	 * another Monad.
-	 * <p>
+	 * <br>
 	 * @param <T>        CladosF number is a UnitAbstract child that implemnts Field
 	 *                   and Normalizable.
 	 * @param pMonadName String
@@ -716,7 +716,7 @@ public class Monad implements Modal {
 	/**
 	 * Monad Addition: (this + pM) This operation is allowed when the two monads use
 	 * the same field and satisfy the Reference Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -736,7 +736,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the actual blades the underlying basis as a stream.
-	 * <p>
+	 * <br>
 	 * @return Stream of Blades in the underlying CanonicalBasis
 	 */
 	public Stream<Blade> bladeStream() {
@@ -745,7 +745,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method causes all coefficients of a monad to be conjugated.
-	 * <p>
+	 * <br>
 	 * @return Monad after operation.
 	 */
 	public Monad conjugate() {
@@ -755,10 +755,11 @@ public class Monad implements Modal {
 
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
-	 * <p>
+	 * <br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
 	 * a dual operation.
-	 * <p>
+	 * <br>
+	 * @param <T> CladosF number is a UnitAbstract child that implemnts Field and Normalizable.
 	 * @return Monad after operation.
 	 */
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyByPSLeft() {	
@@ -769,10 +770,11 @@ public class Monad implements Modal {
 
 	/**
 	 * The Monad is turned into its Dual with right side multiplication by pscalar.
-	 * <p>
+	 * <br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
 	 * a dual operation.
-	 * <p>
+	 * <br>
+	 * @param <T>  UnitAbstract child number to create. Includes the Field and Normalizable interfaces too.
 	 * @return Monad after operation.
 	 */
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyByPSRight() {
@@ -783,7 +785,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the Algebra for this Monad.
-	 * <p>
+	 * <br>
 	 * @return Algebra
 	 */
 	public Algebra getAlgebra() {
@@ -793,20 +795,20 @@ public class Monad implements Modal {
 	/**
 	 * Return the field Coefficients for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
 	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
 	 * @return UnitAbstract[]
 	 */
@@ -818,20 +820,20 @@ public class Monad implements Modal {
 	/**
 	 * Return a field Coefficient for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
 	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param i   int This points at the coefficient at the equivalent tuple
 	 *            location.
 	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
@@ -846,7 +848,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the name of the Reference Frame for this Monad
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	public String getFrameName() {
@@ -855,7 +857,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the grade key for the monad
-	 * <p>
+	 * <br>
 	 * @return long
 	 */
 	public long getGradeKey() {
@@ -865,7 +867,7 @@ public class Monad implements Modal {
 	/**
 	 * This answers a question concerning which type of UnitAbstract children are
 	 * used.
-	 * <p>
+	 * <br>
 	 * @return CladosField mode for this monad
 	 */
 	@Override
@@ -875,7 +877,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Simple gettor for name of the monad.
-	 * <p>
+	 * <br>
 	 * @return String Contains the name of the Monad.
 	 */
 	public String getName() {
@@ -884,7 +886,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the map relating basis blades to coefficients.
-	 * <p>
+	 * <br>
 	 * @return Scale of Blades and UnitAbstract children. This is the 'coefficients'
 	 *         object.
 	 */
@@ -895,7 +897,7 @@ public class Monad implements Modal {
 	/**
 	 * This method returns the sparse flag of the monad in case someone wants to
 	 * know. It is just a gettor method, though.
-	 * <p>
+	 * <br>
 	 * @return boolean
 	 */
 	public boolean getSparseFlag() {
@@ -904,7 +906,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method suppresses grades in the Monad not equal to the integer passed.
-	 * <p>
+	 * <br>
 	 * @param pGrade byte integer of the grade TO KEEP.
 	 * @return Monad but in practice it will always be a child of MonadAbtract
 	 */
@@ -919,7 +921,7 @@ public class Monad implements Modal {
 	/**
 	 * This integer stream is OFTEN used internally in monads for calculations.
 	 * Rather than type it out in long form, it is aliases to this method.
-	 * <p>
+	 * <br>
 	 * @return Integer stream ranging through all the grades of the algebra
 	 */
 	public IntStream gradeStream() {
@@ -928,7 +930,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method suppresses the grade in the Monad equal to the integer passed.
-	 * <p>
+	 * <br>
 	 * @param pGrade byte integer of the grade TO SUPPRESS.
 	 * @return Monad but in practice it will always be a child of MonadAbtract
 	 */
@@ -942,7 +944,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Mirror the sense of all geometry generators in the Monad.
-	 * <p>
+	 * <br>
 	 * @return Monad after the main involution is complete.
 	 */
 	public Monad mainInvolution() {
@@ -956,11 +958,11 @@ public class Monad implements Modal {
 	 * since that is easily handled with ==. This one checks algebras, foot names,
 	 * frame names, and the coefficients. Each object owned by the monad has its own
 	 * specialized isEqual() method that gets called.
-	 * <p>
+	 * <br>
 	 * Note that this could be done by override Object's equals() method. That might
 	 * happen in the future, but thought will have to be given to how to override
 	 * the hashing method too.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return boolean
 	 */
@@ -983,20 +985,20 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the magnitude of the Monad
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
 	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param <T> UnitAbstract number from CladosF with the Field interface this
 	 *            time.
 	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
@@ -1010,7 +1012,7 @@ public class Monad implements Modal {
 	 * Monad antisymmetric multiplication: 1/2(pM this - this pM) This operation is
 	 * allowed when the two monads use the same field and satisfy the Reference
 	 * Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -1044,27 +1046,27 @@ public class Monad implements Modal {
 	/**
 	 * Monad leftside multiplication: (pM this) This operation is allowed when the
 	 * two monads use the same field and satisfy the Reference Match test.
-	 * <p>
+	 * <br>
 	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to
 	 * find the non-zero grades. For example: gradeKey=101 means the monad is a sum
 	 * of bivector and scalar because 10^2+10^0 = 101.
-	 * <p>
+	 * <br>
 	 * In a sparse monad, the gradeKey will have few 1's, making looping on all
 	 * blades less optimal. Instead, we parse gradeKey and loop through the blades
 	 * for grades that could be non-ZERO.
-	 * <p>
+	 * <br>
 	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd
 	 * behavior if one sends in a complex numbers expecting against real numbers.
 	 * What IS checked is the cardinal and that likely traps most errors that can be
 	 * made. It's not perfect, though. If someone intentionally builds different
 	 * number types using the same cardinal, they will get around the detection in
 	 * place here.
-	 * <p>
+	 * <br>
 	 * What will happen in that case? The inbound numbers will be multiplied against
 	 * coefficients as THEY understand multiplication. The inbound numbers gets cast
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
-	 * <p>
+	 * <br>
 	 * @param pM  Monad
 	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return Monad
@@ -1214,27 +1216,27 @@ public class Monad implements Modal {
 	/**
 	 * Monad rightside multiplication: (this pM) This operation is allowed when the
 	 * two monads use the same field and satisfy the Reference Match test.
-	 * <p>
+	 * <br>
 	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to
 	 * find the non-zero grades. For example: gradeKey=101 means the monad is a sum
 	 * of bivector and scalar because 10^2+10^0 = 101.
-	 * <p>
+	 * <br>
 	 * In a sparse monad, the gradeKey will have few 1's, making looping on all
 	 * blades less optimal. Instead, we parse gradeKey and loop through the blades
 	 * for grades that could be non-ZERO.
-	 * <p>
+	 * <br>
 	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd
 	 * behavior if one sends in a complex numbers expecting against real numbers.
 	 * What IS checked is the cardinal and that likely traps most errors that can be
 	 * made. It's not perfect, though. If someone intentionally builds different
 	 * number types using the same cardinal, they will get around the detection in
 	 * place here.
-	 * <p>
+	 * <br>
 	 * What will happen in that case? The inbound numbers will be multiplied against
 	 * coefficients as THEY understand multiplication. The inbound numbers gets cast
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
-	 * <p>
+	 * <br>
 	 * @param pM  Monad
 	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
 	 * @return Monad
@@ -1385,7 +1387,7 @@ public class Monad implements Modal {
 	 * Monad symmetric multiplication: 1/2(pM this + this pM) This operation is
 	 * allowed when the two monads use the same field and satisfy the Reference
 	 * Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -1422,7 +1424,7 @@ public class Monad implements Modal {
 	 * @return Monad this after the operation is complete
 	 * @throws FieldException This exception is thrown when normalizing a zero-sized
 	 *                        or field-conflicted monad. The object throwing it
-	 * 						  is one of the UnitAbstract children in Scale<T>
+	 * 						  is one of the UnitAbstract children in Scale
 	 */
 	public Monad normalize() throws FieldException {
 		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();
@@ -1458,12 +1460,11 @@ public class Monad implements Modal {
 	 * Normalize the monad as if all its basis blades were 'vectors' in the 
 	 * 2^n-dimensional vector space we can form using the basis from the 
 	 * n-dimensional algebra.
-	 * <p>
+	 * <br>
 	 * @return Monad after normalization effort is attempted.
 	 * @throws FieldException This exception is thrown when normalizing a zero-sized
 	 *                        or field-conflicted monad. The object throwing it
-	 * 						  is the Scale<of UnitAbstract children> on behalf of one
-	 * 						  of its entries.
+	 * 						  is the Scale on behalf of one of its entries.
 	 */
 	public Monad normalizeOnVS() throws FieldException {
 		scales.normalize();
@@ -1475,7 +1476,7 @@ public class Monad implements Modal {
 	 * Active Reversion: Alternating pairs of grades switch signs as a result of all
 	 * the permutation, so the easiest thing to do is to change the coefficients
 	 * instead.
-	 * <p>
+	 * <br>
 	 * @return Monad returns itself when done to support streaming operations.
 	 */
 	public Monad reverse() {
@@ -1486,7 +1487,7 @@ public class Monad implements Modal {
 	/**
 	 * Monad Scaling: (this * real number) Only the Monad coefficients are scaled by
 	 * the real number.
-	 * <p>
+	 * <br>
 	 * NOTE that the mode of the inbound scaling number is NOT checked. That can
 	 * lead to odd behavior if one sends in a complex number expecting to scale a
 	 * real number. What IS checked is the cardinal and that likely traps most
@@ -1496,7 +1497,7 @@ public class Monad implements Modal {
 	 * number will be multiplied against coefficients as THEY understand
 	 * multiplication. The inbound number gets cast to the other, so imaginary
 	 * components won't get used in real number multiplication.
-	 * <p>
+	 * <br>
 	 * @param pScale UnitAbstract to use for scaling the monad
 	 * @param <T>    UnitAbstract number from CladosF with the Field interface.
 	 * @return Monad after the scaling is complete.
@@ -1516,7 +1517,8 @@ public class Monad implements Modal {
 	 * the old meaning of the object might linger in the various name attributes.
 	 * Caution is advised if this method is used while frequent reuse should be
 	 * considered bad form.
-	 * <p>
+	 * <br>
+	 * @param <T>  UnitAbstract number from CladosF with all interfaces this time.
 	 * @param ppC UnitAbstract child array for weights
 	 * @return Monad after setting the coefficients to the offered array.
 	 * @throws CladosMonadException This exception is thrown when the array offered
@@ -1534,8 +1536,9 @@ public class Monad implements Modal {
 	 * Reset the name used for the Reference Frame for this Monad This operation
 	 * would take place to point out a passive rotation or translation or any other
 	 * alteration to the reference frame.
-	 * <p>
+	 * <br>
 	 * @param pRName String
+	 * @return Monad after setting the frame name. The algebra is updated too.
 	 */
 	public Monad setFrameName(String pRName) {
 		getAlgebra().removeFrame(frameName);
@@ -1547,7 +1550,7 @@ public class Monad implements Modal {
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.
-	 * <p>
+	 * <br>
 	 * While we are here, we ALSO set the sparseFlag. The nonZero coeff detection
 	 * loop that fills gradeKey is a grade detector, so if foundGrade is less than
 	 * or equal to half gradeCount, sparseFlag is set to true and false otherwise.
@@ -1573,8 +1576,9 @@ public class Monad implements Modal {
 
 	/**
 	 * Simple setter of the name of the monad.
-	 * <p>
+	 * <br>
 	 * @param pName String name of the monad to set
+	 * @return Monad after setting the name.
 	 */
 	public Monad setName(String pName) {
 		name = pName;
@@ -1583,20 +1587,20 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the magnitude squared of the Monad
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
 	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a UnitAbstract child. They can't even build a
 	 * UnitAbstract instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new UnitAbstract child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
 	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
 	 */
@@ -1608,7 +1612,7 @@ public class Monad implements Modal {
 	/**
 	 * Monad Subtraction: (this - pM) This operation is allowed when the two monads
 	 * use the same field and satisfy the Reference Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -1628,11 +1632,12 @@ public class Monad implements Modal {
 
 	/**
 	 * Simple setter method of the algebra for this monad.
-	 * <p>
+	 * <br>
 	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
 	 * 'directions' in the underlying basis.
-	 * <p>
+	 * <br>
 	 * @param pA Algebra to set
+	 * @return Monad after setting the algebra.
 	 */
 	protected Monad setAlgebra(Algebra pA) {
 		algebra = pA;

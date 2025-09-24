@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.FCache<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.FCache<br>
@@ -33,7 +33,7 @@ import java.util.Set;
  * use of this singleton enumeration as a 'builder'. Nothing fancy here
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
- * <p>
+ * <br>
  * At present, the only thing in CladosF being cached is Cardinals. cladosG.Algebra
  * has its protonumber which is little more than a Cardinal. cladosG.Foot has its
  * list of cardinals too. So there are a number of places where cardinals get attached.
@@ -41,13 +41,13 @@ import java.util.Set;
  * who wants to ensure object references match perfectly when they should. That is
  * accomplished by setting the protonumber's Cardinal to one in this list BY REFERENCE
  * instead of by string.
- * <p>
+ * <br>
  * Be aware that the list of cached objects is inheriently mutable. Alteration of an
  * object here alters it everywhere it is referenced. ALSO... because of this cache, 
  * it is unlikely that removal of object references elsewhere (set to null) will 
  * cause the allocated memory to be garbage collected. Any linked here in the cache
  * will persist while the cache does or the reference to it in the cache does.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -55,7 +55,7 @@ public enum FCache {
 	/**
 	 * There is an implicit private constructor for this singleton, but we won't
 	 * override it.
-	 * <p>
+	 * <br>
 	 * This ensures only one of these is active at a time. All CladosFCache references
 	 * must refer back to this one cache.
 	 */
@@ -71,7 +71,7 @@ public enum FCache {
 	/**
 	 * Method appends offered Cardinal to cache IF one by that name is not already
 	 * present. If it IS, nothing is done and the method silently returns.
-	 * <p>
+	 * <br>
 	 * @param pIn Cardinal to be appended to the cache IF it isn't already present.
 	 */
 	public void appendCardinal(Cardinal pIn) {
@@ -84,7 +84,7 @@ public enum FCache {
 	 * Method appends offered Cardinals to cache IF not already present. If any ARE,
 	 * nothing is done and the method silently loops through remaining Cardinals
 	 * inserting ones that aren't.
-	 * <p>
+	 * <br>
 	 * @param pIn Cardinal Set to be appended to the cache IF they aren't already present.
 	 */
 	public void appendCardinal(Set<Cardinal> pIn) {
@@ -100,7 +100,7 @@ public enum FCache {
 	 * the search. If found, the optional will be engaged. If not, it will be
 	 * disengaged. IF by some chance there are two cardinals in the cache by the
 	 * same name (which should NOT happen) the first one found will be returned.
-	 * <p>
+	 * <br>
 	 * @param pName String name of a Cardinal to be found in the cache
 	 * @return Optional of Cardinal matching the name offered.
 	 */
@@ -118,7 +118,7 @@ public enum FCache {
 	/**
 	 * This is a brute force way of retrieving Cardinals in the cache. It should
 	 * rarely be used.
-	 * <p>
+	 * <br>
 	 * @param pLoc integer index to be used when returning the listed Cardinal
 	 * @return Cardinal at pLoc index will be returned.
 	 */
@@ -130,7 +130,7 @@ public enum FCache {
 
 	/**
 	 * This method reports the size of the Cardinal cache.
-	 * <p>
+	 * <br>
 	 * @return int size of the Cardinal cache.
 	 */
 	public int getCardinalListSize() {
@@ -140,7 +140,7 @@ public enum FCache {
 	/**
 	 * This is just a pass-thru method to test whether the cache of Cardinals
 	 * is empty.
-	 * <p> 
+	 * <br> 
 	 * @return boolean True if the cache of Cardinals is empty. False otherwise.
 	 */
 	public boolean isEmpty() {
@@ -149,7 +149,7 @@ public enum FCache {
 
 	/**
 	 * This method supports the removal of a Cardinal from the cache.
-	 * <p>
+	 * <br>
 	 * @param pCard Cardinal to be removed
 	 * @return boolean True if Cardinal found and removed. False if not found or
 	 *         removal fails.

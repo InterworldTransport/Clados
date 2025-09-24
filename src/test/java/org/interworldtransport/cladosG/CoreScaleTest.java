@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  * Scale (same object in memory) will change if one does because re-use means referencing. This is generally
  * NOT what is intended, so Scale must make copies of the children of UnitAbstract even Cardinals and 
  * Basis objects are re-used.
- * <p>
+ * <br>
  * High percentage coverage of Scale in unit tests is worth the effort to avoid weird computation errors later.
  */
 public class CoreScaleTest {

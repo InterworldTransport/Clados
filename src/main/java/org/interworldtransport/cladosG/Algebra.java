@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Algebra<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Algebra<br>
@@ -46,7 +46,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * actual field. That makes this a partial abstraction of an algebra. Once an
  * actual division field is in the mix we are there, but that structure is
  * reserved for the Monad class.
- * <p>
+ * <br>
  * The primary data structures in a Algebra are a CanonicalBasis and a GProduct.
  * Between them they define the structure of operations an Algebra can support.
  * The basis provides for most behaviors people know from vector spaces. The
@@ -56,11 +56,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * familiar ground of scalar-only multiplication in vector spaces. All elements
  * of an algebra an participate in addition and multiplication and
  * multiplicative commutativity is NOT expected.
- * <p>
+ * <br>
  * This isn't the place to explain what Clifford Algebras are and what they do.
  * This IS the place to point that that Clados extends the idea slightly in
  * order to support future uses.
- * <p>
+ * <br>
  * 1. An Algebra references a 'Foot' object to imitate a location where the
  * algebra's geometry is expected to be a tangent space to some underlying
  * curved sub-manifold. No attempt at curvature is made here, but the Foot
@@ -69,35 +69,35 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * curvature on the manifold, one must first transport their frame before making
  * comparisons. No 'transport' capability is written for Clados, but it might be
  * some day.
- * <p>
+ * <br>
  * Anyone wanting to get around this feature need only declare one 'Foot' and
  * then re-use it everywhere. The computational penalty is miniscule.
- * <p>
+ * <br>
  * 2. An Algebra has a CladosField mode. Whether the field is real or complex
  * matters. For computational reasons, the floating point precision technique in
  * use also matters. For those reasons, an Algebra maintains an internal mode
  * reference.
- * <p>
+ * <br>
  * 3. An Algebra has a UnitAbstract element too in order to contain the Cardinal
  * within it and to use it combined with Mode to generate field numbers. This
  * might change in the future as the builder classes mature. It used to be used
  * as an operand in a copy function frequently in Monad in Clados V1.0, but is
  * largely bypassed in V2.0. If a complete bypass happens, the UnitAbstract element
  * may be reduced to it's contained Cardinal.
- * <p>
+ * <br>
  * 4. There is a residual reference to a list of frame names with related
  * settors and gettors. This is changing in V2.0 as frames are better described
  * by linear combinations of basis elements, which makes them sets of Scale's.
  * Algebra's WILL track them, but by reference in a more complicated manner
  * since they will be used to 'cut out' the meanings of multiplication and
  * addition.
- * <p>
+ * <br>
  * 5. There is a UUID string kept internally for use an XML variant of
  * serialization. It has no geometric meaning. Think of it as a digital name.
- * <p>
+ * <br>
  * 6. There is also a 'name' string for the human readable name of an algebra.
  * It has no geometric meaning and is not used for anything important.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -105,7 +105,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
-	 * <p>
+	 * <br>
 	 * @param pA     Algebra to be exported as XML data
 	 * @param indent String of tab characters to assist with human readability of
 	 *               output.
@@ -163,7 +163,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * The algebra's prototypical 'number'. A UnitAbstract suffices most of the time,
 	 * but there is no issue with using a child of UnitAbstract. Just be careful because
 	 * setting protoNumber with a child of UnitAbstract should also set the Mode.
-	 * <p>
+	 * <br>
 	 * This is where the primary cardinal for an algebra is found.
 	 */
 	protected UnitAbstract protoNumber;
@@ -175,7 +175,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * Unique string (hopefully) that provides a machine readable name more likely
 	 * to be unique. Used by apps that need more than the human readable name to
 	 * avoid duplicating objects unnecessarily.
-	 * <p>
+	 * <br>
 	 * 
 	 */
 	protected String uuid;
@@ -184,10 +184,10 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * This is the constructor that assumes a full Algebra has already been
 	 * constructed. This new one re-uses the objects in the one offered. No
 	 * independent objects are made in this constructor except the algebra itself
-	 * <p>
+	 * <br>
 	 * THIS CONSTRUCTOR is one that enables algebras to function as light weight
 	 * frames.
-	 * <p>
+	 * <br>
 	 * @param pS This is the Algebra's name
 	 * @param pA This is the other Algebra to copy.
 	 */
@@ -202,15 +202,15 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * GProduct. It takes in one string for the algebra name as well and then
 	 * produces the algebra. Nothing can be wrong with the signature since the
 	 * GProduct is already constructed.
-	 * <p>
+	 * <br>
 	 * THIS CONSTRUCTOR is the one that most enables algebras to function as light
 	 * weight frames. Two algebras can have different names but share everything
 	 * else and cause reference matches to fail. The effect is that the canonical
 	 * basis in both algebras is the same, but the name differences ensure the
 	 * mismatch needed to prevent unphysical operations.
-	 * <p>
+	 * <br>
 	 * Note that the constructed algebra has no declared Mode yet.
-	 * <p>
+	 * <br>
 	 * @param pS    This is the Algebra's name
 	 * @param pF    This is the foot being offered for reference
 	 * @param pCard This is the Cardinal to use as a protoNumber
@@ -234,21 +234,21 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * and a product signature) and the Foot and produces an Algebra. If
 	 * anything is wrong with the signature it throws an exception. Any other error
 	 * throws a general monad exception.
-	 * <p>
+	 * <br>
 	 * THIS CONSTRUCTOR is the one that enables algebras to function as medium
 	 * weight frames. Two algebras can have different names and GProducts but share
 	 * a Foot and cause reference matches to fail. This is the behavior necessary to
 	 * prevent unintended operations between monads expressed using different
 	 * signatures in their geometric products.
-	 * <p>
+	 * <br>
 	 * This is also the one that enables a zero or one generator algebra to be used
 	 * as a 'number' in a nyad. Because the Foot is reused, the Cardinal will match
 	 * and no field mismatches will happen. The small algebra can be set up to
 	 * imitate real or complex numbers and take on the role of 'scale' in a nyad.
 	 * [This may result in eliminating this class.]
-	 * <p>
+	 * <br>
 	 * Note that the constructed algebra has no declared Mode yet.
-	 * <p>
+	 * <br>
 	 * @param pS    This is the Algebra's name
 	 * @param pF    This is the foot being offered for reference
 	 * @param pCard This is the Cardinal to use as a protoNumber
@@ -269,21 +269,21 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * This is the constructor that assumes a Foot and UnitAbstract have been
 	 * instantiated. It takes in two strings (one name and a product signature), the
 	 * Foot and Cardinal and produces an Algebra.
-	 * <p>
+	 * <br>
 	 * If anything is wrong with the signature it throws one of two exception,
 	 * though both errors can be manifest in the signature string.
-	 * <p>
+	 * <br>
 	 * THIS CONSTRUCTOR is one that enables algebras to function as medium weight
 	 * frames. Two algebras can have different names and GProducts but share a Foot
 	 * and Cardinal causing reference matches to fail.
-	 * <p>
+	 * <br>
 	 * This is also the one that enables a zero or one generator algebra to be used
 	 * as a 'scale' in a nyad. Because a Foot and Cardinal are reused, reference
 	 * match tests within a nyad will pass. The small algebra can be set up to
 	 * imitate real or complex numbers and take on the role of 'scale' in a nyad if
 	 * so desired.
-	 * <p>
-	 * @param <D>
+	 * <br>
+	 * @param <D>  This is the type of "Number" being offered
 	 * @param pS   This is the Algebra's name
 	 * @param pF   This is the foot being offered for reference
 	 * @param pSig This is the signature of the GProduct
@@ -307,12 +307,13 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * instantiated. It takes in three strings (two names and a product signature)
 	 * and the example UnitAbstract and produces an Algebra. If anything is wrong with
 	 * the signature it throws one of two exceptions.
-	 * <p>
+	 * <br>
 	 * This is the constructor that ensures algebra reference match failures even
 	 * when exactly the same string names are used to construct all its parts.
 	 * Because the Foot object is constructed within, the algebra will be distinct
 	 * by definition.
-	 * <p>
+	 * <br>
+	 * @param <D>  		This is the type of "Number" being offered
 	 * @param pS        This is the Algebra's name
 	 * @param pFootName This is the Foot's name
 	 * @param pSig      This is the signature of the GProduct
@@ -335,7 +336,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This method appends a frame name to the list of known frames for this foot.
 	 * It will silently terminate IF the frame is already in the list.
-	 * <p>
+	 * <br>
 	 * @param pRF String Reference Frame name to append
 	 */
 	public void appendFrame(String pRF) {
@@ -349,7 +350,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * This method is present to enable sorting of lists of algebras. It isn't
 	 * critical in the geometric sense, but it might be useful in certain physical
 	 * models.
-	 * <p>
+	 * <br>
 	 * @param pAnother Algebra This is the algebra to be name compared
 	 * @return int -1 if the name of 'this' algebra is 'less' than that of pAnother.
 	 *         0 if the two names are the same +1 if the name of this algebra is
@@ -394,7 +395,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * This method returns the Algebra's name.
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	public String getAlgebraName() {
@@ -404,7 +405,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This is a short-hand method providing the blade count on the canonical basis.
 	 * A Frame's blade count is limited at the upper end by this blade count.
-	 * <p>
+	 * <br>
 	 * @return short This is the size of a monad's coefficient array, but more
 	 *         importantly it is the number of dimensions in the vector space
 	 *         represented by the canonical basis.
@@ -415,7 +416,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * This method returns a reference to the Foot of the algebra.
-	 * <p>
+	 * <br>
 	 * @return Foot
 	 */
 	public Foot getFoot() {
@@ -424,9 +425,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * Simple gettor
-	 * <p>
+	 * <br>
 	 * This will change soon. Don't rely upon it.
-	 * <p>
+	 * <br>
 	 * @return ArrayList of string names for the frames
 	 */
 	public ArrayList<String> getFrames() {
@@ -435,7 +436,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * Return the entire basis definition object.
-	 * <p>
+	 * <br>
 	 * @return gBasis
 	 */
 	public CanonicalBasis getGBasis() {
@@ -444,7 +445,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * Return the entire product definition object.
-	 * <p>
+	 * <br>
 	 * @return gProduct
 	 */
 	public CliffordProduct getGProduct() {
@@ -454,7 +455,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This is a short-hand method providing the grade count on the canonical basis.
 	 * A Frame's grade count is limited at the upper end by this grade count.
-	 * <p>
+	 * <br>
 	 * @return byte This is the length of a monad's grade key. In an algebra with N
 	 *         generators it will always be N+1.
 	 */
@@ -466,7 +467,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * This is a short-hand method providing where a particular grade starts and
 	 * ends on the canonical basis. The GProduct is asked instead of the Basis
 	 * because the basis tracks where they start. GProduct already knows where.
-	 * <p>
+	 * <br>
 	 * @param pInd short integer describing the grade to be selected from the basis.
 	 * @return int[] This is an integer index between 0 and bladeCount inclusive.
 	 */
@@ -476,7 +477,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * Simple gettor for the kind of UnitAbstract in use in the algebra as a 'number.'
-	 * <p>
+	 * <br>
 	 * @return CladosField instance that matches the type of UnitAbstract in use
 	 */
 	@Override
@@ -486,9 +487,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * Simple gettor
-	 * <p>
+	 * <br>
 	 * This will change soon. Don't rely upon it.
-	 * <p>
+	 * <br>
 	 * @return ArrayList of string names for the frames
 	 */
 	public ArrayList<String> getReferenceFrames() {
@@ -504,7 +505,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * This method removes a frame name from the list of known frames for this foot.
 	 * If the frame is not found in the list, no action is taken. This silent
 	 * failure is intentional.
-	 * <p>
+	 * <br>
 	 * @param pRF String Reference Frame name to remove
 	 */
 	public void removeFrame(String pRF) {
@@ -515,7 +516,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * Resetting the algebra name is mildly useful when its purpose in a model
 	 * shifts. Otherwise, it will probably not be used. Once it is set by the
 	 * constructor, it will probably remain.
-	 * <p>
+	 * <br>
 	 * @param pName String for the Algebra's name.
 	 */
 	public void setAlgebraName(String pName) {
@@ -529,7 +530,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * find that two seemingly distinct feet are actually the same. In this limited
 	 * case it should be possible for a model writer to adjust an algebra to point
 	 * at a different foot after construction.
-	 * <p>
+	 * <br>
 	 * @param footPoint Foot for the Algebra to use as its 'tangent' contact point.
 	 */
 	public void setFoot(Foot footPoint) {
@@ -538,7 +539,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * Simple setter for the algebra's mode that uses an offered mode.
-	 * <p>
+	 * <br>
 	 * @param pMode CladosField instance that matches the type of UnitAbstract in use
 	 */
 	public void setMode(CladosField pMode) {
@@ -548,8 +549,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * Simple setter for the algebra's mode that uses a child of UnitAbstract.
 	 * to figure out the mode.
-	 * <p>
+	 * <br>
 	 * @param <D> pNumber must be a child of UnitAbstract for anything to happen here.
+	 * @param pNumber This is the UnitAbstract child to be copied as the protoNumber
 	 */
 	public <D extends UnitAbstract & Field & Normalizable> void setMode(D pNumber) {
 		protoNumber = FBuilder.copyOf(pNumber);
@@ -562,7 +564,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This is really just a gettor, but it reaches into the protoNumber and
 	 * retrieves the Cardinal.
-	 * <p>
+	 * <br>
 	 * @return Cardinal of the protoNumber
 	 */
 	@Override
@@ -572,7 +574,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * This is really just a gettor for the protoNumber.
-	 * <p>
+	 * <br>
 	 * @return UnitAbstract protoNumber
 	 */
 	public final UnitAbstract getProtoNumber() {
@@ -587,7 +589,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * find that two seemingly distinct feet are actually the same. In this limited
 	 * case it should be possible to adjust an algebra to at a different gProduct
 	 * after construction.
-	 * <p>
+	 * <br>
 	 * @param pGP GProduct GProduct object for the Algebra to use as its geometric
 	 *            product operation on the canonical basis.
 	 */
