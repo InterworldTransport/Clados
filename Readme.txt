@@ -10,15 +10,33 @@ It is a set of java packages that implement multi-vectors in Clifford Algebras.
 	cladosGTest			- The JUnit tests that support cladosG
 	cladosFTest			- The JUnit tests that support cladosF
 
-If you don't know what a Clifford Algebra is, consider yourself encouraged to 
-read about them.  Geometric Algebras are a modeling choice variations, so don't 
-bypass content describing them either. They all offer a single mathematical 
+If you don't know what a Clifford Algebra is, you are encouraged to 
+read about them.  Geometric Algebras are modeling choice variations, so don't 
+bypass content describing them either. They all offer a tidy mathematical 
 formalism combining many disparate tools of geometry enabling one to wield 
 them in the algebraic ways. 
 
 The tools contained in this library evolved from work done at UC Davis 
 between the late 1970's and early 1990's. It is intended to support physical
 models that rely upon geometry in the style taught by Prof. Ken Greider.
+
+------------------------------------------------------------------------
+
+The word 'Clados' is an acronym for CLifford Algebra Derived ObjectS. 
+It was chosen to avoid math library name collisions and because it comes 
+close to the concept of 'clade' which this author finds apropos for multivectors.
+
+Basic and complete geometric objects are modeled by the Monad class which 
+most people think of as 'Multivector.' A modeling requirement for aggregates 
+of multivectors drove the decision to use 'Monad' instead. 
+'Mult-multivector' is a mouthful. 
+
+Nyads are Monad aggregates and are modeled as lists. Names of lists of 
+increasing size form a series {Monad, Dyad, Triad, Tetrad, ...}, so there 
+is some sense to our convention. However, for implementors not interested 
+in aggregates, the name 'Monad' is unfortunate. Treat it as a synonym.
+
+------------------------------------------------------------------------
 
 There is a project related book that might help, but it is admittedly stale 
 AND doesn't have introductory material. The book focuses upon package contents, 
@@ -37,10 +55,8 @@ it at the Clados project site at GitHub. If you can take the time to look and
 see if it is already reported, it would be appreciated. Tell us you found it 
 either way, though, because it helps to know the number of impacted people.
 
-If you want to check up on what is going on, feel free to drop by the Twitter
-account for Interworld Transport. That is where status updates are posted lately.
-
-I also hang out on the Discord server operated by the folks behind bivector.net.
+If you want to check up on what is going on, drop by the Bivector Discord server
+where I hang out, or leave a note at the GitHub project.
 
 Thanks for your support!
 
@@ -50,7 +66,7 @@ Thanks for your support!
 Installation:
 
 Clados is a collection of packages meant to be used as a math library in other 
-applications. Place clados.jar where you normally place 3rd party libraries.
+applications. Place the clados jar where you normally place 3rd party libraries.
 
 Don't have the jar file? Build it. Or ask me to build one.
 ------------------------------------------------------------------------
@@ -85,7 +101,7 @@ Having said all that, if you want support, bug fixes, or a different license
 arrangement, let me know. I understand that some cannot stick their heads out
 regarding usage of code written by others. I AM interested in how people use 
 this library, so small requests are likely to be supported free of charge.
-Larger ones can be negotiated.  
+Larger ones can be negotiated. I have a day job, so just take that into account. 
 
 	-al
 ------------------------------------------------------------------------
