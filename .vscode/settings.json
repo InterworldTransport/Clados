@@ -1,8 +1,6 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.test.config": {
-        "args": ["-Xmx16G"
-            
-        ],
+        "args": ["-Xmx16G"],
     }
 }

@@ -11,8 +11,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>24</maven.compiler.source>
-   		<maven.compiler.target>24</maven.compiler.target>
+		<maven.compiler.release>25</maven.compiler.release>
 		<junit.jupiter.version>5.11.0</junit.jupiter.version>
 	</properties>
 
@@ -46,7 +45,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+				<version>3.14.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -97,7 +96,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.4</version>
 				<configuration>
-					<argLine>-Xmx16G ${argLine}</argLine> <!-- JaCoCo agent and custom memory -->
+					<argLine>-Xmx16G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
 				</configuration>
 			</plugin>
 			<plugin>
