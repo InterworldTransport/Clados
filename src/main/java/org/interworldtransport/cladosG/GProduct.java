@@ -39,7 +39,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * and will throw an exception if it discovers later that it isn't. This is true
  * most everywhere except in the constructor where input is examined first.
  * <br>
- * Most errors can be avoided by using CladosGBuilder to construct this object.
+ * Most errors can be avoided by using GBuilder to construct this object.
  * However, it shouldn't be necessary to construct a GProduct directly. Best
  * practice is to create an algebra and let it construct its product.
  * <br>

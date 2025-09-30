@@ -93,7 +93,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * rather something else? 'Unad'? Make your case by helping out.
  * <br>
  * NOTE | Regarding suppressed unchecked type casting warnings, they are
- * restricted to the casting that happens in CladosFBuilder and
+ * restricted to the casting that happens in FBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
  * to avoid mutability using a generic copyOf() method. As long as the
  * coefficients in a monad are valid UnitAbstract children implementing Field

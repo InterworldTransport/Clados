@@ -46,7 +46,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * objects.
  * <br>
  * This enumeration has NO non-static element for the instance, thus
- * CladosGBuilder HAS NO INTERNAL STATE that can change.
+ * GBuilder HAS NO INTERNAL STATE that can change.
  * <br>
  * @version 2.0
  * @author Dr Alfred W Differ

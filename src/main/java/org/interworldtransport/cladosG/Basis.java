@@ -107,7 +107,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * basis with 14 geometric directions and 16384 linear dimensions that takes a
  * sizeable fraction of a minute to construct? So it is suggested that Best
  * Practice among those who build physical models is to prebuild what you need
- * and load it all to the cache. Use CladosGBuilder to do it for you. 
+ * and load it all to the cache. Use GBuilder to do it for you. 
  * That said, it is obvious why the copy constructor was removed.
  * <br>
  * @version 2.0

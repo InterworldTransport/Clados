@@ -40,7 +40,7 @@ package org.interworldtransport.cladosF;
  * Builder in the same package.
  * <br>
  * NOTE that the methods capable of creating Cardinals in this enumeration do
- * NOT cache them. Similar methods in CladosFBuilder DO cache them.
+ * NOT cache them. Similar methods in FBuilder DO cache them.
  * <br>
  * @version 1.0
  * @author Dr Alfred W Differ
