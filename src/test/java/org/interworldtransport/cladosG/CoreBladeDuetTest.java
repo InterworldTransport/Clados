@@ -60,7 +60,7 @@ class CoreBladeDuetTest {
 		Blade maxSize2 = Blade.createBlade((byte) 15).add(Generator.E1).add(Generator.E2);
 		BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
 		String regString = "<BladeDuet sign=\"1\" maxGrade=\"15\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,E1,E2\" />\n";
-		assertTrue(bduet.toXMLString().compareTo(regString) == 0); // should match exactly
+		assertTrue(BladeDuet.toXMLString(bduet).compareTo(regString) == 0); // should match exactly
 		
 		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
 		regString ="<Blade key=\"920735923817967\" bitKey=\"0b111111111111100\" sign=\"-1\" generators=\"E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";

@@ -47,7 +47,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * actual division field is in the mix we are there, but that structure is
  * reserved for the Monad class.
  * <br>
- * The primary data structures in a Algebra are a CanonicalBasis and a GProduct.
+ * The primary data structures in a Algebra are a Basis and a GProduct.
  * Between them they define the structure of operations an Algebra can support.
  * The basis provides for most behaviors people know from vector spaces. The
  * product provides the other behaviors people know from differential forms.
@@ -124,8 +124,8 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 					.append(tip).append("\" />\n");
 		rB.append(indent).append("\t</Frames>\n");
 		// -----------------------------------------------------------------------
-		rB.append(pA.getFoot().toXMLString(indent + "\t"));
-		rB.append(pA.getGProduct().toXMLString(indent + "\t"));
+		rB.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));
+		rB.append(GProduct.toXMLString(pA.getGProduct(), indent + "\t"));
 		rB.append(indent).append("</Algebra>\n");
 		return rB.toString();
 	}
@@ -149,7 +149,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * few helper methods for dealing with symmetric and antisymmetric products and
 	 * detection of other useful conditions.
 	 */
-	protected CliffordProduct gProduct;
+	protected GProduct gProduct;
 	/**
 	 * The algebras mode is the particular UnitAbstract child used to represent numbers.
 	 */
@@ -216,7 +216,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @param pCard This is the Cardinal to use as a protoNumber
 	 * @param pGP   This is the geometric product being offered for reference
 	 */
-	public Algebra(String pS, Foot pF, CliffordProduct pGP, Cardinal pCard) {
+	public Algebra(String pS, Foot pF, GProduct pGP, Cardinal pCard) {
 		setAlgebraName(pS);
 		protoNumber = new UnitAbstract(pCard);
 		setFoot(pF);
@@ -448,7 +448,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * <br>
 	 * @return gProduct
 	 */
-	public CliffordProduct getGProduct() {
+	public GProduct getGProduct() {
 		return gProduct;
 	}
 
@@ -593,7 +593,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @param pGP GProduct GProduct object for the Algebra to use as its geometric
 	 *            product operation on the canonical basis.
 	 */
-	protected void setGProduct(CliffordProduct pGP) {
+	protected void setGProduct(GProduct pGP) {
 		gProduct = pGP;
 		gBasis = pGP.getBasis();
 	}

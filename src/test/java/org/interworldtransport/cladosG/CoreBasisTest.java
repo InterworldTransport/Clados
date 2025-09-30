@@ -14,14 +14,9 @@ import org.junit.jupiter.api.Test;
 
 class CoreBasisTest {
 
-	CanonicalBasis tBasis0;
-	CanonicalBasis tBasis1;
-	CanonicalBasis tBasis4;
-	CanonicalBasis tBasis43;
-	CanonicalBasis tBasis8;
-	CanonicalBasis tBasis10;
-	CanonicalBasis tBasis14;
-//	CanonicalBasis tBasis16;
+	Basis tBasis0, tBasis1, tBasis4, tBasis43;
+	Basis tBasis8, tBasis10, tBasis14;
+//	Basis tBasis16;
 
 	@BeforeEach
 	public void setUp() throws GeneratorRangeException {
@@ -46,15 +41,15 @@ class CoreBasisTest {
 	@Test
 	public void testCachedBasis() throws GeneratorRangeException {
 		GCache.INSTANCE.clearBases();
-		CanonicalBasis tB1 = GBuilder.createBasis((byte) 3);	//Builder cached it
+		Basis tB1 = GBuilder.createBasis((byte) 3);	//Builder cached it
 		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 	
-		CanonicalBasis tB2 = GBuilder.createBasis((byte) 3); 	//Building another like it
+		Basis tB2 = GBuilder.createBasis((byte) 3); 	//Building another like it
 		assertTrue(tB1 == tB2);		//Builder noticed identical size and returned first one instead.
 		GBuilder.createBasis(Generator.EA);					//Builder cached it
 		assertTrue(GCache.INSTANCE.getBasisListSize() == 2);	//Two now
 		GCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
 		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 
-		Optional<CanonicalBasis> get10 = GCache.INSTANCE.findBasisList((byte) 10);
+		Optional<Basis> get10 = GCache.INSTANCE.findBasisList((byte) 10);
 		assertTrue(get10.isPresent()); //Earlier removal got rid of the correct one.
 		assertTrue(GCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
 	}
@@ -276,7 +271,7 @@ class CoreBasisTest {
 
 	@Test
 	void testXMLOutput() {
-		String xml = tBasis4.toXMLString("");
+		String xml = Basis.toXMLString(tBasis4, "");
 		//System.out.println(xml);
 		assertTrue(xml != null);
 	}

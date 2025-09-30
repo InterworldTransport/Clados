@@ -90,7 +90,7 @@ public interface CliffordProduct {
 	 * <br>
 	 * @return Basis
 	 */
-	public abstract CanonicalBasis getBasis();
+	public abstract Basis getBasis();
 
 	/**
 	 * Get the linear dimension of the vector space that uses the associated Basis.
@@ -159,14 +159,4 @@ public interface CliffordProduct {
 	 * @return String
 	 */
 	public abstract String signature();
-
-	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Product in a human readable form.
-	 * <br>
-	 * @param indent String of tab characters (most likely) to help make output more
-	 *               readable to human eyes.
-	 * @return String This is the XML string export of an object.
-	 */
-	public abstract String toXMLString(String indent);
 }

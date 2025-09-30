@@ -47,13 +47,13 @@ public enum GCache {
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<CanonicalBasis> listOfBases = new ArrayList<>(1);
+	private ArrayList<Basis> listOfBases = new ArrayList<>(1);
 	/**
 	 * Heads Up! These ArrayLists ensure this 'enumeration' is mutable. This class
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<CliffordProduct> listOfGProducts = new ArrayList<>(1);
+	private ArrayList<GProduct> listOfGProducts = new ArrayList<>(1);
 
 	/**
 	 * Method appends offered basis to cache IF one like it is not already present.
@@ -72,9 +72,9 @@ public enum GCache {
 	 * same between algebras if the basis for each shares the same number of
 	 * generators.
 	 * <br>
-	 * @param pB CanonicalBasis to be appended to the cache IF not already present.
+	 * @param pB Basis to be appended to the cache IF not already present.
 	 */
-	public void appendBasis(CanonicalBasis pB) {
+	public void appendBasis(Basis pB) {
 		if (!listOfBases.contains(pB))
 			listOfBases.add(pB);
 	}
@@ -90,14 +90,14 @@ public enum GCache {
 	 * that use the same number of generators (because of basis similarities) and
 	 * the same signatures.
 	 * <br>
-	 * Important Note. CliffordProduct objects capture structural meaning implied in
-	 * a product table of elements of a CanonicalBasis. As with a basis, no meaning
+	 * Important Note. GProduct objects capture structural meaning implied in
+	 * a product table of elements of a Basis. As with a basis, no meaning
 	 * to the generators or blades is implied in a product table.
 	 * <br>
-	 * @param pGP CliffordProduct to be appended to the cache IF not already
+	 * @param pGP GProduct to be appended to the cache IF not already
 	 *            present.
 	 */
-	public void appendGProduct(CliffordProduct pGP) {
+	public void appendGProduct(GProduct pGP) {
 		if (!listOfGProducts.contains(pGP))
 			listOfGProducts.add(pGP);
 	}
@@ -121,30 +121,30 @@ public enum GCache {
 	}
 
 	/**
-	 * This method returns an Optional of CanonicalBasis using the integer number of
+	 * This method returns an Optional of Basis using the integer number of
 	 * generators offered for the search. If found, the optional will be engaged. If
 	 * not, it will be disengaged. IF by some chance there are two basis instances
 	 * in the cache by the same number of generators (which should NOT happen) the
 	 * first one found will be returned in the Optional.
 	 * <br>
 	 * @param pGen byte integer of generators in a basis to be found in the cache
-	 * @return Optional of CanonicalBasis matching the number of generators offered.
+	 * @return Optional of Basis matching the number of generators offered.
 	 */
-	public Optional<CanonicalBasis> findBasisList(byte pGen) {
+	public Optional<Basis> findBasisList(byte pGen) {
 		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
 	}
 
 	/**
-	 * This method returns an Optional of CliffordProduct using the String signature
+	 * This method returns an Optional of GProduct using the String signature
 	 * offered for the search. If found, the optional will be engaged. If not, it
 	 * will be disengaged. IF by some chance there are two product instances in the
 	 * cache by the same signatures (which should NOT happen) the first one found
 	 * will be returned in the Optional.
 	 * <br>
 	 * @param pSig String signature in a product to be found in the cache
-	 * @return Optional of CliffordProduct matching the signature offered.
+	 * @return Optional of GProduct matching the signature offered.
 	 */
-	public Optional<CliffordProduct> findGProductMap(String pSig) {
+	public Optional<GProduct> findGProductMap(String pSig) {
 		return listOfGProducts.stream().filter(x -> x.signature().equals(pSig)).findFirst();
 	}
 
@@ -175,10 +175,10 @@ public enum GCache {
 	 * Method removes explicit basis from cache IF present. If it IS NOT, nothing is
 	 * done and the method silently returns.
 	 * <br>
-	 * @param pB CanonicalBasis to remove from the cache IF present.
+	 * @param pB Basis to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
-	public boolean removeBasis(CanonicalBasis pB) {
+	public boolean removeBasis(Basis pB) {
 		return listOfBases.remove(pB);
 	}
 
@@ -200,7 +200,7 @@ public enum GCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeBasis(byte pGen) {
-		Optional<CanonicalBasis> B = findBasisList(pGen);
+		Optional<Basis> B = findBasisList(pGen);
 		if (B.isEmpty())
 			return true;
 		return removeBasis(B.get());
@@ -210,10 +210,10 @@ public enum GCache {
 	 * Method removes explicit product from cache IF present. If it IS NOT, nothing
 	 * is done and the method silently returns.
 	 * <br>
-	 * @param pGP CliffordProduct to remove from the cache IF present.
+	 * @param pGP GProduct to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
-	public boolean removeGProduct(CliffordProduct pGP) {
+	public boolean removeGProduct(GProduct pGP) {
 		return listOfGProducts.remove(pGP);
 	}
 
@@ -223,7 +223,7 @@ public enum GCache {
 	 * <br>
 	 * An implied product is simply one that matches the signature parameter and its
 	 * integer size. If no product is found, nothing is done. That covers error
-	 * conditions too. For example, no CliffordProduct exists with -1 generators (no
+	 * conditions too. For example, no GProduct exists with -1 generators (no
 	 * matter the signature) or 3 generators with "+*-" signature, but this method
 	 * will report TRUE as though it removed them. There is no harm in this since
 	 * the point of this method is to clean out the cache and NOT to error check the
@@ -235,7 +235,7 @@ public enum GCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeGProduct(String pSig) {
-		Optional<CliffordProduct> GP = findGProductMap(pSig); // This function tries to find the passed signature
+		Optional<GProduct> GP = findGProductMap(pSig); // This function tries to find the passed signature
 		if (GP.isEmpty())
 			return true;									  // If not found, no worries. It is 'removed'.
 		return removeGProduct(GP.get());

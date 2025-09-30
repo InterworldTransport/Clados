@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
  */
 public class CoreScaleTest {
     Cardinal workCard;
-    CanonicalBasis workBasis;
+    Basis workBasis;
     Scale<RealF> workScaleRF;
     Scale<RealD> workScaleRD;
     Scale<ComplexF> workScaleCF;

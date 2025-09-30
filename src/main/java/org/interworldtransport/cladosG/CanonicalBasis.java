@@ -209,17 +209,6 @@ public interface CanonicalBasis {
 	public abstract LongStream keyStream();
 
 	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form. return String
-	 * <br>
-	 * @param indent String of 'tab' characters that help space the output correctly
-	 *               visually. It's not actually necessary except for human
-	 *               readability of the output.
-	 * @return String
-	 */
-	public abstract String toXMLString(String indent);
-
-	/**
 	 * This is a validator detects blade out of range issues. If one tries to name a
 	 * blade by its index, it is always possible for the offered integer to be out
 	 * of range.

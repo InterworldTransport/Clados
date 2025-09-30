@@ -674,18 +674,20 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * <br>
+	 * @param T Some kind of number extending UnitAbstract that provides weights in the Scale.
+	 * @param pS The Scale oject to be output as XML
 	 * @param indent String of 'tab' characters to get spacing right for human
 	 *               readable XML output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
-	public String toXMLString(String indent) {
+	public final static <T extends UnitAbstract & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
 
-		StringBuilder rB = new StringBuilder(indent).append("<Scales number=\"").append(map.size()).append("\">\n");
+		StringBuilder rB = new StringBuilder(indent).append("<Scales number=\"").append(pS.map.size()).append("\">\n");
 
-		gBasis.bladeStream().forEach(blade -> {
+		pS.gBasis.bladeStream().forEach(blade -> {
 			rB.append(indent).append("\t<Pair>\n");
 			rB.append(indent + "\t\t").append(Blade.toXMLString(blade, "\t\t"));
-			rB.append(indent + "\t\t\t\t").append(map.get(blade).toXMLString()).append("\n");
+			rB.append(indent + "\t\t\t\t").append(pS.map.get(blade).toXMLString()).append("\n");
 			rB.append(indent).append("\t</Pair>\n");
 		});
 
