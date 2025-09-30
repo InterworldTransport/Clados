@@ -1076,7 +1076,7 @@ public class Monad implements Modal {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Left multiply fails reference match.");
 		GProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
+		Basis tBasis = getAlgebra().getGBasis();
 
 		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
@@ -1246,7 +1246,7 @@ public class Monad implements Modal {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new IllegalArgumentException("Right multiply fails reference match.");
 		GProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
+		Basis tBasis = getAlgebra().getGBasis();
 
 		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {

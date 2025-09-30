@@ -142,7 +142,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * blades that can be produced through exterior products of generating
 	 * 'coordinate' vectors. For N generators, there are 2^N blades.
 	 */
-	protected CanonicalBasis gBasis;
+	protected Basis gBasis;
 	/**
 	 * The third among the common elements is the geometric product table formed by
 	 * every product possible using members of the Eddington basis. This class has a
@@ -439,7 +439,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * <br>
 	 * @return gBasis
 	 */
-	public CanonicalBasis getGBasis() {
+	public Basis getGBasis() {
 		return gBasis;
 	}
 
