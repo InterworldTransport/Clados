@@ -316,19 +316,19 @@ class CoreGProductTest {
 			//long tS = 65536;
 			long tSum = 65536 * 65537 / 2;
 			
-			System.out.println("Cayley rows should sum to: "+tSum);
+			//System.out.println("Cayley rows should sum to: "+tSum);
 
 			int[] firstRow = tGP.getResult(0);
 			long tSumP = 0;
 			for (int j = 0; j < firstRow.length; j++)
 				tSumP += (long) Math.abs(firstRow[j]);
-			System.out.println("Cayley-FirstRow---"+tSumP);
+			//System.out.println("Cayley-FirstRow---"+tSumP);
 
 			int[] lastRow = tGP.getResult(tGP.getBladeCount()-1);
 			tSumP = 0;
 			for (int j = 0; j < lastRow.length; j++)
 				tSumP += (long) Math.abs(lastRow[j]);
-			System.out.println("Cayley-LastRow---"+tSumP);
+			//System.out.println("Cayley-LastRow---"+tSumP);
 	*/
 
 			/*

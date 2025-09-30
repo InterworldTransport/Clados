@@ -59,10 +59,11 @@ class CoreBladeDuetTest {
 		Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
 		Blade maxSize2 = Blade.createBlade((byte) 15).add(Generator.E1).add(Generator.E2);
 		BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
-		System.out.println(bduet.toXMLString());
+		String regString = "<BladeDuet sign=\"1\" maxGrade=\"15\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,E1,E2\" />\n";
+		assertTrue(bduet.toXMLString().compareTo(regString) == 0); // should match exactly
+		
 		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
-		//System.out.println("A One-a: "+Blade.toXMLString(maxSize1, ""));
-		//System.out.println("And a Two-a: "+Blade.toXMLString(maxSize2, ""));
-		System.out.println("Together we sing: "+Blade.toXMLString(together, ""));
+		regString ="<Blade key=\"920735923817967\" bitKey=\"0b111111111111100\" sign=\"-1\" generators=\"E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
+		assertTrue(Blade.toXMLString(together, "").compareTo(regString) == 0); // should match exactly
 	}
 }

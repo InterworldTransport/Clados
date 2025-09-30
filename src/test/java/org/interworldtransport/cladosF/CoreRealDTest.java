@@ -205,6 +205,13 @@ class CoreRealDTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal6));				//multiply infinity
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal2));	//Nothing stops multiply with Double.MAX_VALUE right now.
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Double.MIN_VALUE right now.
+
+		try {
+			testThis1.multiply(tReal4); //Already known that the exception is thrown.
+		} catch (FieldBinaryException e) {
+			assertTrue(e.getSecond() == tReal4); //Prove that the exception references objects correctly.
+			assertTrue(e.getSource() == testThis1);
+		}
 	}
 
 	@Test

@@ -410,9 +410,9 @@ public class CoreMonadRealFTest {
         assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == -1.0f);
     }
     
-	@Test
-	public void testXMLOutputs() {
-		System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
-        System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
-	}
+	//@Test
+	//public void testXMLOutputs() {
+	//	System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
+    //  System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
+	//}
 }

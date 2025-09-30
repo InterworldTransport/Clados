@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.UnitAbstract<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.UnitAbstract<br>
@@ -30,17 +30,17 @@ import java.util.Optional;
  * This is the parent class of children that support the notion of a division 
  * field from mathematics. Field objects in the package are used as 'numbers' 
  * in the definition of an algebra. 
- * <p>
+ * <br>
  * UnitAbstract handles unit reference common to all its children. It also
  * implements comparisons that can be overridden in the children if deep
  * comparisons are necessary. For example, equality tests at this level only 
  * test high level references to object and cardinal equality. This would be
  * enough for unit type matching.
- * <p>
+ * <br>
  * The number(s) to be plugged in, though, don't appear until a child of
  * this class. This happens because the number of reals involved in a division 
  * field varies. Complex numbers require two. Quaternions require four.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -48,23 +48,23 @@ public class UnitAbstract {
 	/**
 	 * Static method that creates a new CladosF number with a copy of the parameter.
 	 * This copy reuses the cardinal to ensure it will pass a type match test.
-	 * <p>
+	 * <br>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <p>
+	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <p>
+	 * <br>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <p>
+	 * <br>
 	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
 	 * @param pF D extends UnitAbstract and Field
 	 * @return Optional D which extends UnitAbstract and Field (A CladosF number)
@@ -86,23 +86,23 @@ public class UnitAbstract {
 
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
-	 * <p>
+	 * <br>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <p>
+	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <p>
+	 * <br>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <p>
+	 * <br>
 	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
 	 * @param pR D extends UnitAbstract and Field
 	 * @return D extends UnitAbstract and Field
@@ -123,23 +123,23 @@ public class UnitAbstract {
 	
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
-	 * <p>
+	 * <br>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
 	 * possible classes known as descendents of UnitAbstract. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <p>
+	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of UnitAbstract implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <p>
+	 * <br>
 	 * This can happen if one extends UnitAbstract creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <p>
+	 * <br>
 	 * @param pR D extends UnitAbstract and Field
 	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
 	 * @return D extends UnitAbstract and Field
@@ -160,7 +160,7 @@ public class UnitAbstract {
 	
 	/**
 	 * Check to see if the two argument are of the same cardinal.
-	 * <p>
+	 * <br>
 	 * @param pE UnitAbstract
 	 * @param pF UnitAbstract
 	 * @return boolean
@@ -184,7 +184,7 @@ public class UnitAbstract {
 
 	/**
 	 * Construct a simple UnitAbstract using the Cardinal offered.
-	 * <p>
+	 * <br>
 	 * @param pCard Cardinal to re-use.
 	 */
 	public UnitAbstract(Cardinal pCard) {
@@ -217,7 +217,7 @@ public class UnitAbstract {
 
 	/**
 	 * Get method for _card
-	 * <p>
+	 * <br>
 	 * @return Cardinal (A cardinal name for a UnitAbstract)
 	 */
 	public Cardinal getCardinal() {
@@ -226,7 +226,7 @@ public class UnitAbstract {
 
 	/**
 	 * Get method for _card
-	 * <p>
+	 * <br>
 	 * @return Cardinal (A cardinal name for a UnitAbstract)
 	 */
 	public String getCardinalString() {
@@ -243,7 +243,7 @@ public class UnitAbstract {
 
 	/**
 	 * Return a string representation of the field element.
-	 * <p>
+	 * <br>
 	 * @return String Flat string representation of this Field float(s) field
 	 */
 	public String toXMLString() {
@@ -252,7 +252,7 @@ public class UnitAbstract {
 	
 	/**
 	 * Set method for _card
-	 * <p>
+	 * <br>
 	 * @param pType Cardinal
 	 */
 	protected void setCardinal(Cardinal pType) {

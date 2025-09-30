@@ -1,3 +1,11 @@
 /build/
 /target/
 */*/.DS_Store
+
+# Maven specific
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.DS_Store
+

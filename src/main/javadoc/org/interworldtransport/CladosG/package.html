@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>CladosG Package Documentation</title>
+<body>
+Provides the geometry classes and the structures needed for multi-algebra geometric models.
+<br>
+<b>Class list</b>
+<br>
+<b>Interfaces</b>
+<ul>
+  <li><i>CanonicalBasis</i></li>
+  <li><i>CliffordProduct</i></li>
+  <li><i>Unitized</i></li>
+  <li><i>Modal</i></li>
+</ul>
+<b>Enumerations</b>
+<ul>
+  <li><i>Generator</i></li>
+  <li><i>CladosGBuilder</i></li>
+  <li><i>CladosGCache</i></li>
+</ul>
+<b>Extendable Classes</b>
+<ul>
+  <li>Monad</li>
+  <li>Nyad</li>
+</ul>
+<b>Final Classes</b>
+<ul>
+  <li>CladosConstant</li>
+  <li>Foot</li>
+  <li>Blade</li>
+  <li>BladeDuet</li>
+  <li>Basis</li>
+  <li>GProduct</li>
+  <li>Algebra</li>
+  <li>Scale&lt;Blade, ? extends UnitAbstract, Field, Normalizable&gt;</li>
+</ul>
+<br>
+<h2>Background</h2>
+<p>
+  Clifford Algebras are named after William Kingdon Clifford and were part of his attempt to represent geometry in an algebraic manner. 
+  The biquaternions are an example of such an algebra and are immediately useful as a space-time algebra. 
+  Clifford Algebras might have been in broader use in physics today in place of the Gibbs and Heaviside derived system 
+  if Clifford's proponents had better understood his work. Clifford died young in 1879.
+</p>
+<p>
+  In an applied sense, Clifford Algebras are a compact, efficient way of representing geometry in an encapsulated way. 
+  They capture many of the physical modeling needs for which we currently use vectors, matrices, exterior algebra, and some higher order tensors. 
+  There are many distinct algebras and a few different ways to encode geometric expectations with some looking familiar to the Gibbs/Heaviside system 
+  and others making better use of transformational symmetries.
+</p>
+<p>
+  While some make a distinction between Clifford and Geometric Algebras, that will not be done here. 
+  The clados library implements Clifford Algebras of at least one generator and leaves to the implementor how they choose to encode geometric expectations. 
+  However, the design of clados blocks many of the simpler modeling design errors a software engineer can make. 
+  Geometric operations that might be possible are also checked to see if they make sense.
+</p>
+<p>
+  The word 'Clados' is an acronym for CLifford Algebra Derived ObjectS. This acronym was chosen to avoid name collisions with other math libraries. 
+  A basic, complete geometric object is modeled by the Monad class, though most people familiar with subject will know them as 'Multivector.'
+  The decision to use 'Monad' was based on a modeling need for objects that are aggregates of multivectors because 'Mult-multivector' is a mouthful.
+  Monad aggregates, called Nyads, are modeled as lists. The names fit because lists of increasing size conform to the series {Monad, Dyad, Triad, Tetrad, etc.}
+  However, for implementors not interested in these aggregates, the name 'Monad' is unfortunate. Treat it as a synonym for 'Multivector.'
+</p>
+<h2>Style</h2>
+<p>
+  Clifford Algebra and Clifford Analysis are well developed subjects within Mathematics, but they are less so within Physics and Engineering. 
+  Clados is not an implementation for mathematicians. It it follows an applied style with extensions not necessarily related to Clifford Algebras.
+  The author recognizes that Clados needs a fair amount of work to improve its mathematics pedigree, but is satisfied for now with a library that works.
+</p>
+</body>
+</html>
