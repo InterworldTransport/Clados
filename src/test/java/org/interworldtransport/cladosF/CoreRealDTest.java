@@ -312,7 +312,7 @@ class CoreRealDTest {
 		//System.out.println("tReal4 is "+tReal4.toString());
 		//System.out.println("tReal1 is "+tReal1.toXMLString());
 		assertNotNull(tReal4.toString());
-		assertNotNull(tReal1.toXMLString());
+		assertNotNull(RealD.toXMLString(tReal1));
 	}
 
 }

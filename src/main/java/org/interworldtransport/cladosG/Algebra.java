@@ -116,7 +116,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 			indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
 		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
-		rB.append(indent).append("\t").append(pA.protoNumber.toXMLString()).append("\n");
+		rB.append(indent).append("\t").append(UnitAbstract.toXMLString(pA.protoNumber)).append("\n");
 		// -----------------------------------------------------------------------
 		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
 		for (String tip : pA.rFrames)

@@ -687,7 +687,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 		pS.gBasis.bladeStream().forEach(blade -> {
 			rB.append(indent).append("\t<Pair>\n");
 			rB.append(indent + "\t\t").append(Blade.toXMLString(blade, "\t\t"));
-			rB.append(indent + "\t\t\t\t").append(pS.map.get(blade).toXMLString()).append("\n");
+			switch (pS.mode){
+				case COMPLEXD -> { rB.append(indent + "\t\t\t\t").append(ComplexD.toXMLString(pS.map.get(blade))).append("\n");	}
+				case COMPLEXF -> { rB.append(indent + "\t\t\t\t").append(ComplexF.toXMLString(pS.map.get(blade))).append("\n"); }
+				case REALD -> { rB.append(indent + "\t\t\t\t").append(RealD.toXMLString(pS.map.get(blade))).append("\n"); }
+				case REALF -> { rB.append(indent + "\t\t\t\t").append(RealD.toXMLString(pS.map.get(blade))).append("\n"); }
+				default -> { rB.append(indent + "\t\t\t\t").append(UnitAbstract.toXMLString(pS.map.get(blade))).append("\n"); }
+			}	
 			rB.append(indent).append("\t</Pair>\n");
 		});
 

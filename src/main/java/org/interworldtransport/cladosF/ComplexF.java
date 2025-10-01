@@ -653,11 +653,11 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Return a string representation of the real value.
 	 * <br>
+	 * @param pN ComplexF to be exported as XML.
 	 * @return String
 	 */
-	@Override
-	public String toXMLString() {
-		return ("<ComplexF cardinal=\"" + getCardinalString() + "\" realvalue=\"" + getReal() + "\" imgvalue=\""
-				+ getImg() + "\"/>");
+	public final static String toXMLString(ComplexF pN) {
+		return ("<ComplexF cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" imgvalue=\""
+				+ pN.getImg() + "\"/>");
 	}
 }

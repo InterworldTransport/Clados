@@ -31,8 +31,8 @@ class CoreCardinalTest {
     public void testXMLOut() {
         Cardinal tCard4 = Cardinal.generate(CladosField.REALF);
         assertTrue(tCard4.equals(tCard2)); // Enum was used forcing string match
-        String tS2 = tCard2.toXMLString(null);
-        String tS4 = tCard4.toXMLString(null);
+        String tS2 = Cardinal.toXMLString(tCard2, null);
+        String tS4 = Cardinal.toXMLString(tCard4, null);
         assertTrue(tS2.equals(tS4)); // Proof of string match
     }
 

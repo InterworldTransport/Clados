@@ -185,7 +185,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 		} else if (pNumber instanceof ComplexD) {
 			return new Algebra(pName, pFTName, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
-			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + pNumber.toXMLString());
+			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + UnitAbstract.toXMLString(pNumber));
 		}
 	}
 
@@ -228,7 +228,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 			return new Algebra(pName, pF, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException(
-					"Unexpected UnitAbstract child for Algebra mode | " + pNumber.toXMLString());
+					"Unexpected UnitAbstract child for Algebra mode | " + UnitAbstract.toXMLString(pNumber));
 		}
 	}
 

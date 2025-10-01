@@ -229,7 +229,7 @@ public final class Foot {
 		// -----------------------------------------------------------------------
 		rB.append(indent).append("\t<Cardinals number=\"").append(pF.cardinalList.size()).append("\" >\n");
 		for (Cardinal point : pF.cardinalList)
-			rB.append(indent).append(point.toXMLString("\t\t"));
+			rB.append(indent).append(Cardinal.toXMLString(point, "\t\t"));
 		rB.append(indent).append("\t</Cardinals>\n");
 		// -----------------------------------------------------------------------
 		rB.append(indent).append("</Foot>\n");

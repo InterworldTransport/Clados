@@ -564,10 +564,10 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Return a string representation of the real value.
 	 * <br>
+	 * @param pN RealD to be exported as XML.
 	 * @return String
 	 */
-	@Override
-	public String toXMLString() {
-		return ("<RealD cardinal=\"" + getCardinalString() + "\" realvalue=\"" + getReal() + "\" />");
+	public final static String toXMLString(RealD pN) {
+		return ("<RealD cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" />");
 	}
 }
