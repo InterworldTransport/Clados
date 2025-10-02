@@ -682,17 +682,17 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 */
 	public final static <T extends UnitAbstract & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
 
-		StringBuilder rB = new StringBuilder(indent).append("<Scales number=\"").append(pS.map.size()).append("\">\n");
+		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\", pans=\"").append(pS.map.size()).append("\">\n");
 
 		pS.gBasis.bladeStream().forEach(blade -> {
 			rB.append(indent).append("\t<Pair>\n");
-			rB.append(indent + "\t\t").append(Blade.toXMLString(blade, "\t\t"));
-			switch (pS.mode){
-				case COMPLEXD -> { rB.append(indent + "\t\t\t\t").append(ComplexD.toXMLString(pS.map.get(blade))).append("\n");	}
-				case COMPLEXF -> { rB.append(indent + "\t\t\t\t").append(ComplexF.toXMLString(pS.map.get(blade))).append("\n"); }
-				case REALD -> { rB.append(indent + "\t\t\t\t").append(RealD.toXMLString(pS.map.get(blade))).append("\n"); }
-				case REALF -> { rB.append(indent + "\t\t\t\t").append(RealD.toXMLString(pS.map.get(blade))).append("\n"); }
-				default -> { rB.append(indent + "\t\t\t\t").append(UnitAbstract.toXMLString(pS.map.get(blade))).append("\n"); }
+			rB.append(indent).append(Blade.toXMLString(blade, "\t\t"));
+			switch (pS.getMode()){
+				case COMPLEXD -> {rB.append(indent + "\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
+				case COMPLEXF -> {rB.append(indent + "\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
+				case REALD -> 	{rB.append(indent + "\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
+				case REALF -> 	{rB.append(indent + "\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
+				default -> 		{rB.append(indent + "\t\t").append(UnitAbstract.toXMLString(pS.map.get(blade))).append("\n");}
 			}	
 			rB.append(indent).append("\t</Pair>\n");
 		});
