@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
@@ -965,13 +965,13 @@ public class Nyad implements Modal {
 	 * without really changing the nature of the nyad.
 	 * <br>
 	 * @param pk   int
-	 * @param pMag UnitAbstract child object
-	 * @param <T> UnitAbstract child object generic type support
+	 * @param pMag ProtoN child object
+	 * @param <T> ProtoN child object generic type support
 	 * @throws FieldBinaryException This exception is thrown when the scale field
 	 *                              doesn't match the nyad's field.
 	 * @return Nyad
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Nyad scale(int pk, T pMag) throws FieldBinaryException {
+	public <T extends ProtoN & Field & Normalizable> Nyad scale(int pk, T pMag) throws FieldBinaryException {
 		if (pk >= 0 && pk < monadList.size())
 			monadList.get(pk).scale(pMag);
 		return this;

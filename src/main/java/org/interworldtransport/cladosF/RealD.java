@@ -48,7 +48,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class RealD extends UnitAbstract implements Field, Normalizable {
+public class RealD extends ProtoN implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new RealD with the sum pF1 + pF2.
 	 * <br>
@@ -136,7 +136,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @param pR RealD
 	 * @return RealD
 	 */
-	public static RealD copyONE(UnitAbstract pR) {
+	public static RealD copyONE(ProtoN pR) {
 		return RealD.create(pR.getCardinal(), 1.0D);
 	}
 
@@ -146,7 +146,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @param pR RealD
 	 * @return RealD
 	 */
-	public static RealD copyZERO(UnitAbstract pR) {
+	public static RealD copyZERO(ProtoN pR) {
 		return RealD.create(pR.getCardinal(), 0.0D);
 	}
 
@@ -203,7 +203,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 *         otherwise.
 	 */
 	public static boolean isEqual(RealD pE, RealD pF) {
-		return UnitAbstract.isTypeMatch(pE, pF) && (pE.getReal() == pF.getReal());
+		return ProtoN.isTypeMatch(pE, pF) && (pE.getReal() == pF.getReal());
 
 	}
 
@@ -313,7 +313,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	}
 
 	/**
-	 * These are the actual java primitives within the UnitAbstract child that as as
+	 * These are the actual java primitives within the ProtoN child that as as
 	 * 'the number.'
 	 */
 	protected double[] vals;
@@ -384,7 +384,7 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 * @param pR RealD
 	 * @param pD float
 	 */
-	public RealD(UnitAbstract pR, double pD) {
+	public RealD(ProtoN pR, double pD) {
 		super(pR.getCardinal());
 		vals = new double[1];
 		setReal(pD);
@@ -402,9 +402,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD add(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
 				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Addition failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Addition failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() + ((RealD) pF).getReal());
 		return this;
@@ -432,11 +432,11 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD divide(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
 				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Divide failed type match or size test", (ProtoN) pF));
 		if (RealD.isZero((RealD) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (ProtoN) pF));
 
 		setReal(getReal() / ((RealD) pF).getReal());
 		return this;
@@ -503,9 +503,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD multiply(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
 				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() * ((RealD) pF).getReal());
 		return this;
@@ -543,9 +543,9 @@ public class RealD extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealD subtract(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealD.isNaN(this) || RealD.isNaN((RealD) pF)
 				|| RealD.isInfinite(this) || RealD.isInfinite((RealD) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() - ((RealD) pF).getReal());
 		return this;

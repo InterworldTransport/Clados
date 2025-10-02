@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.ProtoN;
 
 /**
  * Objects within the cladosG package have a number of attributes in common that
@@ -112,10 +112,10 @@ public final class Foot {
 	 * Build the Foot from scratch then put the number's Cardinal in the internal list.
 	 * <br>
 	 * @param pName String This string will be the name of the foot point.
-	 * @param pF    UnitAbstract This object holds the cardinal that defines the kind of
+	 * @param pF    ProtoN This object holds the cardinal that defines the kind of
 	 *              numbers that are meaningful for this foot point
 	 */
-	public Foot(String pName, UnitAbstract pF) {
+	public Foot(String pName, ProtoN pF) {
 		setFootName(pName);
 		cardinalList = new ArrayList<Cardinal>(1);
 		cardinalList.add(pF.getCardinal());

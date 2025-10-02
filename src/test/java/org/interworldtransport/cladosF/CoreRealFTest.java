@@ -23,7 +23,7 @@ class CoreRealFTest {
 	
 
 	@Test
-	public void testCardinals() { 										//Really testing UnitAbstract class
+	public void testCardinals() { 										//Really testing ProtoN class
 		assertTrue(tReal0.getCardinal().equals(tReal1.getCardinal()));	//Same String
 		assertFalse(tReal0.getCardinal() == tReal1.getCardinal());		//Different Objects
 		assertTrue(tReal1.getCardinal().equals(tReal1n.getCardinal()));	//Same Strings again.
@@ -31,7 +31,7 @@ class CoreRealFTest {
 	}
 
 	@Test
-	public void testIsTypeMatch() { 									//Really testing UnitAbstract class
+	public void testIsTypeMatch() { 									//Really testing ProtoN class
 		assertTrue(RealF.isTypeMatch(tReal0, tReal1));					//Tests the strings inside Cardinals
 		assertFalse(tReal0.getCardinal() == tReal1.getCardinal());		//Proof the cardinals don't have to be re-used.
 	}
@@ -255,7 +255,7 @@ class CoreRealFTest {
 		assertTrue(RealF.isZero(testThis));
 		assertTrue(testThis.getCardinalString() == "Howz About This");
 
-		UnitAbstract partNumber = new UnitAbstract(Cardinal.generate("partWay"));
+		ProtoN partNumber = new ProtoN(Cardinal.generate("partWay"));
 		testThis = new RealF(partNumber, 0.0F);
 		assertTrue(RealF.isZero(testThis));
 		assertTrue(testThis.getCardinal() == partNumber.getCardinal());

@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-public class CoreUnitAbstractTest {
+public class CoreProtoNTest {
     public Cardinal tCard0;
     public Cardinal tCard1;
     public Cardinal tCard2;
     public Cardinal tCard3;
     public Cardinal tCard4;
-    public UnitAbstract tUA1;
-    public UnitAbstract tUA2;
+    public ProtoN tUA1;
+    public ProtoN tUA2;
     public RealF tRealF;
     public RealD tRealD;
     public ComplexF tComplexF;
@@ -27,8 +27,8 @@ public class CoreUnitAbstractTest {
         tCard2 = Cardinal.generate(CladosField.REALD);
         tCard3 = Cardinal.generate(CladosField.COMPLEXF);
         tCard4 = Cardinal.generate(CladosField.COMPLEXD);
-        tUA1 = new UnitAbstract(tCard0);
-        tUA2 = new UnitAbstract(tCard2);
+        tUA1 = new ProtoN(tCard0);
+        tUA2 = new ProtoN(tCard2);
         tRealF = (RealF) CladosField.createZERO(CladosField.REALF, tCard1);
         tRealD = (RealD) CladosField.createZERO(CladosField.REALD, tCard2);
         tComplexF = (ComplexF) CladosField.createZERO(CladosField.COMPLEXF, tCard3);
@@ -37,12 +37,12 @@ public class CoreUnitAbstractTest {
 
     @Test
     public void testConstruction() {
-        UnitAbstract tUA3 = new UnitAbstract(null);
-        UnitAbstract tUA4 = new UnitAbstract(null);
-        UnitAbstract tUA5 = new UnitAbstract(tUA1.getCardinal());
-        assertFalse(UnitAbstract.isTypeMatch(tUA3, tUA1));
-        assertTrue(UnitAbstract.isTypeMatch(tUA3, tUA4));
-        assertTrue(UnitAbstract.isTypeMatch(tUA1, tUA5));
+        ProtoN tUA3 = new ProtoN(null);
+        ProtoN tUA4 = new ProtoN(null);
+        ProtoN tUA5 = new ProtoN(tUA1.getCardinal());
+        assertFalse(ProtoN.isTypeMatch(tUA3, tUA1));
+        assertTrue(ProtoN.isTypeMatch(tUA3, tUA4));
+        assertTrue(ProtoN.isTypeMatch(tUA1, tUA5));
     }
 
     @SuppressWarnings("unlikely-arg-type")
@@ -52,54 +52,54 @@ public class CoreUnitAbstractTest {
         assertFalse(tUA1.equals(tCard0));
         assertTrue(tUA1.equals(tUA1));
         assertFalse(tUA1.equals(tUA2));
-        assertFalse(UnitAbstract.isTypeMatch(tUA2, tUA1));       
+        assertFalse(ProtoN.isTypeMatch(tUA2, tUA1));       
     }
 
     @Test
     public void testOptionals() {
-        Optional<RealF> tR1 = UnitAbstract.copyMaybe(tRealF);
+        Optional<RealF> tR1 = ProtoN.copyMaybe(tRealF);
         assertTrue(tR1.isPresent());
         assertFalse(tR1.get() == tRealF);
-        Optional<RealD> tR2 = UnitAbstract.copyMaybe(tRealD);
+        Optional<RealD> tR2 = ProtoN.copyMaybe(tRealD);
         assertTrue(tR2.isPresent());
         assertFalse(tR2.get() == tRealD);
-        Optional<ComplexF> tR3 = UnitAbstract.copyMaybe(tComplexF);
+        Optional<ComplexF> tR3 = ProtoN.copyMaybe(tComplexF);
         assertTrue(tR3.isPresent());
         assertFalse(tR3.get() == tComplexF);
-        Optional<ComplexD> tR4 = UnitAbstract.copyMaybe(tComplexD);
+        Optional<ComplexD> tR4 = ProtoN.copyMaybe(tComplexD);
         assertTrue(tR4.isPresent());
         assertFalse(tR4.get() == tComplexD);
 
-        tR1 = UnitAbstract.copyMaybeONE(tRealF);
+        tR1 = ProtoN.copyMaybeONE(tRealF);
         assertTrue(tR1.isPresent());
         assertFalse(tR1.get() == tRealF);
         assertFalse(RealF.isZero(tR1.get())); 
-        tR2 = UnitAbstract.copyMaybeONE(tRealD);
+        tR2 = ProtoN.copyMaybeONE(tRealD);
         assertTrue(tR2.isPresent());
         assertFalse(tR2.get() == tRealD);
         assertFalse(RealD.isZero(tR2.get())); 
-        tR3 = UnitAbstract.copyMaybeONE(tComplexF);
+        tR3 = ProtoN.copyMaybeONE(tComplexF);
         assertTrue(tR3.isPresent());
         assertFalse(tR3.get() == tComplexF);
         assertFalse(ComplexF.isZero(tR3.get())); 
-        tR4 = UnitAbstract.copyMaybeONE(tComplexD);
+        tR4 = ProtoN.copyMaybeONE(tComplexD);
         assertTrue(tR4.isPresent());
         assertFalse(tR4.get() == tComplexD);
         assertFalse(ComplexD.isZero(tR4.get())); 
 
-        tR1 = UnitAbstract.copyMaybeZERO(tRealF);
+        tR1 = ProtoN.copyMaybeZERO(tRealF);
         assertTrue(tR1.isPresent());
         assertFalse(tR1.get() == tRealF);
         assertTrue(RealF.isZero(tR1.get())); 
-        tR2 = UnitAbstract.copyMaybeZERO(tRealD);
+        tR2 = ProtoN.copyMaybeZERO(tRealD);
         assertTrue(tR2.isPresent());
         assertFalse(tR2.get() == tRealD);
         assertTrue(RealD.isZero(tR2.get())); 
-        tR3 = UnitAbstract.copyMaybeZERO(tComplexF);
+        tR3 = ProtoN.copyMaybeZERO(tComplexF);
         assertTrue(tR3.isPresent());
         assertFalse(tR3.get() == tComplexF);
         assertTrue(ComplexF.isZero(tR3.get())); 
-        tR4 = UnitAbstract.copyMaybeZERO(tComplexD);
+        tR4 = ProtoN.copyMaybeZERO(tComplexD);
         assertTrue(tR4.isPresent());
         assertFalse(tR4.get() == tComplexD);
         assertTrue(ComplexD.isZero(tR4.get())); 
@@ -108,17 +108,17 @@ public class CoreUnitAbstractTest {
     @Test
     public void testHashMatch() {
         //Hash codes should align when Cardinals are re-used.
-        UnitAbstract tUA3 = new UnitAbstract(tUA1.getCardinal());
+        ProtoN tUA3 = new ProtoN(tUA1.getCardinal());
         assertTrue(tUA1.hashCode() == tUA3.hashCode());
-        UnitAbstract tUA4 = new UnitAbstract(null);
+        ProtoN tUA4 = new ProtoN(null);
         assertFalse(tUA1.hashCode() == tUA4.hashCode());
     }
 
     @Test
     public void testStringMatch() {
         //Cardinal and XML Strings should align when Cardinals are re-used.
-        UnitAbstract tUA3 = new UnitAbstract(tUA1.getCardinal());
+        ProtoN tUA3 = new ProtoN(tUA1.getCardinal());
         assertTrue(tUA1.getCardinalString().equals(tUA3.getCardinalString()));
-        assertTrue(UnitAbstract.toXMLString(tUA1).equals(UnitAbstract.toXMLString(tUA3)));
+        assertTrue(ProtoN.toXMLString(tUA1).equals(ProtoN.toXMLString(tUA3)));
     }
 }

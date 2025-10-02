@@ -48,7 +48,7 @@ import org.interworldtransport.cladosFExceptions.*;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class ComplexF extends UnitAbstract implements Field, Normalizable {
+public class ComplexF extends ProtoN implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new ComplexF with the sum pF1 + pF2.
 	 * <br>
@@ -59,7 +59,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF add(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return ComplexF.create(pF1.getCardinal(), pF1.getReal() + pF2.getReal(), pF1.getImg() + pF2.getImg());
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
@@ -139,7 +139,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @param pR ComplexF
 	 * @return ComplexF
 	 */
-	public static ComplexF copyONE(UnitAbstract pR) {
+	public static ComplexF copyONE(ProtoN pR) {
 		return ComplexF.create(pR.getCardinal(), 1.0f, 0.0f);
 	}
 
@@ -149,7 +149,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @param pR ComplexF
 	 * @return ComplexF
 	 */
-	public static ComplexF copyZERO(UnitAbstract pR) {
+	public static ComplexF copyZERO(ProtoN pR) {
 		return ComplexF.create(pR.getCardinal(), 0.0f, 0.0f);
 	}
 
@@ -189,7 +189,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF divide(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
+		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
 				&& !ComplexF.isInfinite(pF1) && !ComplexF.isInfinite(pF2)) {
 			ComplexF tZ = ComplexF.copyOf(pF1);
 			ComplexF tZ2 = ComplexF.copyOf(pF2);
@@ -213,7 +213,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 *         otherwise.
 	 */
 	public static boolean isEqual(ComplexF pE, ComplexF pF) {
-		return UnitAbstract.isTypeMatch(pE, pF) && (pE.getReal() == pF.getReal()) && (pE.getImg() == pF.getImg());
+		return ProtoN.isTypeMatch(pE, pF) && (pE.getReal() == pF.getReal()) && (pE.getImg() == pF.getImg());
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @return complexF
 	 */
 	public static ComplexF multiply(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2)) {
 			float tempR = pF1.getReal() * pF2.getReal() - pF1.getImg() * pF2.getImg();
 			float tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
@@ -337,7 +337,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF subtract(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (UnitAbstract.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
+		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
 				&& !ComplexF.isInfinite(pF2))
 			return ComplexF.create(pF1.getCardinal(), pF1.getReal() - pF2.getReal(), pF1.getImg() - pF2.getImg());
 
@@ -345,7 +345,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	}
 
 	/**
-	 * These are the actual java primitives within the UnitAbstract child that as as
+	 * These are the actual java primitives within the ProtoN child that as as
 	 * 'the number.'
 	 */
 	protected float[] vals;
@@ -380,7 +380,7 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 * @param pR float
 	 * @param pI float
 	 */
-	public ComplexF(UnitAbstract pC, float pR, float pI) {
+	public ComplexF(ProtoN pC, float pR, float pI) {
 		super(pC.getCardinal());
 		vals = new float[2];
 		setCardinal(pC.getCardinal());
@@ -451,9 +451,9 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF add(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
 				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Addition failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Addition failed type match or size test", (ProtoN) pF));
 		setReal(getReal() + ((ComplexF) pF).getReal());
 		setImg(getImg() + ((ComplexF) pF).getImg());
 		return this;
@@ -481,11 +481,11 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF divide(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
 				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Divide failed type match or size test", (ProtoN) pF));
 		if (ComplexF.isZero((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (ProtoN) pF));
 
 		ComplexF tempZ = ComplexF.copyOf((ComplexF) pF);
 		tempZ.conjugate();
@@ -581,9 +581,9 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF multiply(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
 				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (ProtoN) pF));
 		ComplexF tempZ = (ComplexF) pF;
 		setReal(getReal() * tempZ.getReal() - getImg() * tempZ.getImg());
 		setImg(getReal() * tempZ.getImg() + getImg() * tempZ.getReal());
@@ -631,9 +631,9 @@ public class ComplexF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF subtract(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
 				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (ProtoN) pF));
 		
 		setReal(getReal() - ((ComplexF) pF).getReal());
 		setImg(getImg() - ((ComplexF) pF).getImg());

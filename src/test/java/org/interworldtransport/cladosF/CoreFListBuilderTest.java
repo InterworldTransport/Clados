@@ -12,8 +12,8 @@ public class CoreFListBuilderTest {
     
     public FCache cache = FCache.INSTANCE;
     public Cardinal tCard1;
-    UnitAbstract[] tUA1 = new RealF[16];
-    UnitAbstract[] tUA2 = new RealF[16];
+    ProtoN[] tUA1 = new RealF[16];
+    ProtoN[] tUA2 = new RealF[16];
 
     @BeforeEach
 	public void setUp() throws Exception {

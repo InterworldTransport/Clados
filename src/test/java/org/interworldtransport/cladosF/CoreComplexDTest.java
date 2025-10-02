@@ -23,7 +23,7 @@ class CoreComplexDTest {
 
 
 	@Test
-	public void testCardinals() { 												//Really testing UnitAbstract class
+	public void testCardinals() { 												//Really testing ProtoN class
 		assertTrue(tComplex0.getCardinal().equals(tComplex1.getCardinal()));	//Same String
 		assertFalse(tComplex0.getCardinal() == tComplex1.getCardinal());		//Different Objects
 		assertTrue(tComplex1.getCardinal().equals(tComplex1n.getCardinal()));	//Same Strings again.
@@ -31,7 +31,7 @@ class CoreComplexDTest {
 	}
 
 	@Test
-	public void testIsTypeMatch() {												//Really testing UnitAbstract class
+	public void testIsTypeMatch() {												//Really testing ProtoN class
 		assertTrue(ComplexD.isTypeMatch(tComplex0, tComplex1));					//Tests the strings inside Cardinals
 		assertFalse(tComplex0.getCardinal() == tComplex1.getCardinal());		//Proof the cardinals don't have to be re-used.
 	}
@@ -264,7 +264,7 @@ class CoreComplexDTest {
 		assertTrue(ComplexD.isZero(testThis));
 		assertTrue(testThis.getCardinalString() == "Howz About This");
 
-		UnitAbstract partNumber = new UnitAbstract(Cardinal.generate("partWay"));
+		ProtoN partNumber = new ProtoN(Cardinal.generate("partWay"));
 		testThis = new ComplexD(partNumber, 0.0D, 0.0D);
 		assertTrue(ComplexD.isZero(testThis));
 		assertTrue(testThis.getCardinal() == partNumber.getCardinal());
