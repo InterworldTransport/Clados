@@ -46,7 +46,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * objects.
  * <br>
  * This enumeration has NO non-static element for the instance, thus
- * CladosGBuilder HAS NO INTERNAL STATE that can change.
+ * GBuilder HAS NO INTERNAL STATE that can change.
  * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -185,7 +185,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 		} else if (pNumber instanceof ComplexD) {
 			return new Algebra(pName, pFTName, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
-			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + pNumber.toXMLString());
+			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + UnitAbstract.toXMLString(pNumber));
 		}
 	}
 
@@ -228,7 +228,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 			return new Algebra(pName, pF, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException(
-					"Unexpected UnitAbstract child for Algebra mode | " + pNumber.toXMLString());
+					"Unexpected UnitAbstract child for Algebra mode | " + UnitAbstract.toXMLString(pNumber));
 		}
 	}
 
@@ -241,7 +241,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pName A String for the new algebra's name.
 	 * @return Algebra
 	 */
-	public static final Algebra createAlgebraWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
+	public static final Algebra createAlgebraWithFootPlus(Foot pF, Cardinal pCard, GProduct pGP, String pName) {
 		return new Algebra(pName, pF, pGP, pCard);
 	}
 
@@ -249,18 +249,18 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * This method creates a basis and caches it.
 	 * <br>
 	 * @param pGen integer number of generators to use in constructing the basis.
-	 * @return CanonicalBasis constructed
+	 * @return Basis constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 */
-	public final static CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList(pGen);
+	public final static Basis createBasis(byte pGen) throws GeneratorRangeException {
+		Optional<Basis> tB = GCache.INSTANCE.findBasisList(pGen);
 		if (tB.isPresent())
 			return tB.get();
 		else {
-			CanonicalBasis tSpot = Basis.using(pGen);
+			Basis tSpot = Basis.using(pGen);
 			GCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
@@ -270,18 +270,18 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * This method creates a basis and caches it.
 	 * <br>
 	 * @param pGen Generator to use in constructing the basis.
-	 * @return CanonicalBasis constructed
+	 * @return Basis constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 */
-	public final static CanonicalBasis createBasis(Generator pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList(pGen.ord);
+	public final static Basis createBasis(Generator pGen) throws GeneratorRangeException {
+		Optional<Basis> tB = GCache.INSTANCE.findBasisList(pGen.ord);
 		if (tB.isPresent())
 			return tB.get();
 		else {
-			CanonicalBasis tSpot = Basis.using(pGen);
+			Basis tSpot = Basis.using(pGen);
 			GCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
@@ -340,7 +340,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	}
 
 	/**
-	 * This method constructs a CliffordProduct using the offered basis and
+	 * This method constructs a GProduct using the offered basis and
 	 * signature. It first checks the product cache and returns a matching product
 	 * instead of constructing a new one IF it is found. If not, it deposits the
 	 * offered Basis in the cache and then calls the method for creating a product
@@ -351,16 +351,16 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * <br>
 	 * @param pB   Basis to re-use in constructing product
 	 * @param pSig String form of the product's signature
-	 * @return CliffordProduct constructed
+	 * @return GProduct constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public final static CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
+	public final static GProduct createGProduct(Basis pB, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		Optional<CliffordProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
+		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get();
 		else {
@@ -372,7 +372,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	}
 
 	/**
-	 * This method constructs a CliffordProduct using the offered signature String.
+	 * This method constructs a GProduct using the offered signature String.
 	 * It first checks the product cache and returns a matching product instead of
 	 * constructing a new one IF it is found. If not, it checks the basis cache for
 	 * a match to decide which product constructor to use. By the end of the method,
@@ -380,22 +380,22 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * constructed.
 	 * <br>
 	 * @param pSig String form of the product's signature
-	 * @return CliffordProduct constructed
+	 * @return GProduct constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public final static CliffordProduct createGProduct(String pSig)
+	public final static GProduct createGProduct(String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		Optional<CliffordProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
+		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.
 		else {
 			// Create a new GProduct, but might still find a cached Basis.
-			Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList((byte) pSig.length());
-			CliffordProduct tSpot2;
+			Optional<Basis> tB = GCache.INSTANCE.findBasisList((byte) pSig.length());
+			GProduct tSpot2;
 			if (tB.isPresent())
 				tSpot2 = new GProduct(tB.get(), pSig);
 			else

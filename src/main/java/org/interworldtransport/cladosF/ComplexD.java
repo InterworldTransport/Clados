@@ -651,11 +651,11 @@ public class ComplexD extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Return a string representation of the real value.
 	 * <br>
+	 * @param pN ComplexD to be exported as XML.
 	 * @return String
 	 */
-	@Override
-	public String toXMLString() {
-		return ("<ComplexD cardinal=\"" + getCardinalString() + "\" realvalue=\"" + getReal() + "\" imgvalue=\""
-				+ getImg() + "\"/>");
+	public final static String toXMLString(ComplexD pN) {
+		return ("<ComplexD cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" imgvalue=\""
+				+ pN.getImg() + "\"/>");
 	}
 }

@@ -171,10 +171,10 @@ public final class BladeDuet {
 		bladeDuet.stream().forEach(g -> returnIt.add(g));	//Load remaining generators IF NO paired generator was degenerate
 															//returnIt has the correct generators, but might have the wrong sign
 		andKey = bitKeyLeft & bitKeyRight;
-		// if either residue key vanishes, the bladeDuet is already in SORT order.
+															// if either residue key vanishes, the bladeDuet is already in SORT order.
 		if ((bitKeyLeft - andKey) != 0 & (bitKeyRight - andKey) != 0) {
 			ArrayList<Generator> pB = new ArrayList<>(returnIt.getGenerators());
-			for (Generator pG : pB) { // Exploiting the KNOWN correct order.
+			for (Generator pG : pB) { 						// Exploiting the KNOWN correct order.
 				int found = bladeDuet.indexOf(pG);
 				int refer = pB.indexOf(pG);
 
@@ -194,13 +194,14 @@ public final class BladeDuet {
 	 * <br>
 	 * This variation uses a Generator's name in the generator list.
 	 * <br>
+	 * @param pBD The blade duet to export as XML.
 	 * @return String The XML formated String representing the BladeDuet.
 	 */
-	public String toXMLString() {
+	public final static String toXMLString(BladeDuet pBD) {
 		StringBuilder rB = new StringBuilder();
-		rB.append("<BladeDuet sign=\"").append(sign).append("\" maxGrade=\"").append(maxGen).append("\" generators=\"");
-		bladeDuet.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
-		if (bladeDuet.size() > 0)
+		rB.append("<BladeDuet sign=\"").append(pBD.sign).append("\" maxGrade=\"").append(pBD.maxGen).append("\" generators=\"");
+		pBD.bladeDuet.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
+		if (pBD.bladeDuet.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
 		rB.append("\" />\n");
 		return rB.toString();

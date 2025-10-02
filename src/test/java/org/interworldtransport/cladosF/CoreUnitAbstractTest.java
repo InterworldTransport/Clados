@@ -119,6 +119,6 @@ public class CoreUnitAbstractTest {
         //Cardinal and XML Strings should align when Cardinals are re-used.
         UnitAbstract tUA3 = new UnitAbstract(tUA1.getCardinal());
         assertTrue(tUA1.getCardinalString().equals(tUA3.getCardinalString()));
-        assertTrue(tUA1.toXMLString().equals(tUA3.toXMLString()));
+        assertTrue(UnitAbstract.toXMLString(tUA1).equals(UnitAbstract.toXMLString(tUA3)));
     }
 }

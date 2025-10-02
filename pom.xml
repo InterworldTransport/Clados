@@ -116,7 +116,18 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>3.5.4</version>
+				<configuration>
+					<outputName>Unit Test Results</outputName>
+				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.9.0</version>
+				<configuration>
+					<webAccessURL>https://github.com/InterworldTransport/Clados</webAccessURL>
+				</configuration>
+      		</plugin>
 		</plugins>
 	</reporting>
 	

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class HeatGProductTest {
-	CliffordProduct a0;
+	GProduct a0;
 
 	@BeforeEach
 	public void setUp() {

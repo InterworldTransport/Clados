@@ -128,7 +128,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Once set, the applicable basis should not change. Scales make sense
 	 * RELATIVE to a basis. Never on their own.
 	 */
-	private final CanonicalBasis gBasis;
+	private final Basis gBasis;
 
 	/**
 	 * This hash map is that actual list of weights mapped by their applicable blade.
@@ -163,7 +163,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pB    Basis to which the blades used in the internal map belong.
 	 * @param pCard Incoming Cardinal to reference here.
 	 */
-	public Scale(CladosField pMode, CanonicalBasis pB, Cardinal pCard) {
+	public Scale(CladosField pMode, Basis pB, Cardinal pCard) {
 		map = new IdentityHashMap<>(pB.getBladeCount());
 		mode = pMode;
 		gBasis = pB;
@@ -183,7 +183,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * @param pB     Basis to which the blades offered in the map belong.
 	 * @param pInMap This is a Map to copy. Probably a view of another Scale object.
 	 */
-	public Scale(CladosField pMode, CanonicalBasis pB, Map<Blade, D> pInMap) {
+	public Scale(CladosField pMode, Basis pB, Map<Blade, D> pInMap) {
 		map = new IdentityHashMap<>(pInMap.size());
 		mode = pMode;
 		gBasis = pB;
@@ -674,18 +674,26 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * <br>
+	 * @param <T> Some kind of number extending UnitAbstract that provides weights in the Scale.
+	 * @param pS The Scale oject to be output as XML
 	 * @param indent String of 'tab' characters to get spacing right for human
 	 *               readable XML output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
-	public String toXMLString(String indent) {
+	public final static <T extends UnitAbstract & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
 
-		StringBuilder rB = new StringBuilder(indent).append("<Scales number=\"").append(map.size()).append("\">\n");
+		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\", pans=\"").append(pS.map.size()).append("\">\n");
 
-		gBasis.bladeStream().forEach(blade -> {
+		pS.gBasis.bladeStream().forEach(blade -> {
 			rB.append(indent).append("\t<Pair>\n");
-			rB.append(indent + "\t\t").append(Blade.toXMLString(blade, "\t\t"));
-			rB.append(indent + "\t\t\t\t").append(map.get(blade).toXMLString()).append("\n");
+			rB.append(indent).append(Blade.toXMLString(blade, "\t\t"));
+			switch (pS.getMode()){
+				case COMPLEXD -> {rB.append(indent + "\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
+				case COMPLEXF -> {rB.append(indent + "\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
+				case REALD -> 	{rB.append(indent + "\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
+				case REALF -> 	{rB.append(indent + "\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
+				default -> 		{rB.append(indent + "\t\t").append(UnitAbstract.toXMLString(pS.map.get(blade))).append("\n");}
+			}	
 			rB.append(indent).append("\t</Pair>\n");
 		});
 

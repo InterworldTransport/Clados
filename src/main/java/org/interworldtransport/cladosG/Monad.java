@@ -93,7 +93,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * rather something else? 'Unad'? Make your case by helping out.
  * <br>
  * NOTE | Regarding suppressed unchecked type casting warnings, they are
- * restricted to the casting that happens in CladosFBuilder and
+ * restricted to the casting that happens in FBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
  * to avoid mutability using a generic copyOf() method. As long as the
  * coefficients in a monad are valid UnitAbstract children implementing Field
@@ -320,7 +320,7 @@ public class Monad implements Modal {
 	 * @param indent String of tab characters to assign with human readability
 	 * @return String
 	 */
-	public static String toXMLFullString(Monad pM, String indent) {
+	public final static String toXMLFullString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = (new StringBuilder(indent + "<Monad "))
@@ -339,7 +339,7 @@ public class Monad implements Modal {
 			.append(pM.getFrameName())
 			.append("\"</ReferenceFrame>\n");
 		rB.append(indent)
-			.append(pM.scales.toXMLString("\t"));
+			.append(Scale.toXMLString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -351,7 +351,7 @@ public class Monad implements Modal {
 	 * @param indent String of tab characters to assign with human readability
 	 * @return String
 	 */
-	public static String toXMLString(Monad pM, String indent) {
+	public final static String toXMLString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Monad ");
@@ -372,7 +372,7 @@ public class Monad implements Modal {
 			.append(pM.getName())
 			.append("</Name>\n");
 		rB.append(indent)
-			.append(pM.scales.toXMLString("\t"));
+			.append(Scale.toXMLString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -737,7 +737,7 @@ public class Monad implements Modal {
 	/**
 	 * This method returns the actual blades the underlying basis as a stream.
 	 * <br>
-	 * @return Stream of Blades in the underlying CanonicalBasis
+	 * @return Stream of Blades in the underlying Basis
 	 */
 	public Stream<Blade> bladeStream() {
 		return algebra.getGBasis().bladeStream();
@@ -1075,8 +1075,8 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Left multiply fails reference match.");
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
+		GProduct tProd = getAlgebra().getGProduct();
+		Basis tBasis = getAlgebra().getGBasis();
 
 		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
@@ -1245,8 +1245,8 @@ public class Monad implements Modal {
 	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new IllegalArgumentException("Right multiply fails reference match.");
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
+		GProduct tProd = getAlgebra().getGProduct();
+		Basis tBasis = getAlgebra().getGBasis();
 
 		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {

@@ -244,10 +244,11 @@ public class UnitAbstract {
 	/**
 	 * Return a string representation of the field element.
 	 * <br>
+	 * @param pA UnitAbstract to be exported as XML... which just means the Cardinal right now.
 	 * @return String Flat string representation of this Field float(s) field
 	 */
-	public String toXMLString() {
-		return ("<UnitAbstract cardinal=\"" + getCardinalString() + "\" />");
+	public static String toXMLString(UnitAbstract pA) {
+		return ("<UnitAbstract cardinal=\"" + pA.getCardinalString() + "\" />");
 	}
 	
 	/**

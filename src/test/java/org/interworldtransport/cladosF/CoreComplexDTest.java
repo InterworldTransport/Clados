@@ -321,7 +321,7 @@ class CoreComplexDTest {
 		//System.out.println("tComplex4 is "+tComplex4.toString());
 		//System.out.println("tComplex1 is "+tComplex1.toXMLString());
 		assertNotNull(tComplex4.toString());
-		assertNotNull(tComplex1.toXMLString());
+		assertNotNull(ComplexD.toXMLString(tComplex1));
 	}
 
 }

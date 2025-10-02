@@ -66,9 +66,10 @@ public interface CanonicalBasis {
 	 * related CliffordProduct holds a product table of all blades. Its internal
 	 * representation might break too.
 	 * <br>
-	 * This method provides a single place to validate the intended size of a basis
-	 * WITHOUT placing magic numbers in this interface. The actual limits are in the
-	 * CladosConstant class as static elements.
+	 * This method provides a single place to validate the largest possible grade of 
+	 * a basis. Having it be static avoids having this test be specialized for each 
+	 * Basis object. This version AVOIDS placing magic numbers in the interface or 
+	 * objects. Actual limits are in the CladosConstant class as static elements.
 	 * <br>
 	 * @param pGens int This is the number of generators of the basis.
 	 * @return TRUE returned if the number of generators is in the supported range.
@@ -209,20 +210,14 @@ public interface CanonicalBasis {
 	public abstract LongStream keyStream();
 
 	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form. return String
-	 * <br>
-	 * @param indent String of 'tab' characters that help space the output correctly
-	 *               visually. It's not actually necessary except for human
-	 *               readability of the output.
-	 * @return String
-	 */
-	public abstract String toXMLString(String indent);
-
-	/**
 	 * This is a validator detects blade out of range issues. If one tries to name a
 	 * blade by its index, it is always possible for the offered integer to be out
 	 * of range.
+	 * <br>
+	 * This method demands a contract term for validating the blade index to be referenced.
+	 * It is NOT static because the maximum grade of a basis is object dependent.
+	 * Implementations of this method should AVOID placing magic numbers in the method 
+	 * body by using CladosConstant static elements like validateSize(int) does.
 	 * <br>
 	 * @param pIn Integer representing the integer index of the blade
 	 * @return boolean True if parameter in the supported range [0, bladeCount]
@@ -230,9 +225,14 @@ public interface CanonicalBasis {
 	public abstract boolean validateBladeIndex(int pIn);
 
 	/**
-	 * This is a validator detects grade out of range issues. If one tries to name a
+	 * This validator detects grade out of range issues. If one tries to name a
 	 * grade by its index, it is always possible for the offered integer to be out
 	 * of range.
+	 * <br>
+	 * This method demands a contract term for validating the grade index to be referenced.
+	 * It is NOT static because the maximum blade of a basis is object dependent.
+	 * Implementations of this method should AVOID placing magic numbers in the method 
+	 * body by using CladosConstant static elements like validateSize(int) does.
 	 * <br>
 	 * @param pIn Integer representing the integer index of the grade
 	 * @return boolean True if parameter in the supported range [0, gradeCount]

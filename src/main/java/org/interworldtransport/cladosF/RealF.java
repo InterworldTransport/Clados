@@ -563,10 +563,10 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Return a string representation of the real value.
 	 * <br>
+	 * @param pN RealF to be exported as XML.
 	 * @return String
 	 */
-	@Override
-	public String toXMLString() {
-		return ("<RealF cardinal=\"" + getCardinalString() + "\" realvalue=\"" + getReal() + "\" />");
+	public final static String toXMLString(RealF pN) {
+		return ("<RealF cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" />");
 	}
 }

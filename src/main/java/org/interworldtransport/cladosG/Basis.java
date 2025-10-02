@@ -107,7 +107,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * basis with 14 geometric directions and 16384 linear dimensions that takes a
  * sizeable fraction of a minute to construct? So it is suggested that Best
  * Practice among those who build physical models is to prebuild what you need
- * and load it all to the cache. Use CladosGBuilder to do it for you. 
+ * and load it all to the cache. Use GBuilder to do it for you. 
  * That said, it is obvious why the copy constructor was removed.
  * <br>
  * @version 2.0
@@ -538,47 +538,47 @@ public final class Basis implements CanonicalBasis {
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String
 	 * <br>
+	 * @param pB The Basis to export as XML
 	 * @param indent String of 'tab' characters that help space the output correctly
 	 *               visually. It's not actually necessary except for human
 	 *               readability of the output.
 	 * @return String
 	 */
-	@Override
-	public String toXMLString(String indent) {
+	public static String toXMLString(Basis pB, String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Basis>\n");
 		// ------------------------------------------------------------------
 		rB.append(indent)
 			.append("\t<Grades count=\"")
-			.append(getGradeCount() + "\">\n");
-		for (int k = 0; k <= gradeCount - 2; k++) // loop to get all but the highest grade
+			.append(pB.getGradeCount() + "\">\n");
+		for (int k = 0; k <= pB.gradeCount - 2; k++) // loop to get all but the highest grade
 			rB.append(indent)
 				.append("\t\t<Grade number=\"")
 				.append(k)
 				.append("\" range=\"")
-				.append(gradeList.get(k))
+				.append(pB.gradeList.get(k))
 				.append("-")
-				.append((gradeList.get(k + 1) - 1))
+				.append((pB.gradeList.get(k + 1) - 1))
 				.append("\" />\n");
 		// Handle last grade separate. There is no k+1 index for the largest grade
 		rB.append(indent)
 			.append("\t\t<Grade number=\"")
-			.append((getGradeCount() - 1))
+			.append((pB.getGradeCount() - 1))
 			.append("\" range=\"")
-			.append(gradeList.get(gradeCount - 1))
+			.append(pB.gradeList.get(pB.gradeCount - 1))
 			.append("-")
-			.append(gradeList.get(gradeCount - 1))
+			.append(pB.gradeList.get(pB.gradeCount - 1))
 			.append("\" />\n");
 		rB.append(indent)
 			.append("\t</Grades>\n");
 		// ------------------------------------------------------------------
 		rB.append(indent)
 			.append("\t<Blades count=\"")
-			.append(getBladeCount())
+			.append(pB.getBladeCount())
 			.append("\">\n");
-		for (int k = 0; k < bladeList.size(); k++) // Appending blades
-			rB.append(Blade.toXMLString(bladeList.get(k), indent + "\t\t"));
+		for (int k = 0; k < pB.bladeList.size(); k++) // Appending blades
+			rB.append(Blade.toXMLString(pB.bladeList.get(k), indent + "\t\t"));
 		rB.append(indent)
 			.append("\t</Blades>\n");
 		// ------------------------------------------------------------------

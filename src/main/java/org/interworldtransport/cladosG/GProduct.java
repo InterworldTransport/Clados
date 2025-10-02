@@ -39,7 +39,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * and will throw an exception if it discovers later that it isn't. This is true
  * most everywhere except in the constructor where input is examined first.
  * <br>
- * Most errors can be avoided by using CladosGBuilder to construct this object.
+ * Most errors can be avoided by using GBuilder to construct this object.
  * However, it shouldn't be necessary to construct a GProduct directly. Best
  * practice is to create an algebra and let it construct its product.
  * <br>
@@ -57,7 +57,7 @@ public class GProduct implements CliffordProduct {
 	 * the generators to span the algebra's vector space. It is the object that Ken
 	 * Greider called the Eddington Basis.
 	 */
-	private final CanonicalBasis canonBasis;
+	private final Basis canonBasis;
 
 	/**
 	 * This integer array is an internal translation of the product signature.
@@ -101,17 +101,17 @@ public class GProduct implements CliffordProduct {
 	 * figures out the rest of what it needs.
 	 * <br>
 	 * The size of the signature string used to be checked using a static method
-	 * on CanonicalBasis, but that was duplicating the effort performed by CliffordProduct
+	 * on Basis, but that was duplicating the effort performed by CliffordProduct
 	 * when it checks the validity of the string. Size and characters ARE checked.
 	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++".
-	 * @param pB   Canonical Basis to re-use in constructing this product.
+	 * @param pB   Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
 	 *                                 some internal call demands a generator not in
 	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProduct(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(Basis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		// ------Init signature
@@ -126,7 +126,7 @@ public class GProduct implements CliffordProduct {
 			m++;
 		}
 		signature = pSig;
-		// ------Get CanonicalBasis
+		// ------Get Basis
 		canonBasis = (pB != null) ? pB : GBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
@@ -162,7 +162,7 @@ public class GProduct implements CliffordProduct {
 	 * @return Basis
 	 */
 	@Override
-	public final CanonicalBasis getBasis() {
+	public final Basis getBasis() {
 		return canonBasis;
 	}
 
@@ -275,30 +275,31 @@ public class GProduct implements CliffordProduct {
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form.
 	 * <br>
+	 * @param pG A geometric product to be exported to XML
+	 * @param indent A string to use for XML element intentation. Not required.
 	 * @return String This is the XML string export of an object.
 	 */
-	@Override
-	public final String toXMLString(String indent) {
+	public final static String toXMLString(GProduct pG, String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
 		rB.append(indent)
 			.append("\t<Signature>")
-			.append(signature())
+			.append(pG.signature())
 			.append("</Signature>\n");
-		rB.append(getBasis().toXMLString(indent + "\t"));
+		rB.append(Basis.toXMLString(pG.getBasis(), indent + "\t"));
 		rB.append(indent)
 			.append("\t<ProductTable rows=\"")
-			.append(getBladeCount())
+			.append(pG.getBladeCount())
 			.append("\">\n");
-		for (int k = 0; k < getBladeCount(); k++) // Appending rows
+		for (int k = 0; k < pG.getBladeCount(); k++) // Appending rows
 		{
 			rB.append(indent)
 				.append("\t\t<row number=\"")
 				.append(k)
 				.append("\" cells=\"");
-			for (int m = 0; m < getBladeCount(); m++)
-				rB.append(getResult(k, m))
+			for (int m = 0; m < pG.getBladeCount(); m++)
+				rB.append(pG.getResult(k, m))
 				.append(",");
 			rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");
