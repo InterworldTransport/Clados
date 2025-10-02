@@ -62,10 +62,10 @@ public class DegenerateRealMonadTests {
                                                 //when it really isn't because E4 is degenerate.
     }
 
-    @Test
-    public void testPrintIt(){
-        System.out.println(Monad.toXMLFullString(tM0, ""));
-    }
+   // @Test
+   // public void testPrintIt(){
+    //    System.out.println(Monad.toXMLFullString(tM0, ""));
+   // }
     
     //@Test
     //public void testMode() {          // This test isn't needed because mode is independent of degeneracy in the signature.

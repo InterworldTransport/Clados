@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
@@ -37,7 +37,7 @@ import org.interworldtransport.cladosF.ComplexD;		//Complex doubles
 import org.interworldtransport.cladosF.ComplexF;		//Complex floats
 import org.interworldtransport.cladosF.RealD;			//Real doubles
 import org.interworldtransport.cladosF.RealF;			//Real floats
-import org.interworldtransport.cladosF.UnitAbstract;	//Unitized Number parent
+import org.interworldtransport.cladosF.ProtoN;	//Unitized Number parent
 import org.interworldtransport.cladosF.Field;			//Contract specifying division field
 import org.interworldtransport.cladosF.Normalizable;	//Contract for modulus construction
 														//Numbers obeying both contracts
@@ -54,19 +54,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * with geometric algebras. Think of them as vectors, but with higher ranked
  * elements also represented. There is more to it than that, but that is the
  * nutshell version.
- * <p>
+ * <br>
  * Caution | To the software community, 'vector' is generally understood to be a
  * dynamic array data structure. To a physicist, it is a thing that belongs to a
  * vector space and follows extra rules regarding allowed transformations. It's
  * 'thing' nature is much more important than how it acts as a data structure.
- * <p>
+ * <br>
  * The 'allowed' transformations are operations that do not change the 'thing'
  * nature of the object represented. For example, a meter stick is what it is no
  * matter how a coordinate system used to represent it is rotated. A
  * representation of the meter stick would have to be identifiable as the same
  * thing after a rotation, meaning many apparently different sets of data in the
  * structure are actually the same thing.
- * <p>
+ * <br>
  * A 'multivector' can represent 'things' that are of higher geometric rank than
  * lines. A monad has a data structure inside to support both coordinates and
  * reference information. 'Allowed' transformations on the reference frame
@@ -74,7 +74,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * it was from an external perspective. That's HOW a monad represents a thing.
  * It is expected to be invariant under 'allowed' transformations of the
  * contained data.
- * <p>
+ * <br>
  * Why 'monad' instead of 'multivector'? Try typing it yourself a few thousand
  * times and you'll understand. The name doesn't actually matter, but it is from
  * an old tradition when physicists wrote linear transformations as dyads. Two
@@ -84,23 +84,23 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * algebra now) and the name has fallen into dis-use. It is revived here because
  * we need something short and useful. A 'dyad' will be two monads in a list
  * which is generalized in another CladosG class called nyad.
- * <p>
+ * <br>
  * Doesn't 'monad' conflict with mathemetician's usage in Category Theory and
  * with Functional Programming advocates bringing that mathematics to the real
  * world? Yes. What the functional programmers are doing is terribly important,
  * so don't confuse their monad with what a physicist needs. This shouldn't be
  * too hard. Y'all have been doing it for 'vector' for a few decades. You'd
  * rather something else? 'Unad'? Make your case by helping out.
- * <p>
+ * <br>
  * NOTE | Regarding suppressed unchecked type casting warnings, they are
- * restricted to the casting that happens in CladosFBuilder and
+ * restricted to the casting that happens in FBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
  * to avoid mutability using a generic copyOf() method. As long as the
- * coefficients in a monad are valid UnitAbstract children implementing Field
+ * coefficients in a monad are valid ProtoN children implementing Field
  * and Normalizable, the copyOf() functions will work fine. There are two cases
  * where things can go awry, though.
- * <p>
- * 1. It is probably possible for someone to mix UnitAbstract children in a
+ * <br>
+ * 1. It is probably possible for someone to mix ProtoN children in a
  * Scale object containing a mondad's coefficients. The copyOf() functions will
  * faithfully copy them as they are. The scale() methods and others will
  * faithfully pass them to a Scale object to be used as appropriate there. For
@@ -109,20 +109,20 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right
  * unless one thought the scaling was between two complex numbers. THAT'S why
  * Scale AND Monad implement Modal, but nothing is enforced yet.
- * <p>
- * 2. If someone invents a new UnitAbstract child, there is a ton of work to do
+ * <br>
+ * 2. If someone invents a new ProtoN child, there is a ton of work to do
  * as the builders and other enumerations have to be adapted. Any class
  * implementing Modal might have methods that switch on CladosField values.
  * So... be cautious about inventing new CladosF numbers. Lots of work will have
  * to be done.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
-	 * <p>
+	 * <br>
 	 * The grade key is checked using a bit of trickery with integer math.
 	 * Divide the key by 10^grade and toss the remainder. If the result is odd
 	 * the grade is present. If even, it isn't. The depends on the technique used
@@ -143,10 +143,10 @@ public class Monad implements Modal {
 	/**
 	 * Return a boolean if the grade being checked is the grade of the Monad. False
 	 * is returned otherwise.
-	 * <p>
+	 * <br>
 	 * The grade key is checked. A simple power of 10 is a single grade. No special 
 	 * carve-out is needed for the scalar because 10^0 == 1.
-	 * <p>
+	 * <br>
 	 * @param pM     Monad
 	 * @param pGrade int
 	 * @return boolean
@@ -160,7 +160,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if more the monad is a ZERO scalar.
-	 * <p>
+	 * <br>
 	 * @param pM MonadComplexD This is the monad to be tested.
 	 * @return boolean
 	 */
@@ -170,7 +170,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad an idempotent
-	 * <p>
+	 * <br>
 	 * @return boolean
 	 * @param pM Monad
 	 */
@@ -182,36 +182,36 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad is a multiple of an idempotent
-	 * <p>
+	 * <br>
 	 * The strategy for this method is as follows.
-	 * <p>
+	 * <br>
 	 * 1. If the monad is an actual idempotent, return true. This is trivial case.
 	 * 2. If not, find first non-zero coefficient of the square of the monad and...
 	 * a) re-scale monad by inverse of that coefficient. Use copy to avoid change.
 	 * b) test the re-scaled monad to see if it is idenpotent. If so, return true.
 	 * 3. Return false.
-	 * <p>
+	 * <br>
 	 * Since the map internal to a Monad's Scale can accept any of the CladosF
 	 * numbers as values, there is a cast to a 'generic' type within this method.
 	 * This would normally cause warnings by the compiler since the generic named in
-	 * the internal map IS a UnitAbstract child AND casting an unchecked type could
+	 * the internal map IS a ProtoN child AND casting an unchecked type could
 	 * fail at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param pM  Monad
-	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
+	 * @param <T> ProtoN number from CladosF with all interfaces this time.
 	 * @return boolean
 	 * @throws FieldException This exception is thrown when the method can't copy
 	 *                        the field used by the monad to be checked.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends UnitAbstract & Field & Normalizable> boolean isScaledIdempotent(Monad pM)
+	public static <T extends ProtoN & Field & Normalizable> boolean isScaledIdempotent(Monad pM)
 			throws FieldException {
 		if (isIdempotent(pM))
 			return true;
@@ -231,7 +231,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad is nilpotent at a particular integer power.
-	 * <p>
+	 * <br>
 	 * @return boolean
 	 * @param pM     Monad The monad to be tested
 	 * @param pPower int The integer power to test
@@ -254,7 +254,7 @@ public class Monad implements Modal {
 	 * use of the grade key which is a sum of powers of 10, thus the base-10
 	 * logarithm will be an integer for pure grade monads and a non-integer for
 	 * multigrade monads.
-	 * <p>
+	 * <br>
 	 * @param pM This parameter offers the Monad being tested.
 	 * @return boolean
 	 */
@@ -273,7 +273,7 @@ public class Monad implements Modal {
 	 * A check is made on frameName, FootName, Signature, and FrameFoot for
 	 * equality. No check is made for equality between Mnames and Coeffs and the
 	 * product Table
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @param pN Monad
 	 * @return boolean
@@ -299,7 +299,7 @@ public class Monad implements Modal {
 	 * Return true if one blade is present in the Monad. This method makes use of
 	 * the grade key which is a sum of powers of 10, thus the base-10 logarithm will
 	 * be an integer for pure grade monads and a non-integer for multigrade monads.
-	 * <p>
+	 * <br>
 	 * @param pM This parameter offers the Monad being tested.
 	 * @return boolean
 	 */
@@ -315,12 +315,12 @@ public class Monad implements Modal {
 
 	/**
 	 * Display XML string that represents the Monad
-	 * <p>
+	 * <br>
 	 * @param pM     MonadRealF This is the monad to be converted to XML.
 	 * @param indent String of tab characters to assign with human readability
 	 * @return String
 	 */
-	public static String toXMLFullString(Monad pM, String indent) {
+	public final static String toXMLFullString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = (new StringBuilder(indent + "<Monad "))
@@ -339,19 +339,19 @@ public class Monad implements Modal {
 			.append(pM.getFrameName())
 			.append("\"</ReferenceFrame>\n");
 		rB.append(indent)
-			.append(pM.scales.toXMLString("\t"));
+			.append(Scale.toXMLString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
 
 	/**
 	 * Display XML string that represents the Monad
-	 * <p>
+	 * <br>
 	 * @param pM     Monad This is the monad to be converted to XML.
 	 * @param indent String of tab characters to assign with human readability
 	 * @return String
 	 */
-	public static String toXMLString(Monad pM, String indent) {
+	public final static String toXMLString(Monad pM, String indent) {
 		if (indent == null)
 			indent = "\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Monad ");
@@ -372,7 +372,7 @@ public class Monad implements Modal {
 			.append(pM.getName())
 			.append("</Name>\n");
 		rB.append(indent)
-			.append(pM.scales.toXMLString("\t"));
+			.append(Scale.toXMLString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
@@ -412,7 +412,7 @@ public class Monad implements Modal {
 	 * bladeCount. It is keyed to the blades in a monad's basis. It is fundamentally
 	 * an IdentityHashMap with some frosting.
 	 */
-	protected Scale<? extends UnitAbstract> scales;
+	protected Scale<? extends ProtoN> scales;
 
 	/**
 	 * This boolean is a flag used internally by multiplication methods to make
@@ -426,13 +426,13 @@ public class Monad implements Modal {
 	 * Simple copy constructor of Monad. Passed Monad will be copied in all details.
 	 * This contructor is used most often to get around operations that alter a
 	 * Monad when the developer does not wish it to be altered.
-	 * <p>
-	 * @param <T> CladosF number is a UnitAbstract child that implemnts Field and
+	 * <br>
+	 * @param <T> CladosF number is a ProtoN child that implemnts Field and
 	 *            Normalizable.
 	 * @param pM  Monad
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> Monad(Monad pM) {
+	public <T extends ProtoN & Field & Normalizable> Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
 		setFrameName(pM.getFrameName());
@@ -445,7 +445,7 @@ public class Monad implements Modal {
 	 * Main copy constructor of Monad. Passed Monad will be copied in all details
 	 * except its name. This constructor is used most often as a starting point to
 	 * generate new Monads based on an old one.
-	 * <p>
+	 * <br>
 	 * @param pName String
 	 * @param pM    Monad
 	 */
@@ -457,15 +457,15 @@ public class Monad implements Modal {
 	/**
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create the default 'Zero' Monad.
-	 * <p>
-	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 * <br>
+	 * @param <T>          CladosF number is a ProtoN child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
-	 * @param pF           UnitAbstract Used to construct number
+	 * @param pF           ProtoN Used to construct number
 	 * @throws BadSignatureException   This exception is thrown if the signature
 	 *                                 string offered is rejected.
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
@@ -476,7 +476,7 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, GBuilder.createFootLike(pFootName, pF), pSig, pF);
@@ -485,8 +485,8 @@ public class Monad implements Modal {
 	/**
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create a default 'Zero' Monad while re-using the Foot of another.
-	 * <p>
-	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 * <br>
+	 * @param <T>          CladosF number is a ProtoN child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
@@ -504,7 +504,7 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, Foot pFoot, String pSig, T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
@@ -532,7 +532,7 @@ public class Monad implements Modal {
 				scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
-			default -> throw new IllegalArgumentException("Offered Number must be a child of CladosF/UnitAbstract");
+			default -> throw new IllegalArgumentException("Offered Number must be a child of CladosF/ProtoN");
 		}
 		setGradeKey();
 	}
@@ -542,8 +542,8 @@ public class Monad implements Modal {
 	 * strings determine the coefficients automatically. 'Unit Scalar' and 'Unit
 	 * PScalar' are recognized special cases. All unrecognized strings create a
 	 * 'Zero' Monad by default.
-	 * <p>
-	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 * <br>
+	 * @param <T>          CladosF number is a ProtoN child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
@@ -563,7 +563,7 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, T pF, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
@@ -658,8 +658,8 @@ public class Monad implements Modal {
 
 	/**
 	 * Main constructor of Monad with all information passed in.
-	 * <p>
-	 * @param <T>          CladosF number is a UnitAbstract child that implemnts
+	 * <br>
+	 * @param <T>          CladosF number is a ProtoN child that implemnts
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
@@ -677,7 +677,7 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
+	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, GBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName,
@@ -687,8 +687,8 @@ public class Monad implements Modal {
 	/**
 	 * Main constructor of Monad with pre-constructed objects not already part of
 	 * another Monad.
-	 * <p>
-	 * @param <T>        CladosF number is a UnitAbstract child that implemnts Field
+	 * <br>
+	 * @param <T>        CladosF number is a ProtoN child that implemnts Field
 	 *                   and Normalizable.
 	 * @param pMonadName String
 	 * @param pAlgebra   Algebra
@@ -699,7 +699,7 @@ public class Monad implements Modal {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad(String pMonadName, Algebra pAlgebra, String pFrameName,
+	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, Algebra pAlgebra, String pFrameName,
 			Scale<T> pScale) throws CladosMonadException {
 		if (pScale.getMap().size() != pAlgebra.getBladeCount())
 			throw new CladosMonadException(this,
@@ -716,7 +716,7 @@ public class Monad implements Modal {
 	/**
 	 * Monad Addition: (this + pM) This operation is allowed when the two monads use
 	 * the same field and satisfy the Reference Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -736,8 +736,8 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the actual blades the underlying basis as a stream.
-	 * <p>
-	 * @return Stream of Blades in the underlying CanonicalBasis
+	 * <br>
+	 * @return Stream of Blades in the underlying Basis
 	 */
 	public Stream<Blade> bladeStream() {
 		return algebra.getGBasis().bladeStream();
@@ -745,7 +745,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method causes all coefficients of a monad to be conjugated.
-	 * <p>
+	 * <br>
 	 * @return Monad after operation.
 	 */
 	public Monad conjugate() {
@@ -755,13 +755,14 @@ public class Monad implements Modal {
 
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
-	 * <p>
+	 * <br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
 	 * a dual operation.
-	 * <p>
+	 * <br>
+	 * @param <T> CladosF number is a ProtoN child that implemnts Field and Normalizable.
 	 * @return Monad after operation.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyByPSLeft() {	
+	public <T extends ProtoN & Field & Normalizable> Monad multiplyByPSLeft() {	
 		this.multiplyLeft(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
@@ -769,13 +770,14 @@ public class Monad implements Modal {
 
 	/**
 	 * The Monad is turned into its Dual with right side multiplication by pscalar.
-	 * <p>
+	 * <br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
 	 * a dual operation.
-	 * <p>
+	 * <br>
+	 * @param <T>  ProtoN child number to create. Includes the Field and Normalizable interfaces too.
 	 * @return Monad after operation.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyByPSRight() {
+	public <T extends ProtoN & Field & Normalizable> Monad multiplyByPSRight() {
 		this.multiplyRight(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
@@ -783,7 +785,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the Algebra for this Monad.
-	 * <p>
+	 * <br>
 	 * @return Algebra
 	 */
 	public Algebra getAlgebra() {
@@ -793,52 +795,52 @@ public class Monad implements Modal {
 	/**
 	 * Return the field Coefficients for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
-	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * internal map IS a ProtoN child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <p>
-	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
-	 * @return UnitAbstract[]
+	 * <br>
+	 * @param <T> ProtoN number from CladosF without the interfaces this time.
+	 * @return ProtoN[]
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract> T[] getCoeff() {
+	public <T extends ProtoN> T[] getCoeff() {
 		return (T[]) scales.getWeights();
 	}
 
 	/**
 	 * Return a field Coefficient for this Monad. These coefficients are the
 	 * multipliers making linear combinations of the basis elements.
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
-	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * internal map IS a ProtoN child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <p>
+	 * <br>
 	 * @param i   int This points at the coefficient at the equivalent tuple
 	 *            location.
-	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
-	 * @return UnitAbstract
+	 * @param <T> ProtoN number from CladosF without the interfaces this time.
+	 * @return ProtoN
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> T getCoeff(int i) {
+	public <T extends ProtoN & Field & Normalizable> T getCoeff(int i) {
 		if (i >= 0 & i < getAlgebra().getBladeCount())
 			return (T) scales.getWeights()[i];
 		return null;
@@ -846,7 +848,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the name of the Reference Frame for this Monad
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	public String getFrameName() {
@@ -855,7 +857,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the grade key for the monad
-	 * <p>
+	 * <br>
 	 * @return long
 	 */
 	public long getGradeKey() {
@@ -863,9 +865,9 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * This answers a question concerning which type of UnitAbstract children are
+	 * This answers a question concerning which type of ProtoN children are
 	 * used.
-	 * <p>
+	 * <br>
 	 * @return CladosField mode for this monad
 	 */
 	@Override
@@ -875,7 +877,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Simple gettor for name of the monad.
-	 * <p>
+	 * <br>
 	 * @return String Contains the name of the Monad.
 	 */
 	public String getName() {
@@ -884,18 +886,18 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the map relating basis blades to coefficients.
-	 * <p>
-	 * @return Scale of Blades and UnitAbstract children. This is the 'coefficients'
+	 * <br>
+	 * @return Scale of Blades and ProtoN children. This is the 'coefficients'
 	 *         object.
 	 */
-	public Scale<? extends UnitAbstract> getWeights() {
+	public Scale<? extends ProtoN> getWeights() {
 		return scales;
 	}
 
 	/**
 	 * This method returns the sparse flag of the monad in case someone wants to
 	 * know. It is just a gettor method, though.
-	 * <p>
+	 * <br>
 	 * @return boolean
 	 */
 	public boolean getSparseFlag() {
@@ -904,7 +906,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method suppresses grades in the Monad not equal to the integer passed.
-	 * <p>
+	 * <br>
 	 * @param pGrade byte integer of the grade TO KEEP.
 	 * @return Monad but in practice it will always be a child of MonadAbtract
 	 */
@@ -919,7 +921,7 @@ public class Monad implements Modal {
 	/**
 	 * This integer stream is OFTEN used internally in monads for calculations.
 	 * Rather than type it out in long form, it is aliases to this method.
-	 * <p>
+	 * <br>
 	 * @return Integer stream ranging through all the grades of the algebra
 	 */
 	public IntStream gradeStream() {
@@ -928,7 +930,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method suppresses the grade in the Monad equal to the integer passed.
-	 * <p>
+	 * <br>
 	 * @param pGrade byte integer of the grade TO SUPPRESS.
 	 * @return Monad but in practice it will always be a child of MonadAbtract
 	 */
@@ -942,7 +944,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Mirror the sense of all geometry generators in the Monad.
-	 * <p>
+	 * <br>
 	 * @return Monad after the main involution is complete.
 	 */
 	public Monad mainInvolution() {
@@ -956,11 +958,11 @@ public class Monad implements Modal {
 	 * since that is easily handled with ==. This one checks algebras, foot names,
 	 * frame names, and the coefficients. Each object owned by the monad has its own
 	 * specialized isEqual() method that gets called.
-	 * <p>
+	 * <br>
 	 * Note that this could be done by override Object's equals() method. That might
 	 * happen in the future, but thought will have to be given to how to override
 	 * the hashing method too.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return boolean
 	 */
@@ -983,26 +985,26 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the magnitude of the Monad
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
-	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * internal map IS a ProtoN child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <p>
-	 * @param <T> UnitAbstract number from CladosF with the Field interface this
+	 * <br>
+	 * @param <T> ProtoN number from CladosF with the Field interface this
 	 *            time.
-	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
+	 * @return ProtoN but in practice it is always a child of ProtoN
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field> T magnitude() {
+	public <T extends ProtoN & Field> T magnitude() {
 		return (T) scales.modulusSum();
 	}
 
@@ -1010,7 +1012,7 @@ public class Monad implements Modal {
 	 * Monad antisymmetric multiplication: 1/2(pM this - this pM) This operation is
 	 * allowed when the two monads use the same field and satisfy the Reference
 	 * Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -1044,37 +1046,37 @@ public class Monad implements Modal {
 	/**
 	 * Monad leftside multiplication: (pM this) This operation is allowed when the
 	 * two monads use the same field and satisfy the Reference Match test.
-	 * <p>
+	 * <br>
 	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to
 	 * find the non-zero grades. For example: gradeKey=101 means the monad is a sum
 	 * of bivector and scalar because 10^2+10^0 = 101.
-	 * <p>
+	 * <br>
 	 * In a sparse monad, the gradeKey will have few 1's, making looping on all
 	 * blades less optimal. Instead, we parse gradeKey and loop through the blades
 	 * for grades that could be non-ZERO.
-	 * <p>
+	 * <br>
 	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd
 	 * behavior if one sends in a complex numbers expecting against real numbers.
 	 * What IS checked is the cardinal and that likely traps most errors that can be
 	 * made. It's not perfect, though. If someone intentionally builds different
 	 * number types using the same cardinal, they will get around the detection in
 	 * place here.
-	 * <p>
+	 * <br>
 	 * What will happen in that case? The inbound numbers will be multiplied against
 	 * coefficients as THEY understand multiplication. The inbound numbers gets cast
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
-	 * <p>
+	 * <br>
 	 * @param pM  Monad
-	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
+	 * @param <T> ProtoN number from CladosF with all interfaces this time.
 	 * @return Monad
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyLeft(Monad pM) {
+	public <T extends ProtoN & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Left multiply fails reference match.");
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
+		GProduct tProd = getAlgebra().getGProduct();
+		Basis tBasis = getAlgebra().getGBasis();
 
 		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
@@ -1097,7 +1099,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1109,7 +1111,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1121,7 +1123,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1133,7 +1135,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1162,7 +1164,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1174,7 +1176,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1186,7 +1188,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1198,7 +1200,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1214,37 +1216,37 @@ public class Monad implements Modal {
 	/**
 	 * Monad rightside multiplication: (this pM) This operation is allowed when the
 	 * two monads use the same field and satisfy the Reference Match test.
-	 * <p>
+	 * <br>
 	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to
 	 * find the non-zero grades. For example: gradeKey=101 means the monad is a sum
 	 * of bivector and scalar because 10^2+10^0 = 101.
-	 * <p>
+	 * <br>
 	 * In a sparse monad, the gradeKey will have few 1's, making looping on all
 	 * blades less optimal. Instead, we parse gradeKey and loop through the blades
 	 * for grades that could be non-ZERO.
-	 * <p>
+	 * <br>
 	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd
 	 * behavior if one sends in a complex numbers expecting against real numbers.
 	 * What IS checked is the cardinal and that likely traps most errors that can be
 	 * made. It's not perfect, though. If someone intentionally builds different
 	 * number types using the same cardinal, they will get around the detection in
 	 * place here.
-	 * <p>
+	 * <br>
 	 * What will happen in that case? The inbound numbers will be multiplied against
 	 * coefficients as THEY understand multiplication. The inbound numbers gets cast
 	 * to the other, so imaginary components won't get used in real number
 	 * multiplication.
-	 * <p>
+	 * <br>
 	 * @param pM  Monad
-	 * @param <T> UnitAbstract number from CladosF with all interfaces this time.
+	 * @param <T> ProtoN number from CladosF with all interfaces this time.
 	 * @return Monad
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> Monad multiplyRight(Monad pM) {
+	public <T extends ProtoN & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new IllegalArgumentException("Right multiply fails reference match.");
-		CliffordProduct tProd = getAlgebra().getGProduct();
-		CanonicalBasis tBasis = getAlgebra().getGBasis();
+		GProduct tProd = getAlgebra().getGProduct();
+		Basis tBasis = getAlgebra().getGBasis();
 
 		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
@@ -1267,7 +1269,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1279,7 +1281,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1291,7 +1293,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1303,7 +1305,7 @@ public class Monad implements Modal {
 										.add(newScales.get(bMult));
 								newScales.put(bMult, (T) tAgg);
 							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 							}
 							break;
 						}
@@ -1332,7 +1334,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1344,7 +1346,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1356,7 +1358,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1368,7 +1370,7 @@ public class Monad implements Modal {
 									.add(newScales.get(bMult));
 							newScales.put(bMult, (T) tAgg);
 						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails UnitAbstract reference match.");
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 						break;
 					}
@@ -1385,7 +1387,7 @@ public class Monad implements Modal {
 	 * Monad symmetric multiplication: 1/2(pM this + this pM) This operation is
 	 * allowed when the two monads use the same field and satisfy the Reference
 	 * Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -1422,7 +1424,7 @@ public class Monad implements Modal {
 	 * @return Monad this after the operation is complete
 	 * @throws FieldException This exception is thrown when normalizing a zero-sized
 	 *                        or field-conflicted monad. The object throwing it
-	 * 						  is one of the UnitAbstract children in Scale<T>
+	 * 						  is one of the ProtoN children in Scale
 	 */
 	public Monad normalize() throws FieldException {
 		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();
@@ -1458,12 +1460,11 @@ public class Monad implements Modal {
 	 * Normalize the monad as if all its basis blades were 'vectors' in the 
 	 * 2^n-dimensional vector space we can form using the basis from the 
 	 * n-dimensional algebra.
-	 * <p>
+	 * <br>
 	 * @return Monad after normalization effort is attempted.
 	 * @throws FieldException This exception is thrown when normalizing a zero-sized
 	 *                        or field-conflicted monad. The object throwing it
-	 * 						  is the Scale<of UnitAbstract children> on behalf of one
-	 * 						  of its entries.
+	 * 						  is the Scale on behalf of one of its entries.
 	 */
 	public Monad normalizeOnVS() throws FieldException {
 		scales.normalize();
@@ -1475,7 +1476,7 @@ public class Monad implements Modal {
 	 * Active Reversion: Alternating pairs of grades switch signs as a result of all
 	 * the permutation, so the easiest thing to do is to change the coefficients
 	 * instead.
-	 * <p>
+	 * <br>
 	 * @return Monad returns itself when done to support streaming operations.
 	 */
 	public Monad reverse() {
@@ -1486,7 +1487,7 @@ public class Monad implements Modal {
 	/**
 	 * Monad Scaling: (this * real number) Only the Monad coefficients are scaled by
 	 * the real number.
-	 * <p>
+	 * <br>
 	 * NOTE that the mode of the inbound scaling number is NOT checked. That can
 	 * lead to odd behavior if one sends in a complex number expecting to scale a
 	 * real number. What IS checked is the cardinal and that likely traps most
@@ -1496,12 +1497,12 @@ public class Monad implements Modal {
 	 * number will be multiplied against coefficients as THEY understand
 	 * multiplication. The inbound number gets cast to the other, so imaginary
 	 * components won't get used in real number multiplication.
-	 * <p>
-	 * @param pScale UnitAbstract to use for scaling the monad
-	 * @param <T>    UnitAbstract number from CladosF with the Field interface.
+	 * <br>
+	 * @param pScale ProtoN to use for scaling the monad
+	 * @param <T>    ProtoN number from CladosF with the Field interface.
 	 * @return Monad after the scaling is complete.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad scale(T pScale) {
+	public <T extends ProtoN & Field & Normalizable> Monad scale(T pScale) {
 		scales.scale(pScale);
 		setGradeKey();
 		return this;
@@ -1516,13 +1517,14 @@ public class Monad implements Modal {
 	 * the old meaning of the object might linger in the various name attributes.
 	 * Caution is advised if this method is used while frequent reuse should be
 	 * considered bad form.
-	 * <p>
-	 * @param ppC UnitAbstract child array for weights
+	 * <br>
+	 * @param <T>  ProtoN number from CladosF with all interfaces this time.
+	 * @param ppC ProtoN child array for weights
 	 * @return Monad after setting the coefficients to the offered array.
 	 * @throws CladosMonadException This exception is thrown when the array offered
 	 *                              for coordinates is of the wrong length.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
+	public <T extends ProtoN & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
 		if (ppC.length != getAlgebra().getBladeCount())
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
 		scales.setWeightsArray(FListBuilder.copyOf(mode, ppC));
@@ -1534,8 +1536,9 @@ public class Monad implements Modal {
 	 * Reset the name used for the Reference Frame for this Monad This operation
 	 * would take place to point out a passive rotation or translation or any other
 	 * alteration to the reference frame.
-	 * <p>
+	 * <br>
 	 * @param pRName String
+	 * @return Monad after setting the frame name. The algebra is updated too.
 	 */
 	public Monad setFrameName(String pRName) {
 		getAlgebra().removeFrame(frameName);
@@ -1547,7 +1550,7 @@ public class Monad implements Modal {
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.
-	 * <p>
+	 * <br>
 	 * While we are here, we ALSO set the sparseFlag. The nonZero coeff detection
 	 * loop that fills gradeKey is a grade detector, so if foundGrade is less than
 	 * or equal to half gradeCount, sparseFlag is set to true and false otherwise.
@@ -1573,8 +1576,9 @@ public class Monad implements Modal {
 
 	/**
 	 * Simple setter of the name of the monad.
-	 * <p>
+	 * <br>
 	 * @param pName String name of the monad to set
+	 * @return Monad after setting the name.
 	 */
 	public Monad setName(String pName) {
 		name = pName;
@@ -1583,32 +1587,32 @@ public class Monad implements Modal {
 
 	/**
 	 * Return the magnitude squared of the Monad
-	 * <p>
+	 * <br>
 	 * Since the map internal to Scale can accept any of the CladosF numbers as
 	 * values, there is a cast to a 'generic' type within this method. This would
 	 * normally cause warnings by the compiler since the generic named in the
-	 * internal map IS a UnitAbstract child AND casting an unchecked type could fail
+	 * internal map IS a ProtoN child AND casting an unchecked type could fail
 	 * at runtime.
-	 * <p>
+	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <p>
-	 * @param <T> UnitAbstract number from CladosF without the interfaces this time.
-	 * @return UnitAbstract but in practice it is always a child of UnitAbstract
+	 * <br>
+	 * @param <T> ProtoN number from CladosF without the interfaces this time.
+	 * @return ProtoN but in practice it is always a child of ProtoN
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract> T sqMagnitude() {
+	public <T extends ProtoN> T sqMagnitude() {
 		return (T) scales.modulusSQSum();
 	}
 
 	/**
 	 * Monad Subtraction: (this - pM) This operation is allowed when the two monads
 	 * use the same field and satisfy the Reference Matching test.
-	 * <p>
+	 * <br>
 	 * @param pM Monad
 	 * @return Monad
 	 */
@@ -1628,11 +1632,12 @@ public class Monad implements Modal {
 
 	/**
 	 * Simple setter method of the algebra for this monad.
-	 * <p>
+	 * <br>
 	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
 	 * 'directions' in the underlying basis.
-	 * <p>
+	 * <br>
 	 * @param pA Algebra to set
+	 * @return Monad after setting the algebra.
 	 */
 	protected Monad setAlgebra(Algebra pA) {
 		algebra = pA;

@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GBuilder<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GBuilder<br>
@@ -33,7 +33,7 @@ import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -44,10 +44,10 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 /**
  * This builder gets basic information and constructs many Clados Geometry
  * objects.
- * <p>
+ * <br>
  * This enumeration has NO non-static element for the instance, thus
- * CladosGBuilder HAS NO INTERNAL STATE that can change.
- * <p>
+ * GBuilder HAS NO INTERNAL STATE that can change.
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -59,10 +59,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Cleans the signature string to ensure it passes the validateSignature() test.
-	 * <p>
+	 * <br>
 	 * Any char in the string that isn't '+' or '-' is simply removed. If the
 	 * resulting string is too long, it is clipped at the supported length.
-	 * <p>
+	 * <br>
 	 * @param pSig String signature to be cleaned
 	 * @return String that has only + or - characters in it.
 	 */
@@ -85,7 +85,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Algebra Constructor #1 covered with this
-	 * <p>
+	 * <br>
 	 * @param pA    The Algebra to be copied.
 	 * @param pName A String for the new algebra's name.
 	 * @return Algebra
@@ -98,7 +98,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated.
-	 * <p>
+	 * <br>
 	 * @param pF    Foot object to copy
 	 * @param pSpot indexed location in offered Foot to find a Cardinal
 	 * @return Foot (new instance)
@@ -109,7 +109,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #1 covered with this method
-	 * <p>
+	 * <br>
 	 * @param pM The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 */
@@ -119,7 +119,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #2 covered with this method
-	 * <p>
+	 * <br>
 	 * @param pM    The monad to be copied. USE A CONCRETE Monad here or nada.
 	 * @param pName A String for the new monad's name.
 	 * @return Monad (Cast this as the concrete monad to be used)
@@ -132,14 +132,13 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * This method builds a copy of the offered monad with a slightly different name
 	 * and then completely swaps out the weights to ensure it is a pscalar that otherwise
 	 * passes all reference tests.
-	 * <p>
-	 * @param <T>
+	 * <br>
+	 * @param <T>  ProtoN child number to create. Includes the Field and Normalizable interfaces too.
 	 * @param pM Monad to be mostly copied in constructing a pscalar for it.
 	 * @return Monad that is a unit pscalar that otherwise matches the offered Monad.
-	 * @throws CladosMonadException
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends UnitAbstract & Field & Normalizable> Monad pscalarOfMonad(Monad pM) {
+	public static final <T extends ProtoN & Field & Normalizable> Monad pscalarOfMonad(Monad pM) {
 		Scale<T> tempScales = (Scale<T>) GBuilder.copyOfScale(pM.getWeights());
 		tempScales.zeroAllButGrade((byte) (pM.getAlgebra().getGradeCount() - 1));
 		tempScales.setPScalarWeight((T) FBuilder.createONE(pM.getMode(), pM.getWeights().getCardinal()));
@@ -150,22 +149,22 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Simple copy method. Offer a Scale, get a copy of it back as far as mapped values go.
-	 * <p>
+	 * <br>
 	 * @param <T> generic description of a CladosF number. Descends from
-	 *            UnitAbstract but must also implement Field and Normalizable.
+	 *            ProtoN but must also implement Field and Normalizable.
 	 * @param pIn The Scale object to be imitated.
 	 * @return new Scale object that RE-USES blades from the contained basis, but
 	 *         copies all numbers ensuring the two Scale objects do NOT share values
 	 *         in their internal maps.
 	 */
-	public static final <T extends UnitAbstract & Field & Normalizable> Scale<T> copyOfScale(Scale<T> pIn) {
+	public static final <T extends ProtoN & Field & Normalizable> Scale<T> copyOfScale(Scale<T> pIn) {
 		return new Scale<T>(pIn);
 	}
 
 	/**
 	 * Algebra Constructor #5 covered with this
-	 * <p>
-	 * @param pNumber The UnitAbstract to be re-used.
+	 * <br>
+	 * @param pNumber The ProtoN to be re-used.
 	 * @param pName   A String for the new algebra's name.
 	 * @param pFTName A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
@@ -175,7 +174,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws GeneratorRangeException Thrown by an algebra constructor if the pSig
 	 *                                 parameter is too long
 	 */
-	public static final Algebra createAlgebra(UnitAbstract pNumber, String pName, String pFTName, String pSig)
+	public static final Algebra createAlgebra(ProtoN pNumber, String pName, String pFTName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
 			return new Algebra(pName, pFTName, pSig, (RealF) FBuilder.REALF.createZERO(pNumber.getCardinal()));
@@ -186,13 +185,13 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 		} else if (pNumber instanceof ComplexD) {
 			return new Algebra(pName, pFTName, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
-			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + pNumber.toXMLString());
+			throw new IllegalArgumentException("Unexpected value as an Algebra mode | " + ProtoN.toXMLString(pNumber));
 		}
 	}
 
 	/**
 	 * Algebra Constructor #3 covered with this
-	 * <p>
+	 * <br>
 	 * @param pF    A Foot to be referenced so a new one is NOT created.
 	 * @param pCard The Cardinal to be re-used.
 	 * @param pName A String for the new algebra's name.
@@ -208,16 +207,16 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Algebra Constructor #4 covered with this
-	 * <p>
+	 * <br>
 	 * @param pF      A Foot to be referenced so a new one is NOT created.
-	 * @param pNumber The UnitAbstract to be re-used.
+	 * @param pNumber The ProtoN to be re-used.
 	 * @param pName   A String for the new algebra's name.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return Algebra
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final Algebra createAlgebraWithFoot(Foot pF, UnitAbstract pNumber, String pName, String pSig)
+	public static final Algebra createAlgebraWithFoot(Foot pF, ProtoN pNumber, String pName, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
 		if (pNumber instanceof RealF) {
 			return new Algebra(pName, pF, pSig, (RealF) FBuilder.REALF.createZERO(pNumber.getCardinal()));
@@ -229,39 +228,39 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 			return new Algebra(pName, pF, pSig, (ComplexD) FBuilder.COMPLEXD.createZERO(pNumber.getCardinal()));
 		} else {
 			throw new IllegalArgumentException(
-					"Unexpected UnitAbstract child for Algebra mode | " + pNumber.toXMLString());
+					"Unexpected ProtoN child for Algebra mode | " + ProtoN.toXMLString(pNumber));
 		}
 	}
 
 	/**
 	 * Algebra Constructor #2 covered with this method
-	 * <p>
+	 * <br>
 	 * @param pF    A Foot to be referenced so a new one is NOT created.
 	 * @param pCard The Cardinal to be re-used.
 	 * @param pGP   The GProduct to be re-used.
 	 * @param pName A String for the new algebra's name.
 	 * @return Algebra
 	 */
-	public static final Algebra createAlgebraWithFootPlus(Foot pF, Cardinal pCard, CliffordProduct pGP, String pName) {
+	public static final Algebra createAlgebraWithFootPlus(Foot pF, Cardinal pCard, GProduct pGP, String pName) {
 		return new Algebra(pName, pF, pGP, pCard);
 	}
 
 	/**
 	 * This method creates a basis and caches it.
-	 * <p>
+	 * <br>
 	 * @param pGen integer number of generators to use in constructing the basis.
-	 * @return CanonicalBasis constructed
+	 * @return Basis constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 */
-	public final static CanonicalBasis createBasis(byte pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList(pGen);
+	public final static Basis createBasis(byte pGen) throws GeneratorRangeException {
+		Optional<Basis> tB = GCache.INSTANCE.findBasisList(pGen);
 		if (tB.isPresent())
 			return tB.get();
 		else {
-			CanonicalBasis tSpot = Basis.using(pGen);
+			Basis tSpot = Basis.using(pGen);
 			GCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
@@ -269,20 +268,20 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * This method creates a basis and caches it.
-	 * <p>
+	 * <br>
 	 * @param pGen Generator to use in constructing the basis.
-	 * @return CanonicalBasis constructed
+	 * @return Basis constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 */
-	public final static CanonicalBasis createBasis(Generator pGen) throws GeneratorRangeException {
-		Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList(pGen.ord);
+	public final static Basis createBasis(Generator pGen) throws GeneratorRangeException {
+		Optional<Basis> tB = GCache.INSTANCE.findBasisList(pGen.ord);
 		if (tB.isPresent())
 			return tB.get();
 		else {
-			CanonicalBasis tSpot = Basis.using(pGen);
+			Basis tSpot = Basis.using(pGen);
 			GCache.INSTANCE.appendBasis(tSpot);
 			return tSpot;
 		}
@@ -290,10 +289,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * This method creates a new Foot object and a new Cardinal to go with it.
-	 * <p>
+	 * <br>
 	 * NOTE this method checks the Cardinal cache first. If one is found that
 	 * matches the offered name, it is re-used instead of creating a new Cardinal.
-	 * <p>
+	 * <br>
 	 * @param pName     String name of new Foot
 	 * @param pCardName String name of new Cardinal
 	 * @return Foot (new instance)
@@ -307,7 +306,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * This method creates a new Foot object using the Cardinal offered.
-	 * <p>
+	 * <br>
 	 * @param pName String name of new Foot
 	 * @param pCard Cardinal to be re-used.
 	 * @return Foot (new instance)
@@ -319,7 +318,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	/**
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated but the Foot has a new name too.
-	 * <p>
+	 * <br>
 	 * @param pName New string name for Foot to be created.
 	 * @param pF    Foot object to copy
 	 * @param pSpot indexed location in offered Foot to find a Cardinal
@@ -331,17 +330,17 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * This method creates a new Foot object using the Cardinal offered.
-	 * <p>
+	 * <br>
 	 * @param pName String name of new Foot
-	 * @param pDiv  UnitAbstract holding Cardinal to be re-used.
+	 * @param pDiv  ProtoN holding Cardinal to be re-used.
 	 * @return Foot (new instance)
 	 */
-	public final static Foot createFootLike(String pName, UnitAbstract pDiv) {
+	public final static Foot createFootLike(String pName, ProtoN pDiv) {
 		return createFootLike(pName, pDiv.getCardinal());
 	}
 
 	/**
-	 * This method constructs a CliffordProduct using the offered basis and
+	 * This method constructs a GProduct using the offered basis and
 	 * signature. It first checks the product cache and returns a matching product
 	 * instead of constructing a new one IF it is found. If not, it deposits the
 	 * offered Basis in the cache and then calls the method for creating a product
@@ -349,19 +348,19 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * since that other method checks the basis cache before making a new basis. By
 	 * the end of the method, both basis and product caches are populated with
 	 * anything that had to be constructed.
-	 * <p>
+	 * <br>
 	 * @param pB   Basis to re-use in constructing product
 	 * @param pSig String form of the product's signature
-	 * @return CliffordProduct constructed
+	 * @return GProduct constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public final static CliffordProduct createGProduct(CanonicalBasis pB, String pSig)
+	public final static GProduct createGProduct(Basis pB, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		Optional<CliffordProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
+		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get();
 		else {
@@ -373,30 +372,30 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	}
 
 	/**
-	 * This method constructs a CliffordProduct using the offered signature String.
+	 * This method constructs a GProduct using the offered signature String.
 	 * It first checks the product cache and returns a matching product instead of
 	 * constructing a new one IF it is found. If not, it checks the basis cache for
 	 * a match to decide which product constructor to use. By the end of the method,
 	 * both basis and product caches are populated with anything that had to be
 	 * constructed.
-	 * <p>
+	 * <br>
 	 * @param pSig String form of the product's signature
-	 * @return CliffordProduct constructed
+	 * @return GProduct constructed
 	 * @throws GeneratorRangeException This can be thrown by the constructors on
 	 *                                 which this method depends. Nothing special in
 	 *                                 this method will throw them, so look to the
-	 *                                 CanonicalBasis and see why it complains.
+	 *                                 Basis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public final static CliffordProduct createGProduct(String pSig)
+	public final static GProduct createGProduct(String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		Optional<CliffordProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
+		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.
 		else {
 			// Create a new GProduct, but might still find a cached Basis.
-			Optional<CanonicalBasis> tB = GCache.INSTANCE.findBasisList((byte) pSig.length());
-			CliffordProduct tSpot2;
+			Optional<Basis> tB = GCache.INSTANCE.findBasisList((byte) pSig.length());
+			GProduct tSpot2;
 			if (tB.isPresent())
 				tSpot2 = new GProduct(tB.get(), pSig);
 			else
@@ -412,10 +411,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #5 covered with this method
-	 * <p>
-	 * @param <T>      CladosF number is a UnitAbstract child that implemnts Field
+	 * <br>
+	 * @param <T>      CladosF number is a ProtoN child that implemnts Field
 	 *                 and Normalizable.
-	 * @param pNumber  The UnitAbstract to be re-used. USE A CONCRETE one here or
+	 * @param pNumber  The ProtoN to be re-used. USE A CONCRETE one here or
 	 *                 nada.
 	 * @param pName    A String for the new monad's name.
 	 * @param pAName   A String for the new algebra's name.
@@ -429,7 +428,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadSpecial(UnitAbstract pNumber,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadSpecial(ProtoN pNumber,
 			String pName, String pAName, String pFrame, String pFoot, String pSig, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, (T) pNumber, pSpecial);
@@ -437,10 +436,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #7 covered with this method
-	 * <p>
-	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 * <br>
+	 * @param <T>     CladosF number is a ProtoN child that implemnts Field
 	 *                and Normalizable.
-	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
+	 * @param pNumber The ProtoN to be re-used. USE A CONCRETE one here or
 	 *                nada.
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
 	 * @param pName   A String for the new monad's name.
@@ -450,7 +449,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadWithAlgebra(Scale<T> pNumber,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(Scale<T> pNumber,
 			Algebra pA, String pName, String pFrame)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pA, pFrame, pNumber);
@@ -458,10 +457,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #6 covered with this method
-	 * <p>
-	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 * <br>
+	 * @param <T>     CladosF number is a ProtoN child that implemnts Field
 	 *                and Normalizable.
-	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
+	 * @param pNumber The ProtoN to be re-used. USE A CONCRETE one here or
 	 *                nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
@@ -473,7 +472,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumber,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumber,
 			String pName, String pAName, String pFrame, String pFoot, String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
@@ -481,10 +480,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #4 covered with this method
-	 * <p>
-	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 * <br>
+	 * @param <T>     CladosF number is a ProtoN child that implemnts Field
 	 *                and Normalizable.
-	 * @param pNumber The UnitAbstract to be re-used.
+	 * @param pNumber The ProtoN to be re-used.
 	 * @param pFt     A Foot to be referenced so a new one is NOT created.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
@@ -496,7 +495,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadWithFoot(UnitAbstract pNumber,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithFoot(ProtoN pNumber,
 			Foot pFt, String pName, String pAName, String pFrame, String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFt, pSig, (T) pNumber);
@@ -504,10 +503,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Monad Constructor #3 covered with this method
-	 * <p>
-	 * @param <T>     CladosF number is a UnitAbstract child that implemnts Field
+	 * <br>
+	 * @param <T>     CladosF number is a ProtoN child that implemnts Field
 	 *                and Normalizable.
-	 * @param pNumber The UnitAbstract to be re-used. USE A CONCRETE one here or
+	 * @param pNumber The ProtoN to be re-used. USE A CONCRETE one here or
 	 *                nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
@@ -519,7 +518,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends UnitAbstract & Field & Normalizable> Monad createMonadZero(T pNumber, String pName,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadZero(T pNumber, String pName,
 			String pAName, String pFrame, String pFoot, String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
@@ -528,10 +527,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	/**
 	 * Tests the byte integer of generators to be used to see if it can be
 	 * supported.
-	 * <p>
+	 * <br>
 	 * This method just calls the method of the same name in the CanonicalBasis
 	 * interface. It is here for convenience.
-	 * <p>
+	 * <br>
 	 * @param pGen byte integer of number of generators for the test
 	 * @return TRUE if integer is in the supported range. FALSE otherwise.
 	 */
@@ -542,10 +541,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	/**
 	 * Tests the signature string to see if it contains the correct chars and no
 	 * more of them than can be supported.
-	 * <p>
+	 * <br>
 	 * This method just calls the method of the same name in the CliffordProduct
 	 * interface. It is here for convenience.
-	 * <p>
+	 * <br>
 	 * @param pSig String signature to be tested
 	 * @return TRUE if string is composed of '+' and '-' chars, but not too many.
 	 *         FALSE otherwise.
@@ -560,7 +559,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Nyad Constructor #1 covered with this method
-	 * <p>
+	 * <br>
 	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
 	 * @return Nyad (Cast this as the concrete nyad to be used)
 	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
@@ -573,7 +572,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Nyad Constructor #3 covered with this method
-	 * <p>
+	 * <br>
 	 * @param pN    The nyad to copy causing all listed monads TO BE CONSTRUCTED.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
@@ -588,7 +587,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Nyad Constructor #2 covered with this method, but with re-use
-	 * <p>
+	 * <br>
 	 * @param pM    The monad to be used as the first in monadList in a new nyad.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
@@ -601,7 +600,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 
 	/**
 	 * Nyad Constructor #2 covered with this method
-	 * <p>
+	 * <br>
 	 * @param pM    The monad to be COPIED as the first in the list in a new nyad.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
@@ -618,7 +617,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * Nyad Constructor #3 covered with this method, but with re-use. This causes
 	 * the new nyad to use EXACTLY the same monads as the one passed, so it is a
 	 * second reference to the same objects. Dangerous!
-	 * <p>
+	 * <br>
 	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)

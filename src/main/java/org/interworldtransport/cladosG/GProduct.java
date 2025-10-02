@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GProduct<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GProduct<br>
@@ -34,19 +34,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * results form one tangent space to another are NOT tracked here. Only the
  * structure of the geometric product on a canonical basis is. Other
  * distinctions are kept in the algebra objects that reference a GProduct.
- * <p>
+ * <br>
  * A GProduct object actually assumes it is OK to perform a requested operation
  * and will throw an exception if it discovers later that it isn't. This is true
  * most everywhere except in the constructor where input is examined first.
- * <p>
- * Most errors can be avoided by using CladosGBuilder to construct this object.
+ * <br>
+ * Most errors can be avoided by using GBuilder to construct this object.
  * However, it shouldn't be necessary to construct a GProduct directly. Best
  * practice is to create an algebra and let it construct its product.
- * <p>
+ * <br>
  * The implemented interface is currently all the methods available in this
  * class. That will change in the future as helper methods are built here that
  * need not be exposed elsewhere.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -57,7 +57,7 @@ public class GProduct implements CliffordProduct {
 	 * the generators to span the algebra's vector space. It is the object that Ken
 	 * Greider called the Eddington Basis.
 	 */
-	private final CanonicalBasis canonBasis;
+	private final Basis canonBasis;
 
 	/**
 	 * This integer array is an internal translation of the product signature.
@@ -71,7 +71,7 @@ public class GProduct implements CliffordProduct {
 	 * using the associated basis. The array contains numbers that represent the
 	 * blade # one would produce with a product of blades (row) and (column) of
 	 * result.
-	 * <p>
+	 * <br>
 	 * Negative results in the array imply the resulting blade is scaled by -1.
 	 */
 	private final int[][] result;
@@ -85,7 +85,7 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * Main constructor of GProduct with signature information passed in. It
 	 * figures out the rest of what it needs.
-	 * <p>
+	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++0".
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
 	 *                                 some internal call demands a generator not in
@@ -99,19 +99,19 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * A re-use constructor of GProduct with signature and Basis passed in. It
 	 * figures out the rest of what it needs.
-	 * <p>
+	 * <br>
 	 * The size of the signature string used to be checked using a static method
-	 * on CanonicalBasis, but that was duplicating the effort performed by CliffordProduct
+	 * on Basis, but that was duplicating the effort performed by CliffordProduct
 	 * when it checks the validity of the string. Size and characters ARE checked.
-	 * <p>
+	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++".
-	 * @param pB   Canonical Basis to re-use in constructing this product.
+	 * @param pB   Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
 	 *                                 some internal call demands a generator not in
 	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProduct(CanonicalBasis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(Basis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		// ------Init signature
@@ -126,7 +126,7 @@ public class GProduct implements CliffordProduct {
 			m++;
 		}
 		signature = pSig;
-		// ------Get CanonicalBasis
+		// ------Get Basis
 		canonBasis = (pB != null) ? pB : GBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
@@ -146,7 +146,7 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * Return a measure of whether blades pj and pk anticommute. Return a 1 if they
 	 * anticommute. Return a 0 otherwise.
-	 * <p>
+	 * <br>
 	 * @param pRow int
 	 * @param pCol int
 	 * @return int
@@ -158,17 +158,17 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * Basic Get method for the Basis generated by the signature of this GProduct.
-	 * <p>
+	 * <br>
 	 * @return Basis
 	 */
 	@Override
-	public final CanonicalBasis getBasis() {
+	public final Basis getBasis() {
 		return canonBasis;
 	}
 
 	/**
 	 * Get the linear dimension of the vector space that uses the associated Basis.
-	 * <p>
+	 * <br>
 	 * @return int
 	 */
 	@Override
@@ -179,7 +179,7 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * Return a measure of whether blades pj and pk commute. Return a 1 if they
 	 * commute. Return a 0 otherwise.
-	 * <p>
+	 * <br>
 	 * @param pRow int
 	 * @param pCol int
 	 * @return int
@@ -191,7 +191,7 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * Get the grade count of the algebra that uses this GProduct.
-	 * <p>
+	 * <br>
 	 * @return byte
 	 */
 	@Override
@@ -201,10 +201,10 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * Get start and end index from the GradeRange array for grade pGrade.
-	 * <p>
+	 * <br>
 	 * There is currently no protection on this method. If someone asks for a grade
 	 * that isn't in range, they WILL get -1 in the cells.
-	 * <p
+	 * <br>
 	 * @param pGrade byte primitive = grade for which the range is needed
 	 * @return int[] start and end indexes returned as a int[] array
 	 */
@@ -228,7 +228,7 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * Return row of result array. Meant for alternate multiplication methods.
-	 * <p>
+	 * <br>
 	 * @param pRow int
 	 * @return int[][]
 	 */
@@ -238,7 +238,7 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * Return an element in the geometric multiplication result table.
-	 * <p>
+	 * <br>
 	 * @param pRow int
 	 * @param pCol int
 	 * @return int
@@ -250,7 +250,7 @@ public class GProduct implements CliffordProduct {
 
 	/**
 	 * Return the sign of an element in the geometric multiplication result table.
-	 * <p>
+	 * <br>
 	 * @param pRow int
 	 * @param pCol int
 	 * @return int
@@ -263,7 +263,7 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * Return the signature of the generating geometry. This lists the squares of the
 	 * generators in their numeric order.
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	@Override
@@ -274,31 +274,32 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form.
-	 * <p>
+	 * <br>
+	 * @param pG A geometric product to be exported to XML
+	 * @param indent A string to use for XML element intentation. Not required.
 	 * @return String This is the XML string export of an object.
 	 */
-	@Override
-	public final String toXMLString(String indent) {
+	public final static String toXMLString(GProduct pG, String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct>\n");
 		rB.append(indent)
 			.append("\t<Signature>")
-			.append(signature())
+			.append(pG.signature())
 			.append("</Signature>\n");
-		rB.append(getBasis().toXMLString(indent + "\t"));
+		rB.append(Basis.toXMLString(pG.getBasis(), indent + "\t"));
 		rB.append(indent)
 			.append("\t<ProductTable rows=\"")
-			.append(getBladeCount())
+			.append(pG.getBladeCount())
 			.append("\">\n");
-		for (int k = 0; k < getBladeCount(); k++) // Appending rows
+		for (int k = 0; k < pG.getBladeCount(); k++) // Appending rows
 		{
 			rB.append(indent)
 				.append("\t\t<row number=\"")
 				.append(k)
 				.append("\" cells=\"");
-			for (int m = 0; m < getBladeCount(); m++)
-				rB.append(getResult(k, m))
+			for (int m = 0; m < pG.getBladeCount(); m++)
+				rB.append(pG.getResult(k, m))
 				.append(",");
 			rB.deleteCharAt(rB.length() - 1);
 			rB.append("\" />\n");

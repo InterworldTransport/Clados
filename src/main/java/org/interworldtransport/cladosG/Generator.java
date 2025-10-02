@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Generator<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Generator<br>
@@ -32,18 +32,18 @@ import java.util.stream.Stream;
  * encoded here about magnitudes, directions, and metrics. A Generator instance
  * merely represents the existence of a direction distinct from some other
  * direction.
- * <p>
+ * <br>
  * This enumerator works a bit as a builder too. Each of its instances rely on
  * the shared static methods and potential instance methods that 'switch' on
  * their identity to determine what gets built and returned.
- * <p>
+ * <br>
  * This enumeration has non-static parts for each instance, but they don't cause
  * a state change. Generator keeps a constant single byte integer in the
  * INTERNAL STATE of each instance acting like an ordinal to support finding the
  * instance from a numeric identity AND for providing numeric bounds on
  * supported sizes of related blades. Most uses of an instance will NOT make use
  * of the internal state, though, and cannot change it either way.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -116,7 +116,7 @@ public enum Generator {
 	/**
 	 * This method returns a stream of generators in this enumeration up to a limit
 	 * defined in CladosConstant.
-	 * <p>
+	 * <br>
 	 * @return Stream of Generator
 	 */
 	public final static Stream<Generator> stream() {
@@ -125,7 +125,7 @@ public enum Generator {
 
 	/**
 	 * This method returns an limited stream of generators in this enumeration.
-	 * <p>
+	 * <br>
 	 * @param pLimit byte integer limit of the stream. The stream stops when we
 	 *               reach the same ordinal value of a generator.
 	 * @return Stream of Generator
@@ -138,7 +138,7 @@ public enum Generator {
 	 * This method connects byte integers to Generator instances. It gets a
 	 * reference to the enumeration instance that has the same ordinal as the byte
 	 * integer parameter.
-	 * <p>
+	 * <br>
 	 * @param pS Offer a byte integer
 	 * @return and get back the corresponding Generator instance
 	 */
@@ -152,7 +152,7 @@ public enum Generator {
 	 * This method connects boxed byte integers to Generator instances. It gets a
 	 * reference to the enumeration instance that has the same ordinal as the byte
 	 * integer within the boxed parameter.
-	 * <p>
+	 * <br>
 	 * @param pS Byte integer offered
 	 * @return and get back the corresponding Generator instance
 	 */

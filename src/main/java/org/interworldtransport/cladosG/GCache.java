@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GCache<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GCache<br>
@@ -32,7 +32,7 @@ import java.util.Optional;
  * use of this singleton enumeration as a 'builder'. Nothing fancy here
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -47,34 +47,34 @@ public enum GCache {
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<CanonicalBasis> listOfBases = new ArrayList<>(1);
+	private ArrayList<Basis> listOfBases = new ArrayList<>(1);
 	/**
 	 * Heads Up! These ArrayLists ensure this 'enumeration' is mutable. This class
 	 * is a cache, so this should suprise no one. It is supposed to keep track of
 	 * the CladosG objects that can be safely shared in use.
 	 */
-	private ArrayList<CliffordProduct> listOfGProducts = new ArrayList<>(1);
+	private ArrayList<GProduct> listOfGProducts = new ArrayList<>(1);
 
 	/**
 	 * Method appends offered basis to cache IF one like it is not already present.
 	 * If it IS, nothing is done and the method silently returns.
-	 * <p>
+	 * <br>
 	 * By 'like it' we mean the basis objects have the same number of generators
 	 * used to construct them. It doesn't matter what signatures are used as a basis
 	 * isn't aware of products except as lists. NO generator duplications should
 	 * exist in blades within a basis, thus all N-generator basis objects are
 	 * structurally the same even if represented by different instances.
-	 * <p>
+	 * <br>
 	 * Important NOTE. Basis objects capture structural meaning implied by a list of
 	 * generators of an algebra. They do NOT capture the meaning of the generators
 	 * themselves. Generators in one algebra need not mean the same thing as
 	 * generators in another algebra, but the structure created in a basis is the
 	 * same between algebras if the basis for each shares the same number of
 	 * generators.
-	 * <p>
-	 * @param pB CanonicalBasis to be appended to the cache IF not already present.
+	 * <br>
+	 * @param pB Basis to be appended to the cache IF not already present.
 	 */
-	public void appendBasis(CanonicalBasis pB) {
+	public void appendBasis(Basis pB) {
 		if (!listOfBases.contains(pB))
 			listOfBases.add(pB);
 	}
@@ -82,22 +82,22 @@ public enum GCache {
 	/**
 	 * Method appends offered product to cache IF one like it is not already
 	 * present. If it IS, nothing is done and the method silently returns.
-	 * <p>
+	 * <br>
 	 * By 'like it' we mean the product objects have the same number of generators
 	 * and identical signatures used to construct them. NO generator duplications
 	 * will survive in a product table after reducing blade combinations using the
 	 * product's signature, so there is structural similarity between product tables
 	 * that use the same number of generators (because of basis similarities) and
 	 * the same signatures.
-	 * <p>
-	 * Important Note. CliffordProduct objects capture structural meaning implied in
-	 * a product table of elements of a CanonicalBasis. As with a basis, no meaning
+	 * <br>
+	 * Important Note. GProduct objects capture structural meaning implied in
+	 * a product table of elements of a Basis. As with a basis, no meaning
 	 * to the generators or blades is implied in a product table.
-	 * <p>
-	 * @param pGP CliffordProduct to be appended to the cache IF not already
+	 * <br>
+	 * @param pGP GProduct to be appended to the cache IF not already
 	 *            present.
 	 */
-	public void appendGProduct(CliffordProduct pGP) {
+	public void appendGProduct(GProduct pGP) {
 		if (!listOfGProducts.contains(pGP))
 			listOfGProducts.add(pGP);
 	}
@@ -121,30 +121,30 @@ public enum GCache {
 	}
 
 	/**
-	 * This method returns an Optional of CanonicalBasis using the integer number of
+	 * This method returns an Optional of Basis using the integer number of
 	 * generators offered for the search. If found, the optional will be engaged. If
 	 * not, it will be disengaged. IF by some chance there are two basis instances
 	 * in the cache by the same number of generators (which should NOT happen) the
 	 * first one found will be returned in the Optional.
-	 * <p>
+	 * <br>
 	 * @param pGen byte integer of generators in a basis to be found in the cache
-	 * @return Optional of CanonicalBasis matching the number of generators offered.
+	 * @return Optional of Basis matching the number of generators offered.
 	 */
-	public Optional<CanonicalBasis> findBasisList(byte pGen) {
+	public Optional<Basis> findBasisList(byte pGen) {
 		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
 	}
 
 	/**
-	 * This method returns an Optional of CliffordProduct using the String signature
+	 * This method returns an Optional of GProduct using the String signature
 	 * offered for the search. If found, the optional will be engaged. If not, it
 	 * will be disengaged. IF by some chance there are two product instances in the
 	 * cache by the same signatures (which should NOT happen) the first one found
 	 * will be returned in the Optional.
-	 * <p>
+	 * <br>
 	 * @param pSig String signature in a product to be found in the cache
-	 * @return Optional of CliffordProduct matching the signature offered.
+	 * @return Optional of GProduct matching the signature offered.
 	 */
-	public Optional<CliffordProduct> findGProductMap(String pSig) {
+	public Optional<GProduct> findGProductMap(String pSig) {
 		return listOfGProducts.stream().filter(x -> x.signature().equals(pSig)).findFirst();
 	}
 
@@ -152,7 +152,7 @@ public enum GCache {
 	 * Simple gettor for the size of the basis cache. Since there is a limit to the
 	 * Generator enumeration, there is also a limit to the basis cache. One should
 	 * NEVER see more than CladosConstant.MAXGRADE basis objects in the cache.
-	 * <p>
+	 * <br>
 	 * @return byte integer of the size of the cache of basis instances.
 	 */
 	public byte getBasisListSize() {
@@ -164,7 +164,7 @@ public enum GCache {
 	 * the Generator enumeration, there is also a limit to the product cache. One
 	 * should NEVER see more than 2^(CladosConstant.MAXGRADE+1)-1 product objects in
 	 * the cache.
-	 * <p>
+	 * <br>
 	 * @return integer of the size of the cache of basis instances.
 	 */
 	public int getGProductListSize() {
@@ -174,33 +174,33 @@ public enum GCache {
 	/**
 	 * Method removes explicit basis from cache IF present. If it IS NOT, nothing is
 	 * done and the method silently returns.
-	 * <p>
-	 * @param pB CanonicalBasis to remove from the cache IF present.
+	 * <br>
+	 * @param pB Basis to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
-	public boolean removeBasis(CanonicalBasis pB) {
+	public boolean removeBasis(Basis pB) {
 		return listOfBases.remove(pB);
 	}
 
 	/**
 	 * Method removes implied basis from cache IF one like it is present. If it IS
 	 * NOT, nothing is done and the method silently returns.
-	 * <p>
+	 * <br>
 	 * An implied basis is simply one that matches the integer number of generators
 	 * passed in as a parameter. If no basis is found, nothing is done. That covers
 	 * error conditions too. For example, no basis exists with -1 generators, but
 	 * this method will report TRUE as though it removed it. There is no harm in
 	 * this since the point of this method is to clean out the cache and NOT to
 	 * error check the calling object.
-	 * <p>
+	 * <br>
 	 * So... Generator size quality is NOT checked.
-	 * <p>
+	 * <br>
 	 * @param pGen byte integer number of generators in a basis to remove from the
 	 *             cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeBasis(byte pGen) {
-		Optional<CanonicalBasis> B = findBasisList(pGen);
+		Optional<Basis> B = findBasisList(pGen);
 		if (B.isEmpty())
 			return true;
 		return removeBasis(B.get());
@@ -209,33 +209,33 @@ public enum GCache {
 	/**
 	 * Method removes explicit product from cache IF present. If it IS NOT, nothing
 	 * is done and the method silently returns.
-	 * <p>
-	 * @param pGP CliffordProduct to remove from the cache IF present.
+	 * <br>
+	 * @param pGP GProduct to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
-	public boolean removeGProduct(CliffordProduct pGP) {
+	public boolean removeGProduct(GProduct pGP) {
 		return listOfGProducts.remove(pGP);
 	}
 
 	/**
 	 * Method removes implied product from cache IF one like it is present. If it IS
 	 * NOT, nothing is done and the method silently returns.
-	 * <p>
+	 * <br>
 	 * An implied product is simply one that matches the signature parameter and its
 	 * integer size. If no product is found, nothing is done. That covers error
-	 * conditions too. For example, no CliffordProduct exists with -1 generators (no
+	 * conditions too. For example, no GProduct exists with -1 generators (no
 	 * matter the signature) or 3 generators with "+*-" signature, but this method
 	 * will report TRUE as though it removed them. There is no harm in this since
 	 * the point of this method is to clean out the cache and NOT to error check the
 	 * calling object.
-	 * <p>
+	 * <br>
 	 * So... Signature quality is NOT checked.
-	 * <p>
+	 * <br>
 	 * @param pSig String signature of product to remove from the cache IF present.
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeGProduct(String pSig) {
-		Optional<CliffordProduct> GP = findGProductMap(pSig); // This function tries to find the passed signature
+		Optional<GProduct> GP = findGProductMap(pSig); // This function tries to find the passed signature
 		if (GP.isEmpty())
 			return true;									  // If not found, no worries. It is 'removed'.
 		return removeGProduct(GP.get());

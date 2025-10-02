@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2021 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosField<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosField<br>
@@ -28,20 +28,20 @@ package org.interworldtransport.cladosF;
  * DivFields currently come in four varieties. RealF, RealD, ComplexF, ComplexD
  * To facilitate a Builder class we would give basic information and construct
  * any of them. This would be supported by an enumeration type that can't be
- * UnitAbstract itself because UnitAbstract is subclassed to make the four field
+ * ProtoN itself because ProtoN is subclassed to make the four field
  * classes.
- * <p>
+ * <br>
  * This enum doubles up a bit as a builder. Each of its instances rely on the
  * shared static methods and have a few instance methods of their own that
  * 'switch' on their identity to determine what gets built and returned.
- * <p>
+ * <br>
  * This enumeration has non-static methods for each instance, but they don't
  * cause a state change. CladosField HAS NO INTERNAL STATE to change unlike the
  * Builder in the same package.
- * <p>
+ * <br>
  * NOTE that the methods capable of creating Cardinals in this enumeration do
- * NOT cache them. Similar methods in CladosFBuilder DO cache them.
- * <p>
+ * NOT cache them. Similar methods in FBuilder DO cache them.
+ * <br>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -64,18 +64,18 @@ public enum CladosField {
 	COMPLEXD;
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using the CladosField hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ONE.
-	 * <p>
-	 * @param pField CladosField enumeration to be used as description of UnitAbstract
+	 * <br>
+	 * @param pField CladosField enumeration to be used as description of ProtoN
 	 *               child to be created.
 	 * @param pCard  Cardinal to be re-used.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final static UnitAbstract createONE(CladosField pField, Cardinal pCard) {
+	public final static ProtoN createONE(CladosField pField, Cardinal pCard) {
 		switch (pField) {
 		case REALF:
 			return new RealF(pCard, 1f);
@@ -91,18 +91,18 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using the CladosField hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ZERO.
-	 * <p>
-	 * @param pField CladosField enumeration to be used as description of UnitAbstract
+	 * <br>
+	 * @param pField CladosField enumeration to be used as description of ProtoN
 	 *               child to be created.
 	 * @param pCard  Cardinal to be re-used.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final static UnitAbstract createZERO(CladosField pField, Cardinal pCard) {
+	public final static ProtoN createZERO(CladosField pField, Cardinal pCard) {
 		switch (pField) {
 		case REALF:
 			return new RealF(pCard, 0f);
@@ -118,16 +118,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ONE.
-	 * <p>
+	 * <br>
 	 * @param pCard Cardinal to be re-used.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final UnitAbstract createONE(Cardinal pCard) {
+	public final ProtoN createONE(Cardinal pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(pCard, 1f);
@@ -143,16 +143,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ONE.
-	 * <p>
+	 * <br>
 	 * @param pDiv Source of the Cardinal to be re-used.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final UnitAbstract createONE(UnitAbstract pDiv) {
+	public final ProtoN createONE(ProtoN pDiv) {
 		switch (this) {
 		case REALF:
 			return new RealF(pDiv.getCardinal(), 1f);
@@ -168,16 +168,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ONE.
-	 * <p>
+	 * <br>
 	 * @param pCard String name of the Cardinal to be created.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final UnitAbstract createONE(String pCard) {
+	public final ProtoN createONE(String pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(Cardinal.generate(pCard), 1f);
@@ -193,16 +193,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ZERO.
-	 * <p>
+	 * <br>
 	 * @param pCard Cardinal to be re-used.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final UnitAbstract createZERO(Cardinal pCard) {
+	public final ProtoN createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(pCard, 0f);
@@ -218,16 +218,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ZERO.
-	 * <p>
+	 * <br>
 	 * @param pDiv Source of the Cardinal to be re-used.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final UnitAbstract createZERO(UnitAbstract pDiv) {
+	public final ProtoN createZERO(ProtoN pDiv) {
 		switch (this) {
 		case REALF:
 			return new RealF(pDiv.getCardinal(), 0f);
@@ -243,16 +243,16 @@ public enum CladosField {
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular UnitAbstract
+	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
-	 * <p>
+	 * <br>
 	 * Number created has a real value of ZERO.
-	 * <p>
+	 * <br>
 	 * @param pCard String name of the Cardinal to be created.
-	 * @return UnitAbstract Newly constructed 'zero' number returned as a UnitAbstract, but
-	 *         it will always be one of the UnitAbstract children.
+	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
+	 *         it will always be one of the ProtoN children.
 	 */
-	public final UnitAbstract createZERO(String pCard) {
+	public final ProtoN createZERO(String pCard) {
 		switch (this) {
 		case REALF:
 			return new RealF(Cardinal.generate(pCard), 0f);

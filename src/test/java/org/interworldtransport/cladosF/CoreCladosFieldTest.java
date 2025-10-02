@@ -83,8 +83,8 @@ public class CoreCladosFieldTest {
     }
 
     @Test
-    public void testInstanceZEROUnitAbstractContructions(){
-        //This is a weird one. We can construct a child of UnitAbstract and then use it
+    public void testInstanceZEROProtoNContructions(){
+        //This is a weird one. We can construct a child of ProtoN and then use it
         //to create a completely different child here. This works because we nab only the Cardinal.
         RealF tRealF = (RealF) CladosField.REALF.createONE("Make A Cardinal From This");
         RealF temp1 = (RealF) CladosField.REALF.createZERO(tRealF);
@@ -100,8 +100,8 @@ public class CoreCladosFieldTest {
     }
 
     @Test
-    public void testInstanceONEUnitAbstractContructions(){
-        //This is a weird one. We can construct a child of UnitAbstract and then use it
+    public void testInstanceONEProtoNContructions(){
+        //This is a weird one. We can construct a child of ProtoN and then use it
         //to create a completely different child here. This works because we nab only the Cardinal.
         RealF tRealF = (RealF) CladosField.REALF.createZERO("Make A Cardinal From This");
         RealF temp1 = (RealF) CladosField.REALF.createONE(tRealF);

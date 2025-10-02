@@ -23,7 +23,7 @@ class CoreRealDTest {
 
 
 	@Test
-	public void testCardinals() { 										//Really testing UnitAbstract class
+	public void testCardinals() { 										//Really testing ProtoN class
 		assertTrue(tReal0.getCardinal().equals(tReal1.getCardinal()));	//Same String
 		assertFalse(tReal0.getCardinal() == tReal1.getCardinal());		//Different Objects
 		assertTrue(tReal1.getCardinal().equals(tReal1n.getCardinal()));	//Same Strings again.
@@ -31,7 +31,7 @@ class CoreRealDTest {
 	}
 
 	@Test
-	public void testIsTypeMatch() { 									//Really testing UnitAbstract class
+	public void testIsTypeMatch() { 									//Really testing ProtoN class
 		assertTrue(RealD.isTypeMatch(tReal0, tReal1));					//Tests the strings inside Cardinals
 		assertFalse(tReal0.getCardinal() == tReal1.getCardinal());		//Proof the cardinals don't have to be re-used.
 	}
@@ -205,6 +205,13 @@ class CoreRealDTest {
 		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal6));				//multiply infinity
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal2));	//Nothing stops multiply with Double.MAX_VALUE right now.
 		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Double.MIN_VALUE right now.
+
+		try {
+			testThis1.multiply(tReal4); //Already known that the exception is thrown.
+		} catch (FieldBinaryException e) {
+			assertTrue(e.getSecond() == tReal4); //Prove that the exception references objects correctly.
+			assertTrue(e.getSource() == testThis1);
+		}
 	}
 
 	@Test
@@ -248,7 +255,7 @@ class CoreRealDTest {
 		assertTrue(RealD.isZero(testThis));
 		assertTrue(testThis.getCardinalString() == "Howz About This");
 
-		UnitAbstract partNumber = new UnitAbstract(Cardinal.generate("partWay"));
+		ProtoN partNumber = new ProtoN(Cardinal.generate("partWay"));
 		testThis = new RealD(partNumber, 0.0F);
 		assertTrue(RealD.isZero(testThis));
 		assertTrue(testThis.getCardinal() == partNumber.getCardinal());
@@ -305,7 +312,7 @@ class CoreRealDTest {
 		//System.out.println("tReal4 is "+tReal4.toString());
 		//System.out.println("tReal1 is "+tReal1.toXMLString());
 		assertNotNull(tReal4.toString());
-		assertNotNull(tReal1.toXMLString());
+		assertNotNull(RealD.toXMLString(tReal1));
 	}
 
 }

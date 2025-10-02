@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.UnitAbstract<br>
- * -------------------------------------------------------------------- <p>
+ * ---org.interworldtransport.cladosF.ProtoN<br>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,16 +10,16 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
- * ---org.interworldtransport.cladosF.UnitAbstract<br>
+ * ---org.interworldtransport.cladosF.ProtoN<br>
  * ------------------------------------------------------------------------ <br>
  */
 package org.interworldtransport.cladosF;
@@ -27,50 +27,56 @@ package org.interworldtransport.cladosF;
 import java.util.Optional;
 
 /**
- * This is the parent class of children that support the notion of a division 
- * field from mathematics. Field objects in the package are used as 'numbers' 
- * in the definition of an algebra. 
- * <p>
- * UnitAbstract handles unit reference common to all its children. It also
- * implements comparisons that can be overridden in the children if deep
+ * ProtoN is short for 'proto number'. 
+ * This is the parent class supporting the notion of a division field
+ * from mathematics. Division fields are used as 'numbers' to scale blades 
+ * in an algebra, but they are better known as scalars in the sense of 
+ * linear combinations in vector spaces.
+ * <br>
+ * ProtoN handles unit references common to all its children. When you imagine
+ * the difference between five pigs and five meters you have the role played 
+ * by ProtoN's cardinal element. It says what a number is without saying
+ * how much of it there is.
+ * <br>
+ * ProtoN also implements comparisons that can be overridden if deeper
  * comparisons are necessary. For example, equality tests at this level only 
- * test high level references to object and cardinal equality. This would be
- * enough for unit type matching.
- * <p>
- * The number(s) to be plugged in, though, don't appear until a child of
- * this class. This happens because the number of reals involved in a division 
- * field varies. Complex numbers require two. Quaternions require four.
- * <p>
+ * test high level references to object and cardinal equality. This is just
+ * enough for unit type matching, but not quantity matching.
+ * <br>
+ * The number(s) that make up quantity don't appear except in a child of
+ * this class. The number and precision of reals for a division field varies. 
+ * Complex numbers require two. Quaternions require four. 
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class UnitAbstract {
+public class ProtoN {
 	/**
 	 * Static method that creates a new CladosF number with a copy of the parameter.
 	 * This copy reuses the cardinal to ensure it will pass a type match test.
-	 * <p>
+	 * <br>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <p>
+	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <p>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * <br>
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <p>
-	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
-	 * @param pF D extends UnitAbstract and Field
-	 * @return Optional D which extends UnitAbstract and Field (A CladosF number)
+	 * <br>
+	 * @param <D> ProtoN number from CladosF with all number interfaces.
+	 * @param pF D extends ProtoN and Field
+	 * @return Optional D which extends ProtoN and Field (A CladosF number)
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <D extends UnitAbstract & Field & Normalizable> Optional<D> copyMaybe(D pF) {
+	public static final <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybe(D pF) {
 		if (pF instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
 		else if (pF instanceof RealD)
@@ -86,29 +92,29 @@ public class UnitAbstract {
 
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
-	 * <p>
+	 * <br>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <p>
+	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <p>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * <br>
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <p>
-	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
-	 * @param pR D extends UnitAbstract and Field
-	 * @return D extends UnitAbstract and Field
+	 * <br>
+	 * @param <D> ProtoN number from CladosF with all number interfaces.
+	 * @param pR D extends ProtoN and Field
+	 * @return D extends ProtoN and Field
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends UnitAbstract & Field & Normalizable> Optional<D> copyMaybeONE(D pR) {
+	public final static <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybeONE(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
 		else if (pR instanceof RealD)
@@ -123,29 +129,29 @@ public class UnitAbstract {
 	
 	/**
 	 * Static zero construction method with copied cardinal and real part set to ONE.
-	 * <p>
+	 * <br>
 	 * NOTE about suppressed type cast warnings | This method sifts through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <p>
+	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <p>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * <br>
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <p>
-	 * @param pR D extends UnitAbstract and Field
-	 * @param <D> UnitAbstract number from CladosF with all number interfaces.
-	 * @return D extends UnitAbstract and Field
+	 * <br>
+	 * @param pR D extends ProtoN and Field
+	 * @param <D> ProtoN number from CladosF with all number interfaces.
+	 * @return D extends ProtoN and Field
 	 */
 	@SuppressWarnings("unchecked")
-	public final static <D extends UnitAbstract & Field & Normalizable> Optional<D> copyMaybeZERO(D pR) {
+	public final static <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybeZERO(D pR) {
 		if (pR instanceof RealF)
 			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
 		else if (pR instanceof RealD)
@@ -160,12 +166,12 @@ public class UnitAbstract {
 	
 	/**
 	 * Check to see if the two argument are of the same cardinal.
-	 * <p>
-	 * @param pE UnitAbstract
-	 * @param pF UnitAbstract
+	 * <br>
+	 * @param pE ProtoN
+	 * @param pF ProtoN
 	 * @return boolean
 	 */
-	public static final boolean isTypeMatch(UnitAbstract pE, UnitAbstract pF) {
+	public static final boolean isTypeMatch(ProtoN pE, ProtoN pF) {
 		if (pE._card == null && pF._card == null)
 			return true;
 		if (pE._card != null && pF._card == null)
@@ -176,18 +182,20 @@ public class UnitAbstract {
 	}
 
 	/**
-	 * Object for the cardinal. A string used to be used here, but an object lets us
-	 * reuse the object through a reference allowing all coefficients in the monads
-	 * of a nyad to point to the same place.
+	 * Object for the cardinal. A string used to be used here, but a Cardinal 
+	 * object enables reuse through reference allowing all coefficients in monads
+	 * to point to the same place.
+	 * <br>
+	 * This Cardinal is what gives a proto number a sense of what the number means.
 	 */
 	protected Cardinal _card;
 
 	/**
-	 * Construct a simple UnitAbstract using the Cardinal offered.
-	 * <p>
+	 * Construct a simple ProtoN using the Cardinal offered.
+	 * <br>
 	 * @param pCard Cardinal to re-use.
 	 */
-	public UnitAbstract(Cardinal pCard) {
+	public ProtoN(Cardinal pCard) {
 		setCardinal(pCard);
 	}
 	
@@ -199,7 +207,7 @@ public class UnitAbstract {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UnitAbstract other = (UnitAbstract) obj;
+		ProtoN other = (ProtoN) obj;
 		if (this.getCardinal() == null) {
 			if (other.getCardinal() == null)
 				return true;
@@ -217,8 +225,8 @@ public class UnitAbstract {
 
 	/**
 	 * Get method for _card
-	 * <p>
-	 * @return Cardinal (A cardinal name for a UnitAbstract)
+	 * <br>
+	 * @return Cardinal (A cardinal name for a ProtoN)
 	 */
 	public Cardinal getCardinal() {
 		return _card;
@@ -226,8 +234,8 @@ public class UnitAbstract {
 
 	/**
 	 * Get method for _card
-	 * <p>
-	 * @return Cardinal (A cardinal name for a UnitAbstract)
+	 * <br>
+	 * @return Cardinal (A cardinal name for a ProtoN)
 	 */
 	public String getCardinalString() {
 		return _card.getUnit();
@@ -243,16 +251,17 @@ public class UnitAbstract {
 
 	/**
 	 * Return a string representation of the field element.
-	 * <p>
+	 * <br>
+	 * @param pA ProtoN to be exported as XML... which just means the Cardinal right now.
 	 * @return String Flat string representation of this Field float(s) field
 	 */
-	public String toXMLString() {
-		return ("<UnitAbstract cardinal=\"" + getCardinalString() + "\" />");
+	public static String toXMLString(ProtoN pA) {
+		return ("<ProtoN cardinal=\"" + pA.getCardinalString() + "\" />");
 	}
 	
 	/**
 	 * Set method for _card
-	 * <p>
+	 * <br>
 	 * @param pType Cardinal
 	 */
 	protected void setCardinal(Cardinal pType) {

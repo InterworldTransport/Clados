@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.ProtoN;
 //import org.interworldtransport.cladosG.Algebra;
-//import org.interworldtransport.cladosG.CladosGBuilder;
+//import org.interworldtransport.cladosG.GBuilder;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
@@ -17,7 +17,7 @@ class HeatAlgebraTest {
 	String fType = "CardinalUnit";
 	String ftName = "Foot Default";
 	String aName = "MotionAlgebra";
-	UnitAbstract coeff;
+	ProtoN coeff;
 	Algebra a0;
 	int loopLimit = 1;
 
@@ -149,7 +149,7 @@ class HeatAlgebraTest {
 	@Test
 	public void testGen16() throws BadSignatureException, CladosMonadException, GeneratorRangeException  {
 		for (int m = 0; m < loopLimit; m++) {
-			a0 = CladosGBuilder.createAlgebra(coeff, aName, ftName, "-+++-+++-+++-+++");
+			a0 = GBuilder.createAlgebra(coeff, aName, ftName, "-+++-+++-+++-+++");
 			assertNotNull(a0);
 		}
 	}

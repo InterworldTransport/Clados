@@ -11,8 +11,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>24</maven.compiler.source>
-   		<maven.compiler.target>24</maven.compiler.target>
+		<maven.compiler.release>25</maven.compiler.release>
 		<junit.jupiter.version>5.11.0</junit.jupiter.version>
 	</properties>
 
@@ -32,53 +31,47 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-			<plugins>
-				<!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-				<plugin>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.3.0</version>
-				</plugin>
-				<!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-				<plugin>
+				<version>3.5.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.3.1</version>
-				</plugin>
-				<plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
-				</plugin>
-				<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
-					<configuration>
-        				<argLine>-Xmx16384m</argLine> <!-- Adjust the value as needed -->
-    				</configuration>
-				</plugin>
-				<plugin>
+				<version>3.14.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.3.0</version>
-				</plugin>
-				<plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>3.1.1</version>
-				</plugin>
-				<plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>3.1.1</version>
-				</plugin>
-				<!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-				<plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>4.0.0-M13</version>
-				</plugin>
-				<plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>3.5.0</version>
-				</plugin>
-			</plugins>
-			</pluginManagement>
-		 <plugins>
+			</plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -97,16 +90,45 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
+				</executions>
+			</plugin>
 			<plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>@{-Xmx16382m}</argLine>
-                </configuration>
-            </plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.4</version>
+				<configuration>
+					<argLine>-Xmx16G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.6.3</version>
+				<configuration>
+					<sourcepath>${project.basedir}/src/main/java</sourcepath>
+				</configuration>
+			</plugin>
         </plugins>
 	</build>
 
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.5.4</version>
+				<configuration>
+					<outputName>Unit Test Results</outputName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.9.0</version>
+				<configuration>
+					<webAccessURL>https://github.com/InterworldTransport/Clados</webAccessURL>
+				</configuration>
+      		</plugin>
+		</plugins>
+	</reporting>
 	
 </project>

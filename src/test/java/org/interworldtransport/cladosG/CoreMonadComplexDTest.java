@@ -416,9 +416,9 @@ public class CoreMonadComplexDTest {
         assertTrue(((ComplexD) tM8.scales.getPScalar()).getReal() == -1.0d);
     }
     
-	@Test
-	public void testXMLOutputs() {
-		System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
-        System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
-	}
+	//@Test
+	//public void testXMLOutputs() {
+		//System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
+        //System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
+	//}
 }

@@ -24,8 +24,8 @@
 	<xs:attribute 	name="number" 		type="xs:nonNegativeInteger"/>
 </xs:complexType>
 
-<xs:element 		name="UnitAbstract"	type="UnitAbstract"/>
-<xs:complexType 	name="UnitAbstract">
+<xs:element 		name="ProtoN"	type="ProtoN"/>
+<xs:complexType 	name="ProtoN">
 	<xs:attribute	name="cardinal" 	type="xs:string"/>
 </xs:complexType>
 
@@ -149,7 +149,7 @@
 <xs:complexType 	name="Algebra">
 	<xs:all>
 		<xs:element	name="Name"			type="xs:string"/>
-		<xs:element name="UnitAbstract"	type="UnitAbstract"/>
+		<xs:element name="ProtoN"	type="ProtoN"/>
 		<xs:element name="Frames"		type="Frames"/>
 		<xs:element name="Foot"			type="Foot"/>
 		<xs:element name="GProduct"		type="GProduct"/>

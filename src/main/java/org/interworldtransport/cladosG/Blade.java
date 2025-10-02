@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Blade<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Blade<br>
@@ -39,25 +39,25 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * directions and a few supporting elements including a long integer key useful
  * for comparisons and byte integer necessary for knowing how many possible
  * directions might ever be added to this blade.
- * <p>
+ * <br>
  * The directions are simply Generators from an enumeration class. They are kept
  * in an EnumSet which uses as its sense of order the same order generators are
  * enumerated in their class. At present, the supported number of 'directions'
  * is 0 to 15, so the enumeration class lists 15 possible generators.
- * <p>
+ * <br>
  * The EnumSet keeps Generators in their natural order. If a new direction is
  * added, the EnumSet will handle it 'late' in the computational sense. In other
  * words, it doesn't matter where the new generator gets added. It matters ONLY
  * when generators are iterated later when establishing a product table or
  * generating a blade key. Iterators will always deliver directions in the same
  * order.
- * <p>
+ * <br>
  * For example, if a sub-manifold has six possible directions from a point, a
  * Blade will contain zero to six of them represented as generators E1 through
  * E6. If only 3 are in the Blade (making it a 3-blade) then ANY three will be
  * in the EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions
  * are contained and the blade represents a scalar.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
@@ -74,7 +74,7 @@ public class Blade implements Comparable<Blade> {
 	 * internal set. The new Blade will have its maximum generator ordinal raised
 	 * by 1 and then all the original generators are added to the set before 
 	 * the offered one is.
-	 * <p>
+	 * <br>
 	 * If the new Blade is too big, the old blade is return with no remark.
 	 * If the old Blade already had the generator, it comes back as a copy but with 
 	 * a higher maximum generator limit. 
@@ -89,11 +89,11 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * Deliver a blade of the size specified by the byte integer.
-	 * <p>
+	 * <br>
 	 * A check is made of the parameter that could fail resulting in no blade being
 	 * returned. That's why an Optional of Blade is returned. That check is made
 	 * deeper in with the constructor, though.
-	 * <p>
+	 * <br>
 	 * @param pMaxGen This is the byte integer representation of the largest
 	 *                genertor that will be used in this blade being created.
 	 * @return Blade is returned.
@@ -114,7 +114,7 @@ public class Blade implements Comparable<Blade> {
 	 * full Blade it can bypass the safety check for support validity. The
 	 * Generator enumeration is assumed to have ONLY generators that can be
 	 * supported by internal representations of blades, bases, and products.
-	 * <p>
+	 * <br>
 	 * @param pB This is the Blade that will be copied.
 	 * @return Blade that references all the same generators as the offered one.
 	 */
@@ -127,7 +127,7 @@ public class Blade implements Comparable<Blade> {
 	 * actual generator it can bypass the safety check for support validity. The
 	 * Generator enumeration is assumed to have ONLY generators that can be
 	 * supported by internal representations of blades, bases, and products.
-	 * <p>
+	 * <br>
 	 * @param pGen This points to the highest generator that could be used.
 	 * @return Blade with one generator contained and a max set at the same generator.
 	 */
@@ -140,7 +140,7 @@ public class Blade implements Comparable<Blade> {
 	 * an actual generator it can bypass the safety check for support validity. The
 	 * Generator enumeration is assumed to have ONLY generators that can be
 	 * supported by internal representations of blades, bases, and products.
-	 * <p>
+	 * <br>
 	 * @param pGen This points to the highest generator that could be used.
 	 * @return Blade with all generators contained. Basically, a pscalar in the
 	 *         implied space.
@@ -155,7 +155,7 @@ public class Blade implements Comparable<Blade> {
 	 * This is a specialty name that does the same thing as createBlade(gen), but
 	 * allows for humans to correctly read the intent of a developer when the result
 	 * Blade is expected to be a scalar.
-	 * <p>
+	 * <br>
 	 * @param pGen This points to the highest generator that could be used.
 	 * @return Blade with no generators contained. Basically, a scalar in the
 	 *         implied space.
@@ -166,7 +166,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * Simple grade tester. Does the Blade contain 'n' generators?
-	 * <p>
+	 * <br>
 	 * @param blade Blade to be tested
 	 * @param n     grade value
 	 * @return TRUE if the blade has a number of generators matching the grade value
@@ -179,10 +179,10 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * Simple grade tester. Does the Blade contain ALL generators for the implied
 	 * container basis?
-	 * <p>
+	 * <br>
 	 * The maximum generator of the implied space could be ZERO causing scalars and
 	 * pscalars to be the same. This method will return TRUE in that case too.
-	 * <p>
+	 * <br>
 	 * @param blade Blade to be tested
 	 * @return TRUE if the blade all the generators implied by its own maxGen value.
 	 *         FALSE otherwise.
@@ -193,10 +193,10 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * Simple grade tester. Does the Blade contain NO generators?
-	 * <p>
+	 * <br>
 	 * The maximum generator of the implied space could be ZERO causing scalars and
 	 * pscalars to be the same. This method will return TRUE in that case too.
-	 * <p>
+	 * <br>
 	 * @param blade Blade to be tested
 	 * @return TRUE if the blade has no generators. FALSE otherwise.
 	 */
@@ -207,9 +207,9 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Blade in a human readable form.
-	 * <p>
+	 * <br>
 	 * This variation uses a Generator's ordinal to name it in the generator list.
-	 * <p>
+	 * <br>
 	 * @param blade  The Blade to be exported to XML.
 	 * @param indent String of 'tab' characters that help space the output correctly
 	 *               visually. It's not actually necessary except for human
@@ -245,9 +245,9 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Blade in a human readable form.
-	 * <p>
+	 * <br>
 	 * This variation uses a Generator's name in the generator list.
-	 * <p>
+	 * <br>
 	 * @param blade  The Blade to be exported to XML.
 	 * @param indent String of 'tab' characters that help space the output correctly
 	 *               visually. It's not actually necessary except for human
@@ -282,7 +282,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * bitKey is the base-2 representation of the blade's generators.
-	 * <p>
+	 * <br>
 	 * For example... a blade using E2 will have +2 added to the bitKey because the
 	 * ordinal for E2 is 2 and the key builder method adds (1<<(E2.ord -1)) for this
 	 * generator. For E5 (ord=5) bitKey picks up a contribution of 2^4.
@@ -292,7 +292,7 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This is the internal representation of the generators involved in the blade.
 	 * If a generator is found in the EnumSet, it is part of the blade.
-	 * <p>
+	 * <br>
 	 * For example, a set holding E1, E4, and E9 implies this is the E1,E4,E9 blade.
 	 */
 	private EnumSet<Generator> blade;
@@ -308,7 +308,7 @@ public class Blade implements Comparable<Blade> {
 	 * This is the maximum expected size of the internal EnumSet for the blade. It
 	 * is also the ordinal of the largest generator one expects to find in the
 	 * EnumSet.
-	 * <p>
+	 * <br>
 	 * Once set, this value should never change.
 	 */
 	private final byte maxGen; // This should be gradeCount-1 in a related basis
@@ -318,12 +318,12 @@ public class Blade implements Comparable<Blade> {
 	 * anything other than +1 or -1. It represents whether the blade has been
 	 * inverted or not. Blades do NOT have a sense of magnitude, so this inversion
 	 * is ONLY about the order of the generators in the EnumSet.
-	 * <p>
+	 * <br>
 	 * When this is +1, the blade is assumed to be in a state where the EnumSet
 	 * represents the natural order of generators OR in a state where an even number
 	 * of transpositions have occurred (after all pairs of transpostions that would
 	 * cancel each other are removed) away from the natural order.
-	 * <p>
+	 * <br>
 	 * When this is -1, the blade is assumed to be in a state where the EnumSet
 	 * represents an odd number of transpositions (after canceling pairs are
 	 * removed) away from the natural order of the generators in the set.
@@ -332,7 +332,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * This is a copy constructor that builds an identical blade.
-	 * <p>
+	 * <br>
 	 * @param pB The Blade to copy
 	 */
 	public Blade(Blade pB) {
@@ -348,10 +348,10 @@ public class Blade implements Comparable<Blade> {
 	 * This is a copy constructor that builds an identical blade, but with
 	 * a maximum generator size just big enough to make room for adding the 
 	 * offered generator.
-	 * <p>
+	 * <br>
 	 * IF the new blade would be bigger than the maximum supported size then 
 	 * a copy of pB is constructed instead.
-	 * <p>
+	 * <br>
 	 * @param pB The Blade to copy
 	 * @param pGen The Generator to add to the list.
 	 */
@@ -371,7 +371,7 @@ public class Blade implements Comparable<Blade> {
 	 * This is a minimal constructor that establishes the blade's future expectations 
 	 * regarding how many generators it might have to add to the set. This one is SO
 	 * minimal it winds up on its own producing a scalar blade, but with room to expand.
-	 * <p>
+	 * <br>
 	 * @param pMaxGen byte integer for the number of possible directions that might
 	 *                appear in this blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
@@ -389,10 +389,10 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
-	 * <p>
+	 * <br>
 	 * @param pGen Generator used to get ordinal for the number of possible 
 	 * 				directions that might appear in this blade.
-	 * @param pDirs  EnumSet<Generator> contains generators to append to the blade.
+	 * @param pDirs  Contains an enumset of generators to append to the blade.
 	 */
 	public Blade(Generator pGen, EnumSet<Generator> pDirs) {
 		this(pGen);
@@ -403,10 +403,10 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
-	 * <p>
+	 * <br>
 	 * @param pMaxGen byte integer for the number of possible directions that might
 	 *                appear in this blade.
-	 * @param pDirs   EnumSet<Generator> contains generators to append to the blade.
+	 * @param pDirs  Contains an enumset of generators to append to the blade.
 	 * @throws GeneratorRangeException This can happen a few different ways, but the
 	 *                                 typical one involves making blades with 
 	 *                                 too many directions. The current maximum is 
@@ -421,7 +421,7 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This is a maximal constructor that establishes the blade's future maxGen
 	 * expectations AND provides an array of directions to load into the blade.
-	 * <p>
+	 * <br>
 	 * @param pMaxGen byte integer for the number of possible directions that might
 	 *                appear in this blade.
 	 * @param pDirs   Generator[] containing directions to append to the blade.
@@ -441,7 +441,7 @@ public class Blade implements Comparable<Blade> {
 	 * generator that will ever be used within it. This sets the internal size
 	 * without having to validate an integer passed in to determine if it is in the
 	 * supported range because Generator enumeration is assumed ALL supported.
-	 * <p>
+	 * <br>
 	 * @param pMaxGen Generator that is the largest of the possible directions that
 	 *                might appear in this blade.
 	 */
@@ -453,13 +453,13 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This 'add' method assumes an entire enumerated set of generators has been
 	 * produced elsewhere and all of the set elements are to be added to this blade.
-	 * <p>
+	 * <br>
 	 * A check is performed first to see if the blade is already a pscalar. If it
 	 * is, it silently returns and does nothing. If it isn't, the method tries to
 	 * add all set elements even if doing so might make the blade a pscalar along
 	 * the way. Because the blade's internal representation relies on an EnumSet, it
 	 * de-duplicates generators added here.
-	 * <p>
+	 * <br>
 	 * @param pS An EnumSet of Generators to add to this blade
 	 * @return this blade
 	 */
@@ -478,7 +478,7 @@ public class Blade implements Comparable<Blade> {
 	 * checked to see if it is at maximum size and whether the offered generator is
 	 * beyond masGrade. If either fails, the add silently returns the Blade
 	 * unchanged. If both pass, the generator is added to the set.
-	 * <p>
+	 * <br>
 	 * @param pS Generator that will be added to the set.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
@@ -497,7 +497,7 @@ public class Blade implements Comparable<Blade> {
 	 * checked to see if it is at maximum size. If it is, the add silently returns
 	 * the Blade unchanged. If it passes, the generators are added to the set if
 	 * they pass through the filter that blocks generators larger than maxGen.
-	 * <p>
+	 * <br>
 	 * @param pS Generators that will be added to the set.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
@@ -514,7 +514,7 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This is just a getter method named to support consumers at the end of streams
 	 * of blades. This is how one gets a stream of blade keys.
-	 * <p>
+	 * <br>
 	 * @return key Returns the blade's bit integer key.
 	 */
 	public int bitKey() {
@@ -523,7 +523,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * The intended use for this method is with Comparators.
-	 * <p>
+	 * <br>
 	 * @param pIn Blade to be compared to this one
 	 * @return int in {-1, 0, 1} depending on the numeric order of each blade's long
 	 *         integer key.
@@ -556,7 +556,7 @@ public class Blade implements Comparable<Blade> {
 	 * difference is the sign of the blade is not checked. As long as blades are
 	 * being tested, all that is needed to pass this test is for them to have the
 	 * same key and maxGen values.
-	 * <p>
+	 * <br>
 	 * @param obj The object to test
 	 * @return boolean True implies two blades are equal to within a sign while
 	 *         False implies they aren't equal even when signs are ignored.
@@ -580,7 +580,7 @@ public class Blade implements Comparable<Blade> {
 	 * the blade, but reports the fact with an Optional instead of a boolean. If the
 	 * generator is present, the optional is engaged. If not, the optional is
 	 * disengaged.
-	 * <p>
+	 * <br>
 	 * @param pG The Generator to 'get'.
 	 * @return an Optional of the Generator requested.
 	 */
@@ -590,7 +590,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * This is just a getter method named to support calls from within streams.
-	 * <p>
+	 * <br>
 	 * @return key Returns the blade's ArrayList of boxed bytes.
 	 */
 	protected EnumSet<Generator> getGenerators() {
@@ -609,7 +609,7 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This is just a getter method named to support consumers at the end of streams
 	 * of blades. This is how one gets a stream of blade keys.
-	 * <p>
+	 * <br>
 	 * @return key Returns the blade's long integer key.
 	 */
 	public long key() {
@@ -618,7 +618,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * This is a gettor for the maximum generator that can be placed in this blade.
-	 * <p>
+	 * <br>
 	 * @return byte integer that would be the ordinal of the largest Generator that
 	 *         could be placed in this blade.
 	 */
@@ -629,7 +629,7 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * This method reports the size of the EnumSet of generators that represents
 	 * this blade. This is the 'rank' of the blade.
-	 * <p>
+	 * <br>
 	 * @return byte integer number of generators involved in this blade.
 	 */
 	public byte rank() {
@@ -640,14 +640,14 @@ public class Blade implements Comparable<Blade> {
 	 * This 'remove' method assumes an entire enumerated set of generators has been
 	 * produced elsewhere and all of the set elements are to be removed from this
 	 * blade.
-	 * <p>
+	 * <br>
 	 * A check is performed first to see if the blade is already a scalar. If it is,
 	 * it silently returns and does nothing. If it isn't, the method tries to remove
 	 * all set elements even if doing so might make the blade a scalar along the
 	 * way. Because the blade's internal representation relies on an EnumSet, it
 	 * won't object to attempts to remove set elements not present in the set.
 	 * Trying is inefficient, but does no harm.
-	 * <p>
+	 * <br>
 	 * @param pS An EnumSet of Generators to remove from this blade
 	 * @return this blade
 	 */
@@ -664,7 +664,7 @@ public class Blade implements Comparable<Blade> {
 	/**
 	 * The generator represents a 'direction' in the blade to be removed. If
 	 * anything is found to be removed, the key is recomputed.
-	 * <p>
+	 * <br>
 	 * @param pS Generator representing the 'direction' to remove from the blade.
 	 * @return Blade The blade itself is returned to support stream calls.
 	 */
@@ -678,15 +678,15 @@ public class Blade implements Comparable<Blade> {
 	 * Flip the order of multiplication of the generators. This doesn't actually
 	 * alter the EnumSet containing generators, though. It computes the effect of a
 	 * reversal as a sign flip since the effect is to scale the blade by +1 or -1.
-	 * <p>
+	 * <br>
 	 * No Sign flip for blade size = 0, 1, 4, 5, 8, 9, Sign flip for blade.size = 2,
 	 * 3, 6, 7,
-	 * <p>
+	 * <br>
 	 * No Sign flip for blade.size()/2 = 0, 2, 4, Sign flip for blade.size()/2 = 1,
 	 * 3,
-	 * <p>
+	 * <br>
 	 * So sign flips when (blade.size()/2) %2 == 1
-	 * <p>
+	 * <br>
 	 * @return Blade This one after the action is complete. Supporting streams.
 	 */
 	public Blade reverse() {
@@ -697,7 +697,7 @@ public class Blade implements Comparable<Blade> {
 
 	/**
 	 * A simple gettor for the sign of the blade
-	 * <p>
+	 * <br>
 	 * @return byte integer represeting the sign. Should be +1 or -1.
 	 */
 	public byte sign() {
@@ -706,13 +706,13 @@ public class Blade implements Comparable<Blade> {
 
 	/*
 	 * Base (maxGen+1) representation of Eddington Number
-	 * <p>
+	 * <br>
 	 * Ex: 3 generators implies Base-4 keys stuffed into Base-10 number.
-	 * <p>
+	 * <br>
 	 * Last generator in the list is the one's digit, the next to last is the 4's
 	 * digit and the one before that is the 16's digit. The actual byte stored in
 	 * the list is multiplied by that power
-	 * <p>
+	 * <br>
 	 * Ex: 8 generators implies Base-9 keys stuffed into a Base-10 number.
 	 */
 	private void makeKey() {
@@ -731,7 +731,7 @@ public class Blade implements Comparable<Blade> {
 	
 	/**
 	 * Simple settor for the sign of this blade.
-	 * <p>
+	 * <br>
 	 * @param pSign byte integer should be +1, -1, or 0. If it isn't, sign is set to 0.
 	 * @return this blade
 	 */

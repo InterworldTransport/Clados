@@ -1,6 +1,6 @@
 <Monad algebra="Property Algebra" frame="Foot Default Frame" gradeKey="11111" sparseFlag="false" >
 	<Name>Test MonadRD6</Name>
-	<Scales number="16">
+	<Scales mode="REALD" pans="16">
 				<Pair>
 					<Blade key="0" bitKey="0b0000" sign="1" generators="" />
 					<RealD cardinal="TestMonads" realvalue="1.0" />

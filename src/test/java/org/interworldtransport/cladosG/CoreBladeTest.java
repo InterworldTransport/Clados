@@ -231,14 +231,12 @@ class CoreBladeTest {
 	public void testXMLOutput() throws GeneratorRangeException {
 		Blade tB = Blade.createBlade(gMax);
 		Generator.stream(gMax.ord).forEach(g-> tB.add(g));
-		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />";
-		String ordString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />";
-		//assertTrue(Blade.toXMLString(tB,null).compareTo(regString) == -1);
-		//assertTrue(Blade.toXMLOrdString(tB,"").compareTo(ordString) == 0);
-		System.out.println(Blade.toXMLString(tB,"\t")+"\n"+regString+"\n");
-		//System.out.println(Blade.toXMLString(tB,null).compareTo(regString));
-		
-		System.out.println(Blade.toXMLOrdString(tB,"\t")+"\n"+ordString);
-		//System.out.println(Blade.toXMLOrdString(tB,null).compareTo(ordString));
+		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
+		String ordString = "\t<Blade key=\"81985529216486895\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />\n";
+		String test1 = Blade.toXMLString(tB,"\t");
+		String test2 = Blade.toXMLOrdString(tB,"\t");
+
+		assertTrue(test1.compareTo(regString) == -1); // blade key is off by one (too much) on the last digit
+		assertTrue(test2.compareTo(ordString) == 0); // blade key is exact match this time
 	}
 }

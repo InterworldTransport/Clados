@@ -26,12 +26,12 @@ class CoreGProductTest {
 	@Test
 	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
 		GCache.INSTANCE.clearGProducts();
-		CliffordProduct tGP1 = GBuilder.createGProduct(pSig3);
+		GProduct tGP1 = GBuilder.createGProduct(pSig3);
 		assertTrue(GCache.INSTANCE.findGProductMap(pSig3).isPresent());		//The builder cached it
 		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
-		CliffordProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
+		GProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
 		assertTrue(tGP1 == tGP2);					//The builder noticed a GP with the same sig and returned it instead
-		CliffordProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
+		GProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
 		assertTrue(GCache.INSTANCE.findGProductMap(pSig4).isPresent());		//The builder cached it
 		//assertTrue(GCache.INSTANCE.getGProductListSize() == 2);
 
@@ -316,19 +316,19 @@ class CoreGProductTest {
 			//long tS = 65536;
 			long tSum = 65536 * 65537 / 2;
 			
-			System.out.println("Cayley rows should sum to: "+tSum);
+			//System.out.println("Cayley rows should sum to: "+tSum);
 
 			int[] firstRow = tGP.getResult(0);
 			long tSumP = 0;
 			for (int j = 0; j < firstRow.length; j++)
 				tSumP += (long) Math.abs(firstRow[j]);
-			System.out.println("Cayley-FirstRow---"+tSumP);
+			//System.out.println("Cayley-FirstRow---"+tSumP);
 
 			int[] lastRow = tGP.getResult(tGP.getBladeCount()-1);
 			tSumP = 0;
 			for (int j = 0; j < lastRow.length; j++)
 				tSumP += (long) Math.abs(lastRow[j]);
-			System.out.println("Cayley-LastRow---"+tSumP);
+			//System.out.println("Cayley-LastRow---"+tSumP);
 	*/
 
 			/*

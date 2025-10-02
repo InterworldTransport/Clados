@@ -69,8 +69,8 @@ class CoreFootTest {
 		assertTrue(tStaticFoot4.findCardinal(tStaticFoot2.getCardinal(0)) == -1); //Nothing to find.
 	}
 
-	@Test
-	public void testFootStrings() {
-		System.out.println(tFoot.toXMLString(fName));
-	}
+	//@Test
+	//public void testFootStrings() {
+	//	System.out.println(tFoot.toXMLString(fName));
+	//}
 }

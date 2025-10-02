@@ -1,8 +1,8 @@
 /*
- * <h2>Copyright</h2> © 2024 Alfred Differ<br>
+ * <h2>Copyright</h2> © 2025 Alfred Differ<br>
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.RealF<br>
- * -------------------------------------------------------------------- <p>
+ * -------------------------------------------------------------------- <br>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<p>
+ * GNU Affero General Public License for more details.<br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <p> 
+ * states their willingness to accept the terms of the license. <br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<p> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.RealF<br>
@@ -31,27 +31,27 @@ import org.interworldtransport.cladosFExceptions.*;
  * objects within the cladosF package are used as 'numbers' in the definition of
  * an algebra. All Clados objects use DivFieldElements and RealF is one
  * possibility.
- * <p>
+ * <br>
  * There is no doubt that the overhead related to this class is a waste of
  * resources. However, it allows one to plug fields into the algebra classes
  * without having to maintain many different types of monads and nyads. If Java
  * came with primitive types for complex and quaternion fields, and other
  * primitives implemented a 'Field' interface, I wouldn't bother writing this
  * object or any of the other descendants of DivFieldF.
- * <p>
+ * <br>
  * Applications requiring speed should use the monads and nyads that implement
  * numbers as primitives. Those classes are marked as such within the library.
- * <p>
+ * <br>
  * Ideally, this would extend java.lang.Float and implement an interface called
  * DivFieldF. That can't be done, though, because Float is final.
- * <p>
+ * <br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class RealF extends UnitAbstract implements Field, Normalizable {
+public class RealF extends ProtoN implements Field, Normalizable {
 	/**
 	 * Static add method that creates a new RealF with the sum pF1 + pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -69,7 +69,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new RealF with the conjugate of the parameter.
 	 * Since the conjugate of a real number is the real number, this method is
 	 * functionally identical to #copy.
-	 * <p>
+	 * <br>
 	 * @param pF RealF
 	 * @return RealF
 	 */
@@ -83,7 +83,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 * each entry on the list. Because these are real numbers, though, we get away
 	 * with simply summing the moduli instead. It does not perform a cardinal safety
 	 * check and will throw the exception if that test fails.
-	 * <p>
+	 * <br>
 	 * @param pL RealF[]
 	 * @throws FieldBinaryException This exception is thrown when sqMagnitude fails
 	 *                              with the RealF array
@@ -103,7 +103,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 * has a value that is equal to the sum of the SQModulus of each entry on the
 	 * list. It does not perform a cardinal safety check and will throw the
 	 * exception if that test fails.
-	 * <p>
+	 * <br>
 	 * @param pL RealF[]
 	 * @throws FieldBinaryException This exception occurs when there is a field
 	 *                              mismatch. It should never happen but the
@@ -122,7 +122,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static method that creates a new RealF with a copy of the parameter. This
 	 * copy reuses the cardinal reference to ensure it will pass a type match test.
-	 * <p>
+	 * <br>
 	 * @param pF RealF
 	 * @return RealF
 	 */
@@ -132,21 +132,21 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * <p>
+	 * <br>
 	 * @param pR RealF
 	 * @return RealF
 	 */
-	public static RealF copyONE(UnitAbstract pR) {
+	public static RealF copyONE(ProtoN pR) {
 		return RealF.create(pR.getCardinal(), 1.0f);
 	}
 
 	/**
 	 * Static zero construction method with copied cardinal
-	 * <p>
+	 * <br>
 	 * @param pR RealF
 	 * @return RealF
 	 */
-	public static RealF copyZERO(UnitAbstract pR) {
+	public static RealF copyZERO(ProtoN pR) {
 		return RealF.create(pR.getCardinal(), 0.0f);
 	}
 
@@ -154,7 +154,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 * Static method that creates a new RealF with a copy of the parameter. This
 	 * copy does not reuse a cardinal reference so it is likely to fail type
 	 * mismatch tests.
-	 * <p>
+	 * <br>
 	 * @param pR float
 	 * @return RealF
 	 */
@@ -165,7 +165,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static method that creates a new RealF with a float and a Cardinal. This
 	 * copy DOES reuse the cardinal so it is likely to pass type mismatch tests.
-	 * <p>
+	 * <br>
 	 * @param pCard Cardinal
 	 * @param pR float
 	 * @return RealF
@@ -176,7 +176,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static divide method that creates a new RealF with the product pF1 / pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -196,20 +196,20 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 * Check for the equality of this object with that of the argument. This checks
 	 * for exact equality using no tolerances. The FieldObject types must match
 	 * first.
-	 * <p>
+	 * <br>
 	 * @param pE RealF
 	 * @param pF RealF
 	 * @return boolean <i>true</i> if both components are the same; <i>false</i>,
 	 *         otherwise.
 	 */
 	public static boolean isEqual(RealF pE, RealF pF) {
-		return UnitAbstract.isTypeMatch(pE, pF) && pE.getReal() == pF.getReal();
+		return ProtoN.isTypeMatch(pE, pF) && pE.getReal() == pF.getReal();
 
 	}
 
 	/**
 	 * This method checks to see if the value is infinite.
-	 * <p>
+	 * <br>
 	 * @param pF RealF
 	 * @return boolean
 	 */
@@ -219,7 +219,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the value is not a number at all. NAN
-	 * <p>
+	 * <br>
 	 * @param pF RealF
 	 * @return boolean
 	 */
@@ -229,7 +229,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method checks to see if the number is exactly zero.
-	 * <p>
+	 * <br>
 	 * @param pF RealF
 	 * @return boolean
 	 */
@@ -240,7 +240,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Static multiply method that creates a new RealF with the product pF1 * pF2.
 	 * product.
-	 * <p>
+	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -257,7 +257,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * <p>
+	 * <br>
 	 * @param pS String
 	 * @return RealF
 	 */
@@ -267,7 +267,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * <p>
+	 * <br>
 	 * @param pS String
 	 * @return RealF
 	 */
@@ -277,7 +277,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static one construction method
-	 * <p>
+	 * <br>
 	 * @param pC Cardinal
 	 * @return RealF
 	 */
@@ -287,7 +287,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static zero construction method
-	 * <p>
+	 * <br>
 	 * @param pC Cardinal
 	 * @return RealF
 	 */
@@ -297,7 +297,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Static subtract method that creates a new RealF with the difference pF1-pF2.
-	 * <p>
+	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
 	 * @throws FieldBinaryException This exception is thrown when there is a field
@@ -313,7 +313,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	}
 
 	/**
-	 * These are the actual java primitives within the UnitAbstract child that as as
+	 * These are the actual java primitives within the ProtoN child that as as
 	 * 'the number.'
 	 */
 	protected float[] vals;
@@ -330,7 +330,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the cardinal to initialize.
-	 * <p>
+	 * <br>
 	 * @param pT Cardinal
 	 */
 	public RealF(Cardinal pT) {
@@ -342,7 +342,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with everything to initialize.
-	 * <p>
+	 * <br>
 	 * @param pT Cardinal
 	 * @param pR float
 	 */
@@ -355,7 +355,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Basic Constructor with only the number to initialize.
-	 * <p>
+	 * <br>
 	 * @param pR float
 	 */
 	public RealF(float pR) {
@@ -367,7 +367,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Copy Constructor that reuses the cardinal reference.
-	 * <p>
+	 * <br>
 	 * @param pR RealF
 	 */
 	public RealF(RealF pR) {
@@ -380,11 +380,11 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * Copy Constructor that reuses the cardinal reference while allowing the value
 	 * to be set.
-	 * <p>
+	 * <br>
 	 * @param pR RealF
 	 * @param pF float
 	 */
-	public RealF(UnitAbstract pR, float pF) {
+	public RealF(ProtoN pR, float pF) {
 		super(pR.getCardinal());
 		vals = new float[1];
 		setReal(pF);
@@ -394,7 +394,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This method adds real numbers together and changes this object to be the
 	 * result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when a field mismatch
 	 *                              happens
@@ -402,9 +402,9 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealF add(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
 				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Addition failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Addition failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() + ((RealF) pF).getReal());
 		return this;
@@ -413,7 +413,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the self-altering conjugate method. This object changes when all of
 	 * its imaginary members are set to their additive inverses.
-	 * <p>
+	 * <br>
 	 * @return RealF
 	 */
 	@Override
@@ -424,7 +424,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method divides real numbers and changes this object to be the result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
 	 *                              division by zero happens
@@ -432,11 +432,11 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealF divide(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
 				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Divide failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Divide failed type match or size test", (ProtoN) pF));
 		if (RealF.isZero((RealF) pF))
-			throw (new FieldBinaryException(this, "Divide by Zero detected", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Divide by Zero detected", (ProtoN) pF));
 
 		setReal(getReal() / ((RealF) pF).getReal());
 		return this;
@@ -445,7 +445,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
-	 * <p>
+	 * <br>
 	 * @return Float
 	 */
 	@Override
@@ -455,7 +455,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Get the real numeric value from the value array
-	 * <p>
+	 * <br>
 	 * @return float
 	 */
 	public float getReal() {
@@ -466,7 +466,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 * This function delivers the sum of the squares of the numeric values. Many
 	 * times it is the modulus squared that is actually needed so it makes sense to
 	 * calculate this before the modulus itself.
-	 * <p>
+	 * <br>
 	 * @return Float
 	 */
 	@Override
@@ -479,7 +479,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method inverts real numbers.
-	 * <p>
+	 * <br>
 	 * @throws FieldException This exception is thrown if someone tries to invert a
 	 *                        ZERO.
 	 * @return RealF
@@ -495,16 +495,16 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches happen
 	 * @return RealF
 	 */
 	@Override
 	public RealF multiply(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
 				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() * ((RealF) pF).getReal());
 		return this;
@@ -512,7 +512,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Scale method multiplies the modulus by the scale
-	 * <p>
+	 * <br>
 	 * @param pS Number
 	 * @return RealF
 	 */
@@ -525,7 +525,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Set the real numeric value
-	 * <p>
+	 * <br>
 	 * @param preal float
 	 */
 	public void setReal(float preal) {
@@ -534,7 +534,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * This method subtracts real numbers and changes this object to be the result.
-	 * <p>
+	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
 	 *                              happen
@@ -542,9 +542,9 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 	 */
 	@Override
 	public RealF subtract(Field pF) throws FieldBinaryException {
-		if (!UnitAbstract.isTypeMatch(this, (UnitAbstract) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
 				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
-			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (UnitAbstract) pF));
+			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() - ((RealF) pF).getReal());
 		return this;
@@ -552,7 +552,7 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * <p>
+	 * <br>
 	 * @return String
 	 */
 	@Override
@@ -562,11 +562,11 @@ public class RealF extends UnitAbstract implements Field, Normalizable {
 
 	/**
 	 * Return a string representation of the real value.
-	 * <p>
+	 * <br>
+	 * @param pN RealF to be exported as XML.
 	 * @return String
 	 */
-	@Override
-	public String toXMLString() {
-		return ("<RealF cardinal=\"" + getCardinalString() + "\" realvalue=\"" + getReal() + "\" />");
+	public final static String toXMLString(RealF pN) {
+		return ("<RealF cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" />");
 	}
 }

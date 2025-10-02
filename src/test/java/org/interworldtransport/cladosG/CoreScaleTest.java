@@ -23,14 +23,14 @@ import org.junit.jupiter.api.Test;
  * to run frequently because Blade weights are contained in Scale. Most of the abuse suffered by novice
  * developers will center on Scale and the re-use of its parts. For example, two Monads re-using their 
  * Scale (same object in memory) will change if one does because re-use means referencing. This is generally
- * NOT what is intended, so Scale must make copies of the children of UnitAbstract even Cardinals and 
+ * NOT what is intended, so Scale must make copies of the children of ProtoN even Cardinals and 
  * Basis objects are re-used.
- * <p>
+ * <br>
  * High percentage coverage of Scale in unit tests is worth the effort to avoid weird computation errors later.
  */
 public class CoreScaleTest {
     Cardinal workCard;
-    CanonicalBasis workBasis;
+    Basis workBasis;
     Scale<RealF> workScaleRF;
     Scale<RealD> workScaleRD;
     Scale<ComplexF> workScaleCF;
@@ -501,10 +501,10 @@ public class CoreScaleTest {
         }
     }
 
-    @Test
-    public void testXMLString() {
-        System.out.println("Scale of real floats is:");
-        System.out.println(workScaleRF.toXMLString(""));
-    }
+    //@Test
+    //public void testXMLString() {
+    //    System.out.println("Scale of real floats is:");
+    //    System.out.println(Scale.toXMLString(workScaleCD, ""));
+    //}
 
 }
