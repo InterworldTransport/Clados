@@ -325,7 +325,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
-	 * This method imitations the main involution. All generators in each blade flip sign, so the
+	 * This method imitates the main involution. All generators in each blade flip sign, so the
 	 * implications for the values in the internal map are worked out. No typeMismatch can occur. 
 	 * <br>
 	 * This is what we called a parity inversion where generator.# goes to -1.0 * generator.#, 
