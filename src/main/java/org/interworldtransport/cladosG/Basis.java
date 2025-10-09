@@ -205,8 +205,8 @@ public final class Basis implements CanonicalBasis {
 	 * <br>
 	 * This list enables the CladosG library to avoid implementing a factorial
 	 * method to repeatedly calculate binomial coefficients. Construction of the
-	 * basis provides the information, so for the sake of efficiency they be stored
-	 * here for later use.
+	 * basis provides the information, so for the sake of efficiency they are 
+	 * stored here for later use.
 	 * <br>
 	 * The size of this list is always the same as the grade count.
 	 * <br>
@@ -230,10 +230,11 @@ public final class Basis implements CanonicalBasis {
 	 * multiplicaton table instead of the blade's key which is longer and would 
 	 * inflate the size of the Cayley table unnecessarily.
 	 * <br>
-	 * The indexed position "1" is always the scalar of the basis. That's why
-	 * a "1" in the Cayley table (called result[][] in GProduct) refers to a 
-	 * scalar... or the 'no generators' blade. The fact that a "0" is NOT used
-	 * is what will enable the introduction of degenerate generators.
+	 * The index "1" always refers to the scalar (no generators blade) of the basis. 
+	 * The index 2^(p+q+r) always refers to the pscalar of the basis.
+	 * <br>
+	 * Nothing should be indexed at "0" because a "0" in the Cayley Table is used 
+	 * to refer to an outcome of products of degenerate generators.
 	 */
 	private final TreeMap<Long, Integer> keyIndexMap;
 

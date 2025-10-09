@@ -11,5 +11,5 @@ module org.interworldtransport.clados {
 	exports org.interworldtransport.cladosG;
 	exports org.interworldtransport.cladosGExceptions;
 
-	requires java.base;
+	requires transitive java.base;
 }
