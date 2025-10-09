@@ -34,7 +34,7 @@ import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.ComplexF;
@@ -44,7 +44,7 @@ import org.interworldtransport.cladosFExceptions.FieldException;
 
 /**
  * This class contains cladosF numbers that act together as the coefficients of
- * a monad. They are all children of UnitAbstract and implement Field, so they
+ * a monad. They are all children of ProtoN and implement Field, so they
  * have both a sense of 'units' and support basic arithmetic operations. Which
  * numbers are contained internally, therefore, is tracked by two private
  * elements. One contains a reference to a Cardinal that all the numbers should
@@ -110,9 +110,9 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * @version 2.0
  * @author Dr Alfred W Differ
  * @param <D> CladosF number like RealF, RealD, ComplexF, ComplexD. They must be
- *            children of UnitAbstract AND implement Field.
+ *            children of ProtoN AND implement Field.
  */
-public final class Scale<D extends UnitAbstract & Field & Normalizable> implements Unitized, Modal {
+public final class Scale<D extends ProtoN & Field & Normalizable> implements Unitized, Modal {
 	/**
 	 * When entries appear in the internal map, they should all share the same
 	 * cardinal. That cardinal is referenced here where it gives meaning to the weights
@@ -133,10 +133,10 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This hash map is that actual list of weights mapped by their applicable blade.
 	 * In use, one calls the Scale's get(Blade) to get a generic that happens to be 
-	 * a CladosF.UnitAbstract child. One can also call a number of specialized 
+	 * a CladosF.ProtoN child. One can also call a number of specialized 
 	 * gettors to get weights for well named blades.
 	 * <br>
-	 * This feature used to be a simple array of particular children of UnitAbstract,
+	 * This feature used to be a simple array of particular children of ProtoN,
 	 * but that made for several different, but mostly related implementations of Scale
 	 * or of burying Scale in Monad and maintaining several mostly related versions 
 	 * of those. Using a map like this reduces the family of objects in CladosG at
@@ -145,9 +145,9 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	private IdentityHashMap<Blade, D> map;
 
 	/**
-	 * This is the type of UnitAbstract that should be present in the list held by
+	 * This is the type of ProtoN that should be present in the list held by
 	 * this class. For example, if mode = CladosField.REALF, then all elements in
-	 * the list will be the RealF child of UnitAbstract. 
+	 * the list will be the RealF child of ProtoN. 
 	 * <br>
 	 * Mode ensures the scale elements all have the same precision and come from the same 
 	 * numeric field. It is also WHY Scale implements Modal.
@@ -158,7 +158,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is the constructor to use when one does not have the actual map ready,
 	 * but will provide it later.
 	 * <br>
-	 * @param pMode CladosField enumeration so we know what kind of UnitAbstract to
+	 * @param pMode CladosField enumeration so we know what kind of ProtoN to
 	 *              expect from get()
 	 * @param pB    Basis to which the blades used in the internal map belong.
 	 * @param pCard Incoming Cardinal to reference here.
@@ -178,7 +178,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is NOT a copy constructor. Use it when you fully intend for the offered map
 	 * to directly provide the weights in this Scale.
 	 * <br>
-	 * @param pMode  CladosField enumeration so we know what kind of UnitAbstract to
+	 * @param pMode  CladosField enumeration so we know what kind of ProtoN to
 	 *               expect from get()
 	 * @param pB     Basis to which the blades offered in the map belong.
 	 * @param pInMap This is a Map to copy. Probably a view of another Scale object.
@@ -221,7 +221,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * values are weights of those blades.
 	 * <br>
 	 * @param pB Blade to use as key in internal map
-	 * @return A UnitAbstract child related to this blade
+	 * @return A ProtoN child related to this blade
 	 */
 	public D get(Blade pB) {
 		return map.get(pB);
@@ -242,21 +242,21 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * needing to handle coefficients directly, this is how to get at them. The
 	 * smarter approach, though, is to call the parent class method values() and
 	 * receive a Collection of coefficients instead of an array. Do it that way and
-	 * they are already of a known UnitAbstract child class.
+	 * they are already of a known ProtoN child class.
 	 * <br>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
 	 * <br>
-	 * @return an array of UnitAbstract children.
+	 * @return an array of ProtoN children.
 	 */
 	@SuppressWarnings("unchecked")
 	public D[] getWeights() {
@@ -272,7 +272,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * Simple gettor method reporting the Scale's internal mode.
 	 * <br>
-	 * @return CladosField element reporting which UnitAbstract child is expected in
+	 * @return CladosField element reporting which ProtoN child is expected in
 	 *         the list of this Scale.
 	 */
 	@Override
@@ -287,16 +287,16 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
 	 * <br>
-	 * @return A UnitAbstract child related to the pscalar blade
+	 * @return A ProtoN child related to the pscalar blade
 	 */
 	public D getPScalar() {
 		return map.get(gBasis.getPScalarBlade());
@@ -309,16 +309,16 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
 	 * <br>
-	 * @return A UnitAbstract child related to the scalar blade
+	 * @return A ProtoN child related to the scalar blade
 	 */
 	public D getScalar() {
 		return map.get(gBasis.getScalarBlade());
@@ -353,7 +353,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	/**
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking the question regarding the value rather than handle all the various
-	 * UnitAbstract children separately.
+	 * ProtoN children separately.
 	 * <br>
 	 * NOTE this tends to get used in filters in streams to minimize the number of
 	 * coefficients processed in arithmetic operations. Non-zero ones contribute
@@ -376,7 +376,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 	/**
 	 * This is a short hand method to reduce checking in other classes to simply
-	 * asking this one rather than handle all the various UnitAbstract children
+	 * asking this one rather than handle all the various ProtoN children
 	 * separately.
 	 * <br>
 	 * @return boolean True if the pscalar value evaluates as ZERO in whatever
@@ -394,7 +394,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 	/**
 	 * This is a short hand method to reduce checking in other classes to simply
-	 * asking this one rather than handle all the various UnitAbstract children
+	 * asking this one rather than handle all the various ProtoN children
 	 * separately.
 	 * <br>
 	 * @return boolean True if the scalar value evaluates as ZERO in whatever number
@@ -411,23 +411,23 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * This method takes all values in the map and returns one UnitAbstract child
+	 * This method takes all values in the map and returns one ProtoN child
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each value.
 	 * <br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
 	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
 	 * <br>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * <br>
@@ -435,7 +435,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * moduli instead. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
 	 * <br>
-	 * @return D UnitAbstract child that implements all the number interfaces too.
+	 * @return D ProtoN child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
 	public D modulusSQSum() {
@@ -486,13 +486,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				return tR;
 			}
 			default -> {
-				return (D) new UnitAbstract(this.getCardinal());
+				return (D) new ProtoN(this.getCardinal());
 			}
 		}
 	}
 
 	/**
-	 * This method takes all values in the map and returns one UnitAbstract child
+	 * This method takes all values in the map and returns one ProtoN child
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each value.
 	 * <br>
@@ -501,22 +501,22 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * the exception if that test fails.
 	 * <br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
 	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
 	 * <br>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * <br>
-	 * @return D UnitAbstract child that implements all the number interfaces too.
+	 * @return D ProtoN child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
 	public D modulusSum() {
@@ -567,7 +567,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 			return (D) tR;
 		}
 		default -> {
-			return (D) new UnitAbstract(this.getCardinal());
+			return (D) new ProtoN(this.getCardinal());
 		}
 		}
 	}
@@ -582,13 +582,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
 	 * <br>
 	 * @throws FieldException This happens when normalizing something that has a
@@ -602,11 +602,11 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 
 	/**
 	 * Put a key/value pair into the internal map of coefficients. A Blade acts as
-	 * key. A UnitAbstract child acts as coefficient.
+	 * key. A ProtoN child acts as coefficient.
 	 * <br>
 	 * 
 	 * @param pB  Blade acting as key in the internal map
-	 * @param pD  UnitAbstract child acting as the coefficient.
+	 * @param pD  ProtoN child acting as the coefficient.
 	 * @return Scale of Unit Abstract objects. Just this object after modification if it occurs.
 	 */
 	public Scale<D> put(Blade pB, D pD) {
@@ -622,7 +622,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method shows that blade reversion is handled HERE and not with the sign 
 	 * of the blades themselves. The sign in Blade is ONLY for the order of the 
 	 * enumset of its generators. Grade convolutions are remembered in Scale by
-	 * flipping signs of the UnitAbstract child values in map.
+	 * flipping signs of the ProtoN child values in map.
 	 * <br>
 	 * @return Scale object. Just this object after modification.
 	 */
@@ -652,13 +652,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * The second stream scales them.
 	 * That means the embedded IllegalARgumentException will never be thrown.
 	 * <br>
-	 * @param pIn UnitAbstract child to use as a scaling element. 
+	 * @param pIn ProtoN child to use as a scaling element. 
 	 * 				Mode and cardinal MUST match values in map.
-	 * @param <T> UnitAbstract child generic type support. Must also implement Field.
+	 * @param <T> ProtoN child generic type support. Must also implement Field.
 	 * @return Scale object. Just this object after modification.
 	 */
-	public <T extends UnitAbstract & Field & Normalizable> Scale<D> scale(T pIn) {
-		if (this.weightsStream().allMatch(div -> UnitAbstract.isTypeMatch(div, pIn))) {
+	public <T extends ProtoN & Field & Normalizable> Scale<D> scale(T pIn) {
+		if (this.weightsStream().allMatch(div -> ProtoN.isTypeMatch(div, pIn))) {
 			this.weightsParallelStream().forEach(div -> {
 				try {
 					div.multiply(pIn);
@@ -674,13 +674,13 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * <br>
-	 * @param <T> Some kind of number extending UnitAbstract that provides weights in the Scale.
+	 * @param <T> Some kind of number extending ProtoN that provides weights in the Scale.
 	 * @param pS The Scale oject to be output as XML
 	 * @param indent String of 'tab' characters to get spacing right for human
 	 *               readable XML output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
-	public final static <T extends UnitAbstract & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
+	public final static <T extends ProtoN & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
 
 		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\", pans=\"").append(pS.map.size()).append("\">\n");
 
@@ -692,7 +692,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 				case COMPLEXF -> {rB.append(indent + "\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
 				case REALD -> 	{rB.append(indent + "\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
 				case REALF -> 	{rB.append(indent + "\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
-				default -> 		{rB.append(indent + "\t\t").append(UnitAbstract.toXMLString(pS.map.get(blade))).append("\n");}
+				default -> 		{rB.append(indent + "\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
 			}	
 			rB.append(indent).append("\t</Pair>\n");
 		});
@@ -709,24 +709,24 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * some unique CladosF number.
 	 * <br>
 	 * Since the internal map can accept any of the CladosF numbers (and
-	 * UnitAbstract itself though that would be useless) there is a cast to a
+	 * ProtoN itself though that would be useless) there is a cast to a
 	 * 'generic' type before insertion into the map. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
 	 * <br>
-	 * @param <T> UnitAbstract child generic type support. Must also implement Field
+	 * @param <T> ProtoN child generic type support. Must also implement Field
 	 *            AND Normalizable.
 	 * @return deliver the internal coefficients as the internal map.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends UnitAbstract & Field & Normalizable> Map<Blade, T> getMap() {
+	protected <T extends ProtoN & Field & Normalizable> Map<Blade, T> getMap() {
 		return (Map<Blade, T>) map;
 	}
 
@@ -754,12 +754,12 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method just sets the pscalar weight with a number that should satisfy type matches. If it
 	 * does not get past the type match check, nothing is done to change any weights.
 	 * <br>
-	 * @param <T> is a child of UnitAbstract used as the generic identity of the weights in this object.
-	 * @param pIn D is a child of UnitAbstract to use as the pscalar weight.
+	 * @param <T> is a child of ProtoN used as the generic identity of the weights in this object.
+	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
-	protected <T extends UnitAbstract & Field & Normalizable> Scale<D> setPScalarWeight(D pIn) {
-		if (UnitAbstract.isTypeMatch(this.getPScalar(), pIn))
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setPScalarWeight(D pIn) {
+		if (ProtoN.isTypeMatch(this.getPScalar(), pIn))
 			map.put(gBasis.getPScalarBlade(), pIn);
 		return this;
 	}
@@ -768,18 +768,18 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * This method just sets the scalar weight with a number that should satisfy type matches. If it
 	 * does not get past the type match check, nothing is done to change any weights.
 	 * <br>
-	 * @param <T> is a child of UnitAbstract used as the generic identity of the weights in this object.
-	 * @param pIn D is a child of UnitAbstract to use as the pscalar weight.
+	 * @param <T> is a child of ProtoN used as the generic identity of the weights in this object.
+	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
-	protected <T extends UnitAbstract & Field & Normalizable> Scale<D> setScalarWeight(D pIn) {
-		if (UnitAbstract.isTypeMatch(this.getScalar(), pIn))
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setScalarWeight(D pIn) {
+		if (ProtoN.isTypeMatch(this.getScalar(), pIn))
 			map.put(gBasis.getScalarBlade(), pIn);
 		return this;
 	}
 
 	/**
-	 * This coefficient settor accepts an array of UnitAbstract numbers, assumes
+	 * This coefficient settor accepts an array of ProtoN numbers, assumes
 	 * they are in basis index order, and then inserts them into the internal map by
 	 * blade at that index.
 	 * <br>
@@ -787,15 +787,15 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * be disconnected from this object. It won't be. If you really must use this
 	 * method that way, copy your coefficients first.
 	 * <br>
-	 * @param <T> is a child of UnitAbstract used as the generic identity of the weights in this object.
-	 * @param pIn Array of UnitAbstract children
+	 * @param <T> is a child of ProtoN used as the generic identity of the weights in this object.
+	 * @param pIn Array of ProtoN children
 	 * @return Scale object. Just this object after modification.
 	 * @throws IllegalArgumentException This happens if the offered array does not
 	 *                                  have the same size as the basis. Good enough
 	 *                                  to ensure all blades are covered.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends UnitAbstract & Field & Normalizable> Scale<D> setWeightsArray(T[] pIn) {
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setWeightsArray(T[] pIn) {
 		if (pIn.length == gBasis.getBladeCount())
 			gBasis.bladeStream().forEach(blade -> {
 				map.put(blade, (D) pIn[gBasis.find(blade) - 1]);
@@ -813,7 +813,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * DivFields from the ones added to this object. This is the safest settor
 	 * method to use when handing in information from other clados sources.
 	 * <br>
-	 * @param pInMap Inbound Map relating blades to UnitAbstract child numbers.
+	 * @param pInMap Inbound Map relating blades to ProtoN child numbers.
 	 * @return Scale object. Just this object after modification.
 	 * @throws IllegalArgumentException This happens if the offered map does not
 	 *                                  have the same size as the basis. Good enough
@@ -831,7 +831,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	}
 
 	/**
-	 * This coefficient settor accepts an array of UnitAbstract children, assumes
+	 * This coefficient settor accepts an array of ProtoN children, assumes
 	 * they are in basis index order, and then inserts them into the internal map by
 	 * blade at that index offset in the amount necessary to cover ONLY the grade
 	 * suggested by the byte parameter.
@@ -841,7 +841,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * method that way, copy your coefficients first.
 	 * <br>
 	 * @param pGrade byte integer naming the grade to be overwritten
-	 * @param pIn    Array of UnitAbstract Children
+	 * @param pIn    Array of ProtoN Children
 	 * @return Scale object. Just this object after modification.
 	 */
 	protected Scale<D> setWeightsAtGrade(byte pGrade, D[] pIn) {
@@ -870,16 +870,16 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
-	 * UnitAbstract child AND casting an unchecked type could fail at runtime.
+	 * ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
 	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a UnitAbstract child. They can't even build a
-	 * UnitAbstract instance directly. Therefore, only children can arrive as the
+	 * anything that is NOT a ProtoN child. They can't even build a
+	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new UnitAbstract child class and
+	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
 	 * <br>
-	 * @return Stream of UnitAbstract children that are the coefficients represented
+	 * @return Stream of ProtoN children that are the coefficients represented
 	 *         as values in the internal map.
 	 */
 	protected Stream<D> weightsStream() {
@@ -891,7 +891,7 @@ public final class Scale<D extends UnitAbstract & Field & Normalizable> implemen
 	 * It is intended for wholesale operations on the weights that may be done
 	 * in any order. It is mostly for use by the owning object of this Scale.
 	 * <br>
-	 * @return A stream of weights as children of UnitAbstract.
+	 * @return A stream of weights as children of ProtoN.
 	 */
 	protected Stream<D> weightsParallelStream() {
 		return map.values().parallelStream();

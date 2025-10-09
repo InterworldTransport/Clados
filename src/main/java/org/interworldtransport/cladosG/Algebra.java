@@ -36,13 +36,13 @@ import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosF.UnitAbstract;
+import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
- * a multivector over a division field {Cl(p,q) x UnitAbstract} except for the
+ * a multivector over a division field {Cl(p,q) x ProtoN} except for the
  * actual field. That makes this a partial abstraction of an algebra. Once an
  * actual division field is in the mix we are there, but that structure is
  * reserved for the Monad class.
@@ -78,11 +78,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * use also matters. For those reasons, an Algebra maintains an internal mode
  * reference.
  * <br>
- * 3. An Algebra has a UnitAbstract element too in order to contain the Cardinal
+ * 3. An Algebra has a ProtoN element too in order to contain the Cardinal
  * within it and to use it combined with Mode to generate field numbers. This
  * might change in the future as the builder classes mature. It used to be used
  * as an operand in a copy function frequently in Monad in Clados V1.0, but is
- * largely bypassed in V2.0. If a complete bypass happens, the UnitAbstract element
+ * largely bypassed in V2.0. If a complete bypass happens, the ProtoN element
  * may be reduced to it's contained Cardinal.
  * <br>
  * 4. There is a residual reference to a list of frame names with related
@@ -116,7 +116,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 			indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
 		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
-		rB.append(indent).append("\t").append(UnitAbstract.toXMLString(pA.protoNumber)).append("\n");
+		rB.append(indent).append("\t").append(ProtoN.toXMLString(pA.protoNumber)).append("\n");
 		// -----------------------------------------------------------------------
 		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
 		for (String tip : pA.rFrames)
@@ -151,7 +151,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	protected GProduct gProduct;
 	/**
-	 * The algebras mode is the particular UnitAbstract child used to represent numbers.
+	 * The algebras mode is the particular ProtoN child used to represent numbers.
 	 */
 	protected CladosField mode;
 	/**
@@ -160,13 +160,13 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	protected String name;
 	/**
-	 * The algebra's prototypical 'number'. A UnitAbstract suffices most of the time,
-	 * but there is no issue with using a child of UnitAbstract. Just be careful because
-	 * setting protoNumber with a child of UnitAbstract should also set the Mode.
+	 * The algebra's prototypical 'number'. A ProtoN suffices most of the time,
+	 * but there is no issue with using a child of ProtoN. Just be careful because
+	 * setting protoNumber with a child of ProtoN should also set the Mode.
 	 * <br>
 	 * This is where the primary cardinal for an algebra is found.
 	 */
-	protected UnitAbstract protoNumber;
+	protected ProtoN protoNumber;
 	/**
 	 * This is the list of known frames defined against this Algebra.
 	 */
@@ -218,7 +218,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	public Algebra(String pS, Foot pF, GProduct pGP, Cardinal pCard) {
 		setAlgebraName(pS);
-		protoNumber = new UnitAbstract(pCard);
+		protoNumber = new ProtoN(pCard);
 		setFoot(pF);
 		foot.appendCardinal(protoNumber.getCardinal());
 		setGProduct(pGP);
@@ -266,7 +266,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	}
 
 	/**
-	 * This is the constructor that assumes a Foot and UnitAbstract have been
+	 * This is the constructor that assumes a Foot and ProtoN have been
 	 * instantiated. It takes in two strings (one name and a product signature), the
 	 * Foot and Cardinal and produces an Algebra.
 	 * <br>
@@ -287,7 +287,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @param pS   This is the Algebra's name
 	 * @param pF   This is the foot being offered for reference
 	 * @param pSig This is the signature of the GProduct
-	 * @param pDiv This is the UnitAbstract to imitate when the Foot tracks Cardinals
+	 * @param pDiv This is the ProtoN to imitate when the Foot tracks Cardinals
 	 * @throws BadSignatureException   This constructor creates a new GProduct which
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
@@ -295,17 +295,17 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public <D extends UnitAbstract & Field & Normalizable> Algebra(String pS, Foot pF, String pSig, D pDiv)
+	public <D extends ProtoN & Field & Normalizable> Algebra(String pS, Foot pF, String pSig, D pDiv)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, pF, GBuilder.createGProduct(pSig), pDiv.getCardinal());
-		protoNumber = UnitAbstract.copyMaybe((D) pDiv).get();
+		protoNumber = ProtoN.copyMaybe((D) pDiv).get();
 		setMode(pDiv);
 	}
 
 	/**
 	 * This is the raw constructor that assumes only the number type has been
 	 * instantiated. It takes in three strings (two names and a product signature)
-	 * and the example UnitAbstract and produces an Algebra. If anything is wrong with
+	 * and the example ProtoN and produces an Algebra. If anything is wrong with
 	 * the signature it throws one of two exceptions.
 	 * <br>
 	 * This is the constructor that ensures algebra reference match failures even
@@ -317,7 +317,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @param pS        This is the Algebra's name
 	 * @param pFootName This is the Foot's name
 	 * @param pSig      This is the signature of the GProduct
-	 * @param pF        This is the number type to use expressed as a UnitAbstract
+	 * @param pF        This is the number type to use expressed as a ProtoN
 	 * @throws BadSignatureException   This constructor creates a new GProduct which
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
@@ -325,11 +325,11 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public <D extends UnitAbstract & Field & Normalizable>  Algebra(String pS, String pFootName, String pSig, D pF)
+	public <D extends ProtoN & Field & Normalizable>  Algebra(String pS, String pFootName, String pSig, D pF)
 			throws BadSignatureException, GeneratorRangeException {
 		this(pS, GBuilder.createFoot(pFootName, pF.getCardinalString()),
 				GBuilder.createGProduct(pSig), pF.getCardinal());
-		protoNumber = UnitAbstract.copyMaybe((D) pF).get();
+		protoNumber = ProtoN.copyMaybe((D) pF).get();
 		setMode(pF);
 	}
 
@@ -476,9 +476,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	}
 
 	/**
-	 * Simple gettor for the kind of UnitAbstract in use in the algebra as a 'number.'
+	 * Simple gettor for the kind of ProtoN in use in the algebra as a 'number.'
 	 * <br>
-	 * @return CladosField instance that matches the type of UnitAbstract in use
+	 * @return CladosField instance that matches the type of ProtoN in use
 	 */
 	@Override
 	public CladosField getMode() {
@@ -540,20 +540,20 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * Simple setter for the algebra's mode that uses an offered mode.
 	 * <br>
-	 * @param pMode CladosField instance that matches the type of UnitAbstract in use
+	 * @param pMode CladosField instance that matches the type of ProtoN in use
 	 */
 	public void setMode(CladosField pMode) {
 		this.mode = pMode;
 	}
 
 	/**
-	 * Simple setter for the algebra's mode that uses a child of UnitAbstract.
+	 * Simple setter for the algebra's mode that uses a child of ProtoN.
 	 * to figure out the mode.
 	 * <br>
-	 * @param <D> pNumber must be a child of UnitAbstract for anything to happen here.
-	 * @param pNumber This is the UnitAbstract child to be copied as the protoNumber
+	 * @param <D> pNumber must be a child of ProtoN for anything to happen here.
+	 * @param pNumber This is the ProtoN child to be copied as the protoNumber
 	 */
-	public <D extends UnitAbstract & Field & Normalizable> void setMode(D pNumber) {
+	public <D extends ProtoN & Field & Normalizable> void setMode(D pNumber) {
 		protoNumber = FBuilder.copyOf(pNumber);
 		if (pNumber instanceof RealF) setMode(CladosField.REALF);
 		else if (pNumber instanceof RealD) setMode(CladosField.REALD);
@@ -575,9 +575,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	/**
 	 * This is really just a gettor for the protoNumber.
 	 * <br>
-	 * @return UnitAbstract protoNumber
+	 * @return ProtoN protoNumber
 	 */
-	public final UnitAbstract getProtoNumber() {
+	public final ProtoN getProtoNumber() {
 		return protoNumber;
 	}
 

@@ -39,16 +39,16 @@ public class FieldBinaryException extends FieldException {
 	 * This is the second object involved in the Exception if the operation is a
 	 * binary operation.
 	 */
-	private UnitAbstract Second;
+	private ProtoN Second;
 
 	/**
 	 * This method is the main constructor of all Clados Field Binary Exceptions.
 	 * <br>
-	 * @param pSource  UnitAbstract
+	 * @param pSource  ProtoN
 	 * @param pMessage String
-	 * @param pSecond  UnitAbstract
+	 * @param pSecond  ProtoN
 	 */
-	public FieldBinaryException(UnitAbstract pSource, String pMessage, UnitAbstract pSecond) {
+	public FieldBinaryException(ProtoN pSource, String pMessage, ProtoN pSecond) {
 		super(pSource, pMessage);
 		Second = pSecond;
 	}
@@ -56,9 +56,9 @@ public class FieldBinaryException extends FieldException {
 	/**
 	 * This method elivers a reference to the object that originated the Exception
 	 * <br>
-	 * @return UnitAbstract
+	 * @return ProtoN
 	 */
-	public UnitAbstract getSecond() {
+	public ProtoN getSecond() {
 		return Second;
 	}
 

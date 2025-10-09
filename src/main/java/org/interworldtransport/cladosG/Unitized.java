@@ -38,7 +38,7 @@ import org.interworldtransport.cladosF.Cardinal;
  * different kinds of weights.
  * <br>
  * In a nutshell, Unitized says a Scale represents units while a Cardinal
- * associated with the UnitAbstract children names the units.
+ * associated with the ProtoN children names the units.
  * <br>
  * @version 2.0
  * @author Dr Alfred W Differ

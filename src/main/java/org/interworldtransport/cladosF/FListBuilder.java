@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * This builder gets basic information and constructs any of the children of 
- * UnitAbstract and the supporting classes like a Cardinal. The builder returns
+ * ProtoN and the supporting classes like a Cardinal. The builder returns
  * arrays or ArrayLists.
  * <br>
  * This is facilitated by the CladosField enumeration.
@@ -63,13 +63,13 @@ public enum FListBuilder {
 	 * internally to call the builder in the correct mode. That turns the copyOf(List) method into
 	 * the copyListOf(List) method on the correct enumerated list builder.
 	 * <br>
-	 * @param pField CladosField enumeration hint for UnitAbstract child to be
+	 * @param pField CladosField enumeration hint for ProtoN child to be
 	 *               created.
-	 * @param pD     List of UnitAbstract Numbers to be copied.
-	 * @param <T> UnitAbstract number from CladosF with Field interface.
+	 * @param pD     List of ProtoN Numbers to be copied.
+	 * @param <T> ProtoN number from CladosF with Field interface.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static <T extends UnitAbstract & Field> List<T> copyListOf(CladosField pField, List<T> pD) {
+	public final static <T extends ProtoN & Field> List<T> copyListOf(CladosField pField, List<T> pD) {
 		switch (pField) {
 		case REALF -> {
 			return FListBuilder.REALF.copyListOf(pD);
@@ -98,12 +98,12 @@ public enum FListBuilder {
 	 * internally to call the builder in the correct mode. That turns the copyOf(array) method into
 	 * the copyOf(array) method on the correct enumerated list builder.
 	 * <br>
-	 * @param pField CladosField enumeration hint for UnitAbstract child to be created.
-	 * @param pD     List of UnitAbstract Numbers to be copied.
-	 * @param <T> UnitAbstract number from CladosF with all number interfaces.
+	 * @param pField CladosField enumeration hint for ProtoN child to be created.
+	 * @param pD     List of ProtoN Numbers to be copied.
+	 * @param <T> ProtoN number from CladosF with all number interfaces.
 	 * @return List of Numbers holds constructed copies of incoming numbers
 	 */
-	public final static <T extends UnitAbstract & Field & Normalizable> T[] copyOf(CladosField pField, T[] pD) {
+	public final static <T extends ProtoN & Field & Normalizable> T[] copyOf(CladosField pField, T[] pD) {
 		switch (pField) {
 		case REALF -> {
 			return (T[]) FListBuilder.REALF.copyOf(pD);
@@ -128,30 +128,30 @@ public enum FListBuilder {
 	 * operation fails but equals() does not.
 	 * <br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
 	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
 	 * <br>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * <br>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
 	 * @param pDV List of CladosF Numbers to be copied.
-	 * @param <T> UnitAbstract number from CladosF with Field interface.
-	 * @return List of UnitAbstract children Newly constructed copies of incoming
+	 * @param <T> ProtoN number from CladosF with Field interface.
+	 * @return List of ProtoN children Newly constructed copies of incoming
 	 *         numbers
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field> List<T> copyListOf(List<T> pDV) {
+	public <T extends ProtoN & Field> List<T> copyListOf(List<T> pDV) {
 		switch (this) {
 		case REALF -> {
 			RealF[] tSpot = new RealF[pDV.size()];
@@ -188,29 +188,29 @@ public enum FListBuilder {
 	 * operation fails but equals() does not.
 	 * <br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
 	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
 	 * <br>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * <br>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
 	 * @param pDV Array of Numbers to be copied.
-	 * @param <T> UnitAbstract number from CladosF with all number interfaces.
-	 * @return UnitAbstract[] Newly constructed copies of incoming numbers
+	 * @param <T> ProtoN number from CladosF with all number interfaces.
+	 * @return ProtoN[] Newly constructed copies of incoming numbers
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field & Normalizable> T[] copyOf(T[] pDV) {
+	public <T extends ProtoN & Field & Normalizable> T[] copyOf(T[] pDV) {
 		switch (this) {
 		case REALF -> {
 			T[] tSpot = (T[]) new RealF[pDV.length];
@@ -247,11 +247,11 @@ public enum FListBuilder {
 	 * <br>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
-	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
+	 * @param pCard The cardinal to re-use in all ProtoN child objects
 	 * @param pSize The size of the array to create.
-	 * @return UnitAbstract[] Newly constructed ZEROS using incoming cardinal.
+	 * @return ProtoN[] Newly constructed ZEROS using incoming cardinal.
 	 */
-	public UnitAbstract[] create(Cardinal pCard, int pSize) {
+	public ProtoN[] create(Cardinal pCard, int pSize) {
 		if (pCard != null) {
 			FCache.INSTANCE.appendCardinal(pCard); // Just in case
 		}
@@ -292,9 +292,9 @@ public enum FListBuilder {
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
 	 * @param pSize The size oF the array to create.
-	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
+	 * @return ProtoN[] Newly constructed ZEROS with default cardinals.
 	 */
-	public UnitAbstract[] create(int pSize) {
+	public ProtoN[] create(int pSize) {
 		switch (this) {
 		case REALF -> {
 			return create(Cardinal.generate(CladosField.REALF), pSize);
@@ -320,12 +320,12 @@ public enum FListBuilder {
 	 * This method relies on the mode of the builder called to create the number,
 	 * but not here. It shows up in this method depending on the other.
 	 * <br>
-	 * @param pS    The String name for a new cardinal to use in UnitAbstract
+	 * @param pS    The String name for a new cardinal to use in ProtoN
 	 *              children
 	 * @param pSize The size oF the array to create.
-	 * @return UnitAbstract[] Newly constructed ZEROS with default cardinals.
+	 * @return ProtoN[] Newly constructed ZEROS with default cardinals.
 	 */
-	public UnitAbstract[] create(String pS, int pSize) {
+	public ProtoN[] create(String pS, int pSize) {
 		Cardinal def = Cardinal.generate(pS);
 		FCache.INSTANCE.appendCardinal(def);
 		return create(def, pSize);
@@ -335,30 +335,30 @@ public enum FListBuilder {
 	 * This method returns an array of numbers using the offered Cardinal.
 	 * <br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
-	 * possible classes known as descendents of UnitAbstract. If the object to be
+	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
 	 * <br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of UnitAbstract implementing Field and
+	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
 	 * <br>
-	 * This can happen if one extends UnitAbstract creating a new CladosF number.
+	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
 	 * <br>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
-	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
+	 * @param pCard The cardinal to re-use in all ProtoN child objects
 	 * @param pSize The size of the array to create.
-	 * @param <T> UnitAbstract number from CladosF with Field interface.
-	 * @return List of UnitAbstract children set to ZERO using incoming cardinal.
+	 * @param <T> ProtoN number from CladosF with Field interface.
+	 * @return List of ProtoN children set to ZERO using incoming cardinal.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends UnitAbstract & Field> List<T> createListOf(Cardinal pCard, int pSize) {
+	public <T extends ProtoN & Field> List<T> createListOf(Cardinal pCard, int pSize) {
 		if (pCard != null) {
 			FCache.INSTANCE.appendCardinal(pCard); //Just in case.
 		}
@@ -400,10 +400,10 @@ public enum FListBuilder {
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
 	 * @param pSize The size oF the array to create.
-	 * @param <T> UnitAbstract number from CladosF with Field interface.
-	 * @return List of UnitAbstract children as ZEROS with default cardinals.
+	 * @param <T> ProtoN number from CladosF with Field interface.
+	 * @return List of ProtoN children as ZEROS with default cardinals.
 	 */
-	public <T extends UnitAbstract & Field> List<T> createListOf(int pSize) {
+	public <T extends ProtoN & Field> List<T> createListOf(int pSize) {
 		switch (this) {
 		case REALF -> {
 			return REALF.createListOf(Cardinal.generate(CladosField.REALF), pSize);
@@ -428,13 +428,13 @@ public enum FListBuilder {
 	 * <br>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
-	 * @param pS    String name of a new cardinal to use in all UnitAbstract
+	 * @param pS    String name of a new cardinal to use in all ProtoN
 	 *              children
 	 * @param pSize The size oF the array to create.
-	 * @param <T> UnitAbstract number from CladosF with Field interface.
-	 * @return List of UnitAbstract children as ZEROS with default cardinals.
+	 * @param <T> ProtoN number from CladosF with Field interface.
+	 * @return List of ProtoN children as ZEROS with default cardinals.
 	 */
-	public <T extends UnitAbstract & Field> List<T> createListOf(String pS, int pSize) {
+	public <T extends ProtoN & Field> List<T> createListOf(String pS, int pSize) {
 			return createListOf(Cardinal.generate(pS), pSize);		
 	}
 
@@ -443,11 +443,11 @@ public enum FListBuilder {
 	 * <br>
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
-	 * @param pCard The cardinal to re-use in all UnitAbstract child objects
+	 * @param pCard The cardinal to re-use in all ProtoN child objects
 	 * @param pSize The size of the array to create.
-	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
+	 * @return ProtoN[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public UnitAbstract[] createONE(Cardinal pCard, int pSize) {
+	public ProtoN[] createONE(Cardinal pCard, int pSize) {
 		if (pCard != null) {
 			FCache.INSTANCE.appendCardinal(pCard); // Just in case
 		}
@@ -488,9 +488,9 @@ public enum FListBuilder {
 	 * This method relies on the mode of the builder called to create the number.
 	 * <br>
 	 * @param pSize The size of the array to create.
-	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
+	 * @return ProtoN[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public UnitAbstract[] createONE(int pSize) {
+	public ProtoN[] createONE(int pSize) {
 		switch (this) {
 		case REALF -> {
 			return createONE(Cardinal.generate(CladosField.REALF), pSize);
@@ -517,11 +517,11 @@ public enum FListBuilder {
 	 * but not right in this method. It shows up in the method actually called 
 	 * by this one.
 	 * <br>
-	 * @param pS    String name for new cardinal to use in UnitAbstract children.
+	 * @param pS    String name for new cardinal to use in ProtoN children.
 	 * @param pSize The size of the array to create.
-	 * @return UnitAbstract[] Newly constructed ONEs using incoming cardinal.
+	 * @return ProtoN[] Newly constructed ONEs using incoming cardinal.
 	 */
-	public UnitAbstract[] createONE(String pS, int pSize) {
+	public ProtoN[] createONE(String pS, int pSize) {
 		Cardinal def = Cardinal.generate(pS);
 		FCache.INSTANCE.appendCardinal(def);
 		return createONE(def, pSize);

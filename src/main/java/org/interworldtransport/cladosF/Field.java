@@ -94,7 +94,7 @@ public interface Field {
 	public abstract Field multiply(Field pF) throws FieldBinaryException;
 
 	/**
-	 * Scale method scales the modulus of a UnitAbstract by a Number. Field multiply
+	 * Scale method scales the modulus of a ProtoN by a Number. Field multiply
 	 * operation is avoided.
 	 * <br>
 	 * For real numbers this is scaling the distance from a number line origin. For
@@ -107,17 +107,17 @@ public interface Field {
 	 * that the exception makes no sense, but because it can be thrown in some cases
 	 * it has to be checked in all cases. For example, scaling by "-1" and
 	 * multiplying by "-1" are not the same if one is tracking the units of "-1".
-	 * That's what a Cardinal is FOR in UnitAbstract subclasses which implement this
+	 * That's what a Cardinal is FOR in ProtoN subclasses which implement this
 	 * interface, thus we should make the distinction between scaling by "-1" and
 	 * multiplying by "-1 with a cardinal". We do so by establishing "scale" in the
 	 * contract implied by this method. A "scalable" object is one that can be
 	 * altered using a Number of some kind WITHOUT a cardinal check. Why not just
 	 * ditch the Cardinal instead? Check the documentation for Cardinal to see why.
 	 * <br>
-	 * One very important distinction is that cladosF UnitAbstract children are scaled
+	 * One very important distinction is that cladosF ProtoN children are scaled
 	 * by Numbers from java.lang. Essentially the boxed promitives that look like
 	 * numbers will do. Byte, Short, Integer, and Long along with Float and Double.
-	 * Geometry in cladosG is scaled by CladosF UnitAbstract children and NOT Numbers.
+	 * Geometry in cladosG is scaled by CladosF ProtoN children and NOT Numbers.
 	 * Why? In order to bring Cardinal into a physical model containing geometry.
 	 * <br>
 	 * @param pN Number

@@ -37,7 +37,7 @@ public class FieldException extends Exception
 /**
  * The source Field element is the originator of the Exception.
  */
-    private UnitAbstract  Source;
+    private ProtoN  Source;
 /**
  * The source message is the reason given by the originating Field for the exception.
  */
@@ -48,11 +48,11 @@ public class FieldException extends Exception
  * It needs only a source Field and message.
  * <br>
  * @param pSource
- * 			UnitAbstract
+ * 			ProtoN
  * @param pMessage
  * 			String
  */
-    public FieldException(UnitAbstract pSource, String pMessage)
+    public FieldException(ProtoN pSource, String pMessage)
     {
     	super();
     	SourceMessage=pMessage;
@@ -62,9 +62,9 @@ public class FieldException extends Exception
 /**
  * This method delivers a reference to the object that originated the Exception
  * <br>
- * @return UnitAbstract
+ * @return ProtoN
  */
-    public UnitAbstract  getSource()
+    public ProtoN  getSource()
     {
     	return Source;
     }

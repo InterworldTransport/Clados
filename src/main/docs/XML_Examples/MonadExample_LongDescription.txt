@@ -63,7 +63,7 @@
 		</GProduct>
 	</Algebra>
 	<ReferenceFrame>"Foot Default Frame"</ReferenceFrame>
-	<Scales number="16">
+	<Scales mode="REALD" pans="16">
 		<Pair>
 			<Blade key="0" bitKey="0b0000" sign="1" generators="" />
 			<RealD cardinal="Test Double 1" realvalue="0.0" />
