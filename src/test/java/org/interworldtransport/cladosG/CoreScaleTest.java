@@ -107,6 +107,21 @@ public class CoreScaleTest {
         workScaleRD2.weightsParallelStream().forEach(w -> assertTrue(w.getCardinal() == workCard));
         workScaleCF2.weightsParallelStream().forEach(w -> assertTrue(w.getCardinal() == workCard));
         workScaleCD2.weightsParallelStream().forEach(w -> assertTrue(w.getCardinal() == workCard));
+
+        Scale<RealF> workScaleRF2b = new Scale<>(workScaleRF2);
+        Scale<RealD> workScaleRD2b = new Scale<>(workScaleRD2);
+        Scale<ComplexF> workScaleCF2b = new Scale<>(workScaleCF2);
+        Scale<ComplexD> workScaleCD2b = new Scale<>(workScaleCD2);
+        
+        assertFalse(workScaleRF2b == workScaleRF2);
+        assertFalse(workScaleRD2b == workScaleRD2);
+        assertFalse(workScaleCF2b == workScaleCF2);
+        assertFalse(workScaleCD2b == workScaleCD2);
+
+        assertTrue(workScaleRF2b.getBasis() == workScaleRF2.getBasis());
+        assertTrue(workScaleRD2b.getBasis() == workScaleRD2.getBasis());
+        assertTrue(workScaleCF2b.getBasis() == workScaleCF2.getBasis());
+        assertTrue(workScaleCD2b.getBasis() == workScaleCD2.getBasis());
     }
 
     @Test
@@ -338,7 +353,7 @@ public class CoreScaleTest {
 
         Blade tooBig = Blade.createPScalarBlade(Generator.E8);
         assertDoesNotThrow(() -> workScaleRF.zeroAt(tooBig)); //Blade is too big. Zeroing should silently fail.
-        assertDoesNotThrow(() -> workScaleRF.zeroAt(null)); //Blade isn't there. Zeroing should silently fail.
+        assertThrows(NullPointerException.class, () -> workScaleRF.zeroAt(null)); //Blade isn't there. TreeMaps don't like this.
 
         workScaleRF.zeroAt(workBasis.getScalarBlade()); //Blade usually not available. Map is.
         workScaleRD.zeroAt(workBasis.getScalarBlade()); //Blade usually not available. Map is.

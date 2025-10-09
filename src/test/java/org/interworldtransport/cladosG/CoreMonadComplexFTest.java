@@ -11,6 +11,7 @@ import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -217,6 +218,22 @@ public class CoreMonadComplexFTest {
        assertTrue((ComplexF) tM6.getCoeff(16) == null);
 
        assertTrue(tM6.getCoeff().length == 16);
+    }
+
+    @Test
+    public void testChangingWeights() {
+        assertInstanceOf(Scale.class, tM6.getWeights());
+        assertInstanceOf(ComplexF.class, tM6.getWeights().getScalar());
+
+        Scale<ComplexF> newScale = new Scale<ComplexF>(tM6.getMode(), tM6.getWeights().getBasis(), tM6.getWeights().getCardinal());
+        newScale.getBasis().bladeStream().forEach(blade -> {
+			newScale.getMap().put(blade, FBuilder.copyOf(tM6.getWeights().get(blade)));
+        });
+        newScale.zeroAll();
+        assertFalse(Monad.isGZero(tM6));
+
+        Assertions.assertDoesNotThrow(() -> tM6.setScale(newScale));
+        assertTrue(Monad.isGZero(tM6));        
     }
 
     @Test

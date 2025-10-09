@@ -398,10 +398,11 @@ public class Monad implements Modal {
 	 */
 	private long gradeKey;
 	/**
-	 * This is just a flag specifying the field type one should expect for
-	 * coefficients of the monad.
+	 * This element specifying the field type one should expect for coefficients 
+	 * of the monad. It is allowed to change, but should be considered subordinate
+	 * to the mode of the Scale which is finalized.
 	 */
-	private final CladosField mode;
+	private CladosField mode;
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
@@ -1525,10 +1526,23 @@ public class Monad implements Modal {
 	 *                              for coordinates is of the wrong length.
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
-		if (ppC.length != getAlgebra().getBladeCount())
+		if (ppC.length != getAlgebra().getBladeCount() | ppC.length == 0)
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
-		scales.setWeightsArray(FListBuilder.copyOf(mode, ppC));
-		setGradeKey();
+
+		if 	(
+			(ppC[0] instanceof RealF) & (scales.getMode() == CladosField.REALF)
+		| 	(ppC[0] instanceof RealD) & (scales.getMode() == CladosField.REALD)
+		| 	(ppC[0] instanceof ComplexF) & (scales.getMode() == CladosField.COMPLEXF)
+		| 	(ppC[0] instanceof ComplexD) & (scales.getMode() == CladosField.COMPLEXD)
+			)
+		{
+			scales.setWeightsArray(FListBuilder.copyOf(mode, ppC));
+			setGradeKey();
+			mode=scales.getMode();
+		} 
+		else 
+			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is different mode.");
+
 		return this;
 	}
 
@@ -1582,6 +1596,41 @@ public class Monad implements Modal {
 	 */
 	public Monad setName(String pName) {
 		name = pName;
+		return this;
+	}
+
+	/**
+	 * Reset the weights for this Monad. Use of this method is not encouraged, 
+	 * but there are reasonable use cases. Ideally one uses the Monad's own operation 
+	 * methods to alter weights, but that applies mostly to physical models. In cases
+	 * where a user directly manipulates weights, this method and the one for direct
+	 * handling of coefficients is more suitable.
+	 * <br>
+	 * This method fails with an exception if the Scale object references a different
+	 * basis than the one already in use. No basis change is tolerated because the 
+	 * scales relate to a basis which only makes sense with respect to an algebra.
+	 * Future version will relax this requirement by relating Scales to a reference 
+	 * frame instead of directly relating them to the canonical basis. 
+	 * 
+	 * Using this set method encourages developers to reuse old objects. While this
+	 * is useful for avoiding object construction overhead, it is dangerous in that
+	 * old references might linger enabling unexpected opportunities to edit weights.
+	 * Caution is advised when this method is used while frequent reuse occurs.
+	 * <br>
+	 * @param <T>  ProtoN number from CladosF with all interfaces this time.
+	 * @param pScale The Scale to change to... constructed on the same Basis as the current Scale
+	 * @return Monad after setting the coefficients to the offered array.
+	 * @throws CladosMonadException This exception is thrown when the scale offered
+	 *                              doesn't share exactly the same Basis as the one it replaces.
+	 */
+	public <T extends ProtoN & Field & Normalizable> Monad setScale(Scale<T> pScale) throws CladosMonadException {
+		if (pScale.getBasis() != scales.getBasis() )
+			throw new CladosMonadException(this, "Coefficient array offered uses a different basis ");
+		
+		scales = pScale;
+		setGradeKey();
+		mode=scales.getMode();
+
 		return this;
 	}
 

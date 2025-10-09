@@ -11,6 +11,7 @@ import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -213,12 +214,28 @@ public class CoreMonadRealFTest {
 
     @Test
     public void testGetWeights() {
-       assertTrue(((RealF) tM6.getCoeff(15)).getReal() == 1.0f);
-       assertTrue(((RealF) tM6.getCoeff(0)).getReal() == 1.0f);
-       assertTrue((RealF) tM6.getCoeff(-1) == null);
-       assertTrue((RealF) tM6.getCoeff(16) == null);
+        assertTrue(((RealF) tM6.getCoeff(15)).getReal() == 1.0f);
+        assertTrue(((RealF) tM6.getCoeff(0)).getReal() == 1.0f);
+        assertTrue((RealF) tM6.getCoeff(-1) == null);
+        assertTrue((RealF) tM6.getCoeff(16) == null);
 
-       assertTrue(tM6.getCoeff().length == 16);
+        assertTrue(tM6.getCoeff().length == 16);
+    }
+
+    @Test
+    public void testChangingWeights() {
+        assertInstanceOf( Scale.class, tM6.getWeights());
+        assertInstanceOf(RealF.class, tM6.getWeights().getScalar());
+
+        Scale<RealF> newScale = new Scale<RealF>(tM6.getMode(), tM6.getWeights().getBasis(), tM6.getWeights().getCardinal());
+        newScale.getBasis().bladeStream().forEach(blade -> {
+			newScale.getMap().put(blade, FBuilder.copyOf(tM6.getWeights().get(blade)));
+        });
+        newScale.zeroAll();
+        assertFalse(Monad.isGZero(tM6));
+
+        Assertions.assertDoesNotThrow(() -> tM6.setScale(newScale));
+        assertTrue(Monad.isGZero(tM6));        
     }
 
     @Test

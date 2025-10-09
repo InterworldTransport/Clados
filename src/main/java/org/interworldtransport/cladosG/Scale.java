@@ -24,8 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,18 +131,26 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	private final Basis gBasis;
 
 	/**
-	 * This hash map is that actual list of weights mapped by their applicable blade.
+	 * This tree map is that actual list of weights mapped by their applicable blade.
 	 * In use, one calls the Scale's get(Blade) to get a generic that happens to be 
 	 * a CladosF.ProtoN child. One can also call a number of specialized 
 	 * gettors to get weights for well named blades.
 	 * <br>
 	 * This feature used to be a simple array of particular children of ProtoN,
-	 * but that made for several different, but mostly related implementations of Scale
+	 * but that made for several different... and mostly related implementations of Scale
 	 * or of burying Scale in Monad and maintaining several mostly related versions 
 	 * of those. Using a map like this reduces the family of objects in CladosG at
-	 * the cost of swapping data structures from an array to a hash map.
+	 * the cost of swapping data structures from an array to a map.
+	 * <br>
+	 * This feature ALSO used to be a hash map (java's IdentityHashMap), but hash maps
+	 * don't ensure the extraction of values arrive in any particular order. That makes
+	 * a mess of the design where streams are used to deliver pieces of geometry or 
+	 * numbers to lambda functions. If the weights storied in this map emerge in 
+	 * unpredictable ways, then all operations must act on blades AND numbers which 
+	 * we are trying to avoid. Getting a predictable order (from a TreeMap) comes 
+	 * at a small performance cost that simply must be paid.
 	 */
-	private IdentityHashMap<Blade, D> map;
+	private TreeMap<Blade, D> map;
 
 	/**
 	 * This is the type of ProtoN that should be present in the list held by
@@ -152,7 +160,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * Mode ensures the scale elements all have the same precision and come from the same 
 	 * numeric field. It is also WHY Scale implements Modal.
 	 */
-	private CladosField mode;
+	private final CladosField mode;
 
 	/**
 	 * This is the constructor to use when one does not have the actual map ready,
@@ -164,7 +172,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pCard Incoming Cardinal to reference here.
 	 */
 	public Scale(CladosField pMode, Basis pB, Cardinal pCard) {
-		map = new IdentityHashMap<>(pB.getBladeCount());
+		map = new TreeMap<>();
 		mode = pMode;
 		gBasis = pB;
 		card = pCard;
@@ -184,7 +192,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pInMap This is a Map to copy. Probably a view of another Scale object.
 	 */
 	public Scale(CladosField pMode, Basis pB, Map<Blade, D> pInMap) {
-		map = new IdentityHashMap<>(pInMap.size());
+		map = new TreeMap<>();
 		mode = pMode;
 		gBasis = pB;
 		map.putAll(pInMap);
@@ -225,6 +233,18 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	public D get(Blade pB) {
 		return map.get(pB);
+	}
+
+	/**
+	 * Simple gettor method for the Basis associated with this object.
+	 * Be aware this basis is finalized, so it won't be changeable to 
+	 * a new basis. What might be possible is altering the internal details
+	 * of the basis, so be careful.
+	 * <br>
+	 * @return Basis in use in this.
+	 */
+	public Basis getBasis() {
+		return gBasis;
 	}
 
 	/**
