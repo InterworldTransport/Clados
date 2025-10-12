@@ -702,11 +702,11 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	public final static <T extends ProtoN & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
 
-		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\", pans=\"").append(pS.map.size()).append("\">\n");
+		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\" pans=\"").append(pS.map.size()).append("\">\n");
 
 		pS.gBasis.bladeStream().forEach(blade -> {
-			rB.append(indent).append("\t<Pair>\n");
-			rB.append(indent).append(Blade.toXMLString(blade, "\t\t"));
+			rB.append(indent).append("\t\t\t<Pair>\n");
+			rB.append(indent).append(Blade.toXMLString(blade, "\t\t\t\t"));
 			switch (pS.getMode()){
 				case COMPLEXD -> {rB.append(indent + "\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
 				case COMPLEXF -> {rB.append(indent + "\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
@@ -714,10 +714,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 				case REALF -> 	{rB.append(indent + "\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
 				default -> 		{rB.append(indent + "\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
 			}	
-			rB.append(indent).append("\t</Pair>\n");
+			rB.append(indent).append("\t\t\t</Pair>\n");
 		});
 
-		rB.append(indent).append("</Scales>\n");
+		rB.append(indent).append("\t\t</Scales>\n");
 		return rB.toString();
 	}
 
