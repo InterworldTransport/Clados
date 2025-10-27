@@ -60,13 +60,6 @@ public class GProduct implements CliffordProduct {
 	private final Basis canonBasis;
 
 	/**
-	 * This integer array is an internal translation of the product signature.
-	 * Generators with a positive square appear as a one (1), those with
-	 * negative squares appear as minus one (-1) and degenerate ones appear as (0).
-	 * This array is kept to increase the speed of product calculations.
-	 */
-	private final byte[] nSignature;
-	/**
 	 * This array holds the geometric multiplication table for a Clifford algebra
 	 * using the associated basis. The array contains numbers that represent the
 	 * blade # one would produce with a product of blades (row) and (column) of
@@ -79,8 +72,25 @@ public class GProduct implements CliffordProduct {
 	/**
 	 * This string holds the signature information describing the squares of all
 	 * geometry generators present on the multiplication table.
+	 * <br>
+	 * The term 'signature' is currently overloaded with meanings. The one being 
+	 * used here is a long form aggregate of '+', '-', and '0' bytes encoding the
+	 * squares of an algebra's generators. The short form that adds up the number
+	 * for each byte and presents a list of three integers is NOT in use here. 
+	 * That means this signature string has the details one expects in a quadratic
+	 * form after generators have been assigned roles in a basis.
 	 */
 	private final String signature;
+
+	/**
+	 * This array is an integer representation of the signature string. Generators
+	 * with positive squares are one (1), negative squares are minus one (-1), 
+	 * and degenerate ones as (0). The order of the array ALWAYS matches the order
+	 * of the generators in the basis.
+	 * <br>
+	 * This array is kept to increase the speed of product calculations.
+	 */
+	private final byte[] nSignature;
 
 	/**
 	 * Main constructor of GProduct with signature information passed in. It
@@ -104,7 +114,7 @@ public class GProduct implements CliffordProduct {
 	 * on Basis, but that was duplicating the effort performed by CliffordProduct
 	 * when it checks the validity of the string. Size and characters ARE checked.
 	 * <br>
-	 * @param pSig String form of the signature. Looks like "-+++".
+	 * @param pSig String form of the signature. Looks like "-+++0".
 	 * @param pB   Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
 	 *                                 some internal call demands a generator not in
