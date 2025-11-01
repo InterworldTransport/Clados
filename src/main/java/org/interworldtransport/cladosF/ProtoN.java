@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.ProtoN<br>
@@ -32,21 +32,21 @@ import java.util.Optional;
  * from mathematics. Division fields are used as 'numbers' to scale blades 
  * in an algebra, but they are better known as scalars in the sense of 
  * linear combinations in vector spaces.
- * <br>
+ * <br><br>
  * ProtoN handles unit references common to all its children. When you imagine
  * the difference between five pigs and five meters you have the role played 
  * by ProtoN's cardinal element. It says what a number is without saying
  * how much of it there is.
- * <br>
+ * <br><br>
  * ProtoN also implements comparisons that can be overridden if deeper
  * comparisons are necessary. For example, equality tests at this level only 
  * test high level references to object and cardinal equality. This is just
  * enough for unit type matching, but not quantity matching.
- * <br>
+ * <br><br>
  * The number(s) that make up quantity don't appear except in a child of
  * this class. The number and precision of reals for a division field varies. 
  * Complex numbers require two. Quaternions require four. 
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

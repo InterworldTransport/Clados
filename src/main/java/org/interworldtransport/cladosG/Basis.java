@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Basis<br>
@@ -43,20 +43,20 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * represented in the algebra as various products of the generators. This class
  * representation uses sets of generators as Blades and a list of Blades. It
  * also maintains a few methods that help manipulate them.
- * <br>
+ * <br><br>
  * The gradeCount is tracked using byte integers as it isn't expected that
  * anyone will work with algebras of more than 126 generators any time soon.
- * <br>
+ * <br><br>
  * The bladeCount is computed as (1 &lt;&lt; gradeCount - 1) instead of stored.
  * It is reported as an integer though that DOES limit the size of a basis to 31
  * generators. Again, it isn't expected anyone will need more any time soon.
- * <br>
+ * <br><br>
  * The bladeList is stored as an ArrayList of Blades that should be no longer
  * than bladeCount. There is nothing to stop it from being longer or shorter,
  * though, so this is a potential source of error. It really SHOULD be
  * immutable once constructed correctly. Same goes for the Blades contained in
  * the ArrayList.
- * <br>
+ * <br><br>
  * Blade keys are now stored inside the Blades. There is no separate array for
  * them in the Basis. The primary use for keys is sorting the Blades and
  * detecting which blade is found at the head of the list for each grade. This
@@ -66,30 +66,30 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * vanishing contributions. However, sparseness is detected using a
  * multivector's key and NOT a Blade's key. Once Blades are sorted into a basis,
  * blade keys are only used to name them in maps.
- * <br>
+ * <br><br>
  * NOTE that Blade keys are currently kept as long integers. The key for a
  * pscalar in a 14 generator basis is 2234152501943160L. For 15 generator
  * algebras the key is 81985529216486896L. Long integers can't hold keys much
  * larger than that. At some point keys will shift to Java's BigInteger class
  * and impose another performance penalty. Not yet, though. Best practice would
  * be to avoid computations demanding heavy use of blade keys.
- * <br>
+ * <br><br>
  * The data in this class is stored in objects instead of arrays of primitives.
  * This is intentional. Doing so allows a system to lay them out in memory in
  * any way it finds convenient. There IS an overhead associated with this plan,
  * but it is in recognition that virtualization puts distance between an
  * application and the hardware on which it runs.
- * <br>
+ * <br><br>
  * It is expected that Basis objects will be cached, though. There is no reason
  * to create copies within running applications. One MAY do so as no singleton
  * enforcement occurs, but every basis of the same number of generators passes
  * the equality test. A convenient cache already exists in the singleton
- * CladosGCache.
- * <br>
+ * GCache.
+ * <br><br>
  * The choice limit of 15 generators produces a maximum basis size of 32,768.
  * More can be used, but one must change the 'magic numbers' in the
  * CladosConstant class and recompile.
- * <br>
+ * <br><br>
  * There IS a sort buried in the constructor for a Basis. After Blades are
  * generated using the private powerSet method, they are sorted on the 'natural
  * order'. Blades implement Comparable and use their keys for compareTo(). THAT
@@ -98,7 +98,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * to use. That means this class no longer implements its own sort algorithm. It
  * is likely the developer community is much better at writing sort algorithms,
  * so this is recognition of that reality.
- * <br>
+ * <br><br>
  * This class probably should be implemented as a Java enumeration. It might be
  * some day. The problem with that is construction time scales as O(N^2).
  * Pre-construction of small basis objects makes good sense, but larger ones
@@ -109,7 +109,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * Practice among those who build physical models is to prebuild what you need
  * and load it all to the cache. Use GBuilder to do it for you. 
  * That said, it is obvious why the copy constructor was removed.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Unitized<br>
@@ -28,18 +28,18 @@ import org.interworldtransport.cladosF.Cardinal;
 
 /**
  * Anything implementing this interface has "units" in the physical sense.
- * <br>
+ * <br><br>
  * Nothing about Clifford Algebras requires they represent quanities with
  * 'units', so this contract makes a statement that a particular class adds this
  * sense of meaning on top of any others.
- * <br>
+ * <br><br>
  * This gets used with the scaling factors in Monads for now because that is the
  * part where 'weight' is applied to geometry. What units do is allow for
  * different kinds of weights.
- * <br>
+ * <br><br>
  * In a nutshell, Unitized says a Scale represents units while a Cardinal
  * associated with the ProtoN children names the units.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

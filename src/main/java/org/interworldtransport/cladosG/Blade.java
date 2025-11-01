@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Blade<br>
@@ -39,25 +39,25 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * directions and a few supporting elements including a long integer key useful
  * for comparisons and byte integer necessary for knowing how many possible
  * directions might ever be added to this blade.
- * <br>
+ * <br><br>
  * The directions are simply Generators from an enumeration class. They are kept
  * in an EnumSet which uses as its sense of order the same order generators are
  * enumerated in their class. At present, the supported number of 'directions'
  * is 0 to 15, so the enumeration class lists 15 possible generators.
- * <br>
+ * <br><br>
  * The EnumSet keeps Generators in their natural order. If a new direction is
  * added, the EnumSet will handle it 'late' in the computational sense. In other
  * words, it doesn't matter where the new generator gets added. It matters ONLY
  * when generators are iterated later when establishing a product table or
  * generating a blade key. Iterators will always deliver directions in the same
  * order.
- * <br>
+ * <br><br>
  * For example, if a sub-manifold has six possible directions from a point, a
  * Blade will contain zero to six of them represented as generators E1 through
  * E6. If only 3 are in the Blade (making it a 3-blade) then ANY three will be
  * in the EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions
  * are contained and the blade represents a scalar.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.CladosField<br>
@@ -30,18 +30,18 @@ package org.interworldtransport.cladosF;
  * any of them. This would be supported by an enumeration type that can't be
  * ProtoN itself because ProtoN is subclassed to make the four field
  * classes.
- * <br>
+ * <br><br>
  * This enum doubles up a bit as a builder. Each of its instances rely on the
  * shared static methods and have a few instance methods of their own that
  * 'switch' on their identity to determine what gets built and returned.
- * <br>
+ * <br><br>
  * This enumeration has non-static methods for each instance, but they don't
  * cause a state change. CladosField HAS NO INTERNAL STATE to change unlike the
  * Builder in the same package.
- * <br>
+ * <br><br>
  * NOTE that the methods capable of creating Cardinals in this enumeration do
  * NOT cache them. Similar methods in FBuilder DO cache them.
- * <br>
+ * <br><br>
  * @version 1.0
  * @author Dr Alfred W Differ
  */

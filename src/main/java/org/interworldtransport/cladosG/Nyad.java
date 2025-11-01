@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Nyad<br>
@@ -52,19 +52,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * the monads is multiplied against a different monad resulting in a scalar, the
  * nyad can be contracted to one monad. There are other ways to accomplish this
  * contraction as well and all of them imitate operations upon an operand.
- * <br>
+ * <br><br>
  * The Nyad class in it's current form is immature. The list capability works,
  * but the operation behaviors are yet to be written. This will most likely be
  * done as the library gets used in physical models for field theories that
  * require multi-algebra currents and potentials. The expected physical behavior
  * of a 'classical' field theory from physics will inform the behaviors expected
  * of CladosG Nyads.
- * <br>
+ * <br><br>
  * Nyads ARE Modal because they contain modal objects. Nothing in the List
  * nature of Nyads requires Modal, but specific Monad handling behavior does.
- * <br>
+ * <br><br>
  * (Single monad nyads are essentially monads, but can be expanded.)
- * <br>
+ * <br><br>
  * @version 1.0
  * @author Dr Alfred W Differ
  */

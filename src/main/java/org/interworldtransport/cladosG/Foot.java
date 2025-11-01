@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Foot<br>
@@ -37,13 +37,13 @@ import org.interworldtransport.cladosF.ProtoN;
  * use a foot point, but a simple one is still used in the cladosG package to
  * help avoid the trap of assuming transport of objects along the manifold
  * doesn't cause them to re-orient and change into other objects.
- * <br>
+ * <br><br>
  * At a minimum, a footPoint is the name of an event or a point and the type of
  * numbers used for scale along the coordinate paths. At this location it is
  * assumed the geometry of the algebra is aligned with the local geometry one
  * would assign to the coordinate space that is the manifold at that point. This
  * makes a footPoint the root reference frame.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

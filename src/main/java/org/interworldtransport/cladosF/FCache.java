@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.FCache<br>
@@ -33,7 +33,7 @@ import java.util.Set;
  * use of this singleton enumeration as a 'builder'. Nothing fancy here
  * otherwise. Just simple create, append, find, and remove capabilities backed
  * by ArrayLists of cached objects.
- * <br>
+ * <br><br>
  * At present, the only thing in CladosF being cached is Cardinals. cladosG.Algebra
  * has its protonumber which is little more than a Cardinal. cladosG.Foot has its
  * list of cardinals too. So there are a number of places where cardinals get attached.
@@ -41,13 +41,13 @@ import java.util.Set;
  * who wants to ensure object references match perfectly when they should. That is
  * accomplished by setting the protonumber's Cardinal to one in this list BY REFERENCE
  * instead of by string.
- * <br>
+ * <br><br>
  * Be aware that the list of cached objects is inheriently mutable. Alteration of an
  * object here alters it everywhere it is referenced. ALSO... because of this cache, 
  * it is unlikely that removal of object references elsewhere (set to null) will 
  * cause the allocated memory to be garbage collected. Any linked here in the cache
  * will persist while the cache does or the reference to it in the cache does.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

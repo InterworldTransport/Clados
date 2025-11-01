@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Scale<br>
@@ -54,14 +54,14 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * managed by their 'get' methods. getCardinal() and getMode(). There are set
  * methods for them too, but they are package protected methods that should not
  * be handled much by developers of physical models.
- * <br>
+ * <br><br>
  * The data structure used to represent 'coefficients' used to be a fixed array
  * that had the same length as the number of blades in a monad's basis. That has
  * been modernized to an IdentityHashMap contained within this class. The basis
  * against which the map is applicable can be referenced by another private
  * element, but shouldn't be manipulated once set. The private element is
  * finalized.
- * <br>
+ * <br><br>
  * An IdentityHashMap was used instead of a simpler HashMap in order to get
  * reference equality between map keys instead of object equality. Map Keys are
  * Blades from the basis, so reference equality is the correct expectation when
@@ -69,43 +69,42 @@ import org.interworldtransport.cladosFExceptions.FieldException;
  * effectively iterate through the blades for access to coefficients in the
  * encompassing vector space. The information within a blade is far less
  * important than which blade it is, thus reference equality is what is needed.
- * <br>
+ * <br><br>
  * Map Values are CladosF numbers like RealF or ComplexD. Because they are
  * objects instead of primitives, they behave much like Java's boxed primitives.
  * In fact, they would BE those boxed primitives if not for the need to track
  * units in physical models. For example, one meter is not one second. No
  * equality test should pass.
- * <br>
+ * <br><br>
  * Because values are objects, care must be taken once one has a reference to
  * them. Any reference to one enables a developer to change it without the Scale
  * or Monad knowing. This is the hydra monster named Mutability. It IS a danger
  * here. Many of Scale's methods copy inbound numbers to avoid altering them,
  * but some do not INTENTIONALLY.
- * <br>
+ * <br><br>
  * 1. Coefficient settors that accept arrays do NOT copy values before placing
  * them in the internal map. BEWARE BEWARE BEWARE
- * <br>
+ * <br><br>
  * 2. Put() does not copy the incoming value before placing it in the internal
  * map. Again... BEWARE.
- * <br>
+ * <br><br>
  * 3. Coefficient settors that accept maps DO COPY values before placing them in
  * the internal map. Any object from which values are taken to be used here are
  * safe from the hydra.
- * <br>
+ * <br><br>
  * 4. All gettors for coefficients provide direct references to values in the
- * map. There most common use is INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA.
+ * map. The most common use is INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA.
  * The safest way to use them is within streams / lambdas.
- * <br>
- * GENERAL NOTE | Many of the methods for Scale will look a lot like Monad, so
- * one can reasonably wonder why all the extra stuff in Monad when Scale looks
- * enough like a tuple to represent things. The primary difference is that Scale
- * contains only the coefficients and references a basis like what we got used
- * to as students. That's not enough because a basis is only enough to represent
- * linear combinations for a vector space. Other geometric meanings aren't in
- * the basis. They are in the product table. Combining product table and basis
- * into an 'algebra' gives a MUCH better description of a 'tuple' reference
- * frame than a vector space.
- * <br>
+ * <br><br>
+ * GENERAL NOTE | Many of the methods for Scale look a lot like Monad, so one can
+ * reasonably wonder why all the extra stuff in Monad when Scale looks enough like 
+ * a tuple to represent things. The primary difference is that Scale contains only 
+ * the coefficients and references a basis like what we got used to as students. 
+ * That's not enough because a basis is only enough to represent linear combinations
+ * for a vector space. Other geometric meanings aren't in the basis. They are in the
+ * product table. Combining product table and basis into an 'algebra' gives a MUCH 
+ * better description of a 'tuple's' reference frame than a vector space.
+ * <br><br>
  * 
  * @version 2.0
  * @author Dr Alfred W Differ
