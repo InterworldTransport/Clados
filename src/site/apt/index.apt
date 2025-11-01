@@ -7,9 +7,9 @@ Clados Packages
 *-------------------+----------------------------------------------------+
 | cladosF           | Numbers                                            |
 *-------------------+----------------------------------------------------+
-| cladosGExceptions | Geometry exceptions                                |
+| cladosGExceptions | Geometry related exceptions                        |
 *-------------------+----------------------------------------------------+
-| cladosFExceptions | Number exceptions                                  |
+| cladosFExceptions | Number related exceptions                          |
 *-------------------+----------------------------------------------------+
 | cladosGTest       | JUnit tests for cladosG                            |
 *-------------------+----------------------------------------------------+
@@ -18,10 +18,9 @@ Clados Packages
 <Clados is a set of java packages implementing multi-vectors and multi-vector lists in Clifford Algebras.>
 
 	If you don't know what a Clifford Algebra is, you are encouraged to read about them.  
-	Geometric Algebras are also Clifford Algebras and provide geometry modeling choice 
-	variations, so don't bypass content describing them either. They all offer a tidy 
-	mathematical formalism combining many disparate tools of geometry enabling one to 
-	wield them in algebraic ways. 
+	Geometric Algebras are also Clifford Algebras and provide geometry modeling choice variations, 
+	so don't bypass content describing them either. They all offer a tidy mathematical formalism 
+	combining many disparate tools of geometry enabling one to wield them in algebraic ways. 
 
 	The best way get started nowadays is to drop by the {{{https://bivector.net/}Bivector.net}} 
 	Discord Server. There is also a lot of You Tube content from recent years ranging from 
@@ -62,6 +61,16 @@ Examples
 
 API
 
+	The primary use case for Clados is as a low level geometry library, so the API documentation
+	is critical to its purpose. When used properly, a library user should never have to concern 
+	themselves with <<how>> Clifford algebras are represented. Intead they may focus on <<how>> 
+	geometry is represented and then folded into physical simulations. 
+	
+	The API docs show which classes are present and how to interact with them, but private
+	elements and methods do most of the low level work where they are intentionally kept out of
+	reach of most library users. One may look at the code directly, but one should never have to 
+	worry about how blade multiplication works especially when it comes to bit key handling.
+
 	{{{./apidocs/index.html}The v2.0 API}}
 
 Other References
@@ -78,7 +87,7 @@ Other References
 	
 	Maintain a healthy sense of skepticism... and try things for yourself.
 
-	{{{https://docs.google.com/open?id=0B9BesRp5Ts5FM00yNTlva0dlbEE} The Old Book}}
+	{{{https://docs.google.com/open?id=0B9BesRp5Ts5FM00yNTlva0dlbEE} The Old Book - 2012}}
 
 Communicating
 
@@ -108,6 +117,7 @@ Usage
 License
 
 	Alfred Differ wrote the current code for org.interworldtransport.* \ 
+
 	Copyright © 2025
 
 +------------------------------------------------------------------------ 
@@ -123,8 +133,7 @@ License
  * willingness to accept the terms of the license.  
  * 
  * You should have received a copy of the GNU Affero General Public License along with this program.  
- * If not, see <<https://www.gnu.org/licenses>>.
- * 
+ * If not, see https://www.gnu.org/licenses.
 +------------------------------------------------------------------------
 
 	Having said all that, if you want support, bug fixes, or a different license arrangement, 
@@ -132,6 +141,4 @@ License
 	written by others. I AM interested in how people use this library, so small requests are 
 	likely to be supported free of charge. Larger ones can be negotiated. 
 	
-	I have a day job, so just take that into account. 
-
-		-al
+	I have a day job, so just take that into account. \-al
