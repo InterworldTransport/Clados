@@ -18,59 +18,62 @@
  */
 package org.interworldtransport.cladosGExceptions;
 
+import org.interworldtransport.cladosG.GProduct;
+
 /** 
  * Bad signature handler for GProduct.
  * <br>
- * This class is designed to be the handler of signature definition exceptions.
- * GProduct can be built from simple signatures, but the string must be
- * well formed.
+ * This class handles signature definition exceptions. GProduct can be built from
+ * a string of + signs, - signs, and zeros, but the string must be well formed.
  * <br>
- * @version 1.0
+ * If anything has to be done on a regular basis when these exceptions occur
+ * it can be added to code in this class. For now, there isn't anything special
+ * to do except report the complaint to the calling code.
+ * <br>
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public class BadSignatureException extends Exception
 {
 	private static final long serialVersionUID = 8706866415790422224L;
 /**
- * The source GProduct is the originator of the Exception.
+ * The source GProduct originates the Exception.
  */
-    public Object  Source;
+   public GProduct  Source;
 /**
- * The source message is the reason given by the originating Monad for the exception.
+ * The source's message is the reason given for the exception.
  */
-    public String  SourceMessage;
+   public String  SourceMessage;
     
 /**
  * Construct this exception.  This exception must have the source monad and a
  * message complaining about the expectations of the source.
  * 
- * @param pSource
- * 			GProduct
- * @param pMessage
- * 			String
+ * @param pSource    GProduct issuing the complaint about the signature string
+ * @param pMessage   String explaining the complaint.
  */
-    public BadSignatureException(Object pSource, String pMessage)
-    {
-    	super();
-    	Source=pSource;
-    	SourceMessage=pMessage;
+   public BadSignatureException(GProduct pSource, String pMessage)
+   {
+      super();
+      Source=pSource;
+      SourceMessage=pMessage;
 	}
 /**
  * This method delivers a reference to the source object that originated the Exception
  * 
  * @return GProduct
  */
-    public Object  getSource()
-    {
-    	return Source;
+   public GProduct  getSource()
+   {
+      return Source;
 	}
 /**
  * This method delivers a the explanation from the source code that originated the Exception
  * 
  * @return String
  */
-    public String  getSourceMessage() 
-    {
-    	return this.SourceMessage;
-    }
+   public String  getSourceMessage() 
+   {
+      return this.SourceMessage;
+   }
 }

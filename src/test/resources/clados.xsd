@@ -175,7 +175,7 @@
 	<xs:sequence>
 		<xs:element name="Pair" 		type="Pair"	minOccurs="1" maxOccurs="unbounded"/>
 	</xs:sequence>
-	<xs:attribute 	name="number" 		type="xs:positiveInteger"/>
+	<xs:attribute 	name="pans" 		type="xs:positiveInteger"/>
 </xs:complexType>
 
 <xs:element 		name="Monad"		type="Monad"/>

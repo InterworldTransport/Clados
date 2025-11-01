@@ -4,6 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<url>https://github.com/InterworldTransport/Clados</url>
 
 	<groupId>org.interworldtransport.clados</groupId>
 	<artifactId>Clados</artifactId>
@@ -13,6 +14,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>25</maven.compiler.release>
 		<junit.jupiter.version>5.11.0</junit.jupiter.version>
+		<project.organization.name>Interworld Transport</project.organization.name>
+		<project.organization.url>https://github.com/InterworldTransport/Clados</project.organization.url>
+		<project.license.name>GNU Affero General Public License v3.0</project.license.name>
+		<project.license.url>https://www.gnu.org/licenses/agpl-3.0.en.html</project.license.url>
+		<project.description>A Java library for Clifford Algebra computations</project.description>	
 	</properties>
 
 	<dependencies>
@@ -54,6 +60,19 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>4.0.0-M13</version>
+				<executions>
+					<execution>
+						<id>attach-site-jar</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>3.1.1</version>
 			</plugin>
@@ -61,11 +80,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>3.1.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>4.0.0-M13</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -99,19 +113,17 @@
 					<argLine>-Xmx16G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.6.3</version>
-				<configuration>
-					<sourcepath>${project.basedir}/src/main/java</sourcepath>
-				</configuration>
-			</plugin>
+
         </plugins>
 	</build>
 
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>4.0.0-M13</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
@@ -124,10 +136,28 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>3.9.0</version>
-				<configuration>
-					<webAccessURL>https://github.com/InterworldTransport/Clados</webAccessURL>
-				</configuration>
       		</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>3.6.0</version> <!-- Use an appropriate version -->
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.6.3</version>
+				<configuration>
+					<sourcepath>${project.basedir}/src/main/java</sourcepath>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<id>default</id>
+						<reports><!-- select non-aggregate reports -->
+							<report>javadoc</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
 		</plugins>
 	</reporting>
 	
