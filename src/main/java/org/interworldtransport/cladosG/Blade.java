@@ -88,25 +88,43 @@ public class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * Deliver a blade of the size specified by the byte integer.
+	 * Deliver a blade of the size specified by the byte integer... or null.
 	 * <br>
 	 * A check is made of the parameter that could fail resulting in no blade being
-	 * returned. That's why an Optional of Blade is returned. That check is made
-	 * deeper in with the constructor, though.
+	 * returned. If that check fails, a GeneratorRangeException is thrown internally
+	 * and caught so as to return 'null' instead
 	 * <br>
 	 * @param pMaxGen This is the byte integer representation of the largest
-	 *                genertor that will be used in this blade being created.
-	 * @return Blade is returned.
+	 *                generator that will be used in this blade being created.
+	 * @return Blade is returned... but it might be null.
 	 */
 	public final static Blade createBlade(byte pMaxGen) {
 		Blade returnIt;
+		try {returnIt = new Blade(pMaxGen);} 
+		catch (GeneratorRangeException e) {returnIt = null;}
+		return returnIt;
+	}
+
+	/**
+	 * Deliver an optional blade of the size specified by the byte integer.
+	 * <br>
+	 * A check is made of the parameter that could fail a range test and cause no 
+	 * blade being returned. That's why an Optional of Blade is returned. If the 
+	 * Optional is empty a GeneratorRangeException occurred internally, making it
+	 * possible for the caller to adapt what they do during runtime.
+	 * <br>
+	 * @param pMaxGen This is the byte integer representation of the largest
+	 *                genertor that will be used in this blade being created.
+	 * @return Optional of Blade is returned.
+	 */
+	public final static Optional<Blade> createOptionalBlade(byte pMaxGen) {
+		Optional<Blade> returnIt;
 		try {
-			returnIt = new Blade(pMaxGen);
+			returnIt = Optional.ofNullable(new Blade(pMaxGen));
 		} catch (GeneratorRangeException e) {
-			returnIt = null;
+			returnIt = Optional.empty();
 		}
 		return returnIt;
-
 	}
 
 	/**

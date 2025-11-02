@@ -31,8 +31,8 @@ class CoreBladeTest {
 		assertTrue(Blade.createBlade((byte) 2) != null);
 	}
 
-	@Test
-	public void testDirectCreate()  throws GeneratorRangeException {
+@Test
+	public void testConstructionCatchingThrowable() {
 		assertTrue(tB42.rank() == 3);
 		assertTrue(tB42.maxGenerator() == 4);
 
@@ -42,16 +42,10 @@ class CoreBladeTest {
 		assertTrue(testThis.bitKey() == 0);
 		assertTrue(testThis.key() == 0L);
 		
-		testThis = new Blade((byte) 15, g);
-		assertTrue(testThis.maxGenerator() == 15);
-		assertTrue(testThis.rank() == 4);
-		testThis.add(Generator.E5);
-		assertTrue(testThis.rank() == 5);
 		Generator[] g2 = { Generator.E6, Generator.E7, Generator.E8 };
 		testThis.add(g2);
-		assertTrue(testThis.rank() == 8);
+		assertTrue(testThis.rank() == 3);
 		assertTrue(testThis.maxGenerator() == 15);
-
 		EnumSet<Generator> tGs = EnumSet.noneOf(Generator.class);
 		Stream.of(g).forEach(gn -> tGs.add(gn));
 
@@ -67,14 +61,30 @@ class CoreBladeTest {
 		assertTrue(testThis.maxGenerator() == 15);
 		testThis.add(tGs);
 		assertTrue(testThis.rank() == 15);	
-			
-		testThis = new Blade((byte) 15, tGs);
-		assertTrue(testThis.maxGenerator() == 15);
-		assertTrue(testThis.rank() == 4);
 	}
 
 	@Test
-	public void testStaticCreate() {
+	public void testConstructionSpecificBlade0() throws GeneratorRangeException {
+		Blade testThis = new Blade((byte) 15, g);	//Create the blade represented by 'g' with room for the max generators
+		assertTrue(testThis.maxGenerator() == 15);	//Prove the blade could hold the max number of generators
+		assertTrue(testThis.rank() == 4);			//Prove it only has the count from 'g'.
+		
+		testThis.add(Generator.E5);					//Append another generator.
+		assertTrue(testThis.rank() == 5);			//Prove the blade tolerated the addition.
+	}
+
+	@Test
+	public void testConstructionSpecificBlade1() throws GeneratorRangeException {
+		EnumSet<Generator> tGs = EnumSet.noneOf(Generator.class);	//Create empty EnumSet of Generators.
+		Stream.of(g).forEach(gn -> tGs.add(gn));								//Stream 'g' into the enumset
+		
+		Blade testThis = new Blade((byte) 15, tGs);								//Create blade represented by 'g' with room for more.
+		assertTrue(testThis.maxGenerator() == 15);								//Prove the blade has the extra room.
+		assertTrue(testThis.rank() == 4);										//Prove it only has the count from 'g'.
+	}
+
+	@Test
+	public void testStaticCreateCatchingThrowable() {
 		assertTrue(tB0.rank() == 0);
 		assertTrue(tB4.rank() == 2); 			//tB0 maxGen should be 4 but the generator list should have two.
 		assertTrue(tB4.maxGenerator() == 4);
@@ -97,6 +107,37 @@ class CoreBladeTest {
 		assertTrue(testThis.rank() == 0);
 		assertTrue(testThis.maxGenerator() == 6);
 		assertTrue(testThis.bitKey() == ((1<<0) - 1 ));
+	}
+
+	@Test
+	public void testStaticCreateOptionalBlade() {
+		Optional<Blade> testThisOpt = Blade.createOptionalBlade((byte) 4);
+		assertTrue(testThisOpt.isPresent());
+		Blade testThis = testThisOpt.get();
+		assertTrue(testThis.maxGenerator() == 4);
+		assertTrue(testThis.rank() == 0);
+
+		testThisOpt = Blade.createOptionalBlade((byte) 15);
+		assertTrue(testThisOpt.isPresent());
+		testThis = testThisOpt.get();
+		assertTrue(testThis.maxGenerator() == 15);
+		assertTrue(testThis.rank() == 0);
+
+		testThisOpt = Blade.createOptionalBlade((byte) 0);
+		assertTrue(testThisOpt.isPresent());
+		testThis = testThisOpt.get();
+		assertTrue(testThis.maxGenerator() == 0);
+		assertTrue(testThis.rank() == 0);
+
+		testThisOpt = Blade.createOptionalBlade((byte) 16);
+		assertFalse(testThisOpt.isPresent());
+
+		testThisOpt = Blade.createOptionalBlade((byte) -1);
+		assertFalse(testThisOpt.isPresent());
+
+		testThisOpt = Blade.createOptionalBlade((byte) 255);
+		assertFalse(testThisOpt.isPresent());
+
 	}
 
 	@Test
