@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.CanonicalBasis<br>
@@ -37,12 +37,12 @@ import java.util.stream.Stream;
  * information and ranges as detected by the number of generators found in a
  * blade. Finally there are also a few methods for dealing with keys, basis size
  * validation, and XML output.
- * <br>
+ * <br><br>
  * The farther one gets from basic methods dealing with blades and span, the
  * more one is wandering off into conveniences. The various keys matter, but as
  * computational short-cuts for product tables having to deal with very large
  * vector spaces.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

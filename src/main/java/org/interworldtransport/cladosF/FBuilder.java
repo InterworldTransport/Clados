@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br><br> 
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br><br> 
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.FBuilder<br>
@@ -30,16 +30,16 @@ import java.util.Optional;
  * This builder gets basic information and constructs any of the children of 
  * ProtoN and the supporting classes like a Cardinal. Some features are 
  * supported by the CladosField enumeration.
- * <br>
+ * <br><br>
  * This class has ONLY STATIC features hooked to each of the enumerations, thus
  * NO INTERNAL STATE to can change. This trick is how we get different responses
  * from the builder because there are as many of them as there are enumerated 
  * entries without anything having to be instantiated to do it.
- * <br>
+ * <br><br>
  * This builder currently comes in four flavors. If we ever get around to 
  * including quaternions as descendents of ProtoN, this enumeration must 
  * be expanded to include them.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

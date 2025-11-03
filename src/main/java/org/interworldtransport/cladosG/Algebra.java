@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Algebra<br>
@@ -46,7 +46,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * actual field. That makes this a partial abstraction of an algebra. Once an
  * actual division field is in the mix we are there, but that structure is
  * reserved for the Monad class.
- * <br>
+ * <br><br>
  * The primary data structures in a Algebra are a Basis and a GProduct.
  * Between them they define the structure of operations an Algebra can support.
  * The basis provides for most behaviors people know from vector spaces. The
@@ -56,11 +56,11 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * familiar ground of scalar-only multiplication in vector spaces. All elements
  * of an algebra an participate in addition and multiplication and
  * multiplicative commutativity is NOT expected.
- * <br>
+ * <br><br>
  * This isn't the place to explain what Clifford Algebras are and what they do.
  * This IS the place to point that that Clados extends the idea slightly in
  * order to support future uses.
- * <br>
+ * <br><br>
  * 1. An Algebra references a 'Foot' object to imitate a location where the
  * algebra's geometry is expected to be a tangent space to some underlying
  * curved sub-manifold. No attempt at curvature is made here, but the Foot
@@ -69,35 +69,35 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * curvature on the manifold, one must first transport their frame before making
  * comparisons. No 'transport' capability is written for Clados, but it might be
  * some day.
- * <br>
+ * <br><br>
  * Anyone wanting to get around this feature need only declare one 'Foot' and
  * then re-use it everywhere. The computational penalty is miniscule.
- * <br>
+ * <br><br>
  * 2. An Algebra has a CladosField mode. Whether the field is real or complex
  * matters. For computational reasons, the floating point precision technique in
  * use also matters. For those reasons, an Algebra maintains an internal mode
  * reference.
- * <br>
+ * <br><br>
  * 3. An Algebra has a ProtoN element too in order to contain the Cardinal
  * within it and to use it combined with Mode to generate field numbers. This
  * might change in the future as the builder classes mature. It used to be used
  * as an operand in a copy function frequently in Monad in Clados V1.0, but is
  * largely bypassed in V2.0. If a complete bypass happens, the ProtoN element
  * may be reduced to it's contained Cardinal.
- * <br>
+ * <br><br>
  * 4. There is a residual reference to a list of frame names with related
  * settors and gettors. This is changing in V2.0 as frames are better described
  * by linear combinations of basis elements, which makes them sets of Scale's.
  * Algebra's WILL track them, but by reference in a more complicated manner
  * since they will be used to 'cut out' the meanings of multiplication and
  * addition.
- * <br>
+ * <br><br>
  * 5. There is a UUID string kept internally for use an XML variant of
  * serialization. It has no geometric meaning. Think of it as a digital name.
- * <br>
+ * <br><br>
  * 6. There is also a 'name' string for the human readable name of an algebra.
  * It has no geometric meaning and is not used for anything important.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

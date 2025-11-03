@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.RealF<br>
@@ -31,20 +31,20 @@ import org.interworldtransport.cladosFExceptions.*;
  * objects within the cladosF package are used as 'numbers' in the definition of
  * an algebra. All Clados objects use DivFieldElements and RealF is one
  * possibility.
- * <br>
+ * <br><br>
  * There is no doubt that the overhead related to this class is a waste of
  * resources. However, it allows one to plug fields into the algebra classes
  * without having to maintain many different types of monads and nyads. If Java
  * came with primitive types for complex and quaternion fields, and other
  * primitives implemented a 'Field' interface, I wouldn't bother writing this
  * object or any of the other descendants of DivFieldF.
- * <br>
+ * <br><br>
  * Applications requiring speed should use the monads and nyads that implement
  * numbers as primitives. Those classes are marked as such within the library.
- * <br>
+ * <br><br>
  * Ideally, this would extend java.lang.Float and implement an interface called
  * DivFieldF. That can't be done, though, because Float is final.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

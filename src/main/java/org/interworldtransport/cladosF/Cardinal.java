@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Cardinal<br>
@@ -29,19 +29,19 @@ package org.interworldtransport.cladosF;
  * similar to the concept of 'units' in a physical model. Examples... "metres",
  * "litres", "amperes". There is no requirement one use a particular standard
  * for unit systems, though. They are free strings.
- * <br>
+ * <br><br>
  * Cardinals are meant to provide all DivFields instances with a single object
  * they may share that names them in order to speed field comparisons in
  * TypeMatch methods. A class using fields for calculations would declare only
  * one of these and then share the reference among all the objects that may be
  * operated upon by the two primary opertaions of the field. ( +, * )
- * <br>
+ * <br><br>
  * This may seem like a waste of time, but it is useful when a class must be
  * prepared to use different kinds of fields without knowing in advance which
  * one will be created. It is most important when an object exists that uses
  * DivFields with unknown pedigrees. The Cardinal can be checked to discover
  * intended uses and avoid mixing apples and oranges.
- * <br>
+ * <br><br>
  * One consequence of this approach is that two division fields might use
  * different Cardinal objects of the same name. The TypeMatch method in a
  * ProtoN will state that they are different because object equality is tested
@@ -50,12 +50,12 @@ package org.interworldtransport.cladosF;
  * fields are internally identical. This is useful when objects in one algebra
  * might be scaled different than objects in another. If one never intends to
  * use this feature, though, it is easy to avoid. Simply re-use a Cardinal.
- * <br>
+ * <br><br>
  * Yes. This is soft typing to an OOP developer. The point is that it allows for
  * differences between objects that can't assume 'scale' means the same thing to
  * both of them. Since 'scale' and 'multiply' are NOT the same concepts, this
  * distinction is needed in some scenarios.
- * <br>
+ * <br><br>
  * 
  * @version 2.0
  * @author Dr Alfred W Differ

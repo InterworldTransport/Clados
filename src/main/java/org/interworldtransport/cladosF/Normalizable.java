@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Normalizable<br>
@@ -29,16 +29,16 @@ package org.interworldtransport.cladosF;
  * mathematics. Specifically, if is the portion that says the field supports the
  * notion of 'length' or 'magnitude' when several of them are used as scaling
  * factors in vector spaces.
- * <br>
+ * <br><br>
  * For real numbers this is just the idea of distance from a number line origin.
  * In a vector space where several are involved, one uses a root-mean-square
  * method to combine them. Think Pythagorus.
- * <br>
+ * <br><br>
  * For complex numbers, it is the radius in a polar representation. When several
  * are involved, it is Pythagorus again, but the squares are formed with numbers
  * and their conjugates, but computation is made easier by ignoring the
  * imaginary and just squaring the components.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

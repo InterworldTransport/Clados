@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosF.Field<br>
@@ -27,14 +27,14 @@ package org.interworldtransport.cladosF;
 import org.interworldtransport.cladosFExceptions.*;
 
 /**
- * This interface establishes the the primary operations of a division field 
- * from mathematics. Field objects within clados packages are used as 'numbers' 
+ * This interface establishes the primary operations of a division field from 
+ * mathematics. Field objects within clados packages are used as 'numbers' 
  * in the definition of an algebra.
- * <br>
- * Field's are not named. Fields are not Unitized. 
- * They do not have any geometric properties. 
- * Fields have the behaviors you would expect in a simple calculator.
- * <br>
+ * <br><br>
+ * Field's are not named. Fields are not Unitized. <br>
+ * They do not have any geometric properties. <br>
+ * Fields have the behaviors you would expect of numbers in a simple calculator.
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  * 

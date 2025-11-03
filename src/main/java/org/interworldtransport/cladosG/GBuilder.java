@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GBuilder<br>
@@ -42,12 +42,11 @@ import org.interworldtransport.cladosGExceptions.CladosNyadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
- * This builder gets basic information and constructs many Clados Geometry
- * objects.
- * <br>
- * This enumeration has NO non-static element for the instance, thus
- * GBuilder HAS NO INTERNAL STATE that can change.
- * <br>
+ * This builder gets basic information and constructs many Clados Geometry objects.
+ * <br><br>
+ * This enumeration has NO non-static element for the instance, thus GBuilder 
+ * HAS NO INTERNAL STATE that can change.
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

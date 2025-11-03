@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.GProduct<br>
@@ -34,19 +34,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * results form one tangent space to another are NOT tracked here. Only the
  * structure of the geometric product on a canonical basis is. Other
  * distinctions are kept in the algebra objects that reference a GProduct.
- * <br>
+ * <br><br>
  * A GProduct object actually assumes it is OK to perform a requested operation
  * and will throw an exception if it discovers later that it isn't. This is true
  * most everywhere except in the constructor where input is examined first.
- * <br>
+ * <br><br>
  * Most errors can be avoided by using GBuilder to construct this object.
  * However, it shouldn't be necessary to construct a GProduct directly. Best
  * practice is to create an algebra and let it construct its product.
- * <br>
+ * <br><br>
  * The implemented interface is currently all the methods available in this
  * class. That will change in the future as helper methods are built here that
  * need not be exposed elsewhere.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

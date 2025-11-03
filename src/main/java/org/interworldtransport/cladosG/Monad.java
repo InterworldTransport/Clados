@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Monad<br>
@@ -54,19 +54,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * with geometric algebras. Think of them as vectors, but with higher ranked
  * elements also represented. There is more to it than that, but that is the
  * nutshell version.
- * <br>
+ * <br><br>
  * Caution | To the software community, 'vector' is generally understood to be a
  * dynamic array data structure. To a physicist, it is a thing that belongs to a
  * vector space and follows extra rules regarding allowed transformations. It's
  * 'thing' nature is much more important than how it acts as a data structure.
- * <br>
+ * <br><br>
  * The 'allowed' transformations are operations that do not change the 'thing'
  * nature of the object represented. For example, a meter stick is what it is no
  * matter how a coordinate system used to represent it is rotated. A
  * representation of the meter stick would have to be identifiable as the same
  * thing after a rotation, meaning many apparently different sets of data in the
  * structure are actually the same thing.
- * <br>
+ * <br><br>
  * A 'multivector' can represent 'things' that are of higher geometric rank than
  * lines. A monad has a data structure inside to support both coordinates and
  * reference information. 'Allowed' transformations on the reference frame
@@ -74,7 +74,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * it was from an external perspective. That's HOW a monad represents a thing.
  * It is expected to be invariant under 'allowed' transformations of the
  * contained data.
- * <br>
+ * <br><br>
  * Why 'monad' instead of 'multivector'? Try typing it yourself a few thousand
  * times and you'll understand. The name doesn't actually matter, but it is from
  * an old tradition when physicists wrote linear transformations as dyads. Two
@@ -84,14 +84,14 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * algebra now) and the name has fallen into dis-use. It is revived here because
  * we need something short and useful. A 'dyad' will be two monads in a list
  * which is generalized in another CladosG class called nyad.
- * <br>
+ * <br><br>
  * Doesn't 'monad' conflict with mathemetician's usage in Category Theory and
  * with Functional Programming advocates bringing that mathematics to the real
  * world? Yes. What the functional programmers are doing is terribly important,
  * so don't confuse their monad with what a physicist needs. This shouldn't be
  * too hard. Y'all have been doing it for 'vector' for a few decades. You'd
  * rather something else? 'Unad'? Make your case by helping out.
- * <br>
+ * <br><br>
  * NOTE | Regarding suppressed unchecked type casting warnings, they are
  * restricted to the casting that happens in FBuilder and
  * CladosFListBuilder classes mostly. This happens when we copy number objects
@@ -99,7 +99,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * coefficients in a monad are valid ProtoN children implementing Field
  * and Normalizable, the copyOf() functions will work fine. There are two cases
  * where things can go awry, though.
- * <br>
+ * <br><br>
  * 1. It is probably possible for someone to mix ProtoN children in a
  * Scale object containing a mondad's coefficients. The copyOf() functions will
  * faithfully copy them as they are. The scale() methods and others will
@@ -109,13 +109,13 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right
  * unless one thought the scaling was between two complex numbers. THAT'S why
  * Scale AND Monad implement Modal, but nothing is enforced yet.
- * <br>
+ * <br><br>
  * 2. If someone invents a new ProtoN child, there is a ton of work to do
  * as the builders and other enumerations have to be adapted. Any class
  * implementing Modal might have methods that switch on CladosField values.
  * So... be cautious about inventing new CladosF numbers. Lots of work will have
  * to be done.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

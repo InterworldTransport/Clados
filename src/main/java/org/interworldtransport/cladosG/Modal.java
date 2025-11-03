@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Modal<br>
@@ -27,18 +27,17 @@ package org.interworldtransport.cladosG;
 import org.interworldtransport.cladosF.CladosField;
 
 /**
- * Anything implementing this interface has CladosF numbers that are expected
- * all to be of the same type.
- * <br>
- * Nothing about Clifford Algebras requires this interface. It is about
- * computation models where one expects type consistency to avoid loss of
- * precision.
- * <br>
+ * Anything implementing this interface has CladosF numbers that are expected 
+ * to be descendents of ProtoN.
+ * <br><br>
+ * Nothing about Clifford Algebras requires this interface. It is about computation 
+ * models where one expects type consistency to avoid loss of precision.
+ * <br><br>
  * NOTE | The primary point for this interface is to mark objects that are at
  * risk if new CladosF numbers are created. Objects implementing Modal likely
- * have methods that switch internally on CladosF.CladosField or examine number
+ * have methods that internally switch on CladosF.CladosField or examine number
  * objects using the 'instanceof' operator.
- * <br>
+ * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */

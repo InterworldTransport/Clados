@@ -10,13 +10,13 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.<br>
+ * GNU Affero General Public License for more details.<br><br>
  * 
  * Use of this code or executable objects derived from it by the Licensee 
- * states their willingness to accept the terms of the license. <br> 
+ * states their willingness to accept the terms of the license. <br> <br>
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br> <br>
  * 
  * ------------------------------------------------------------------------ <br>
  * ---org.interworldtransport.cladosG.Nyad<br>
@@ -52,19 +52,19 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * the monads is multiplied against a different monad resulting in a scalar, the
  * nyad can be contracted to one monad. There are other ways to accomplish this
  * contraction as well and all of them imitate operations upon an operand.
- * <br>
+ * <br><br>
  * The Nyad class in it's current form is immature. The list capability works,
  * but the operation behaviors are yet to be written. This will most likely be
  * done as the library gets used in physical models for field theories that
  * require multi-algebra currents and potentials. The expected physical behavior
  * of a 'classical' field theory from physics will inform the behaviors expected
  * of CladosG Nyads.
- * <br>
+ * <br><br>
  * Nyads ARE Modal because they contain modal objects. Nothing in the List
  * nature of Nyads requires Modal, but specific Monad handling behavior does.
- * <br>
+ * <br><br>
  * (Single monad nyads are essentially monads, but can be expanded.)
- * <br>
+ * <br><br>
  * @version 1.0
  * @author Dr Alfred W Differ
  */
@@ -348,7 +348,7 @@ public class Nyad implements Modal {
 	protected boolean _strongFlag;
 
 	/**
-	 * This array is the list of algebras used in the NyadComplexF.
+	 * This array is the list of algebras used in the Nyad.
 	 */
 	protected ArrayList<Algebra> algebraList;
 
@@ -416,7 +416,7 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * A simple copy constructor of a Nyad. The passed NyadComplexD will be copied
+	 * A simple copy constructor of a Nyad. The passed Nyad will be copied
 	 * without the name. This constructor is used most often to clone other objects
 	 * in every way except name.
 	 * <br>
@@ -487,7 +487,7 @@ public class Nyad implements Modal {
 
 	/**
 	 * Add another Monad to the list of monads in this nyad. This method creates a
-	 * new copy of the Monad offered as a parameter, so the NyadComplexD does not
+	 * new copy of the Monad offered as a parameter, so the Nyad does not
 	 * wind up referencing the passed Monad.
 	 * <br>
 	 * @param pM Monad
@@ -512,48 +512,94 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Dyad anymmetric compression: 1/2 (left right - right left) Monads are placed
-	 * in the same algebra and antisymmetrically multiplied to eachother. A
-	 * reference match test must pass for both after the algebra names have been
-	 * changed.
-	 * <br>
+	 * Dyad anti-symmetric compression: 1/2 (left right - right left) Monads are placed
+	 * in the same algebra and antisymmetrically multiplied. This ensures most reference
+	 * match tests will succeed because the one on the right loses a reference to the
+	 * algebra to which it once belonged. It is still possible for the test to fail, 
+	 * though, because the monad modes and cardnials might still be different.
+	 * <br><br>
+	 * In a lot of cases, this method will produce nonsense. Simply defining the right
+	 * side monad to be in the algebra for the left monad destroys the meaning carried
+	 * by the right monad unless the two algebras are essentially the same. This happens,
+	 * though, for cases where algebras are kept as book-keeping devices preventing 
+	 * simplification of operations.
+	 * <br><br>
 	 * @param pInto int
 	 * @param pFrom int
 	 * @throws FieldBinaryException This exception is thrown when the monads to be
 	 *                              compressed fail the Field match test
+	 * @throws CladosNyadException 	This happens with a couple of edge cases involving
+	 * 								list range errors and basis mis-match issues.
 	 */
-	public void compressAntiSymm(int pInto, int pFrom) throws FieldBinaryException {
-		Monad tempLeft = monadList.get(pInto);
-		Monad tempRight = monadList.get(pFrom);
+	public void compressAntiSymm(int pInto, int pFrom) throws FieldBinaryException, CladosNyadException {
+		if (pInto >= 0 & pFrom >=0 & pInto < monadList.size() & pFrom < monadList.size()) { // Check for array out of bounds errors.
+			Monad tempLeft = monadList.get(pInto);
+			Algebra tempLeftAlg = tempLeft.getAlgebra();									// Project into this one
+			Monad tempRight = monadList.get(pFrom);
+			Algebra tempRightAlg = tempRight.getAlgebra();									// Keep a temp reference to the old one
 
-		tempRight.setAlgebra(tempLeft.getAlgebra());
-		tempLeft.multiplyAntisymm(tempRight);
+			if (tempLeftAlg.getGBasis() == tempRightAlg.getGBasis()) {						// Proceed only if Basis is exact match
+				tempRight = projectOntoAlgebra(tempLeft, tempRight);						// second Monad is ALTERED HERE!
+				tempLeft.multiplyAntisymm(tempRight);										// Only now can we do the deed.
 
-		monadList.remove(pFrom);
-		// RESET Algebra list
-		monadList.trimToSize();
+				monadList.remove(pFrom);													// Cleanup
+				monadList.trimToSize();
+				if (tempLeftAlg != tempRightAlg) {
+					algebraList.remove(tempRightAlg);										// More cleanup if needed
+					algebraList.trimToSize();
+				}
+			} else {
+				throw new CladosNyadException(this, "Anti-Symmetric Compression requires exact Basis match.");
+			}
+		} else {
+			throw new CladosNyadException(this, "Anti-Symmetric Compression out of range error");
+		}	
 	}
 
 	/**
 	 * Dyad symmetric compression: 1/2 (left right + right left) Monads are placed
-	 * in the same algebra and symmetrically multiplied to each other. A reference
-	 * match test must pass for both after the algebra names have been changed.
-	 * <br>
+	 * in the same algebra and symmetrically multiplied. This ensures most reference
+	 * match tests will succeed because the one on the right loses a reference to the
+	 * algebra to which it once belonged. It is still possible for the test to fail, 
+	 * though, because the monad modes and cardnials might still be different.
+	 * <br><br>
+	 * In a lot of cases, this method will produce nonsense. Simply defining the right
+	 * side monad to be in the algebra for the left monad destroys the meaning carried
+	 * by the right monad unless the two algebras are essentially the same. This happens,
+	 * though, for cases where algebras are kept as book-keeping devices preventing 
+	 * simplification of operations.
+	 * <br><br>
 	 * @param pInto int
 	 * @param pFrom int
 	 * @throws FieldBinaryException This exception is thrown when the scale field
 	 *                              doesn't match the nyad's field.
+	 * @throws CladosNyadException 	This happens with a couple of edge cases involving
+	 * 								list range errors and basis mis-match issues.
 	 */
-	public void compressSymm(int pInto, int pFrom) throws FieldBinaryException {
-		Monad tempLeft = monadList.get(pInto);
-		Monad tempRight = monadList.get(pFrom);
+	public void compressSymm(int pInto, int pFrom) throws FieldBinaryException, CladosNyadException {
 
-		tempRight.setAlgebra(tempLeft.getAlgebra());
-		tempLeft.multiplySymm(tempRight);
+		if (pInto >= 0 & pFrom >=0 & pInto < monadList.size() & pFrom < monadList.size()) { // Check for array out of bounds errors.
+			Monad tempLeft = monadList.get(pInto);
+			Algebra tempLeftAlg = tempLeft.getAlgebra();									// Project into this one
+			Monad tempRight = monadList.get(pFrom);
+			Algebra tempRightAlg = tempRight.getAlgebra();									// Keep a temp reference to the old one
 
-		monadList.remove(pFrom);
-		// RESET Algebra list.
-		monadList.trimToSize();
+			if (tempLeftAlg.getGBasis() == tempRightAlg.getGBasis()) {						// Proceed only if Basis is exact match
+				tempRight = Nyad.projectOntoAlgebra(tempLeft, tempRight);					// second Monad is ALTERED HERE!
+				tempLeft.multiplySymm(tempRight);											// Only now can we do the deed.
+
+				monadList.remove(pFrom);													// Cleanup
+				monadList.trimToSize();
+				if (tempLeftAlg != tempRightAlg) {
+					algebraList.remove(tempRightAlg);										// More cleanup if needed
+					algebraList.trimToSize();
+				}
+			} else {
+				throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
+			}
+		} else {
+			throw new CladosNyadException(this, "Symmetric Compression out of range error");
+		}		
 	}
 
 	/**
@@ -984,6 +1030,39 @@ public class Nyad implements Modal {
 	 */
 	public void setName(String name) {
 		Name = name;
+	}
+
+	/**
+	 * Project the second Monad into the algebra of the first where it is assumed that the two algebras
+	 * share the same basis. In that rare case, the algebra distinctions are merely bookkeeping tricks.
+	 * <br>
+	 * @param pLeft the monad acting as a source of an algebra to project into
+	 * @param pRight the monad to be projected
+	 * @return Monad which has been pressed into the other algebra
+	 */
+	public static Monad projectOntoAlgebra(Monad pLeft, Monad pRight) {
+
+		//Scale<?> tempRightWeights = pRight.getWeights();
+		//Algebra tempLeftAlg = pLeft.getAlgebra();
+		//Basis tempLeftBasis = tempLeftAlg.getGBasis();
+		//Scale<T> newRightScale = new Scale<>(pRight.getMode(), tempLeftBasis, tempRightWeights.getCardinal());
+
+		//tempLeftBasis.bladeStream().forEach(blade -> {
+		//	newRightScale.put(blade, (T) tempRightWeights.get(blade));
+		//	});;
+
+		// Because 'blade' is the same in left and right monads, there is no need to recast the Scale for pRight.
+		// If this is EVER to work with different bases, there must be a map (a frame?) supporting calculation
+		// of linear combination weight from the old basis to use for each blade in the new basis. 
+		
+		// Ken's old connector idea had the bases line up, though. Algebra distinctions were bookkeeping methods.
+		// Truth is... we can probably recover that without nyads by using a dual generator to double a basis size
+		// and place one of the monads in the degenerate extension. Weird, but it might work.
+
+		pRight.setAlgebra(pLeft.getAlgebra());
+		pRight.setFrameName(pLeft.getFrameName());
+
+		return pRight;
 	}
 
 	/**
