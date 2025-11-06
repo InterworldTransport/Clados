@@ -24,25 +24,56 @@ class CoreGProductTest {
 	String pSigERR = "+++O";
 
 	@Test
-	public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
-		GCache.INSTANCE.clearGProducts();
-		GProduct tGP1 = GBuilder.createGProduct(pSig3);
-		assertTrue(GCache.INSTANCE.findGProductMap(pSig3).isPresent());		//The builder cached it
-		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
-		GProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
-		assertTrue(tGP1 == tGP2);					//The builder noticed a GP with the same sig and returned it instead
-		GProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
-		assertTrue(GCache.INSTANCE.findGProductMap(pSig4).isPresent());		//The builder cached it
-		//assertTrue(GCache.INSTANCE.getGProductListSize() == 2);
+	public void testThingsThatShouldntHappen() {
+		try {
+			GProduct newTest = new GProduct(pSig16);
+			assertFalse(newTest instanceof GProduct);
+		} catch (GeneratorRangeException e) {
+			assertTrue(e.getSourceMessage().equals("Unsupported Size for Blade 16"));
+		} catch (BadSignatureException eS) {
+			assertTrue(eS.getSourceMessage().equals("Valid signature required."));
+			assertTrue(eS.getSource() instanceof GProduct);
+		}
+	}
 
-		GCache.INSTANCE.removeGProduct(pSig3);								//Remove the gp named by its signature	
-		assertFalse(GCache.INSTANCE.findGProductMap(pSig3).isPresent());	//Found the first GP and removed it.
-		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
-		assertDoesNotThrow(() -> GCache.INSTANCE.removeGProduct(pSig3));	//Remove the gp named by its signature	
-		//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 			//Not found and silently handled.
-		GCache.INSTANCE.removeGProduct(tGP3);								//Remove the gp named by reference.
-		assertFalse(GCache.INSTANCE.findGProductMap(tGP3.signature()).isPresent()); //Found the second GP and removed it.
-		//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	
+	@Nested 
+	class testInfrastructure {
+
+		@Test
+		public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
+			GCache.INSTANCE.clearGProducts();
+			GProduct tGP1 = GBuilder.createGProduct(pSig3);
+			assertTrue(GCache.INSTANCE.findGProductMap(pSig3).isPresent());		//The builder cached it
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
+			GProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
+			assertTrue(tGP1 == tGP2);					//The builder noticed a GP with the same sig and returned it instead
+			GProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
+			assertTrue(GCache.INSTANCE.findGProductMap(pSig4).isPresent());		//The builder cached it
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 2);
+
+			GCache.INSTANCE.removeGProduct(pSig3);								//Remove the gp named by its signature	
+			assertFalse(GCache.INSTANCE.findGProductMap(pSig3).isPresent());	//Found the first GP and removed it.
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
+			assertDoesNotThrow(() -> GCache.INSTANCE.removeGProduct(pSig3));	//Remove the gp named by its signature	
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 			//Not found and silently handled.
+			GCache.INSTANCE.removeGProduct(tGP3);								//Remove the gp named by reference.
+			assertFalse(GCache.INSTANCE.findGProductMap(tGP3.signature()).isPresent()); //Found the second GP and removed it.
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	
+		}
+
+		@Test
+		public void testBuilderGPCreate1() {									//builder using basis and signature
+			assertDoesNotThrow(() -> GBuilder.createBasis(Generator.E4));
+			assertDoesNotThrow( () -> GBuilder.createGProduct(GBuilder.createBasis(Generator.E4), pSig30));
+			assertDoesNotThrow( () -> GBuilder.createGProduct(null, pSig30));
+			assertThrows(BadSignatureException.class, () -> GBuilder.createGProduct(null, pSig16));
+		}
+
+		@Test
+		public void testBuilderGPCreate0() {									//builder using just the signature
+			assertDoesNotThrow( () -> GBuilder.createGProduct(pSig30));
+			assertThrows(BadSignatureException.class, () -> GBuilder.createGProduct(pSig16));
+		}
 	}
 
 	@Test
