@@ -318,6 +318,12 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * This method creates a new Foot object with one Cardinal re-used from the Foot
 	 * to be imitated but the Foot has a new name too.
 	 * <br>
+	 * This method would EASILY cause a runtime error with an index out of bounds 
+	 * complaint if the suggested spot for the Cardinal is out of range. Instead of
+	 * that runtime error, it detects for this and returns null for the cardinal instead.
+	 * That isn't and issue for the Foot constructor because 'null' will be added to 
+	 * the cardinal list. 'null' IS A VALID CARDINAL conceptually speaking.
+	 * <br>
 	 * @param pName New string name for Foot to be created.
 	 * @param pF    Foot object to copy
 	 * @param pSpot indexed location in offered Foot to find a Cardinal
@@ -359,6 +365,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	public final static GProduct createGProduct(Basis pB, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
+
+		if (!GBuilder.validateSignature(pSig))
+			throw new BadSignatureException(null, "Asked to create a GProduct using: "+pSig);
+
 		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get();
@@ -388,6 +398,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	public final static GProduct createGProduct(String pSig)
 			throws BadSignatureException, GeneratorRangeException {
+
+		if (!GBuilder.validateSignature(pSig))
+				throw new BadSignatureException(null, "Asked to create a GProduct using: "+pSig);
+		
 		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.
