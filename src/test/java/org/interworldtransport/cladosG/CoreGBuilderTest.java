@@ -4,6 +4,7 @@ import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FCache;
+import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -16,9 +17,6 @@ import org.junit.jupiter.api.Test;
 //import java.util.Optional;
 //import java.util.stream.Stream;
 
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.Test;
-
 public class CoreGBuilderTest {
     String  badSignature = "+++-O";
     String  goodSignature = "+++-";
@@ -27,7 +25,8 @@ public class CoreGBuilderTest {
     String  garbageSignature = "abcdefg";
     String  hiddenSignature = "a0b+cde+fg";
     String  twoDPGA = "0++";
-
+    String  threeDPGA = "0+++";
+    String  pSig16 = "-+++-+++-+++-+++";
     
 
     @Nested
@@ -115,6 +114,7 @@ public class CoreGBuilderTest {
 
         @Test
         public void testCreateBasisVariants() {
+            GCache.INSTANCE.clearBases();
             try {
                 Basis tb0 = GBuilder.createBasis(Generator.E4); 
                 assertNotNull(tb0);
@@ -123,7 +123,7 @@ public class CoreGBuilderTest {
             } catch (GeneratorRangeException eg) {
                 assertNotNull(eg.getSourceMessage());
             }
-
+            GCache.INSTANCE.clearBases();
             try {
                 Basis tb1 = GBuilder.createBasis((byte) 4);
                 assertNotNull(tb1);
@@ -135,15 +135,53 @@ public class CoreGBuilderTest {
         }
 
         @Test
-        public void testCreateGPVariants() {
-            ;
-        }
+		public void testBuilderGPCreate1() {									//builder using basis and signature
+			assertDoesNotThrow(() -> GBuilder.createBasis(Generator.E4));       //Will throw if MAXGenerator is set lower
+			assertDoesNotThrow( () -> GBuilder.createGProduct(GBuilder.createBasis(Generator.E4), threeDPGA));
+			assertDoesNotThrow( () -> GBuilder.createGProduct(null, threeDPGA));
+			assertThrows(BadSignatureException.class, () -> GBuilder.createGProduct(null, pSig16));
+                                                                                //MAXGenerator is currently EF=15.
+		}
+
+		@Test
+		public void testBuilderGPCreate0() {									//builder using just the signature
+			assertDoesNotThrow( () -> GBuilder.createGProduct(threeDPGA));
+			assertThrows(BadSignatureException.class, () -> GBuilder.createGProduct(pSig16));
+		}
 
         @Test
         public void testAlgebraVariants() {
-            ;
+            assertDoesNotThrow(() -> GBuilder.createAlgebraWithFootPlus(tFoot, 
+                                                                        tCard, 
+                                                                        GBuilder.createGProduct(twoDPGA), 
+                                                                        "Named: "+twoDPGA));
+            GCache.INSTANCE.clearBases();
+            GCache.INSTANCE.clearGProducts();
+            assertDoesNotThrow(() -> GBuilder.createAlgebraWithFoot(tFoot, 
+                                                                    tCard, 
+                                                                    "Named: "+twoDPGA, //Algebra name comes first.
+                                                                    twoDPGA));
+            GCache.INSTANCE.clearBases();
+            GCache.INSTANCE.clearGProducts();
+            ComplexD tNumber = FBuilder.COMPLEXD.createONE(tCard);
+            assertDoesNotThrow(() -> GBuilder.createAlgebra(tNumber, 
+                                                            tAlgebra.getAlgebraName()+"2", 
+                                                            tFoot.getFootName()+"2", 
+                                                            twoDPGA));
+            try {
+                Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAlgebraName()+"2", tFoot.getFootName()+"2", twoDPGA);
+                assertTrue(ta2.getMode() == CladosField.COMPLEXD);
+            } catch (GeneratorRangeException er) {
+                ;
+            } catch (BadSignatureException es) {
+                ;
+            }
         }
 
+        @Test
+        void createMonadSpecial() {
+            ;
+        }
 
 
 

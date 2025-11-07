@@ -60,20 +60,6 @@ class CoreGProductTest {
 			assertFalse(GCache.INSTANCE.findGProductMap(tGP3.signature()).isPresent()); //Found the second GP and removed it.
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	
 		}
-
-		@Test
-		public void testBuilderGPCreate1() {									//builder using basis and signature
-			assertDoesNotThrow(() -> GBuilder.createBasis(Generator.E4));
-			assertDoesNotThrow( () -> GBuilder.createGProduct(GBuilder.createBasis(Generator.E4), pSig30));
-			assertDoesNotThrow( () -> GBuilder.createGProduct(null, pSig30));
-			assertThrows(BadSignatureException.class, () -> GBuilder.createGProduct(null, pSig16));
-		}
-
-		@Test
-		public void testBuilderGPCreate0() {									//builder using just the signature
-			assertDoesNotThrow( () -> GBuilder.createGProduct(pSig30));
-			assertThrows(BadSignatureException.class, () -> GBuilder.createGProduct(pSig16));
-		}
 	}
 
 	@Test
