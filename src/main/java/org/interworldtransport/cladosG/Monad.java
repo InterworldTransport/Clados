@@ -37,7 +37,7 @@ import org.interworldtransport.cladosF.ComplexD;		//Complex doubles
 import org.interworldtransport.cladosF.ComplexF;		//Complex floats
 import org.interworldtransport.cladosF.RealD;			//Real doubles
 import org.interworldtransport.cladosF.RealF;			//Real floats
-import org.interworldtransport.cladosF.ProtoN;	//Unitized Number parent
+import org.interworldtransport.cladosF.ProtoN;			//Unitized Number parent
 import org.interworldtransport.cladosF.Field;			//Contract specifying division field
 import org.interworldtransport.cladosF.Normalizable;	//Contract for modulus construction
 														//Numbers obeying both contracts
@@ -568,7 +568,8 @@ public class Monad implements Modal {
 			String pFrameName, String pFootName, String pSig, T pF, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
-		// Default ZERO Monad is constructed already. Now handle the special cases.
+														// Default ZERO Monad is complete. 
+														// Now handle the special cases.
 		if (MONAD_SPECIAL_CASES.contains(pSpecial)) {
 			switch (mode) {
 				case COMPLEXD -> {
@@ -676,7 +677,7 @@ public class Monad implements Modal {
 	 *                                 coefficient array of the wrong size.
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
 			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
