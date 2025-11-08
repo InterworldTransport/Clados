@@ -4,7 +4,11 @@ import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FCache;
+import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -12,10 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-//import java.util.EnumSet;
-//import java.util.Optional;
-//import java.util.stream.Stream;
 
 public class CoreGBuilderTest {
     String  badSignature = "+++-O";
@@ -179,8 +179,283 @@ public class CoreGBuilderTest {
         }
 
         @Test
-        void createMonadSpecial() {
+        void testCreateMonadSpecial() {
+            ComplexD tCD0 = FBuilder.COMPLEXD.createONE(tCard);     
+            ComplexF tCF0 = FBuilder.COMPLEXF.createONE(tCard);     
+            RealD tRD0 = FBuilder.REALD.createONE(tCard);     
+            RealF tRF0 = FBuilder.REALF.createONE(tCard);     //There are my examples
+
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
+                                                                    "TestMName", 
+                                                                    "TestAlgName", 
+                                                                    "TestFrName", 
+                                                                    "TestFtName", 
+                                                                    twoDPGA, 
+                                                                    "GarbageInstruction")); //Defaults to ZERO
+            
+            // Work through the RealF switch options
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
+                                                                    "TestMonadNameRF", 
+                                                                    "TestAlgebraNameRF", 
+                                                                    "TestFrameNameRF", 
+                                                                    "TestFootNameRF", 
+                                                                    twoDPGA, 
+                                                                    "Unit Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
+                                                                    "TestMonadNameRF2", 
+                                                                    "TestAlgebraNameRF2", 
+                                                                    "TestFrameNameRF2", 
+                                                                    "TestFootNameRF2", 
+                                                                    twoDPGA, 
+                                                                    "Unit -Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
+                                                                    "TestMonadNameRF3", 
+                                                                    "TestAlgebraNameRF3", 
+                                                                    "TestFrameNameRF3", 
+                                                                    "TestFootNameRF3", 
+                                                                    twoDPGA, 
+                                                                    "Unit PScalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
+                                                                    "TestMonadNameRF4", 
+                                                                    "TestAlgebraNameRF4", 
+                                                                    "TestFrameNameRF4", 
+                                                                    "TestFootNameRF4", 
+                                                                    twoDPGA, 
+                                                                    "Unit -PScalar"));
+            
+            // Work through the RealD switch options
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
+                                                                    "TestMonadNameRD", 
+                                                                    "TestAlgebraNameRD", 
+                                                                    "TestFrameNameRD", 
+                                                                    "TestFootNameRD", 
+                                                                    twoDPGA, 
+                                                                    "Unit Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
+                                                                    "TestMonadNameRD2", 
+                                                                    "TestAlgebraNameRD2", 
+                                                                    "TestFrameNameRD2", 
+                                                                    "TestFootNameRD2", 
+                                                                    twoDPGA, 
+                                                                    "Unit -Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
+                                                                    "TestMonadNameRD3", 
+                                                                    "TestAlgebraNameRD3", 
+                                                                    "TestFrameNameRD3", 
+                                                                    "TestFootNameRD3", 
+                                                                    twoDPGA, 
+                                                                    "Unit PScalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
+                                                                    "TestMonadNameRD4", 
+                                                                    "TestAlgebraNameRD4", 
+                                                                    "TestFrameNameRD4", 
+                                                                    "TestFootNameRD4", 
+                                                                    twoDPGA, 
+                                                                    "Unit -PScalar"));
+            
+            // Work through the ComplexD switch options
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
+                                                                    "TestMonadNameCD", 
+                                                                    "TestAlgebraNameCD", 
+                                                                    "TestFrameNameCD", 
+                                                                    "TestFootNameCD", 
+                                                                    twoDPGA, 
+                                                                    "Unit Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
+                                                                    "TestMonadNameCD2", 
+                                                                    "TestAlgebraNameCD2", 
+                                                                    "TestFrameNameCD2", 
+                                                                    "TestFootNameCD2", 
+                                                                    twoDPGA, 
+                                                                    "Unit -Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
+                                                                    "TestMonadNameCD3", 
+                                                                    "TestAlgebraNameCD3", 
+                                                                    "TestFrameNameCD3", 
+                                                                    "TestFootNameCD3", 
+                                                                    twoDPGA, 
+                                                                    "Unit PScalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
+                                                                    "TestMonadNameCD4", 
+                                                                    "TestAlgebraNameCD4", 
+                                                                    "TestFrameNameCD4", 
+                                                                    "TestFootNameCD4", 
+                                                                    twoDPGA, 
+                                                                    "Unit -PScalar"));
+            
+            // Work through the ComplexF switch options
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
+                                                                    "TestMonadNameCF", 
+                                                                    "TestAlgebraNameCF", 
+                                                                    "TestFrameNameCF", 
+                                                                    "TestFootNameCF", 
+                                                                    twoDPGA, 
+                                                                    "Unit Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
+                                                                    "TestMonadNameCF2", 
+                                                                    "TestAlgebraNameCF2", 
+                                                                    "TestFrameNameCF2", 
+                                                                    "TestFootNameCF2", 
+                                                                    twoDPGA, 
+                                                                    "Unit -Scalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
+                                                                    "TestMonadNameCF3", 
+                                                                    "TestAlgebraNameCF3", 
+                                                                    "TestFrameNameCF3", 
+                                                                    "TestFootNameCF3", 
+                                                                    twoDPGA, 
+                                                                    "Unit PScalar"));
+            assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
+                                                                    "TestMonadNameCF4", 
+                                                                    "TestAlgebraNameCF4", 
+                                                                    "TestFrameNameCF4", 
+                                                                    "TestFootNameCF4", 
+                                                                    twoDPGA, 
+                                                                    "Unit -PScalar"));
+        }
+        
+        @Test
+        void testCreateMonadWithAlgebra() {
+            Scale<ComplexD> tCD0 = new Scale<>(CladosField.COMPLEXD, tAlgebra.getGBasis(), tCard); 
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCD0.put(blade, ComplexD.newONE(tCard)));     
+            Scale<ComplexF> tCF0 = new Scale<>(CladosField.COMPLEXF, tAlgebra.getGBasis(), tCard); 
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCF0.put(blade, ComplexF.newONE(tCard)));
+            Scale<RealD> tRD0 = new Scale<>(CladosField.REALD, tAlgebra.getGBasis(), tCard);   
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRD0.put(blade, RealD.newONE(tCard))); 
+            Scale<RealF> tRF0 = new Scale<>(CladosField.REALF, tAlgebra.getGBasis(), tCard);     
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRF0.put(blade, RealF.newONE(tCard)));      //There are my examples
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tRF0, 
+                                                                        tAlgebra, 
+                                                                        "TestMonadNameRF", 
+                                                                        "TestFrameNameRF"));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tRD0, 
+                                                                        tAlgebra, 
+                                                                        "TestMonadNameRD", 
+                                                                        "TestFrameNameRD"));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tCF0, 
+                                                                        tAlgebra, 
+                                                                        "TestMonadNameCF", 
+                                                                        "TestFrameNameCF"));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tCD0, 
+                                                                        tAlgebra, 
+                                                                        "TestMonadNameCD", 
+                                                                        "TestFrameNameCD"));
+        
+            //These work because the basis from tAlgebra was used to build the Scales.
+            //That ensures the basis in tAlgebra matches the keys in the Scales
+            //A way to make this fail, therefore, is to create a Scale with one basis
+            //  and create the Monad with an Algebra that uses a different basis.
+            //Same size basis is checked in the constructor, but Basis mismatches are not.
+
+            //TODO Adjust the Monad constructor to reference match the Bases.
+            }
+        
+        @Test
+        void testCreateMonadwithCoeffs() {
+            //These works if the basis built in the new algebra matches what 
+            //is used in the Scale. How could it, though? Sig length matching is checked only.
+            //Basis sizes might match, but the blades will not be the same objects. 
+            //  That means a new algebra's basis won't be the keys in Scale until 
+            //  the weights are re-keyed. A monad created this way will appear 
+            //  to have null objects for weights.
+
+            //TODO Adjust the Monad constructor re-use the Scale's Basis when building the algebra.
+
+            Scale<ComplexD> tCD0 = new Scale<>(CladosField.COMPLEXD, tAlgebra.getGBasis(), tCard);          //A 2D PGA Scale
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCD0.put(blade, ComplexD.newONE(tCard)));   //with "ones"
+            Scale<ComplexF> tCF0 = new Scale<>(CladosField.COMPLEXF, tAlgebra.getGBasis(), tCard);          //A 2D PGA Scale
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCF0.put(blade, ComplexF.newONE(tCard)));   //with "ones"
+            Scale<RealD> tRD0 = new Scale<>(CladosField.REALD, tAlgebra.getGBasis(), tCard);                //A 2D PGA Scale
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRD0.put(blade, RealD.newONE(tCard)));      //with "ones"
+            Scale<RealF> tRF0 = new Scale<>(CladosField.REALF, tAlgebra.getGBasis(), tCard);                //A 2D PGA Scale
+            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRF0.put(blade, RealF.newONE(tCard)));      //There are my examples
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tRF0, 
+                                                                        "TestMonadNameRF",
+                                                                        "TestAlgebraNameRF", 
+                                                                        "TestFrameNameRF",
+                                                                        "TestFootNameRF",
+                                                                        twoDPGA));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tRD0, 
+                                                                        "TestMonadNameRD",
+                                                                        "TestAlgebraNameRD", 
+                                                                        "TestFrameNameRD",
+                                                                        "TestFootNameRD",
+                                                                        twoDPGA));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tCF0, 
+                                                                        "TestMonadNameCF",
+                                                                        "TestAlgebraNameCF", 
+                                                                        "TestFrameNameCF",
+                                                                        "TestFootNameCF",
+                                                                        twoDPGA));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tCD0, 
+                                                                        "TestMonadNameCD",
+                                                                        "TestAlgebraNameCD", 
+                                                                        "TestFrameNameCD",
+                                                                        "TestFootNameCD",
+                                                                        twoDPGA));
+        }
+
+    @Test
+    void testCreateMonadWithFoot() {
+        //Target method: createMonadWithFoot(   ProtoN pNumber,
+        //                                      Foot pFt, 
+        //                                      String pName, String pAName, String pFrame, String pSig)
+        ComplexD tCD0 = FBuilder.COMPLEXD.createONE(tCard);     
+        ComplexF tCF0 = FBuilder.COMPLEXF.createONE(tCard);     
+        RealD tRD0 = FBuilder.REALD.createONE(tCard);     
+        RealF tRF0 = FBuilder.REALF.createONE(tCard);     //There are my examples
+
+        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRF0, 
+                                                                tFoot,
+                                                                "TestMonadNameRF",
+                                                                "TestAlgebraNameRF", 
+                                                                "TestFrameNameRF",
+                                                                twoDPGA));
+
+        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRD0, 
+                                                                tFoot,
+                                                                "TestMonadNameRD",
+                                                                "TestAlgebraNameRD", 
+                                                                "TestFrameNameRD",
+                                                                twoDPGA));
+
+        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCF0, 
+                                                                tFoot,
+                                                                "TestMonadNameCF",
+                                                                "TestAlgebraNameCF", 
+                                                                "TestFrameNameCF",
+                                                                twoDPGA));
+
+        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCD0, 
+                                                                tFoot,
+                                                                "TestMonadNameCD",
+                                                                "TestAlgebraNameCD", 
+                                                                "TestFrameNameCD",
+                                                                twoDPGA));
+        }
+
+        @Test
+        void testCreateMonadZero() {
+            //target method createMonadZero(    T pNumber, 
+            //                                  String pName, String pAName, String pFrame, 
+            //                                  String pFoot, String pSig)
+
+
             ;
+
+
+
+
+
+
         }
 
 

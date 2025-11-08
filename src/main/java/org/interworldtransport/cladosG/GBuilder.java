@@ -434,7 +434,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pFrame   A String for the new frame name.
 	 * @param pFoot    A String to name a new Foot.
 	 * @param pSig     A String for the new algebra's signature.
-	 * @param pSpecial A String for special handling constructor. ex: "Zero", "One"
+	 * @param pSpecial A String for special handling constructor. ex: "Unit Scalar", "Unit -Scalar", "Unit PScalar", "Unit -PScalar"
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
@@ -450,10 +450,8 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	/**
 	 * Monad Constructor #7 covered with this method
 	 * <br>
-	 * @param <T>     CladosF number is a ProtoN child that implemnts Field
-	 *                and Normalizable.
-	 * @param pNumber The ProtoN to be re-used. USE A CONCRETE one here or
-	 *                nada.
+	 * @param <T>     CladosF number is a ProtoN child that implemnts Field and Normalizable.
+	 * @param pNumbers The ProtoN to be re-used. USE A CONCRETE one here or nada.
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pFrame  A String for the new frame name.
@@ -462,10 +460,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(Scale<T> pNumber,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(Scale<T> pNumbers,
 			Algebra pA, String pName, String pFrame)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pA, pFrame, pNumber);
+		return new Monad(pName, pA, pFrame, pNumbers);
 	}
 
 	/**
@@ -473,8 +471,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * <br>
 	 * @param <T>     CladosF number is a ProtoN child that implemnts Field
 	 *                and Normalizable.
-	 * @param pNumber The ProtoN to be re-used. USE A CONCRETE one here or
-	 *                nada.
+	 * @param pNumbers The ProtoN to be re-used. USE A CONCRETE one here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
 	 * @param pFrame  A String for the new frame name.
@@ -485,10 +482,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumber,
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumbers,
 			String pName, String pAName, String pFrame, String pFoot, String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
+		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumbers);
 	}
 
 	/**
