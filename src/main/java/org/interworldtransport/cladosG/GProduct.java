@@ -24,6 +24,8 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Optional;
+
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -103,7 +105,7 @@ public class GProduct implements CliffordProduct {
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
 	public GProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
-		this(null, pSig);
+		this(Optional.ofNullable(null), pSig);
 	}
 
 	/**
@@ -115,13 +117,13 @@ public class GProduct implements CliffordProduct {
 	 * when it checks the validity of the string. Size and characters ARE checked.
 	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++0".
-	 * @param pB   Basis to re-use in constructing this product.
+	 * @param pB   Optional Basis to re-use in constructing this product.
 	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
 	 *                                 some internal call demands a generator not in
 	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProduct(Basis pB, String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(Optional<Basis> pB, String pSig) throws BadSignatureException, GeneratorRangeException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		// ------Init signature
@@ -137,7 +139,7 @@ public class GProduct implements CliffordProduct {
 		}
 		signature = pSig;
 		// ------Get Basis
-		canonBasis = (pB != null) ? pB : GBuilder.createBasis((byte) pSig.length());
+		canonBasis = (pB.isPresent()) ? pB.get() : GBuilder.createBasis((byte) pSig.length());
 		// ------Build Product Table
 		result = new int[getBladeCount()][getBladeCount()];
 		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {

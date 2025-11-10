@@ -451,7 +451,7 @@ public class Monad implements Modal {
 	 * @param pM    Monad
 	 */
 	public Monad(String pName, Monad pM) {
-		this(pM);
+		this(pM);			//Defer to constructor #1
 		setName(pName);
 	}
 
@@ -477,10 +477,19 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, String pFootName, String pSig, T pF)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFrameName, 
+															String pFootName, 
+															String pSig, 
+															T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, pAlgebraName, pFrameName, GBuilder.createFootLike(pFootName, pF), pSig, pF);
+		this(	pMonadName, 
+				pAlgebraName, 
+				pFrameName, 
+				GBuilder.createFootLike(pFootName, pF), 
+				pSig, 
+				pF);		//Defer to constructor #4
 	}
 
 	/**
@@ -505,11 +514,15 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, Foot pFoot, String pSig, T pF)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFrameName, 
+															Foot pFoot, 
+															String pSig, 
+															T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
-		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
+		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pAlgebraName, pSig));
 		setFrameName(pFrameName);
 
 		switch (pF.getClass().getCanonicalName()){
@@ -564,12 +577,22 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, String pFootName, String pSig, T pF, String pSpecial)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFrameName, 
+															String pFootName, 
+															String pSig, 
+															T pF, 
+															String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
-														// Default ZERO Monad is complete. 
-														// Now handle the special cases.
+		this(	pMonadName, 
+				pAlgebraName, 
+				pFrameName,
+				GBuilder.createFootLike(pFootName, pF), 
+				pSig, 
+				pF);	//Defer to Constructor #4
+						// Default ZERO Monad is complete. 
+						// Now handle the special cases.
 		if (MONAD_SPECIAL_CASES.contains(pSpecial)) {
 			switch (mode) {
 				case COMPLEXD -> {
@@ -679,16 +702,29 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFrameName, 
+															String pFootName, 
+															String pSig, 
+															Scale<T> pScale)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, GBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName,
-				pScale);
+
+		this(	pMonadName, 
+				GBuilder.createAlgebraWithFootGP(
+										GBuilder.createFoot(pFootName, pScale.getCardinal().getUnit()), 
+										GBuilder.createGProduct(Optional.ofNullable(pScale.getBasis()), pSig),
+										pAlgebraName), 
+				pFrameName,
+				pScale);				//Defer to constructor #7 safely
+										//because pScale's Basis was used building Algebra.
 	}
 
 	/**
-	 * Main constructor of Monad with pre-constructed objects not already part of
-	 * another Monad.
+	 * Main constructor of Monad with pre-constructed objects not already part of another Monad.
+	 * <br>
+	 * This one is very important to GBuilder for ensuring reference matches occur correctly, but it
+	 * does reject construction if the bases in Algebra and Scale do not match.
 	 * <br>
 	 * @param <T>        CladosF number is a ProtoN child that implemnts Field
 	 *                   and Normalizable.
@@ -701,11 +737,12 @@ public class Monad implements Modal {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, Algebra pAlgebra, String pFrameName,
-			Scale<T> pScale) throws CladosMonadException {
-		if (pScale.getMap().size() != pAlgebra.getBladeCount())
-			throw new CladosMonadException(this,
-					"Coefficient array size does not match bladecount from offered Algebra.");
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															Algebra pAlgebra, 
+															String pFrameName,
+															Scale<T> pScale) throws CladosMonadException {
+		if (pScale.getBasis() != pAlgebra.getGBasis())
+			throw new CladosMonadException(this, "Scale basis must match exactly the basis in Algebra.");
 
 		setName(pMonadName);
 		setAlgebra(pAlgebra);
