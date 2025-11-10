@@ -55,27 +55,6 @@
 	<xs:attribute 	name="imgvalue" 	type="xs:decimal"/>
 </xs:complexType>
 
-
-<xs:element 		name="Frame" 		type="Frame"/>
-<xs:complexType 	name="Frame">
-	<xs:attribute 	name="number" 		type="xs:nonNegativeInteger" use="optional"/>
-	<xs:attribute 	name="name" use="optional">
-		<xs:simpleType>
-			<xs:restriction base="xs:string">
-				<xs:whiteSpace value="collapse"></xs:whiteSpace>
-			</xs:restriction>
-		</xs:simpleType>
-	</xs:attribute>
-</xs:complexType>
-
-<xs:element	 		name="Frames"		type="Frames"/>
-<xs:complexType 	name="Frames">
-	<xs:sequence>
-		<xs:element name="Frame" 		type="Frame"	minOccurs="0" maxOccurs="unbounded"/>
-	</xs:sequence>
-	<xs:attribute 	name="number" 		type="xs:nonNegativeInteger"/>
-</xs:complexType>
-
 <xs:element 		name="Foot" 		type="Foot"/>
 <xs:complexType 	name="Foot">
 	<xs:all>
@@ -149,8 +128,6 @@
 <xs:complexType 	name="Algebra">
 	<xs:all>
 		<xs:element	name="Name"			type="xs:string"/>
-		<xs:element name="ProtoN"	type="ProtoN"/>
-		<xs:element name="Frames"		type="Frames"/>
 		<xs:element name="Foot"			type="Foot"/>
 		<xs:element name="GProduct"		type="GProduct"/>
 	</xs:all>
@@ -183,7 +160,6 @@
 	<xs:all>
 		<xs:element	name="Name"			type="xs:string"/>
 		<xs:element	name="Algebra"		type="Algebra"/>
-		<xs:element name="ReferenceFrame" type="xs:string"/>
 		<xs:element name="Scales" 		type="Scales"/>
 	</xs:all>
 	<xs:attribute 	name="gradeKey" 	type="xs:positiveInteger"/>

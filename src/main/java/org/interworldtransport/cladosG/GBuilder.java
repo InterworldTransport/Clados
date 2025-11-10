@@ -388,7 +388,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 *                 nada.
 	 * @param pName    A String for the new monad's name.
 	 * @param pAName   A String for the new algebra's name.
-	 * @param pFrame   A String for the new frame name.
 	 * @param pFoot    A String to name a new Foot.
 	 * @param pSig     A String for the new algebra's signature.
 	 * @param pSpecial A String for special handling constructor. ex: "Unit Scalar", "Unit -Scalar", "Unit PScalar", "Unit -PScalar"
@@ -399,9 +398,9 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadSpecial(ProtoN pNumber,
-			String pName, String pAName, String pFrame, String pFoot, String pSig, String pSpecial)
+			String pName, String pAName, String pFoot, String pSig, String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pAName, pFrame, pFoot, pSig, (T) pNumber, pSpecial);
+		return new Monad(pName, pAName, pFoot, pSig, (T) pNumber, pSpecial);
 	}
 
 	/**
@@ -411,19 +410,20 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pNumbers The ProtoN to be re-used. USE A CONCRETE one here or nada.
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
 	 * @param pName   A String for the new monad's name.
-	 * @param pFrame  A String for the new frame name.
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(Scale<T> pNumbers,
-			Algebra pA, String pName, String pFrame)
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(	Scale<T> pNumbers,
+																								Algebra pA, 
+																								String pName)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		if (pA.getGBasis() != pNumbers.getBasis()) 
-			throw new CladosMonadException(null, "Monad construction fails when Scale and Algebra bases aren't identical.");
+			throw new CladosMonadException(	null, 
+											"Monad construction fails when Scale and Algebra bases aren't identical.");
 		
-		return new Monad(pName, pA, pFrame, pNumbers);
+		return new Monad(pName, pA, pNumbers);
 	}
 
 	/**
@@ -434,7 +434,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pNumbers The ProtoN weights to be used. USE A CONCRETE one here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
-	 * @param pFrame  A String for the new frame name.
 	 * @param pFoot   A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return Monad (Cast this as the concrete monad to be used)
@@ -443,17 +442,14 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumbers,
-			String pName, String pAName, String pFrame, String pFoot, String pSig)
+			String pName, String pAName, String pFoot, String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		
 		return new Monad(	pName, 		//A String
 							createAlgebraWithFootGP(createFoot(pFoot, pNumbers.getCardinal().getUnit()), 
 													createGProduct(Optional.ofNullable(pNumbers.getBasis()), pSig),
 													pName),
-							pFrame, 	//Another String
 							pNumbers);	//A Scale object use for weights AND the basis
-
-		
 	}
 
 	/**
@@ -465,7 +461,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pFt     A Foot to be referenced so a new one is NOT created.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
-	 * @param pFrame  A String for the new frame name.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
@@ -473,10 +468,13 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithFoot(ProtoN pNumber,
-			Foot pFt, String pName, String pAName, String pFrame, String pSig)
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadWithFoot(	ProtoN pNumber,
+																								Foot pFt, 
+																								String pName, 
+																								String pAName, 
+																								String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pAName, pFrame, pFt, pSig, (T) pNumber);
+		return new Monad(pName, pAName, pFt, pSig, (T) pNumber);
 	}
 
 	/**
@@ -488,7 +486,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 *                nada.
 	 * @param pName   A String for the new monad's name.
 	 * @param pAName  A String for the new algebra's name.
-	 * @param pFrame  A String for the new frame name.
 	 * @param pFoot   A String to name a new Foot.
 	 * @param pSig    A String for the new algebra's signature.
 	 * @return Monad (Cast this as the concrete monad to be used)
@@ -496,10 +493,13 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
-	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadZero(T pNumber, String pName,
-			String pAName, String pFrame, String pFoot, String pSig)
+	public static final <T extends ProtoN & Field & Normalizable> Monad createMonadZero(	T pNumber, 
+																							String pName,
+																							String pAName, 
+																							String pFoot, 
+																							String pSig)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		return new Monad(pName, pAName, pFrame, pFoot, pSig, pNumber);
+		return new Monad(pName, pAName, pFoot, pSig, pNumber);
 	}
 
 	/**

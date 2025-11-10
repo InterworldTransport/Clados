@@ -24,7 +24,6 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import org.interworldtransport.cladosF.Field;			//Algebras are defined over fields
@@ -66,17 +65,10 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * Anyone wanting to get around this feature need only declare one 'Foot' and
  * then re-use it everywhere. The computational penalty is miniscule.
  * <br><br>
- * 2. There is a residual reference to a list of frame names with related
- * settors and gettors. This is changing in V2.0 as frames are better described
- * by linear combinations of basis elements, which makes them sets of Scale's.
- * Algebra's WILL track them, but by reference in a more complicated manner
- * since they will be used to 'cut out' the meanings of multiplication and
- * addition.
- * <br><br>
- * 3. There is a UUID string kept internally for use an XML variant of
+ * 2. There is a UUID string kept internally for use an XML variant of
  * serialization. It has no geometric meaning. Think of it as a digital name.
  * <br><br>
- * 4. There is also a 'name' string for the human readable name of an algebra.
+ * 3. There is also a 'name' string for the human readable name of an algebra.
  * It has no geometric meaning and is not used for anything important.
  * <br><br>
  * @version 2.0
@@ -97,12 +89,6 @@ public final class Algebra implements Comparable<Algebra> {
 			indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
 		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
-		// -----------------------------------------------------------------------
-		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
-		for (String tip : pA.rFrames)
-			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"")
-					.append(tip).append("\" />\n");
-		rB.append(indent).append("\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));
 		rB.append(GProduct.toXMLString(pA.getGProduct(), indent + "\t"));
@@ -131,26 +117,10 @@ public final class Algebra implements Comparable<Algebra> {
 	 */
 	protected GProduct gProduct;
 	/**
-	 * The algebras mode is the particular ProtoN child used to represent numbers.
-	 */
-	//protected CladosField mode;
-	/**
 	 * Finally, the algebra has a name because this helps distinguish different
-	 * reference frames associated with the same tangent point Foot.
+	 * reference frames associated with the same Foot.
 	 */
 	protected String name;
-	/**
-	 * The algebra's prototypical 'number'. A ProtoN suffices most of the time,
-	 * but there is no issue with using a child of ProtoN. Just be careful because
-	 * setting protoNumber with a child of ProtoN should also set the Mode.
-	 * <br>
-	 * This is where the primary cardinal for an algebra is found.
-	 */
-	//protected ProtoN protoNumber;
-	/**
-	 * This is the list of known frames defined against this Algebra.
-	 */
-	protected ArrayList<String> rFrames;
 	/**
 	 * Unique string (hopefully) that provides a machine readable name more likely
 	 * to be unique. Used by apps that need more than the human readable name to
@@ -165,8 +135,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * constructed. This new one re-uses the objects in the one offered. No
 	 * independent objects are made in this constructor except the algebra itself
 	 * <br>
-	 * THIS CONSTRUCTOR is one that enables algebras to function as light weight
-	 * frames.
+	 * THIS CONSTRUCTOR is one that enables algebras to function as light weight frames.
 	 * <br>
 	 * @param pNewName 	This is the Algebra's name
 	 * @param pA 		This is the other Algebra to copy.
@@ -176,8 +145,6 @@ public final class Algebra implements Comparable<Algebra> {
 		setFoot(pA.getFoot());							//RE-USE of Foot
 		setGProduct(pA.getGProduct());					//RE-USE of GP
 		gBasis = pA.getGProduct().getBasis();			//RE-USE of Basis
-		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical"); // Canonical basis is ALWAYS a frame
 		uuid = UUID.randomUUID().toString();
 	}
 
@@ -202,8 +169,6 @@ public final class Algebra implements Comparable<Algebra> {
 		setFoot(pF);
 		setGProduct(pGP);							//RE-USE of GP
 		gBasis = pGP.getBasis();					//RE-USE of Basis
-		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical"); // Canonical basis is ALWAYS a frame
 		uuid = UUID.randomUUID().toString();
 	}
 	
@@ -234,8 +199,7 @@ public final class Algebra implements Comparable<Algebra> {
 		this(	pNewName, 
 				pF, 
 				GBuilder.createGProduct(	GCache.INSTANCE.findBasisList((byte) pSig.length()),
-											pSig)
-											);
+											pSig));
 	}
 
 	/**
@@ -269,19 +233,6 @@ public final class Algebra implements Comparable<Algebra> {
 											pF.getCardinalString()),
 				GBuilder.createGProduct(	GCache.INSTANCE.findBasisList((byte) pSig.length()),
 											pSig));
-	}
-
-	/**
-	 * This method appends a frame name to the list of known frames for this foot.
-	 * It will silently terminate IF the frame is already in the list.
-	 * <br>
-	 * @param pRF String Reference Frame name to append
-	 */
-	public void appendFrame(String pRF) {
-		if (rFrames.contains(pRF))
-			return;
-		rFrames.ensureCapacity(rFrames.size() + 1);
-		rFrames.add(pRF);
 	}
 
 	/**
@@ -346,7 +297,7 @@ public final class Algebra implements Comparable<Algebra> {
 
 	/**
 	 * This is a short-hand method providing the blade count on the canonical basis.
-	 * A Frame's blade count is limited at the upper end by this blade count.
+	 * A Frame's blade count will be limited at the upper end by this blade count.
 	 * <br>
 	 * @return short This is the size of a monad's coefficient array, but more
 	 *         importantly it is the number of dimensions in the vector space
@@ -363,17 +314,6 @@ public final class Algebra implements Comparable<Algebra> {
 	 */
 	public Foot getFoot() {
 		return foot;
-	}
-
-	/**
-	 * Simple gettor
-	 * <br>
-	 * This will change soon. Don't rely upon it.
-	 * <br>
-	 * @return ArrayList of string names for the frames
-	 */
-	public ArrayList<String> getFrames() {
-		return rFrames;
 	}
 
 	/**
@@ -396,7 +336,7 @@ public final class Algebra implements Comparable<Algebra> {
 
 	/**
 	 * This is a short-hand method providing the grade count on the canonical basis.
-	 * A Frame's grade count is limited at the upper end by this grade count.
+	 * A Frame's grade count will be limited at the upper end by this grade count.
 	 * <br>
 	 * @return byte This is the length of a monad's grade key. In an algebra with N
 	 *         generators it will always be N+1.
@@ -417,31 +357,9 @@ public final class Algebra implements Comparable<Algebra> {
 		return gProduct.getGradeRange(pInd);
 	}
 
-	/**
-	 * Simple gettor
-	 * <br>
-	 * This will change soon. Don't rely upon it.
-	 * <br>
-	 * @return ArrayList of string names for the frames
-	 */
-	public ArrayList<String> getReferenceFrames() {
-		return rFrames;
-	}
-
 	@Override
 	public int hashCode() {
 		return uuid.hashCode();
-	}
-
-	/**
-	 * This method removes a frame name from the list of known frames for this foot.
-	 * If the frame is not found in the list, no action is taken. This silent
-	 * failure is intentional.
-	 * <br>
-	 * @param pRF String Reference Frame name to remove
-	 */
-	public void removeFrame(String pRF) {
-		rFrames.remove(pRF);
 	}
 
 	/**

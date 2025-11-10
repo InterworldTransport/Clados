@@ -36,13 +36,11 @@ public class CoreMonadComplexDTest {
 
 		tM0 = new Monad(mName + "CF0", 
                         aName, 
-                        "Foot Default Frame", 
                         "Test Foot 0", 
                         "-+++",
 				        FBuilder.COMPLEXD.createZERO(altCard1));   //A protonumber
 		tM1 = new Monad(mName + "CF1",          //Different name
                         aName2,                 //Different algebra name
-                        "Foot Default Frame", //Intending same frame
                         "Test Foot 1", //Different Foot even
                         "-+++",             //But same signature
                         FBuilder.COMPLEXD.createZERO(altCard1));   //A protonumber
@@ -51,14 +49,12 @@ public class CoreMonadComplexDTest {
 		tM4 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
 		tM5 = new Monad(mName + "CF5", 
                         aName, 
-                        "Foot Default Frame", 
                         "Test Foot 5", 
                         "-+++",
                         FBuilder.COMPLEXD.createZERO(altCard5), 
                         "Unit PScalar"); //Special builder concept to be replaced at GBuilder
 		tM6 = new Monad(mName + "CF6", 
                         aName2,
-                        "Foot Default Frame", 
                         "Test Foot 6", 
                         "-+++", 
                         cCD[0]);                //A protonumber
@@ -66,10 +62,9 @@ public class CoreMonadComplexDTest {
 		tM7 = new Monad(mName + "CF7", tM6);
 		tM8 = new Monad(mName + "CF8", tM6);
 		tM9 = new Monad(mName + "CF9", tM2);
-        tM10 = new Monad(mName+"CF10", tM0.getAlgebra(), tM0.getFrameName(), tM0.getWeights());
+        tM10 = new Monad(mName+"CF10", tM0.getAlgebra(), tM0.getWeights());
         tM11 = new Monad(mName+"CF11", 
                         tM0.getAlgebra().getAlgebraName(), 
-                        tM0.getFrameName(), 
                         "Test Foot 1", 
                         "-+++", 
                         tM0.getWeights());
@@ -87,22 +82,19 @@ public class CoreMonadComplexDTest {
 
     @Test
 	public void testReferenceMatches() {
-		assertFalse(Monad.isReferenceMatch(tM0, tM1));  //Different algebra, same frame, same cardinal
-		assertFalse(Monad.isReferenceMatch(tM1, tM4));  //Different algebra, same frame, same cardinal
-		assertTrue(Monad.isReferenceMatch(tM1, tM3));   //Both reference same algebra, frame, and cardinal
-		assertTrue(Monad.isReferenceMatch(tM0, tM4));   //Both reference same algebra, frame, and cardinal
-        assertFalse(Monad.isReferenceMatch(tM0, tM5));  //Different algebra, same frame, different cardinal
-        assertTrue(Monad.isReferenceMatch(tM2, tM9));   //Same algebra and frame. Cardinal survive weight setting.
-        assertTrue(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra, frame, and cardinal.
-        assertFalse(Monad.isReferenceMatch(tM0, tM11)); //Different algrebra. Same frame and cardinal.
+		assertFalse(Monad.isReferenceMatch(tM0, tM1));  //Different algebra same cardinal
+		assertTrue(Monad.isReferenceMatch(tM0, tM4));   //Same algebra      same cardinal
+        assertFalse(Monad.isReferenceMatch(tM0, tM5));  //Different algebra different cardinal
+        assertFalse(Monad.isReferenceMatch(tM0, tM11)); //Different algebra same cardinal.
 
-        tM10.setFrameName("Something else");
-        assertFalse(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra and cardinal. Different Frame.
+		assertTrue(Monad.isReferenceMatch(tM1, tM3));   //Same algebra      same cardinal
+		assertFalse(Monad.isReferenceMatch(tM1, tM4));  //Different algebra same cardinal
 
-        tM10.setFrameName("Foot Default Frame");  //Restore frame name
-        assertTrue(Monad.isReferenceMatch(tM0, tM10));   //Same algrebra, frame, and cardinal.
+        assertTrue(Monad.isReferenceMatch(tM2, tM9));   //Copies. Cardinal survived weight setting.
+        
+        assertTrue(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra     same cardinal.
         tM10.getWeights().setCardinal(tCard);
-        assertFalse(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra and frame. Different cardinal.
+        assertFalse(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra    different cardinal.
 	}
 
     @Test
@@ -151,7 +143,7 @@ public class CoreMonadComplexDTest {
     @Test
     public void testIsNilpotent(){
 		assertTrue(Monad.isNilpotent(tM2, 2));   //Because it is ZERO.
-        assertFalse(Monad.isGZero(tM9));		        //Prove we altered it.
+        assertFalse(Monad.isGZero(tM9));		         //Prove we altered it.
 		assertTrue(Monad.isNilpotent(tM9, 2));   //Prove it squares to zero.
 		assertFalse(Monad.isNilpotent(tM9, 1));  //Prove we have to actually multiply to detect it.
     }
@@ -169,7 +161,7 @@ public class CoreMonadComplexDTest {
         ComplexD[] tFix = (ComplexD[]) FListBuilder.COMPLEXD.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (ComplexD) FBuilder.COMPLEXD.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_D);
         tFix[2] = ComplexD.copyOf(tFix[0]);
-		assertDoesNotThrow(() -> tM4.setCoeff(tFix));         //Makes tM4 idempotent 
+		assertDoesNotThrow(() -> tM4.setCoeff(tFix));   //Makes tM4 idempotent 
 
         assertFalse(Monad.isGZero(tM4));		        //Prove we altered it.
         assertTrue(Monad.isIdempotent(tM4));            //Because it is actually idempotent.
@@ -192,10 +184,10 @@ public class CoreMonadComplexDTest {
     
     @Test
 	public void testGradePart() {
-        assertDoesNotThrow(() -> tM0.gradePart((byte) -1));
-        assertDoesNotThrow(() -> tM0.gradePart((byte) 5));
+        assertDoesNotThrow(() -> tM0.gradePart((byte) -1));                 //Silently tolerated
+        assertDoesNotThrow(() -> tM0.gradePart((byte) 5));                  //Silently tolerated
         assertTrue(Monad.isGrade(tM0, 0));                          //tM0 is ZERO, so defaults to scalar grade
-		assertTrue(Monad.isGrade(tM6.gradePart((byte) 4), 4));     //Because they were all set to ONE
+		assertTrue(Monad.isGrade(tM6.gradePart((byte) 4), 4));      //Because they were all set to ONE
 		assertTrue(Monad.isGrade(tM6.gradePart((byte) 0), 0));      //Force scalar part and then prove it
 		assertTrue(Monad.isGrade(tM5, tM5.getAlgebra().getGradeCount() - 1)); //Detect PScalar
     }
@@ -204,10 +196,9 @@ public class CoreMonadComplexDTest {
 	public void testGradeSupress() {
         assertDoesNotThrow(() -> tM0.gradeSuppress((byte) -1));
         assertDoesNotThrow(() -> tM0.gradeSuppress((byte) 5));
-		assertFalse(Monad.isGrade(tM6.gradeSuppress((byte) 4), 4));   //Because they were all set to ONE
+		assertFalse(Monad.isGrade(tM6.gradeSuppress((byte) 4), 4)); //Because they were all set to ONE
         tM6.gradeSuppress((byte) 3).gradeSuppress((byte) 2).gradeSuppress((byte) 0);
 		assertTrue(Monad.isUniGrade(tM6));                                  //Force vector part and then prove it
-		//assertTrue(Monad.isGrade(tM5, tM5.getAlgebra().getGradeCount() - 1)); //Detect PScalar
     }
 
     @Test
@@ -317,7 +308,6 @@ public class CoreMonadComplexDTest {
         }
         Monad tryThis = new Monad(mName + "CD0", 
                                     aName, 
-                                    "Foot Default Frame", 
                                     "Test Foot 0", 
                                     "++",
                                     FBuilder.COMPLEXD.createONE(tCard));   //A protonumber

@@ -25,7 +25,6 @@ public class CoreNyadRealDTest {
 	final String aName2 = "PropertyAlgebra";
 	final Cardinal charge = FBuilder.createCardinal("q/dV");
 	final String footName = "YouAreHere";
-	final String frameName = "inertial";
 	final String mNameQ = "ChargeDensity";
 	final String mNameU = "4-Velocity";
 	Monad motion, property;
@@ -43,11 +42,17 @@ public class CoreNyadRealDTest {
 		Foot here = GBuilder.createFootLike(footName, speed);
 		here.appendCardinal(charge);
 
-		motion = GBuilder.createMonadWithFoot(FBuilder.REALD.createZERO(speed), here, mNameU, aName, 
-				frameName, sig4D);
+		motion = GBuilder.createMonadWithFoot(	FBuilder.REALD.createZERO(speed), 
+												here, 
+												mNameU, 
+												aName, 
+												sig4D);
 
-		property = GBuilder.createMonadWithFoot(FBuilder.REALD.createZERO(charge), here, mNameQ, aName2, 
-				frameName, sig4D);
+		property = GBuilder.createMonadWithFoot(FBuilder.REALD.createZERO(charge), 
+												here, 
+												mNameQ, 
+												aName2, 
+												sig4D);
 	}
 	
 	@Nested

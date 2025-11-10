@@ -7,7 +7,6 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class CoreAlgebraTest {
@@ -73,33 +72,6 @@ class CoreAlgebraTest {
 				"signature strings used in construction were different.");
 	}
 
-	@Nested
-	class testFrameHandling {
-		@Test
-		public void testAppendReferenceFrame() {
-			assertNotNull(alg1, "Algebra setUp properly");
-			assertEquals(alg1.getReferenceFrames().size(), 1, "Default frame (only) present after alg construction.");
-			alg1.appendFrame(fName + "-Spherical");
-			assertEquals(alg1.getReferenceFrames().size(), 2, "Appended frame makes for two present.");
-			assertTrue(alg1.getFrames().size() == 2);
-		}
-
-		@Test
-		public void testRemoveReferenceFrame() {
-			assertTrue(alg2.getReferenceFrames().size() == 1);
-			alg2.appendFrame(fName + "-Spherical2");
-			assertTrue(alg2.getReferenceFrames().size() == 2);
-			alg2.removeFrame(fName + "-Spherical2");
-			assertTrue(alg2.getReferenceFrames().size() == 1);
-			alg2.removeFrame("Un-named frame that shouldn't be found.");
-			assertTrue(alg2.getReferenceFrames().size() == 1);
-			// Attempting to remove a frame that isn't there silently moves on.
-			// If one needs to ensure the frame was there and confirm it's
-			// removal, one should find it first.
-			assertTrue(alg2.getReferenceFrames().indexOf("Un-named frame that shouldn't be found.") == -1);
-		}
-	}
-
 	/**
 	 * This test shows how altering a shared foot (adding Cardinals in this case)
 	 * alters the available cardinals for algebra making use of the foot.
@@ -117,7 +89,7 @@ class CoreAlgebraTest {
 		assertTrue(alg1.getFoot().getCardinals().size() == alg2.getFoot().getCardinals().size());
 																//New Cardinal available to both.
 
-		Algebra alg7 = new Algebra(aName, tFoot, pSig31); //new Algebra reusing the foot
+		Algebra alg7 = new Algebra(aName, tFoot, pSig31); 		//new Algebra reusing the foot
 		assertSame(alg1.getFoot(), alg7.getFoot());				//Common Foot proof
 		assertTrue(alg1.getFoot().getCardinals().size() == alg7.getFoot().getCardinals().size());
 																//New Cardinal available to both.
@@ -153,7 +125,7 @@ class CoreAlgebraTest {
 																//setting names equal isn't
 																//enough to pass reference match		
 		assertNotSame(alg6, alg1);								//Different objects
-		assertNotSame(alg6.getFoot(), alg1.getFoot());			//with the same foot
+		assertNotSame(alg6.getFoot(), alg1.getFoot());			//with different feet
 		assertSame(alg6.getGProduct(), alg1.getGProduct());		//and same gProduct
 		assertFalse(alg6.getFoot().getCardinal(0) == alg1.getFoot().getCardinal(0));
 	}

@@ -192,7 +192,6 @@ public class CoreGBuilderTest {
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
                                                                     "TestMName", 
                                                                     "TestAlgName", 
-                                                                    "TestFrName", 
                                                                     "TestFtName", 
                                                                     twoDPGA, 
                                                                     "GarbageInstruction")); //Defaults to ZERO
@@ -201,28 +200,24 @@ public class CoreGBuilderTest {
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
                                                                     "TestMonadNameRF", 
                                                                     "TestAlgebraNameRF", 
-                                                                    "TestFrameNameRF", 
                                                                     "TestFootNameRF", 
                                                                     twoDPGA, 
                                                                     "Unit Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
                                                                     "TestMonadNameRF2", 
                                                                     "TestAlgebraNameRF2", 
-                                                                    "TestFrameNameRF2", 
                                                                     "TestFootNameRF2", 
                                                                     twoDPGA, 
                                                                     "Unit -Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
                                                                     "TestMonadNameRF3", 
                                                                     "TestAlgebraNameRF3", 
-                                                                    "TestFrameNameRF3", 
                                                                     "TestFootNameRF3", 
                                                                     twoDPGA, 
                                                                     "Unit PScalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRF0, 
                                                                     "TestMonadNameRF4", 
                                                                     "TestAlgebraNameRF4", 
-                                                                    "TestFrameNameRF4", 
                                                                     "TestFootNameRF4", 
                                                                     twoDPGA, 
                                                                     "Unit -PScalar"));
@@ -231,28 +226,24 @@ public class CoreGBuilderTest {
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
                                                                     "TestMonadNameRD", 
                                                                     "TestAlgebraNameRD", 
-                                                                    "TestFrameNameRD", 
                                                                     "TestFootNameRD", 
                                                                     twoDPGA, 
                                                                     "Unit Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
                                                                     "TestMonadNameRD2", 
                                                                     "TestAlgebraNameRD2", 
-                                                                    "TestFrameNameRD2", 
                                                                     "TestFootNameRD2", 
                                                                     twoDPGA, 
                                                                     "Unit -Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
                                                                     "TestMonadNameRD3", 
                                                                     "TestAlgebraNameRD3", 
-                                                                    "TestFrameNameRD3", 
                                                                     "TestFootNameRD3", 
                                                                     twoDPGA, 
                                                                     "Unit PScalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tRD0, 
                                                                     "TestMonadNameRD4", 
                                                                     "TestAlgebraNameRD4", 
-                                                                    "TestFrameNameRD4", 
                                                                     "TestFootNameRD4", 
                                                                     twoDPGA, 
                                                                     "Unit -PScalar"));
@@ -261,28 +252,24 @@ public class CoreGBuilderTest {
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
                                                                     "TestMonadNameCD", 
                                                                     "TestAlgebraNameCD", 
-                                                                    "TestFrameNameCD", 
                                                                     "TestFootNameCD", 
                                                                     twoDPGA, 
                                                                     "Unit Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
                                                                     "TestMonadNameCD2", 
                                                                     "TestAlgebraNameCD2", 
-                                                                    "TestFrameNameCD2", 
                                                                     "TestFootNameCD2", 
                                                                     twoDPGA, 
                                                                     "Unit -Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
                                                                     "TestMonadNameCD3", 
                                                                     "TestAlgebraNameCD3", 
-                                                                    "TestFrameNameCD3", 
                                                                     "TestFootNameCD3", 
                                                                     twoDPGA, 
                                                                     "Unit PScalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCD0, 
                                                                     "TestMonadNameCD4", 
                                                                     "TestAlgebraNameCD4", 
-                                                                    "TestFrameNameCD4", 
                                                                     "TestFootNameCD4", 
                                                                     twoDPGA, 
                                                                     "Unit -PScalar"));
@@ -291,28 +278,24 @@ public class CoreGBuilderTest {
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
                                                                     "TestMonadNameCF", 
                                                                     "TestAlgebraNameCF", 
-                                                                    "TestFrameNameCF", 
                                                                     "TestFootNameCF", 
                                                                     twoDPGA, 
                                                                     "Unit Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
                                                                     "TestMonadNameCF2", 
                                                                     "TestAlgebraNameCF2", 
-                                                                    "TestFrameNameCF2", 
                                                                     "TestFootNameCF2", 
                                                                     twoDPGA, 
                                                                     "Unit -Scalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
                                                                     "TestMonadNameCF3", 
                                                                     "TestAlgebraNameCF3", 
-                                                                    "TestFrameNameCF3", 
                                                                     "TestFootNameCF3", 
                                                                     twoDPGA, 
                                                                     "Unit PScalar"));
             assertDoesNotThrow(() -> GBuilder.createMonadSpecial(   tCF0, 
                                                                     "TestMonadNameCF4", 
                                                                     "TestAlgebraNameCF4", 
-                                                                    "TestFrameNameCF4", 
                                                                     "TestFootNameCF4", 
                                                                     twoDPGA, 
                                                                     "Unit -PScalar"));
@@ -331,23 +314,19 @@ public class CoreGBuilderTest {
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tRF0, 
                                                                         tAlgebra, 
-                                                                        "TestMonadNameRF", 
-                                                                        "TestFrameNameRF"));
+                                                                        "TestMonadNameRF"));
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tRD0, 
                                                                         tAlgebra, 
-                                                                        "TestMonadNameRD", 
-                                                                        "TestFrameNameRD"));
+                                                                        "TestMonadNameRD"));
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tCF0, 
                                                                         tAlgebra, 
-                                                                        "TestMonadNameCF", 
-                                                                        "TestFrameNameCF"));
+                                                                        "TestMonadNameCF"));
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tCD0, 
                                                                         tAlgebra, 
-                                                                        "TestMonadNameCD", 
-                                                                        "TestFrameNameCD"));
+                                                                        "TestMonadNameCD"));
         
             //These work because the basis from tAlgebra was used to build the Scales.
             //That ensures the basis in tAlgebra matches the keys in the Scales
@@ -373,28 +352,24 @@ public class CoreGBuilderTest {
             assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tRF0, 
                                                                         "TestMonadNameRF",
                                                                         "TestAlgebraNameRF", 
-                                                                        "TestFrameNameRF",
                                                                         "TestFootNameRF",
                                                                         twoDPGA));
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tRD0, 
                                                                         "TestMonadNameRD",
                                                                         "TestAlgebraNameRD", 
-                                                                        "TestFrameNameRD",
                                                                         "TestFootNameRD",
                                                                         twoDPGA));
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tCF0, 
                                                                         "TestMonadNameCF",
                                                                         "TestAlgebraNameCF", 
-                                                                        "TestFrameNameCF",
                                                                         "TestFootNameCF",
                                                                         twoDPGA));
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tCD0, 
                                                                         "TestMonadNameCD",
                                                                         "TestAlgebraNameCD", 
-                                                                        "TestFrameNameCD",
                                                                         "TestFootNameCD",
                                                                         twoDPGA));
         }
@@ -410,28 +385,24 @@ public class CoreGBuilderTest {
                                                                 tFoot,
                                                                 "TestMonadNameRF",
                                                                 "TestAlgebraNameRF", 
-                                                                "TestFrameNameRF",
                                                                 twoDPGA));
 
         assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRD0, 
                                                                 tFoot,
                                                                 "TestMonadNameRD",
                                                                 "TestAlgebraNameRD", 
-                                                                "TestFrameNameRD",
                                                                 twoDPGA));
 
         assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCF0, 
                                                                 tFoot,
                                                                 "TestMonadNameCF",
                                                                 "TestAlgebraNameCF", 
-                                                                "TestFrameNameCF",
                                                                 twoDPGA));
 
         assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCD0, 
                                                                 tFoot,
                                                                 "TestMonadNameCD",
                                                                 "TestAlgebraNameCD", 
-                                                                "TestFrameNameCD",
                                                                 twoDPGA));
         }
 
@@ -445,28 +416,24 @@ public class CoreGBuilderTest {
         assertDoesNotThrow(() -> GBuilder.createMonadZero(  tRF0, 
                                                             "TestMonadNameRF",
                                                             "TestAlgebraNameRF", 
-                                                            "TestFrameNameRF",
                                                             "TestFootNameRF",
                                                             twoDPGA));
 
         assertDoesNotThrow(() -> GBuilder.createMonadZero(  tRD0, 
                                                             "TestMonadNameRD",
                                                             "TestAlgebraNameRD", 
-                                                            "TestFrameNameRD",
                                                             "TestFootNameRD",
                                                             twoDPGA));
 
         assertDoesNotThrow(() -> GBuilder.createMonadZero(  tCF0, 
                                                             "TestMonadNameCF",
                                                             "TestAlgebraNameCF", 
-                                                            "TestFrameNameCF",
                                                             "TestFootNameCF",
                                                             twoDPGA));
 
         assertDoesNotThrow(() -> GBuilder.createMonadZero(  tCD0, 
                                                             "TestMonadNameCD",
                                                             "TestAlgebraNameCD", 
-                                                            "TestFrameNameCD",
                                                             "TestFootNameCD",
                                                             twoDPGA));
 

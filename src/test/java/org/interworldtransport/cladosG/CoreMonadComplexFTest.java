@@ -36,13 +36,11 @@ public class CoreMonadComplexFTest {
 
 		tM0 = new Monad(mName + "CF0", 
                         aName, 
-                        "Foot Default Frame", 
                         "Test Foot 0", 
                         "-+++",
 				        FBuilder.COMPLEXF.createZERO(altCard1));   //A protonumber
 		tM1 = new Monad(mName + "CF1",          //Different name
                         aName2,                 //Different algebra name
-                        "Foot Default Frame", //Intending same frame
                         "Test Foot 1", //Different Foot even
                         "-+++",             //But same signature
                         FBuilder.COMPLEXF.createZERO(altCard1));   //A protonumber
@@ -51,14 +49,12 @@ public class CoreMonadComplexFTest {
 		tM4 = new Monad(tM0);                   //Deep Copy of tM0 with different Scale
 		tM5 = new Monad(mName + "CF5", 
                         aName, 
-                        "Foot Default Frame", 
                         "Test Foot 5", 
                         "-+++",
                         FBuilder.COMPLEXF.createZERO(altCard5), 
                         "Unit PScalar"); //Special builder concept to be replaced at GBuilder
 		tM6 = new Monad(mName + "CF6", 
                         aName2,
-                        "Foot Default Frame", 
                         "Test Foot 6", 
                         "-+++", 
                         cCF[0]);                //A protonumber
@@ -66,10 +62,9 @@ public class CoreMonadComplexFTest {
 		tM7 = new Monad(mName + "CF7", tM6);
 		tM8 = new Monad(mName + "CF8", tM6);
 		tM9 = new Monad(mName + "CF9", tM2);
-        tM10 = new Monad(mName+"CF10", tM0.getAlgebra(), tM0.getFrameName(), tM0.getWeights());
+        tM10 = new Monad(mName+"CF10", tM0.getAlgebra(), tM0.getWeights());
         tM11 = new Monad(mName+"CF11", 
                         tM0.getAlgebra().getAlgebraName(), 
-                        tM0.getFrameName(), 
                         "Test Foot 1", 
                         "-+++", 
                         tM0.getWeights());
@@ -87,22 +82,19 @@ public class CoreMonadComplexFTest {
 
     @Test
 	public void testReferenceMatches() {
-		assertFalse(Monad.isReferenceMatch(tM0, tM1));  //Different algebra, same frame, same cardinal
-		assertFalse(Monad.isReferenceMatch(tM1, tM4));  //Different algebra, same frame, same cardinal
-		assertTrue(Monad.isReferenceMatch(tM1, tM3));   //Both reference same algebra, frame, and cardinal
-		assertTrue(Monad.isReferenceMatch(tM0, tM4));   //Both reference same algebra, frame, and cardinal
-        assertFalse(Monad.isReferenceMatch(tM0, tM5));  //Different algebra, same frame, different cardinal
-        assertTrue(Monad.isReferenceMatch(tM2, tM9));   //Same algebra and frame. Cardinal survive weight setting.
-        assertTrue(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra, frame, and cardinal.
-        assertFalse(Monad.isReferenceMatch(tM0, tM11)); //Different algrebra. Same frame and cardinal.
+		assertFalse(Monad.isReferenceMatch(tM0, tM1));  //Different algebra same cardinal
+		assertTrue(Monad.isReferenceMatch(tM0, tM4));   //Same algebra      same cardinal
+        assertFalse(Monad.isReferenceMatch(tM0, tM5));  //Different algebra different cardinal
+        assertFalse(Monad.isReferenceMatch(tM0, tM11)); //Different algebra same cardinal.
 
-        tM10.setFrameName("Something else");
-        assertFalse(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra and cardinal. Different Frame.
+		assertTrue(Monad.isReferenceMatch(tM1, tM3));   //Same algebra      same cardinal
+		assertFalse(Monad.isReferenceMatch(tM1, tM4));  //Different algebra same cardinal
 
-        tM10.setFrameName("Foot Default Frame");  //Restore frame name
-        assertTrue(Monad.isReferenceMatch(tM0, tM10));   //Same algrebra, frame, and cardinal.
+        assertTrue(Monad.isReferenceMatch(tM2, tM9));   //Copies. Cardinal survived weight setting.
+        
+        assertTrue(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra     same cardinal.
         tM10.getWeights().setCardinal(tCard);
-        assertFalse(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra and frame. Different cardinal.
+        assertFalse(Monad.isReferenceMatch(tM0, tM10));  //Same algrebra    different cardinal.
 	}
 
     @Test
@@ -317,7 +309,6 @@ public class CoreMonadComplexFTest {
         }
         Monad tryThis = new Monad(mName + "CF0", 
                                     aName, 
-                                    "Foot Default Frame", 
                                     "Test Foot 0", 
                                     "++",
                                     FBuilder.COMPLEXF.createONE(tCard));   //A protonumber

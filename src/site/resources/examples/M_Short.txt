@@ -1,4 +1,4 @@
-<Monad algebra="Property Algebra" frame="Foot Default Frame" gradeKey="11111" sparseFlag="false" >
+<Monad algebra="Property Algebra" gradeKey="11111" sparseFlag="false" >
 	<Name>Test MonadRD6</Name>
 	<Scales mode="REALD" pans="16">
 				<Pair>
