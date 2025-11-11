@@ -373,8 +373,7 @@ public final class Basis implements CanonicalBasis {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Basis other = (Basis) obj;
-		if (gradeCount != other.gradeCount)
+		if (gradeCount != ((Basis) obj).gradeCount)
 			return false;
 		return true;
 	}

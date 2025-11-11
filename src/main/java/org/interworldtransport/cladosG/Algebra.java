@@ -146,6 +146,8 @@ public final class Algebra implements Comparable<Algebra> {
 		setGProduct(pA.getGProduct());					//RE-USE of GP
 		gBasis = pA.getGProduct().getBasis();			//RE-USE of Basis
 		uuid = UUID.randomUUID().toString();
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 
 	/**
@@ -170,6 +172,8 @@ public final class Algebra implements Comparable<Algebra> {
 		setGProduct(pGP);							//RE-USE of GP
 		gBasis = pGP.getBasis();					//RE-USE of Basis
 		uuid = UUID.randomUUID().toString();
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 	
 	/**
@@ -198,8 +202,10 @@ public final class Algebra implements Comparable<Algebra> {
 			throws BadSignatureException, GeneratorRangeException {
 		this(	pNewName, 
 				pF, 
-				GBuilder.createGProduct(	GCache.INSTANCE.findBasisList((byte) pSig.length()),
+				GBuilder.createGProduct(	GCache.INSTANCE.findBasis((byte) pSig.length()),
 											pSig));
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 
 	/**
@@ -225,14 +231,19 @@ public final class Algebra implements Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public <D extends ProtoN & Field & Normalizable>  Algebra(String pNewName, String pFootName, String pSig, D pF)
+	public <D extends ProtoN & Field & Normalizable>  Algebra(	String pNewName, 
+																String pFootName, 
+																String pSig, 
+																D pF)
 			throws BadSignatureException, GeneratorRangeException {
 		
 		this(	pNewName, 
 				GBuilder.createFoot(		pFootName, 
 											pF.getCardinalString()),
-				GBuilder.createGProduct(	GCache.INSTANCE.findBasisList((byte) pSig.length()),
+				GBuilder.createGProduct(	GCache.INSTANCE.findBasis((byte) pSig.length()),
 											pSig));
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 
 	/**

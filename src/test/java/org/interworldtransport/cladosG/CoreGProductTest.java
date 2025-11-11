@@ -43,21 +43,21 @@ class CoreGProductTest {
 		public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
 			GCache.INSTANCE.clearGProducts();
 			GProduct tGP1 = GBuilder.createGProduct(pSig3);
-			assertTrue(GCache.INSTANCE.findGProductMap(pSig3).isPresent());		//The builder cached it
+			assertTrue(GCache.INSTANCE.findGProduct(pSig3).isPresent());		//The builder cached it
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
 			GProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
 			assertTrue(tGP1 == tGP2);					//The builder noticed a GP with the same sig and returned it instead
 			GProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
-			assertTrue(GCache.INSTANCE.findGProductMap(pSig4).isPresent());		//The builder cached it
+			assertTrue(GCache.INSTANCE.findGProduct(pSig4).isPresent());		//The builder cached it
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 2);
 
 			GCache.INSTANCE.removeGProduct(pSig3);								//Remove the gp named by its signature	
-			assertFalse(GCache.INSTANCE.findGProductMap(pSig3).isPresent());	//Found the first GP and removed it.
+			assertFalse(GCache.INSTANCE.findGProduct(pSig3).isPresent());	//Found the first GP and removed it.
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
 			assertDoesNotThrow(() -> GCache.INSTANCE.removeGProduct(pSig3));	//Remove the gp named by its signature	
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 			//Not found and silently handled.
 			GCache.INSTANCE.removeGProduct(tGP3);								//Remove the gp named by reference.
-			assertFalse(GCache.INSTANCE.findGProductMap(tGP3.signature()).isPresent()); //Found the second GP and removed it.
+			assertFalse(GCache.INSTANCE.findGProduct(tGP3.signature()).isPresent()); //Found the second GP and removed it.
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	
 		}
 	}

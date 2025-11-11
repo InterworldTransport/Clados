@@ -212,7 +212,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 *                                 Basis and see why it complains.
 	 */
 	public final static Basis createBasis(byte pGen) throws GeneratorRangeException {
-		Optional<Basis> tB = GCache.INSTANCE.findBasisList(pGen);
+		Optional<Basis> tB = GCache.INSTANCE.findBasis(pGen);
 		if (tB.isPresent())
 			return tB.get();
 		else {
@@ -233,7 +233,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 *                                 Basis and see why it complains.
 	 */
 	public final static Basis createBasis(Generator pGen) throws GeneratorRangeException {
-		Optional<Basis> tB = GCache.INSTANCE.findBasisList(pGen.ord);
+		Optional<Basis> tB = GCache.INSTANCE.findBasis(pGen.ord);
 		if (tB.isPresent())
 			return tB.get();
 		else {
@@ -326,13 +326,18 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 		if (!GBuilder.validateSignature(pSig))
 			throw new BadSignatureException(null, "Asked to create a GProduct using: "+pSig);
 
-		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
+		Optional<GProduct> tSpot = GCache.INSTANCE.findGProduct(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get();
 		else {
-			if (pB.isPresent())
-				GCache.INSTANCE.appendBasis(pB.get()); // won't have to pass it now.
-			tSpot = Optional.ofNullable(createGProduct(pSig));
+			if (pB.isPresent()) {
+				GCache.INSTANCE.appendBasis(pB.get()); 					//append to ensure it's findable
+				tSpot = Optional.ofNullable(createGProduct(pSig));
+			} else {
+				tSpot = Optional.ofNullable(createGProduct(pSig));
+				GCache.INSTANCE.appendBasis(tSpot.get().getBasis());	//new one to append
+			}
+			
 			return tSpot.get();
 		}
 	}
@@ -359,22 +364,26 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 		if (!GBuilder.validateSignature(pSig))
 				throw new BadSignatureException(null, "Asked to create a GProduct using: "+pSig);
 		
-		Optional<GProduct> tSpot = GCache.INSTANCE.findGProductMap(pSig);
+		Optional<GProduct> tSpot = GCache.INSTANCE.findGProduct(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.
 		else {
 			// Create a new GProduct, but might still find a cached Basis.
-			Optional<Basis> tB = GCache.INSTANCE.findBasisList((byte) pSig.length());
+			Optional<Basis> tB = GCache.INSTANCE.findBasis((byte) pSig.length());
 			GProduct tSpot2;
-			if (tB.isPresent())
+			if (tB.isPresent()){
 				tSpot2 = new GProduct(tB, pSig);
-			else
-				tSpot2 = new GProduct(pSig);
-
-			if (tSpot2 != null) {
-				GCache.INSTANCE.appendBasis(tSpot2.getBasis());
 				GCache.INSTANCE.appendGProduct(tSpot2);
 			}
+			else {
+				tSpot2 = new GProduct(pSig);
+				GCache.INSTANCE.appendBasis(tSpot2.getBasis());	//new one to append
+				GCache.INSTANCE.appendGProduct(tSpot2);
+			}
+			//if (tSpot2 != null) {
+			//	GCache.INSTANCE.appendBasis(tSpot2.getBasis());
+			//	GCache.INSTANCE.appendGProduct(tSpot2);
+			//}
 			return tSpot2;
 		}
 	}

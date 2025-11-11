@@ -2,6 +2,8 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -65,11 +67,24 @@ class CoreAlgebraTest {
 	}
 
 	@Test
-	public void testSignatureLinks() throws GeneratorRangeException {
-		assertSame(alg1.getGBasis(), alg2.getGBasis(), "Two algebras only have different signatures.");
-		assertNotSame(alg1.getGProduct(), alg2.getGProduct(), "Two sigs ARE different forces different GProducts");
-		assertNotEquals(alg1.getGProduct().signature(), alg2.getGProduct().signature(),
-				"signature strings used in construction were different.");
+	public void testSignatureSimilarityReuse() throws BadSignatureException, GeneratorRangeException {
+		Algebra alg4 = new Algebra(aName, tFoot, pSig31);
+		Algebra alg5 = new Algebra(aName, tFoot, pSig13);
+
+		assertTrue(alg5.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
+		assertTrue(alg4.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
+		assertTrue(alg4.getGBasis() == alg5.getGBasis());		//Two algebras have same signature lengths.
+		assertFalse(alg4.getGProduct() == alg5.getGProduct());	//Two sigs ARE different forces different GProducts
+		assertFalse(alg4.getGProduct().signature() == alg5.getGProduct().signature());
+		assertFalse(alg4.equals(alg5));
+	}
+
+	@Test
+	public void testSignatureSimilarityReuse2() {
+		assertTrue(alg3.getGBasis() == alg2.getGBasis());		//Two algebras have same signature lengths so Basis reuse should happen
+		assertTrue(alg3.getGProduct() == alg2.getGProduct());	//Two sigs are the same, so GProduct reuse should happen
+		assertTrue(alg3.getGProduct().signature() == alg2.getGProduct().signature()); //Seriously... the signatures are the same
+		assertFalse(alg3.equals(alg2));							//Two distinct algebras though.
 	}
 
 	/**

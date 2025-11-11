@@ -121,7 +121,7 @@ public class CoreGBuilderTest {
                 Basis tb0 = GBuilder.createBasis(Generator.E4); 
                 assertNotNull(tb0);
                 assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
-                assertTrue(GCache.INSTANCE.findBasisList((byte) 4).isPresent());
+                assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
             } catch (GeneratorRangeException eg) {
                 assertNotNull(eg.getSourceMessage());
             }
@@ -130,7 +130,7 @@ public class CoreGBuilderTest {
                 Basis tb1 = GBuilder.createBasis((byte) 4);
                 assertNotNull(tb1);
                 assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
-                assertTrue(GCache.INSTANCE.findBasisList((byte) 4).isPresent());
+                assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
             } catch (GeneratorRangeException egr) {
                 assertNotNull(egr.getSourceMessage());
             }
