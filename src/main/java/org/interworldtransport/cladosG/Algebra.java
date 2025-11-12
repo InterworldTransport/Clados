@@ -24,19 +24,11 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
-import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.Field;
-import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosF.ProtoN;
+import org.interworldtransport.cladosF.Field;			//Algebras are defined over fields
+import org.interworldtransport.cladosF.Normalizable;	//Limit on usable fields
+import org.interworldtransport.cladosF.ProtoN;			//Parent class of usable fields
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
@@ -73,35 +65,16 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * Anyone wanting to get around this feature need only declare one 'Foot' and
  * then re-use it everywhere. The computational penalty is miniscule.
  * <br><br>
- * 2. An Algebra has a CladosField mode. Whether the field is real or complex
- * matters. For computational reasons, the floating point precision technique in
- * use also matters. For those reasons, an Algebra maintains an internal mode
- * reference.
- * <br><br>
- * 3. An Algebra has a ProtoN element too in order to contain the Cardinal
- * within it and to use it combined with Mode to generate field numbers. This
- * might change in the future as the builder classes mature. It used to be used
- * as an operand in a copy function frequently in Monad in Clados V1.0, but is
- * largely bypassed in V2.0. If a complete bypass happens, the ProtoN element
- * may be reduced to it's contained Cardinal.
- * <br><br>
- * 4. There is a residual reference to a list of frame names with related
- * settors and gettors. This is changing in V2.0 as frames are better described
- * by linear combinations of basis elements, which makes them sets of Scale's.
- * Algebra's WILL track them, but by reference in a more complicated manner
- * since they will be used to 'cut out' the meanings of multiplication and
- * addition.
- * <br><br>
- * 5. There is a UUID string kept internally for use an XML variant of
+ * 2. There is a UUID string kept internally for use an XML variant of
  * serialization. It has no geometric meaning. Think of it as a digital name.
  * <br><br>
- * 6. There is also a 'name' string for the human readable name of an algebra.
+ * 3. There is also a 'name' string for the human readable name of an algebra.
  * It has no geometric meaning and is not used for anything important.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
+public final class Algebra implements Comparable<Algebra> {
 	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
@@ -116,13 +89,6 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 			indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
 		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
-		rB.append(indent).append("\t").append(ProtoN.toXMLString(pA.protoNumber)).append("\n");
-		// -----------------------------------------------------------------------
-		rB.append(indent).append("\t<Frames number=\"").append(pA.rFrames.size()).append("\" >\n");
-		for (String tip : pA.rFrames)
-			rB.append(indent).append("\t\t<Frame number=\"").append(pA.rFrames.indexOf(tip)).append("\" name=\"")
-					.append(tip).append("\" />\n");
-		rB.append(indent).append("\t</Frames>\n");
 		// -----------------------------------------------------------------------
 		rB.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));
 		rB.append(GProduct.toXMLString(pA.getGProduct(), indent + "\t"));
@@ -151,26 +117,10 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	protected GProduct gProduct;
 	/**
-	 * The algebras mode is the particular ProtoN child used to represent numbers.
-	 */
-	protected CladosField mode;
-	/**
 	 * Finally, the algebra has a name because this helps distinguish different
-	 * reference frames associated with the same tangent point Foot.
+	 * reference frames associated with the same Foot.
 	 */
 	protected String name;
-	/**
-	 * The algebra's prototypical 'number'. A ProtoN suffices most of the time,
-	 * but there is no issue with using a child of ProtoN. Just be careful because
-	 * setting protoNumber with a child of ProtoN should also set the Mode.
-	 * <br>
-	 * This is where the primary cardinal for an algebra is found.
-	 */
-	protected ProtoN protoNumber;
-	/**
-	 * This is the list of known frames defined against this Algebra.
-	 */
-	protected ArrayList<String> rFrames;
 	/**
 	 * Unique string (hopefully) that provides a machine readable name more likely
 	 * to be unique. Used by apps that need more than the human readable name to
@@ -185,23 +135,26 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * constructed. This new one re-uses the objects in the one offered. No
 	 * independent objects are made in this constructor except the algebra itself
 	 * <br>
-	 * THIS CONSTRUCTOR is one that enables algebras to function as light weight
-	 * frames.
+	 * THIS CONSTRUCTOR is one that enables algebras to function as light weight frames.
 	 * <br>
-	 * @param pS This is the Algebra's name
-	 * @param pA This is the other Algebra to copy.
+	 * @param pNewName 	This is the Algebra's name
+	 * @param pA 		This is the other Algebra to copy.
 	 */
-	public Algebra(String pS, Algebra pA) {
-		this(pS, pA.getFoot(), pA.getGProduct(), pA.getCardinal());
-		setMode(pA.getMode());
+	public Algebra(String pNewName, Algebra pA) {
+		setAlgebraName(pNewName);
+		setFoot(pA.getFoot());							//RE-USE of Foot
+		setGProduct(pA.getGProduct());					//RE-USE of GP
+		gBasis = pA.getGProduct().getBasis();			//RE-USE of Basis
+		uuid = UUID.randomUUID().toString();
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 
 	/**
-	 * This is the constructor that assumes a Foot, Cardinal, and GProduct have been
-	 * instantiated. It appends the Cardinal to the Foot and points at the offered
-	 * GProduct. It takes in one string for the algebra name as well and then
-	 * produces the algebra. Nothing can be wrong with the signature since the
-	 * GProduct is already constructed.
+	 * This is the constructor that assumes a Foot and GProduct have been
+	 * instantiated and will simply point at them. It takes in one string for 
+	 * the algebra name as well and then produces the algebra. Nothing can be 
+	 * wrong with the signature since the GProduct is already constructed.
 	 * <br>
 	 * THIS CONSTRUCTOR is the one that most enables algebras to function as light
 	 * weight frames. Two algebras can have different names but share everything
@@ -209,31 +162,25 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * basis in both algebras is the same, but the name differences ensure the
 	 * mismatch needed to prevent unphysical operations.
 	 * <br>
-	 * Note that the constructed algebra has no declared Mode yet.
-	 * <br>
-	 * @param pS    This is the Algebra's name
-	 * @param pF    This is the foot being offered for reference
-	 * @param pCard This is the Cardinal to use as a protoNumber
-	 * @param pGP   This is the geometric product being offered for reference
+	 * @param pNewName	This is the Algebra's name
+	 * @param pF    	This is the foot being offered for reference
+	 * @param pGP   	This is the geometric product being offered for reference
 	 */
-	public Algebra(String pS, Foot pF, GProduct pGP, Cardinal pCard) {
-		setAlgebraName(pS);
-		protoNumber = new ProtoN(pCard);
+	public Algebra(String pNewName, Foot pF, GProduct pGP) {
+		setAlgebraName(pNewName);
 		setFoot(pF);
-		foot.appendCardinal(protoNumber.getCardinal());
-		setGProduct(pGP);
-		gBasis = pGP.getBasis();
-		rFrames = new ArrayList<String>(1);
-		rFrames.add("canonical"); // Canonical basis is ALWAYS a frame
+		setGProduct(pGP);							//RE-USE of GP
+		gBasis = pGP.getBasis();					//RE-USE of Basis
 		uuid = UUID.randomUUID().toString();
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
-
+	
 	/**
-	 * This is the constructor that assumes a Foot has been instantiated, so it
-	 * takes the CladosF number type from there. It takes in two strings (one name
-	 * and a product signature) and the Foot and produces an Algebra. If
-	 * anything is wrong with the signature it throws an exception. Any other error
-	 * throws a general monad exception.
+	 * This is the constructor that assumes a Foot has been instantiated. 
+	 * It takes in two strings (one name and a product signature) and the Foot 
+	 * and produces an Algebra. If anything is wrong with the signature it throws 
+	 * an exception. Any other error throws a general monad exception.
 	 * <br>
 	 * THIS CONSTRUCTOR is the one that enables algebras to function as medium
 	 * weight frames. Two algebras can have different names and GProducts but share
@@ -241,18 +188,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * prevent unintended operations between monads expressed using different
 	 * signatures in their geometric products.
 	 * <br>
-	 * This is also the one that enables a zero or one generator algebra to be used
-	 * as a 'number' in a nyad. Because the Foot is reused, the Cardinal will match
-	 * and no field mismatches will happen. The small algebra can be set up to
-	 * imitate real or complex numbers and take on the role of 'scale' in a nyad.
-	 * [This may result in eliminating this class.]
-	 * <br>
-	 * Note that the constructed algebra has no declared Mode yet.
-	 * <br>
-	 * @param pS    This is the Algebra's name
-	 * @param pF    This is the foot being offered for reference
-	 * @param pCard This is the Cardinal to use as a protoNumber
-	 * @param pSig  This is the signature of the GProduct
+	 * @param pNewName	This is the Algebra's name
+	 * @param pF    	This is the foot being offered for reference
+	 * @param pSig  	This is the signature of the GProduct
 	 * @throws BadSignatureException   This constructor creates a new GProduct which
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
@@ -260,46 +198,14 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public Algebra(String pS, Foot pF, String pSig, Cardinal pCard)
+	public Algebra(String pNewName, Foot pF, String pSig)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, GBuilder.createGProduct(pSig), pCard);
-	}
-
-	/**
-	 * This is the constructor that assumes a Foot and ProtoN have been
-	 * instantiated. It takes in two strings (one name and a product signature), the
-	 * Foot and Cardinal and produces an Algebra.
-	 * <br>
-	 * If anything is wrong with the signature it throws one of two exception,
-	 * though both errors can be manifest in the signature string.
-	 * <br>
-	 * THIS CONSTRUCTOR is one that enables algebras to function as medium weight
-	 * frames. Two algebras can have different names and GProducts but share a Foot
-	 * and Cardinal causing reference matches to fail.
-	 * <br>
-	 * This is also the one that enables a zero or one generator algebra to be used
-	 * as a 'scale' in a nyad. Because a Foot and Cardinal are reused, reference
-	 * match tests within a nyad will pass. The small algebra can be set up to
-	 * imitate real or complex numbers and take on the role of 'scale' in a nyad if
-	 * so desired.
-	 * <br>
-	 * @param <D>  This is the type of "Number" being offered
-	 * @param pS   This is the Algebra's name
-	 * @param pF   This is the foot being offered for reference
-	 * @param pSig This is the signature of the GProduct
-	 * @param pDiv This is the ProtoN to imitate when the Foot tracks Cardinals
-	 * @throws BadSignatureException   This constructor creates a new GProduct which
-	 *                                 requires a signature for the generators. This
-	 *                                 signature string must be parse-able or this
-	 *                                 exception is thrown.
-	 * @throws GeneratorRangeException This exception catches when the supported
-	 *                                 number of generators is out of range.
-	 */
-	public <D extends ProtoN & Field & Normalizable> Algebra(String pS, Foot pF, String pSig, D pDiv)
-			throws BadSignatureException, GeneratorRangeException {
-		this(pS, pF, GBuilder.createGProduct(pSig), pDiv.getCardinal());
-		protoNumber = ProtoN.copyMaybe((D) pDiv).get();
-		setMode(pDiv);
+		this(	pNewName, 
+				pF, 
+				GBuilder.createGProduct(	GCache.INSTANCE.findBasis((byte) pSig.length()),
+											pSig));
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 
 	/**
@@ -314,7 +220,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * by definition.
 	 * <br>
 	 * @param <D>  		This is the type of "Number" being offered
-	 * @param pS        This is the Algebra's name
+	 * @param pNewName	This is the Algebra's name
 	 * @param pFootName This is the Foot's name
 	 * @param pSig      This is the signature of the GProduct
 	 * @param pF        This is the number type to use expressed as a ProtoN
@@ -325,25 +231,19 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 * @throws GeneratorRangeException This exception catches when the supported
 	 *                                 number of generators is out of range.
 	 */
-	public <D extends ProtoN & Field & Normalizable>  Algebra(String pS, String pFootName, String pSig, D pF)
+	public <D extends ProtoN & Field & Normalizable>  Algebra(	String pNewName, 
+																String pFootName, 
+																String pSig, 
+																D pF)
 			throws BadSignatureException, GeneratorRangeException {
-		this(pS, GBuilder.createFoot(pFootName, pF.getCardinalString()),
-				GBuilder.createGProduct(pSig), pF.getCardinal());
-		protoNumber = ProtoN.copyMaybe((D) pF).get();
-		setMode(pF);
-	}
-
-	/**
-	 * This method appends a frame name to the list of known frames for this foot.
-	 * It will silently terminate IF the frame is already in the list.
-	 * <br>
-	 * @param pRF String Reference Frame name to append
-	 */
-	public void appendFrame(String pRF) {
-		if (rFrames.contains(pRF))
-			return;
-		rFrames.ensureCapacity(rFrames.size() + 1);
-		rFrames.add(pRF);
+		
+		this(	pNewName, 
+				GBuilder.createFoot(		pFootName, 
+											pF.getCardinalString()),
+				GBuilder.createGProduct(	GCache.INSTANCE.findBasis((byte) pSig.length()),
+											pSig));
+		GCache.INSTANCE.appendBasis(gBasis);
+		GCache.INSTANCE.appendGProduct(gProduct);
 	}
 
 	/**
@@ -386,7 +286,11 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 			else return +1;
 		}
 	}
-
+	/**
+	 * Overridden Equals method from Object.
+	 * This ensures reference quality is the standard.
+	 * They must literally be the same object to be equal.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -404,7 +308,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * This is a short-hand method providing the blade count on the canonical basis.
-	 * A Frame's blade count is limited at the upper end by this blade count.
+	 * A Frame's blade count will be limited at the upper end by this blade count.
 	 * <br>
 	 * @return short This is the size of a monad's coefficient array, but more
 	 *         importantly it is the number of dimensions in the vector space
@@ -421,17 +325,6 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	public Foot getFoot() {
 		return foot;
-	}
-
-	/**
-	 * Simple gettor
-	 * <br>
-	 * This will change soon. Don't rely upon it.
-	 * <br>
-	 * @return ArrayList of string names for the frames
-	 */
-	public ArrayList<String> getFrames() {
-		return rFrames;
 	}
 
 	/**
@@ -454,7 +347,7 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 
 	/**
 	 * This is a short-hand method providing the grade count on the canonical basis.
-	 * A Frame's grade count is limited at the upper end by this grade count.
+	 * A Frame's grade count will be limited at the upper end by this grade count.
 	 * <br>
 	 * @return byte This is the length of a monad's grade key. In an algebra with N
 	 *         generators it will always be N+1.
@@ -475,41 +368,9 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 		return gProduct.getGradeRange(pInd);
 	}
 
-	/**
-	 * Simple gettor for the kind of ProtoN in use in the algebra as a 'number.'
-	 * <br>
-	 * @return CladosField instance that matches the type of ProtoN in use
-	 */
-	@Override
-	public CladosField getMode() {
-		return mode;
-	}
-
-	/**
-	 * Simple gettor
-	 * <br>
-	 * This will change soon. Don't rely upon it.
-	 * <br>
-	 * @return ArrayList of string names for the frames
-	 */
-	public ArrayList<String> getReferenceFrames() {
-		return rFrames;
-	}
-
 	@Override
 	public int hashCode() {
 		return uuid.hashCode();
-	}
-
-	/**
-	 * This method removes a frame name from the list of known frames for this foot.
-	 * If the frame is not found in the list, no action is taken. This silent
-	 * failure is intentional.
-	 * <br>
-	 * @param pRF String Reference Frame name to remove
-	 */
-	public void removeFrame(String pRF) {
-		rFrames.remove(pRF);
 	}
 
 	/**
@@ -535,50 +396,6 @@ public final class Algebra implements Unitized, Modal, Comparable<Algebra> {
 	 */
 	public void setFoot(Foot footPoint) {
 		foot = footPoint;
-	}
-
-	/**
-	 * Simple setter for the algebra's mode that uses an offered mode.
-	 * <br>
-	 * @param pMode CladosField instance that matches the type of ProtoN in use
-	 */
-	public void setMode(CladosField pMode) {
-		this.mode = pMode;
-	}
-
-	/**
-	 * Simple setter for the algebra's mode that uses a child of ProtoN.
-	 * to figure out the mode.
-	 * <br>
-	 * @param <D> pNumber must be a child of ProtoN for anything to happen here.
-	 * @param pNumber This is the ProtoN child to be copied as the protoNumber
-	 */
-	public <D extends ProtoN & Field & Normalizable> void setMode(D pNumber) {
-		protoNumber = FBuilder.copyOf(pNumber);
-		if (pNumber instanceof RealF) setMode(CladosField.REALF);
-		else if (pNumber instanceof RealD) setMode(CladosField.REALD);
-		else if (pNumber instanceof ComplexF) setMode(CladosField.COMPLEXF);
-		else if (pNumber instanceof ComplexD) setMode(CladosField.COMPLEXD);
-	}
-
-	/**
-	 * This is really just a gettor, but it reaches into the protoNumber and
-	 * retrieves the Cardinal.
-	 * <br>
-	 * @return Cardinal of the protoNumber
-	 */
-	@Override
-	public final Cardinal getCardinal() {
-		return protoNumber.getCardinal();
-	}
-
-	/**
-	 * This is really just a gettor for the protoNumber.
-	 * <br>
-	 * @return ProtoN protoNumber
-	 */
-	public final ProtoN getProtoNumber() {
-		return protoNumber;
 	}
 
 	/**

@@ -37,7 +37,7 @@ import org.interworldtransport.cladosF.ComplexD;		//Complex doubles
 import org.interworldtransport.cladosF.ComplexF;		//Complex floats
 import org.interworldtransport.cladosF.RealD;			//Real doubles
 import org.interworldtransport.cladosF.RealF;			//Real floats
-import org.interworldtransport.cladosF.ProtoN;	//Unitized Number parent
+import org.interworldtransport.cladosF.ProtoN;			//Unitized Number parent
 import org.interworldtransport.cladosF.Field;			//Contract specifying division field
 import org.interworldtransport.cladosF.Normalizable;	//Contract for modulus construction
 														//Numbers obeying both contracts
@@ -270,9 +270,8 @@ public class Monad implements Modal {
 
 	/**
 	 * Return true if the Monad shares the same Reference frame as the passed Monad.
-	 * A check is made on frameName, FootName, Signature, and FrameFoot for
-	 * equality. No check is made for equality between Mnames and Coeffs and the
-	 * product Table
+	 * A check is made on Algebra and Scale Cardinals for equality. No check is made 
+	 * for equality between the monad names, numeric weights, and the Cayley Table.
 	 * <br>
 	 * @param pM Monad
 	 * @param pN Monad
@@ -281,10 +280,6 @@ public class Monad implements Modal {
 	public static boolean isReferenceMatch(Monad pM, Monad pN) {
 		// The algebras must actually be the same object to match.
 		if ((pM.getAlgebra() != (pN.getAlgebra())))
-			return false;
-
-		// The frame names must match too
-		else if (!pM.getFrameName().equals(pN.getFrameName()))
 			return false;
 
 		// There is a possibility that the weights share different cardinals.
@@ -335,9 +330,6 @@ public class Monad implements Modal {
 			.append(pM.getName())
 			.append("</Name>\n");
 		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
-		rB.append(indent + "\t<ReferenceFrame>\"")
-			.append(pM.getFrameName())
-			.append("\"</ReferenceFrame>\n");
 		rB.append(indent)
 			.append(Scale.toXMLString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");
@@ -358,10 +350,7 @@ public class Monad implements Modal {
 		rB.append("algebra=\"")
 			.append(pM.getAlgebra().getAlgebraName())
 			.append("\" ");
-		rB.append("frame=\"")
-			.append(pM.getFrameName())
-			.append("\" ")
-			.append("gradeKey=\"")	
+		rB.append("gradeKey=\"")	
 			.append(pM.getGradeKey())
 			.append("\" ")
 			.append("sparseFlag=\"")
@@ -386,11 +375,6 @@ public class Monad implements Modal {
 	 * Grades found among the parts of this monad.
 	 */
 	private byte foundGrades;
-
-	/**
-	 * This String is the name of the Reference Frame of the Monad
-	 */
-	private String frameName;
 
 	/**
 	 * This long holds a key that shows which grades are present in the monad. The
@@ -436,7 +420,6 @@ public class Monad implements Modal {
 	public <T extends ProtoN & Field & Normalizable> Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
-		setFrameName(pM.getFrameName());
 		mode = pM.mode;
 		scales = new Scale<T>((Scale<T>) pM.getWeights());
 		setGradeKey();
@@ -451,7 +434,7 @@ public class Monad implements Modal {
 	 * @param pM    Monad
 	 */
 	public Monad(String pName, Monad pM) {
-		this(pM);
+		this(pM);			//Defer to constructor #1
 		setName(pName);
 	}
 
@@ -463,7 +446,6 @@ public class Monad implements Modal {
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
-	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
 	 * @param pF           ProtoN Used to construct number
@@ -477,10 +459,17 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, String pFootName, String pSig, T pF)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFootName, 
+															String pSig, 
+															T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, pAlgebraName, pFrameName, GBuilder.createFootLike(pFootName, pF), pSig, pF);
+		this(	pMonadName, 
+				pAlgebraName,
+				GBuilder.createFootLike(pFootName, pF), 
+				pSig, 
+				pF);		//Defer to constructor #4
 	}
 
 	/**
@@ -491,7 +480,6 @@ public class Monad implements Modal {
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
-	 * @param pFrameName   String
 	 * @param pFoot        Foot
 	 * @param pSig         String
 	 * @param pF           T generic for a CladosF number
@@ -505,12 +493,14 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, Foot pFoot, String pSig, T pF)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															Foot pFoot, 
+															String pSig, 
+															T pF)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		setName(pMonadName);
-		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pF, pAlgebraName, pSig));
-		setFrameName(pFrameName);
+		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pAlgebraName, pSig));
 
 		switch (pF.getClass().getCanonicalName()){
 			case "org.interworldtransport.cladosF.RealF" -> {
@@ -548,7 +538,6 @@ public class Monad implements Modal {
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
-	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
 	 * @param pF           T generic for a CladosF number
@@ -564,11 +553,20 @@ public class Monad implements Modal {
 	 *                                 number of generators for the basis is out of
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, String pFootName, String pSig, T pF, String pSpecial)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFootName, 
+															String pSig, 
+															T pF, 
+															String pSpecial)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, pAlgebraName, pFrameName, pFootName, pSig, pF);
-		// Default ZERO Monad is constructed already. Now handle the special cases.
+		this(	pMonadName, 
+				pAlgebraName, 
+				GBuilder.createFootLike(pFootName, pF), 
+				pSig, 
+				pF);	//Defer to Constructor #4
+						// Default ZERO Monad is complete. 
+						// Now handle the special cases.
 		if (MONAD_SPECIAL_CASES.contains(pSpecial)) {
 			switch (mode) {
 				case COMPLEXD -> {
@@ -664,7 +662,6 @@ public class Monad implements Modal {
 	 *                     Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
-	 * @param pFrameName   String
 	 * @param pFootName    String
 	 * @param pSig         String
 	 * @param pScale       Scale of CladosF numbers
@@ -676,39 +673,48 @@ public class Monad implements Modal {
 	 *                                 coefficient array of the wrong size.
 	 * @throws GeneratorRangeException This exception is thrown when the integer
 	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, String pAlgebraName,
-			String pFrameName, String pFootName, String pSig, Scale<T> pScale)
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															String pAlgebraName,
+															String pFootName, 
+															String pSig, 
+															Scale<T> pScale)
 			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
-		this(pMonadName, GBuilder.createAlgebra(pScale.getScalar(), pAlgebraName, pFootName, pSig), pFrameName,
-				pScale);
+
+		this(	pMonadName, 
+				GBuilder.createAlgebraWithFootGP(
+										GBuilder.createFoot(pFootName, pScale.getCardinal().getUnit()), 
+										GBuilder.createGProduct(Optional.ofNullable(pScale.getBasis()), pSig),
+										pAlgebraName), 
+				pScale);				//Defer to constructor #7 safely
+										//because pScale's Basis was used building Algebra.
 	}
 
 	/**
-	 * Main constructor of Monad with pre-constructed objects not already part of
-	 * another Monad.
+	 * Main constructor of Monad with pre-constructed objects not already part of another Monad.
+	 * <br>
+	 * This one is very important to GBuilder for ensuring reference matches occur correctly, but it
+	 * does reject construction if the bases in Algebra and Scale do not match.
 	 * <br>
 	 * @param <T>        CladosF number is a ProtoN child that implemnts Field
 	 *                   and Normalizable.
 	 * @param pMonadName String
 	 * @param pAlgebra   Algebra
-	 * @param pFrameName String
 	 * @param pScale     Scale of CladosF numbers
 	 * @throws CladosMonadException This exception is thrown if there is an issue
 	 *                              with the coefficients offered. The issues could
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(String pMonadName, Algebra pAlgebra, String pFrameName,
-			Scale<T> pScale) throws CladosMonadException {
-		if (pScale.getMap().size() != pAlgebra.getBladeCount())
-			throw new CladosMonadException(this,
-					"Coefficient array size does not match bladecount from offered Algebra.");
+	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
+															Algebra pAlgebra, 
+															Scale<T> pScale) throws CladosMonadException {
+		if (pScale.getBasis() != pAlgebra.getGBasis())
+			throw new CladosMonadException(this, "Scale basis must match exactly the basis in Algebra.");
 
 		setName(pMonadName);
 		setAlgebra(pAlgebra);
-		setFrameName(pFrameName);
 		mode = pScale.getMode();
 		scales = new Scale<T>(pScale);
 		setGradeKey();
@@ -723,7 +729,7 @@ public class Monad implements Modal {
 	 */
 	public Monad add(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
-			throw new IllegalArgumentException("Can't add monads when frames don't match.");
+			throw new IllegalArgumentException("Can't add monads when Algebras or Cardinals don't match.");
 		bladeStream().parallel().forEach(blade -> {
 			try {
 				scales.get(blade).add(pM.scales.get(blade));
@@ -848,15 +854,6 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Return the name of the Reference Frame for this Monad
-	 * <br>
-	 * @return String
-	 */
-	public String getFrameName() {
-		return frameName;
-	}
-
-	/**
 	 * Return the grade key for the monad
 	 * <br>
 	 * @return long
@@ -956,9 +953,8 @@ public class Monad implements Modal {
 	/**
 	 * This method does a deep check for the equality of two monads. It is not meant
 	 * for checking that two monad references actually point to the same object
-	 * since that is easily handled with ==. This one checks algebras, foot names,
-	 * frame names, and the coefficients. Each object owned by the monad has its own
-	 * specialized isEqual() method that gets called.
+	 * since that is easily handled with ==. This one checks algebras, cardinals, and 
+	 * weihts. Each object owned by a monad has its own specialized isEqual() that is called.
 	 * <br>
 	 * Note that this could be done by override Object's equals() method. That might
 	 * happen in the future, but thought will have to be given to how to override
@@ -1547,21 +1543,6 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Reset the name used for the Reference Frame for this Monad This operation
-	 * would take place to point out a passive rotation or translation or any other
-	 * alteration to the reference frame.
-	 * <br>
-	 * @param pRName String
-	 * @return Monad after setting the frame name. The algebra is updated too.
-	 */
-	public Monad setFrameName(String pRName) {
-		getAlgebra().removeFrame(frameName);
-		frameName = pRName;
-		getAlgebra().appendFrame(pRName);
-		return this;
-	}
-
-	/**
 	 * Set the grade key for the monad. Never accept an externally provided key.
 	 * Always recalculate it after any of the unary or binary operations.
 	 * <br>
@@ -1604,13 +1585,13 @@ public class Monad implements Modal {
 	 * but there are reasonable use cases. Ideally one uses the Monad's own operation 
 	 * methods to alter weights, but that applies mostly to physical models. In cases
 	 * where a user directly manipulates weights, this method and the one for direct
-	 * handling of coefficients is more suitable.
+	 * handling of weights is more suitable.
 	 * <br>
 	 * This method fails with an exception if the Scale object references a different
-	 * basis than the one already in use. No basis change is tolerated because the 
+	 * basis than the one in the Algebra. No basis change is tolerated because the 
 	 * scales relate to a basis which only makes sense with respect to an algebra.
-	 * Future version will relax this requirement by relating Scales to a reference 
-	 * frame instead of directly relating them to the canonical basis. 
+	 * Future version will relax this requirement by tolerating Scales referencing a 
+	 * Frame instead of requiring a connection to the canonical basis. 
 	 * 
 	 * Using this set method encourages developers to reuse old objects. While this
 	 * is useful for avoiding object construction overhead, it is dangerous in that

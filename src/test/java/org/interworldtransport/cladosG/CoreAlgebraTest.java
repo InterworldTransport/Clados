@@ -3,14 +3,10 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class CoreAlgebraTest {
@@ -33,9 +29,9 @@ class CoreAlgebraTest {
 		tFoot = new Foot(fName, fType);
 		tFoot2 = new Foot(fName, rNumber);
 
-		alg1 = new Algebra(aName, tFoot, pSig31, rNumber);
-		alg2 = new Algebra(aName, tFoot, pSig13, rNumber);
-		alg3 = new Algebra(aName, tFoot, pSig13, fType);
+		alg1 = new Algebra(aName, tFoot, pSig31);
+		alg2 = new Algebra(aName, tFoot, pSig13);
+		alg3 = new Algebra(aName, tFoot, pSig13);
 	}
 
 	@Test
@@ -69,38 +65,24 @@ class CoreAlgebraTest {
 	}
 
 	@Test
-	public void testSignatureLinks() throws GeneratorRangeException {
-		assertSame(alg1.getGBasis(), alg2.getGBasis(), "Two algebras only have different signatures.");
-		assertNotSame(alg1.getGProduct(), alg2.getGProduct(), "Two sigs ARE different forces different GProducts");
-		assertNotEquals(alg1.getGProduct().signature(), alg2.getGProduct().signature(),
-				"signature strings used in construction were different.");
+	public void testSignatureSimilarityReuse() throws BadSignatureException, GeneratorRangeException {
+		Algebra alg4 = new Algebra(aName, tFoot, pSig31);
+		Algebra alg5 = new Algebra(aName, tFoot, pSig13);
+
+		assertTrue(alg5.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
+		assertTrue(alg4.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
+		assertTrue(alg4.getGBasis() == alg5.getGBasis());		//Two algebras have same signature lengths.
+		assertFalse(alg4.getGProduct() == alg5.getGProduct());	//Two sigs ARE different forces different GProducts
+		assertFalse(alg4.getGProduct().signature() == alg5.getGProduct().signature());
+		assertFalse(alg4.equals(alg5));
 	}
 
-	@Nested
-	class testFrameHandling {
-		@Test
-		public void testAppendReferenceFrame() {
-			assertNotNull(alg1, "Algebra setUp properly");
-			assertEquals(alg1.getReferenceFrames().size(), 1, "Default frame (only) present after alg construction.");
-			alg1.appendFrame(fName + "-Spherical");
-			assertEquals(alg1.getReferenceFrames().size(), 2, "Appended frame makes for two present.");
-			assertTrue(alg1.getFrames().size() == 2);
-		}
-
-		@Test
-		public void testRemoveReferenceFrame() {
-			assertTrue(alg2.getReferenceFrames().size() == 1);
-			alg2.appendFrame(fName + "-Spherical2");
-			assertTrue(alg2.getReferenceFrames().size() == 2);
-			alg2.removeFrame(fName + "-Spherical2");
-			assertTrue(alg2.getReferenceFrames().size() == 1);
-			alg2.removeFrame("Un-named frame that shouldn't be found.");
-			assertTrue(alg2.getReferenceFrames().size() == 1);
-			// Attempting to remove a frame that isn't there silently moves on.
-			// If one needs to ensure the frame was there and confirm it's
-			// removal, one should find it first.
-			assertTrue(alg2.getReferenceFrames().indexOf("Un-named frame that shouldn't be found.") == -1);
-		}
+	@Test
+	public void testSignatureSimilarityReuse2() {
+		assertTrue(alg3.getGBasis() == alg2.getGBasis());		//Two algebras have same signature lengths so Basis reuse should happen
+		assertTrue(alg3.getGProduct() == alg2.getGProduct());	//Two sigs are the same, so GProduct reuse should happen
+		assertTrue(alg3.getGProduct().signature() == alg2.getGProduct().signature()); //Seriously... the signatures are the same
+		assertFalse(alg3.equals(alg2));							//Two distinct algebras though.
 	}
 
 	/**
@@ -120,7 +102,7 @@ class CoreAlgebraTest {
 		assertTrue(alg1.getFoot().getCardinals().size() == alg2.getFoot().getCardinals().size());
 																//New Cardinal available to both.
 
-		Algebra alg7 = new Algebra(aName, tFoot, pSig31, rNumber); //new Algebra reusing the foot
+		Algebra alg7 = new Algebra(aName, tFoot, pSig31); 		//new Algebra reusing the foot
 		assertSame(alg1.getFoot(), alg7.getFoot());				//Common Foot proof
 		assertTrue(alg1.getFoot().getCardinals().size() == alg7.getFoot().getCardinals().size());
 																//New Cardinal available to both.
@@ -156,11 +138,9 @@ class CoreAlgebraTest {
 																//setting names equal isn't
 																//enough to pass reference match		
 		assertNotSame(alg6, alg1);								//Different objects
-		assertNotSame(alg6.getFoot(), alg1.getFoot());			//with the same foot
+		assertNotSame(alg6.getFoot(), alg1.getFoot());			//with different feet
 		assertSame(alg6.getGProduct(), alg1.getGProduct());		//and same gProduct
 		assertFalse(alg6.getFoot().getCardinal(0) == alg1.getFoot().getCardinal(0));
-		assertTrue(alg6.getCardinal().getUnit().equals(alg1.getCardinal().getUnit()));
-																//Cardinal string re-use is NOT Cardinal re-use
 	}
 
 	@Test
@@ -172,32 +152,6 @@ class CoreAlgebraTest {
 		assertTrue(where[0] == 5);
 		assertTrue(where[1] == 10);
 	}
-
-	@Nested
-	class testModes {
-		@Test
-		public void testProtoNumber() {
-			assertFalse(alg1.getProtoNumber() == null);
-			assertTrue(alg1.getProtoNumber() instanceof RealF);
-			assertFalse(alg1.getProtoNumber() instanceof RealD);
-		}
-
-		@Test
-		public void testModality() {
-			assertTrue(alg1.getMode() == CladosField.REALF);
-			assertTrue(alg3.getMode() == null);
-	
-			RealF oldProto = (RealF) alg1.getProtoNumber();
-			RealD tryThis = (RealD) FBuilder.REALD.createONE("Howz About This One");
-			alg1.setMode(tryThis);
-			assertTrue(alg1.getMode() == CladosField.REALD);
-			assertFalse(alg1.getProtoNumber() == oldProto);
-			assertFalse(alg1.getProtoNumber() == tryThis); //A Copy is made and linked to preserve integrity of parameter
-			assertTrue(alg1.getProtoNumber().getCardinal() == tryThis.getCardinal()); //but Cardinal is re-used.
-		}
-	}
-
-	
 
 	@Test
 	public void testXMLOutput() {

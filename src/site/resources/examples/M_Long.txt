@@ -2,11 +2,6 @@
 	<Name>Test MonadRD9</Name>
 	<Algebra UUID="7b984054-1dac-434e-affe-de37fd587bbf" >
 		<Name>Property Algebra</Name>
-		<RealD cardinal="Test Double 1" realvalue="0.0" />
-		<Frames number="2" >
-			<Frame number="0" name="canonical" />
-			<Frame number="1" name="Foot Default Frame" />
-		</Frames>
 		<Foot>
 			<Name>Test Foot 1</Name>
 			<Cardinals number="1" >
@@ -62,7 +57,6 @@
 			</ProductTable>
 		</GProduct>
 	</Algebra>
-	<ReferenceFrame>"Foot Default Frame"</ReferenceFrame>
 	<Scales mode="REALD" pans="16">
 		<Pair>
 			<Blade key="0" bitKey="0b0000" sign="1" generators="" />

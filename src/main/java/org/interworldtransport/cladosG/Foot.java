@@ -38,11 +38,10 @@ import org.interworldtransport.cladosF.ProtoN;
  * help avoid the trap of assuming transport of objects along the manifold
  * doesn't cause them to re-orient and change into other objects.
  * <br><br>
- * At a minimum, a footPoint is the name of an event or a point and the type of
- * numbers used for scale along the coordinate paths. At this location it is
- * assumed the geometry of the algebra is aligned with the local geometry one
- * would assign to the coordinate space that is the manifold at that point. This
- * makes a footPoint the root reference frame.
+ * At a minimum, a Foot is the name of an event and the type of numbers used 
+ * as wieghts for the tangent space. At this location it is
+ * assumed the geometry of the algebra is aligned with the tangent geometry of 
+ * the manifold at that point. This makes a Foot the root reference.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ

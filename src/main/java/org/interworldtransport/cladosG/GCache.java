@@ -129,7 +129,7 @@ public enum GCache {
 	 * @param pGen byte integer of generators in a basis to be found in the cache
 	 * @return Optional of Basis matching the number of generators offered.
 	 */
-	public Optional<Basis> findBasisList(byte pGen) {
+	public Optional<Basis> findBasis(byte pGen) {
 		return listOfBases.stream().filter(x -> (x.getGradeCount() - 1) == pGen).findFirst();
 	}
 
@@ -143,7 +143,7 @@ public enum GCache {
 	 * @param pSig String signature in a product to be found in the cache
 	 * @return Optional of GProduct matching the signature offered.
 	 */
-	public Optional<GProduct> findGProductMap(String pSig) {
+	public Optional<GProduct> findGProduct(String pSig) {
 		return listOfGProducts.stream().filter(x -> x.signature().equals(pSig)).findFirst();
 	}
 
@@ -199,7 +199,7 @@ public enum GCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeBasis(byte pGen) {
-		Optional<Basis> B = findBasisList(pGen);
+		Optional<Basis> B = findBasis(pGen);
 		if (B.isEmpty())
 			return true;
 		return removeBasis(B.get());
@@ -234,7 +234,7 @@ public enum GCache {
 	 * @return boolean TRUE if removal succeed. FALSE otherwise.
 	 */
 	public boolean removeGProduct(String pSig) {
-		Optional<GProduct> GP = findGProductMap(pSig); // This function tries to find the passed signature
+		Optional<GProduct> GP = findGProduct(pSig); // This function tries to find the passed signature
 		if (GP.isEmpty())
 			return true;									  // If not found, no worries. It is 'removed'.
 		return removeGProduct(GP.get());

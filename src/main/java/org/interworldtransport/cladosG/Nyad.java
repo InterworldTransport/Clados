@@ -88,11 +88,11 @@ public class Nyad implements Modal {
 	/**
 	 * If the monads listed within a nyad are all of the same algebra, the
 	 * strongFlag should be set to false AND the oneAlgebra flag should be set to
-	 * True. This method returns that the oneAlgebra flag.
+	 * True. This method returns the oneAlgebra flag.
 	 * <br>
 	 * In the future, the Frame classes will override this as it is likely that
 	 * other tests are required to ensure a monad list is actually a reference
-	 * frame. At the Nyad leve, therefore, it is best to to think of a true response
+	 * frame. At the Nyad level, therefore, it is best to to think of a true response
 	 * to this method as suggesting the nyad is a frame candidate.
 	 * <br>
 	 * @param pN Nyad to be tested
@@ -422,10 +422,7 @@ public class Nyad implements Modal {
 	 * <br>
 	 * The Foot object is re-used. The Algebra object is re-used. The Nyad's
 	 * proto-number object is re-used. The Nyad's monad objects are copyied OR
-	 * re-used depending on pCopy. but... re-use the monad's algebra object copy the
-	 * monad's frame name create new RealF's that clone the monad's coefficients
-	 * such that they... re-use the RealF's Cardinal object merely copy the val
-	 * array.
+	 * re-used depending on pCopy. 
 	 * <br>
 	 * @param pName String
 	 * @param pN    Nyad
@@ -468,7 +465,7 @@ public class Nyad implements Modal {
 	 * Add another Monad to the list of monads in this nyad. This method re-uses the
 	 * Monad offered as a parameter, so the NyadRealF DOES reference it.
 	 * <br>
-	 * @param pM Monad=
+	 * @param pM Monad
 	 * @throws CladosNyadException This exception is thrown if the foot of the new
 	 *                             monad fails to match
 	 * @return Nyad
@@ -606,12 +603,10 @@ public class Nyad implements Modal {
 	 * Create a new monad for this nyad using the prototype field and then append it
 	 * to the end of the monadList. A 'zero' for the new algebra will be added to
 	 * the list. This method creates a new algebra using the offered name and
-	 * signature. It also creates a new frame using the offered name. It is not a
-	 * copy method.
+	 * signature. It is not a copy method.
 	 * <br>
 	 * @param pMonadName    String
 	 * @param pAlgebraName String
-	 * @param pFrameName   String
 	 * @param pSig     String
 	 * @param pCard    String
 	 * @throws CladosMonadException    This exception is thrown when the new monad
@@ -627,23 +622,34 @@ public class Nyad implements Modal {
 	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 * @return Nyad
 	 */
-	public Nyad createMonad(String pMonadName, String pAlgebraName, String pFrameName, String pSig, String pCard)
+	public Nyad createMonad(String pMonadName, String pAlgebraName, String pSig, String pCard)
 			throws BadSignatureException, CladosMonadException, CladosNyadException, GeneratorRangeException {
 
 		Cardinal tCard = (pCard == null) ? FBuilder.createCardinal(getFoot().getCardinal(0).getUnit())
 				: FBuilder.createCardinal(pCard);
 
 		switch (mode) {
-		case COMPLEXD -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.COMPLEXD.createZERO(tCard),
-				getFoot(), pMonadName, pAlgebraName, pFrameName, pSig));
-		case COMPLEXF -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.COMPLEXF.createZERO(tCard),
-				getFoot(), pMonadName, pAlgebraName, pFrameName, pSig));
-		case REALD -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.REALD.createZERO(tCard), getFoot(),
-				pMonadName, pAlgebraName, pFrameName, pSig));
-		case REALF -> appendMonad(GBuilder.createMonadWithFoot(FBuilder.REALF.createZERO(tCard), getFoot(),
-				pMonadName, pAlgebraName, pFrameName, pSig));
-		default -> {
-		}
+		case COMPLEXD -> appendMonad(GBuilder.createMonadWithFoot(	FBuilder.COMPLEXD.createZERO(tCard),
+																	getFoot(), 
+																	pMonadName, 
+																	pAlgebraName, 
+																	pSig));
+		case COMPLEXF -> appendMonad(GBuilder.createMonadWithFoot(	FBuilder.COMPLEXF.createZERO(tCard),
+																	getFoot(), 
+																	pMonadName, 
+																	pAlgebraName, 
+																	pSig));
+		case REALD -> appendMonad(GBuilder.createMonadWithFoot(		FBuilder.REALD.createZERO(tCard), 
+																	getFoot(),
+																	pMonadName, 
+																	pAlgebraName, 
+																	pSig));
+		case REALF -> appendMonad(GBuilder.createMonadWithFoot(		FBuilder.REALF.createZERO(tCard), 
+																	getFoot(),
+																	pMonadName,
+																	pAlgebraName,
+																	pSig));
+		default -> {}
 		}
 
 		return this;
@@ -681,20 +687,6 @@ public class Nyad implements Modal {
 	public int findAlgebra(Algebra pAlg) {
 		for (Monad pM : getMonadList())
 			if (pAlg.equals(pM.getAlgebra()))
-				return monadList.indexOf(pM);
-		return -1;
-	}
-
-	/**
-	 * Return an integer pointing to the part of the nyad expressed in the frame
-	 * named in the parameter.
-	 * <br>
-	 * @param pFrame String
-	 * @return boolean
-	 */
-	public int findFrame(String pFrame) {
-		for (Monad pM : getMonadList())
-			if (pFrame.equals(pM.getFrameName()))
 				return monadList.indexOf(pM);
 		return -1;
 	}
@@ -819,20 +811,6 @@ public class Nyad implements Modal {
 	 */
 	public int getNyadOrder() {
 		return monadList.size();
-	}
-
-	/**
-	 * Return a boolean stating whether or not the nyad is expressed in the frame
-	 * named in the parameter.
-	 * <br>
-	 * @param pFrame String
-	 * @return boolean
-	 */
-	public boolean hasFrame(String pFrame) {
-		for (Monad pM : getMonadList())
-			if (pFrame.equals(pM.getFrameName()))
-				return true;
-		return false;
 	}
 
 	/**
@@ -1060,7 +1038,6 @@ public class Nyad implements Modal {
 		// and place one of the monads in the degenerate extension. Weird, but it might work.
 
 		pRight.setAlgebra(pLeft.getAlgebra());
-		pRight.setFrameName(pLeft.getFrameName());
 
 		return pRight;
 	}

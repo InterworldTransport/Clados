@@ -1,9 +1,5 @@
 <Algebra UUID="59df0d92-c304-4156-9925-13ad6ad56c91" >
 	<Name>Tst Algebra</Name>
-	<ProtoN cardinal="Test:NumberType" />
-	<Frames number="1" >
-		<Frame number="0" name="canonical" />
-	</Frames>
 	<Foot>
 		<Name>Tst:TangentPoint</Name>
 		<Cardinals number="1" >

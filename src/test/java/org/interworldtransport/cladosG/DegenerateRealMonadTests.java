@@ -31,13 +31,11 @@ public class DegenerateRealMonadTests {
 
 		tM0 = new Monad(mName + "RF0", 
                         aName, 
-                        "Foot Default Frame", 
                         pFoot0, 
                         pgasig,
 				        FBuilder.REALF.createZERO(tCard));   //A protonumber
 		tM1 = new Monad(mName + "RF1",          //Different name
                         aName2,                 //Different algebra name
-                        "Foot Default Frame", //Intending same frame
                         pFoot1,                 //Different Foot even
                         pgasig,                 //But same signature
                         FBuilder.REALF.createZERO(tCard));   //A protonumber
@@ -217,7 +215,6 @@ public class DegenerateRealMonadTests {
         cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 8); //new RealF[8];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 
-                                    "Foot Default Frame", 
                                     "Test Foot 0", 
                                     "0++",
                                     FBuilder.REALF.createONE(tCard));   //A protonumber

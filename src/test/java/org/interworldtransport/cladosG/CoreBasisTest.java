@@ -49,7 +49,7 @@ class CoreBasisTest {
 		assertTrue(GCache.INSTANCE.getBasisListSize() == 2);	//Two now
 		GCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
 		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 
-		Optional<Basis> get10 = GCache.INSTANCE.findBasisList((byte) 10);
+		Optional<Basis> get10 = GCache.INSTANCE.findBasis((byte) 10);
 		assertTrue(get10.isPresent()); //Earlier removal got rid of the correct one.
 		assertTrue(GCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
 	}
