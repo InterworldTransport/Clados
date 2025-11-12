@@ -115,8 +115,8 @@ public class CoreNyadRealFTest {
 			thing1.appendMonadCopy(motion);
 			thing1.appendMonad(property);
 			thing1.appendMonadCopy(property);
-			assertTrue(thing1.getNyadOrder() == 4);
-			assertTrue(thing1.getNyadAlgebraOrder() == 2);
+			assertTrue(thing1.getNyadMOrder() == 4);
+			assertTrue(thing1.getNyadAOrder() == 2);
 			assertTrue(Nyad.isWeak(thing1));
 		}
 
@@ -147,11 +147,11 @@ public class CoreNyadRealFTest {
 	@Test
 	void testConstructOrders() throws CladosMonadException, CladosNyadException {
 		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-		assertTrue(thing1.getNyadOrder() == 1);
-		assertTrue(thing1.getNyadAlgebraOrder() == 1);
+		assertTrue(thing1.getNyadMOrder() == 1);
+		assertTrue(thing1.getNyadAOrder() == 1);
 		thing1.appendMonad(property);
-		assertTrue(thing1.getNyadOrder() == 2);
-		assertTrue(thing1.getNyadAlgebraOrder() == 2);
+		assertTrue(thing1.getNyadMOrder() == 2);
+		assertTrue(thing1.getNyadAOrder() == 2);
 		assertTrue(Nyad.isStrong(thing1));
 	}
 
