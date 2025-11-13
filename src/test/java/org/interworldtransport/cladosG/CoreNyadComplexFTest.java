@@ -117,7 +117,7 @@ public class CoreNyadComplexFTest {
 			thing1.appendMonadCopy(property);
 			assertTrue(thing1.getNyadMOrder() == 4);
 			assertTrue(thing1.getNyadAOrder() == 2);
-			assertTrue(Nyad.isWeak(thing1));
+			assertTrue(Nyad.isMixed(thing1));
 		}
 
 		@Test
@@ -153,7 +153,7 @@ public class CoreNyadComplexFTest {
 		thing1.appendMonad(property);
 		assertTrue(thing1.getNyadMOrder() == 2);
 		assertTrue(thing1.getNyadAOrder() == 2);
-		assertTrue(Nyad.isStrong(thing1));
+		assertTrue(Nyad.isJuxtaposition(thing1));
 	}
 	
 	@Test

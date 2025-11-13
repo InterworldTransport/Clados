@@ -279,12 +279,12 @@ public class Monad implements Modal {
 	 */
 	public static boolean isReferenceMatch(Monad pM, Monad pN) {
 		// The algebras must actually be the same object to match.
-		if ((pM.getAlgebra() != (pN.getAlgebra())))
+		if (pM.getAlgebra() != pN.getAlgebra())
 			return false;
 
 		// There is a possibility that the weights share different cardinals.
 		// If so, we'd be comparing apples to oranges.
-		else if (!pM.getWeights().getCardinal().equals(pN.getWeights().getCardinal()))
+		if (!pM.getWeights().getCardinal().equals(pN.getWeights().getCardinal()))
 			return false;
 
 		return true;

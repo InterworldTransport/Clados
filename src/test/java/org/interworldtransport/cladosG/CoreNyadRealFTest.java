@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 public class CoreNyadRealFTest {
-	Algebra alg1, alg2;
+	//Algebra alg1, alg2;
 	final String aName = "MotionAlgebra";
 	final String aName2 = "PropertyAlgebra";
 	final Cardinal charge = FBuilder.createCardinal("q/dV");
@@ -117,7 +117,7 @@ public class CoreNyadRealFTest {
 			thing1.appendMonadCopy(property);
 			assertTrue(thing1.getNyadMOrder() == 4);
 			assertTrue(thing1.getNyadAOrder() == 2);
-			assertTrue(Nyad.isWeak(thing1));
+			assertTrue(Nyad.isMixed(thing1));
 		}
 
 		@Test
@@ -152,7 +152,7 @@ public class CoreNyadRealFTest {
 		thing1.appendMonad(property);
 		assertTrue(thing1.getNyadMOrder() == 2);
 		assertTrue(thing1.getNyadAOrder() == 2);
-		assertTrue(Nyad.isStrong(thing1));
+		assertTrue(Nyad.isJuxtaposition(thing1));
 	}
 
 	@Test
