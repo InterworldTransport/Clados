@@ -226,9 +226,6 @@ public class Nyad implements Modal {
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
-	 * @throws CladosMonadException This shouldn't happen very often. If it does,
-	 *                              there is something malformed about the monad
-	 *                              being used/copied.
 	 */
 	public Nyad(String pName, Monad pM, boolean pCopy) throws CladosNyadException {
 		setName(pName);
@@ -256,9 +253,6 @@ public class Nyad implements Modal {
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
-	 * @throws CladosMonadException This shouldn't happen very often. If it does,
-	 *                              there is something malformed one one of the
-	 *                              monads in the nyad being copied.
 	 */
 	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException {
 		if (pN.getNyadMOrder() == 0)
