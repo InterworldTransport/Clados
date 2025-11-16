@@ -269,25 +269,22 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Return true if the Monad shares the same Reference frame as the passed Monad.
-	 * A check is made on Algebra and Scale Cardinals for equality. No check is made 
-	 * for equality between the monad names, numeric weights, and the Cayley Table.
+	 * Return true if the monads share the same algebra, modes, and cardinal/units.
 	 * <br>
-	 * @param pM Monad
-	 * @param pN Monad
-	 * @return boolean
+	 * A check is made on Algebra, Mode, and Scale Cardinals for equality. No check is made for equality 
+	 * between the monad names, numeric weights, and the Cayley Table.
+	 * <br>
+	 * @param pM Monad to be tested
+	 * @param pN Monad to be tested
+	 * @return boolean True if they pass algebra and cardinal/unit match tests
 	 */
 	public static boolean isReferenceMatch(Monad pM, Monad pN) {
-		// The algebras must actually be the same object to match.
-		if (pM.getAlgebra() != pN.getAlgebra())
-			return false;
+		
+		if (pM.getAlgebra() != pN.getAlgebra())		// The algebras must be the same object to match.
+			return false;							// If they are not, this test fails.
 
-		// There is a possibility that the weights share different cardinals.
-		// If so, we'd be comparing apples to oranges.
-		if (!pM.getWeights().getCardinal().equals(pN.getWeights().getCardinal()))
-			return false;
-
-		return true;
+		return Monad.isUnitMatch(pM, pN);			// The weights might share different cardinals or modes.
+													// If so, we'd be comparing apples to oranges.
 	}
 
 	/**
@@ -306,6 +303,28 @@ public class Monad implements Modal {
 			return true;
 
 		return false;
+	}
+
+	/**
+	 * Return true if the monads share the same Cardinal/units and Mode
+	 * A check is made on Scale Cardinals for equality. No check is made for equality 
+	 * between the monad names, numeric weights, and algebras.
+	 * <br>
+	 * @param pM Monad to be tested
+	 * @param pN Monad to be tested
+	 * @return boolean True if they pass cardinal/unit match test
+	 */
+	public static boolean isUnitMatch(Monad pM, Monad pN) {
+		if (pM.getMode() != pN.getMode() )			
+			return false;							// Modes must match to avoid FieldBinaryExceptions elsewhere.
+													// If they don't, this test fails.
+
+		return pM.getWeights().getCardinal().equals(pN.getWeights().getCardinal());
+													// The weights might share different cardinals.
+													// If so, we'd be comparing apples to oranges elsewhere.
+
+		
+			
 	}
 
 	/**
@@ -386,7 +405,7 @@ public class Monad implements Modal {
 	 * of the monad. It is allowed to change, but should be considered subordinate
 	 * to the mode of the Scale which is finalized.
 	 */
-	private CladosField mode;
+	//private CladosField mode;
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
@@ -420,7 +439,6 @@ public class Monad implements Modal {
 	public <T extends ProtoN & Field & Normalizable> Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
-		mode = pM.mode;
 		scales = new Scale<T>((Scale<T>) pM.getWeights());
 		setGradeKey();
 	}
@@ -504,23 +522,19 @@ public class Monad implements Modal {
 
 		switch (pF.getClass().getCanonicalName()){
 			case "org.interworldtransport.cladosF.RealF" -> {
-				mode = CladosField.REALF;
-				scales = new Scale<RealF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.RealD" -> {
-				mode = CladosField.REALD;
-				scales = new Scale<RealD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.ComplexF" -> {
-				mode = CladosField.COMPLEXF;
-				scales = new Scale<ComplexF>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.ComplexD" -> {
-				mode = CladosField.COMPLEXD;
-				scales = new Scale<ComplexD>(mode, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			default -> throw new IllegalArgumentException("Offered Number must be a child of CladosF/ProtoN");
@@ -568,7 +582,7 @@ public class Monad implements Modal {
 						// Default ZERO Monad is complete. 
 						// Now handle the special cases.
 		if (MONAD_SPECIAL_CASES.contains(pSpecial)) {
-			switch (mode) {
+			switch (getMode()) {
 				case COMPLEXD -> {
 					switch (pSpecial) {
 						case "Unit Scalar" -> {
@@ -715,25 +729,27 @@ public class Monad implements Modal {
 
 		setName(pMonadName);
 		setAlgebra(pAlgebra);
-		mode = pScale.getMode();
 		scales = new Scale<T>(pScale);
 		setGradeKey();
 	}
 
 	/**
-	 * Monad Addition: (this + pM) This operation is allowed when the two monads use
-	 * the same field and satisfy the Reference Matching test.
+	 * Monad Subtraction: (this + pM) The two monads must be reference matches and use the same ProtoN 
+	 * child. The first check involves a reference match which will spot algebra mismatches. 
+	 * The next step involves trying addition and possibly catching exceptions that result from Scales 
+	 * containing mutable weights.
 	 * <br>
-	 * @param pM Monad
-	 * @return Monad
+	 * @param pM Monad to be added to this one
+	 * @return Monad that is the result of the addition operation
 	 */
 	public Monad add(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Can't add monads when Algebras or Cardinals don't match.");
-		bladeStream().parallel().forEach(blade -> {
-			try {
+
+		bladeStream().parallel().forEach(blade -> {		//Monads are reference matches now
+			try {										//but their Scales don't realize that and we have
 				scales.get(blade).add(pM.scales.get(blade));
-			} catch (FieldBinaryException e) {
+			} catch (FieldBinaryException e) {			//to check again because weights are mutable.
 				throw new IllegalArgumentException("Can't add when cardinals don't match.");
 			}
 		});
@@ -870,7 +886,7 @@ public class Monad implements Modal {
 	 */
 	@Override
 	public CladosField getMode() {
-		return mode;
+		return scales.getMode();
 	}
 
 	/**
@@ -966,7 +982,7 @@ public class Monad implements Modal {
 	public boolean isGEqual(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			return false;
-		switch (scales.getMode()) {
+		switch (getMode()) {
 			case COMPLEXD : return bladeStream().allMatch(blade -> 
 							ComplexD.isEqual((ComplexD) scales.get(blade), (ComplexD) pM.scales.get(blade)));
 			case COMPLEXF : return bladeStream().allMatch(blade -> 
@@ -1018,7 +1034,7 @@ public class Monad implements Modal {
 			throw new IllegalArgumentException("Symm multiply fails reference match.");
 		Monad halfTwoRight = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
 		(this.multiplyLeft(pM)).subtract(halfTwoRight);
-		switch (pM.getWeights().getMode()) {
+		switch (getMode()) {
 			case COMPLEXD -> {
 				scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
 				break;
@@ -1075,7 +1091,7 @@ public class Monad implements Modal {
 		GProduct tProd = getAlgebra().getGProduct();
 		Basis tBasis = getAlgebra().getGBasis();
 
-		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
+		Scale<T> newScales = new Scale<T>(getMode(), tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
 			long slideKey = gradeKey;
 			byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
@@ -1087,7 +1103,7 @@ public class Monad implements Modal {
 						int treturnBlade = Math.abs(tProd.getResult(row, col)) - 1;		//Recover Cayley table entry as index
 						if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
 						Blade bMult = tBasis.getSingleBlade(treturnBlade);
-						switch (mode) {
+						switch (getMode()) {
 						case COMPLEXD -> {
 							try {
 								ComplexD tAgg = ComplexD
@@ -1152,7 +1168,7 @@ public class Monad implements Modal {
 					int treturnBlade = Math.abs(tProd.getResult(row, col)) - 1;		//Recover Cayley table entry as index
 					if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
 					Blade bMult = tBasis.getSingleBlade(treturnBlade);
-					switch (mode) {
+					switch (getMode()) {
 					case COMPLEXD -> {
 						try {
 							ComplexD tAgg = ComplexD
@@ -1245,7 +1261,7 @@ public class Monad implements Modal {
 		GProduct tProd = getAlgebra().getGProduct();
 		Basis tBasis = getAlgebra().getGBasis();
 
-		Scale<T> newScales = new Scale<T>(mode, tBasis, scales.getCardinal()).zeroAll();
+		Scale<T> newScales = new Scale<T>(getMode(), tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
 			long slideKey = gradeKey;
 			byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
@@ -1257,7 +1273,7 @@ public class Monad implements Modal {
 						int treturnBlade = Math.abs(tProd.getResult(col, row)) - 1;		//Recover Cayley table entry as index
 						if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
 						Blade bMult = tBasis.getSingleBlade(treturnBlade);
-						switch (mode) {
+						switch (getMode()) {
 						case COMPLEXD -> {
 							try {
 								ComplexD tAgg = ComplexD
@@ -1322,7 +1338,7 @@ public class Monad implements Modal {
 					int treturnBlade = Math.abs(tProd.getResult(col, row)) - 1;		//Recover Cayley table entry as index
 					if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
 					Blade bMult = tBasis.getSingleBlade(treturnBlade);
-					switch (mode) {
+					switch (getMode()) {
 					case COMPLEXD -> {
 						try {
 							ComplexD tAgg = ComplexD
@@ -1394,7 +1410,7 @@ public class Monad implements Modal {
 		Monad halfTwoRight = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
 		(this.multiplyLeft(pM)).add(halfTwoRight);
 
-		switch (pM.getWeights().getMode()) {
+		switch (getMode()) {
 			case COMPLEXD -> {
 				scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
 				break;
@@ -1427,7 +1443,7 @@ public class Monad implements Modal {
 		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();
 		tRev.multiplyRight(this).gradePart((byte) 0); 	//The scalar part will be real.
 
-		switch (this.getMode()) {
+		switch (getMode()) {
 			case COMPLEXD -> {
 				ComplexD tMagCD = ((ComplexD) tRev.getWeights().getScalar().invert()); //img part == 0
 				tMagCD.setReal(Math.sqrt(Math.abs(tMagCD.getReal())));
@@ -1526,15 +1542,14 @@ public class Monad implements Modal {
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
 
 		if 	(
-			(ppC[0] instanceof RealF) & (scales.getMode() == CladosField.REALF)
-		| 	(ppC[0] instanceof RealD) & (scales.getMode() == CladosField.REALD)
-		| 	(ppC[0] instanceof ComplexF) & (scales.getMode() == CladosField.COMPLEXF)
-		| 	(ppC[0] instanceof ComplexD) & (scales.getMode() == CladosField.COMPLEXD)
+			(ppC[0] instanceof RealF) & (getMode() == CladosField.REALF)
+		| 	(ppC[0] instanceof RealD) & (getMode() == CladosField.REALD)
+		| 	(ppC[0] instanceof ComplexF) & (getMode() == CladosField.COMPLEXF)
+		| 	(ppC[0] instanceof ComplexD) & (getMode() == CladosField.COMPLEXD)
 			)
 		{
-			scales.setWeightsArray(FListBuilder.copyOf(mode, ppC));
+			scales.setWeightsArray(FListBuilder.copyOf(getMode(), ppC));
 			setGradeKey();
-			mode=scales.getMode();
 		} 
 		else 
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is different mode.");
@@ -1592,7 +1607,7 @@ public class Monad implements Modal {
 	 * scales relate to a basis which only makes sense with respect to an algebra.
 	 * Future version will relax this requirement by tolerating Scales referencing a 
 	 * Frame instead of requiring a connection to the canonical basis. 
-	 * 
+	 * <br>
 	 * Using this set method encourages developers to reuse old objects. While this
 	 * is useful for avoiding object construction overhead, it is dangerous in that
 	 * old references might linger enabling unexpected opportunities to edit weights.
@@ -1610,7 +1625,6 @@ public class Monad implements Modal {
 		
 		scales = pScale;
 		setGradeKey();
-		mode=scales.getMode();
 
 		return this;
 	}
@@ -1640,19 +1654,22 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Monad Subtraction: (this - pM) This operation is allowed when the two monads
-	 * use the same field and satisfy the Reference Matching test.
+	 * Monad Subtraction: (this - pM) The two monads must be reference matches and use the same ProtoN 
+	 * child. The first check involves a reference match which will spot algebra mismatches. 
+	 * The next step involves trying subtraction and possibly catching exceptions that result from Scales 
+	 * containing mutable weights.
 	 * <br>
-	 * @param pM Monad
-	 * @return Monad
+	 * @param pM Monad to be subtracted from this one
+	 * @return Monad returned that has the passed monad subtracted from it.
 	 */
 	public Monad subtract(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Can't subtract monads without a reference match.");
-		bladeStream().parallel().forEach(blade -> {
-			try {
+
+		bladeStream().parallel().forEach(blade -> {		//Monads are reference matches now
+			try {										//but their Scales don't realize that and we have
 				scales.get(blade).subtract(pM.scales.get(blade));
-			} catch (FieldBinaryException e) {
+			} catch (FieldBinaryException e) {			//to check again because weights are mutable.
 				throw new IllegalArgumentException("Can't subtract when cardinals don't match.");
 			}
 		});
@@ -1663,8 +1680,8 @@ public class Monad implements Modal {
 	/**
 	 * Simple setter method of the algebra for this monad.
 	 * <br>
-	 * It is NOT advisable to re-set algebras lightly. They carry the meaning of
-	 * 'directions' in the underlying basis.
+	 * It is NOT advisable to re-set algebras lightly. Avoid nulling them out.
+	 * They carry the meaning of 'directions' in the underlying basis.
 	 * <br>
 	 * @param pA Algebra to set
 	 * @return Monad after setting the algebra.

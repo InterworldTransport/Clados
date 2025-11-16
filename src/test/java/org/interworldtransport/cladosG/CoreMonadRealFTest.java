@@ -417,6 +417,23 @@ public class CoreMonadRealFTest {
         assertTrue(((RealF) tM8.scales.getScalar()).getReal() == -1.0f);
         assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == -1.0f);
     }
+
+    @Test
+    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+        assertThrows(IllegalArgumentException.class, () -> tM1.add(tM5));
+        assertThrows(IllegalArgumentException.class, () -> tM1.subtract(tM5));
+
+        assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving why setScale() is dangerous
+
+        Foot tFoot = Foot.buildAsType("0++", tCard);        //One Cardinal in the Foot's tracker
+        Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.REALF.createONE(tCard) , 
+                                                    tFoot,
+                                                    "TestMonadNameRF",
+                                                    "TestAlgebraNameRF", 
+                                                    "0++");       
+        assertThrows(CladosMonadException.class, () -> tM1.setScale(tM5b.getWeights()));  
+                                                                    //Proving Bases get checked
+    }
     
 	//@Test
 	//public void testXMLOutputs() {

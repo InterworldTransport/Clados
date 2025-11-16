@@ -306,12 +306,6 @@ public final class Basis implements CanonicalBasis {
 		keyIndexMap = new TreeMap<>();
 		// ------Build bladeList
 		switch (pGen.ord) {
-			case 0 -> {
-				bladeList.add(Blade.createBlade(pGen.ord));
-				gradeList.add(Integer.valueOf(0));
-				keyIndexMap.put(0L, 1);
-				break;
-			}
 			case 1 -> {
 				bladeList.add(Blade.createScalarBlade(Generator.E1));
 				gradeList.add(Integer.valueOf(0));

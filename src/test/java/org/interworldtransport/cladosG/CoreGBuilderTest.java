@@ -174,7 +174,6 @@ public class CoreGBuilderTest {
             try {
                 Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAlgebraName()+"2", tFoot.getFootName()+"2", twoDPGA);
                 assertNotNull(ta2);
-                //assertTrue(ta2.getMode() == CladosField.COMPLEXD);
             } catch (GeneratorRangeException er) {
                 ;
             } catch (BadSignatureException es) {

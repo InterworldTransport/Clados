@@ -24,10 +24,9 @@
  */
 package org.interworldtransport.cladosG;
 
-import static org.interworldtransport.cladosG.Monad.isReferenceMatch;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosF.Cardinal;
@@ -70,37 +69,6 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  */
 public class Nyad implements Modal {
 	/**
-	 * Return a boolean stating whether or not the nyad has a monad using the algebra offered. 
-	 * More than one might exist in the nyad. One is enough for a True response.
-	 * <br>
-	 * @param pN   Nyad to be checked for whether it has a monad using the algebra
-	 * @param pAlg Algebra to be checked to see if it is used in the nyad anywhere.
-	 * @return boolean
-	 */
-	public static final boolean hasAlgebra(Nyad pN, Algebra pAlg) {
-		return pN.algebraStream().filter(x -> (x == pAlg)).findAny().isPresent();			
-	}
-
-	/**
-	 * If the monads listed within a nyad are all of the same algebra, the nyad is modeling
-	 * a composition of monads without simplifying them. The jFlag should be set to false 
-	 * AND the oneAlgebra flag should be set to True. 
-	 * <br>
-	 * This method returns False unless the jFlag is false when it returns the oneAlgebra flag.
-	 * If the nyad has one monad, False is returned because composition requires at least two.
-	 * <br>
-	 * This method does NOT evaluate the nyad for whether the flags are set correctly.
-	 * <br>
-	 * @param pN Nyad to be tested
-	 * @return boolean True if nyad's monads are all of the same algebra
-	 */
-	public static final boolean isComposition(Nyad pN) {
-		if (pN.jFlag)
-			return !pN.jFlag;
-		return pN._oneAlgebra;
-	}
-
-	/**
 	 * Return true if the Monads in the two lists are GEqual and the nyads are
 	 * reference matches. Only monads sharing the same algebra name need to be
 	 * checked against each other. No check is to be made for equality between the
@@ -122,111 +90,20 @@ public class Nyad implements Modal {
 			return false;									// Return false if they are not
 		
 		if (pT.getFoot() != pN.getFoot())					// Check if the feet match
-			return false;									// Return false if they don't
-
-															// Now check the monad lists
-
-		boolean forwardCheck = false;						// Assume the test will fail
-		for (Monad tM1 : pT.getMonadList()) {				// Pick a monad in nyad1
-			forwardCheck = false;							// Reset on looping
-			for (Monad tM2 : pN.getMonadList()) {
-				if (tM1.isGEqual(tM2)) {					// Check each monad in nyad2
-					forwardCheck=true;						// GEqual match found for chosen nyad1 monad
-					break;									// No need to check other nyad2 monads
-				}
-			}												// Forward check of A monad complete
-			if (!forwardCheck) return false;				// If no GEqual was found, we are done with a failure.
-		}													// Forward check of all nyad1 monads complete
-		assert(forwardCheck);								// If ANY monad in nyad1 had failed we wouldn't be here.
-
-									// To get this far all monads in first nyad have GEqual counterparts in the second. 
-									// So... now we we do the reflexive test by swapping the roles of the nyads.
-
-		boolean backwardCheck = false;						// Assume the test will fail
-		for (Monad tM1 : pN.getMonadList()) {				// Pick a monad in nyad2
-			backwardCheck = false;							// Reset on looping
-			for (Monad tM2 : pT.getMonadList()) {
-				if (tM1.isGEqual(tM2)) {					// Check each monad in nyad1
-					backwardCheck=true;						// GEqual match found for chosen nyad2 monad
-					break;									// No need to check other nyad1 monads
-				}
-			}												// Forward check of A monad complete
-			if (!backwardCheck) return false;				// If no GEqual was found, we are done with a failure.
-		}													// Forward check of all nyad2 monads complete
-		assert(backwardCheck);								// If ANY monad in nyad2 had failed we wouldn't be here.
-
-		return true;
-
-		/*
-		for (Monad tSpot : pT.getMonadList()) {
-			forwardCheck = false;							// Assume there is no matching algebra for tSpot in the second nyad
-			Algebra tSpotAlg1 = tSpot.getAlgebra();			// Get the Algebra for tSpot in first algebra
-			for (Monad tSpot2 : pN.getMonadList()) {		// Now loop through the second nyad looking for an algebra match
-				if (tSpotAlg1 == tSpot2.getAlgebra()) {		// ah ha! Found an algebra match in tSpot2
-					forwardCheck = true;
-					if (!tSpot.isGEqual(tSpot2))			// Now check of tSpot is GEqual to tSpot2
-						return false;						// Equal Algebra but not GEqual means not MEqual.
-					break;									// If we get here, tSpot is GEqual to tSpot2. There is no need to 
-															// look further in the second nyad for an algebra match
-															// TODO This doesn't work except for juxtaposition nyads.
-
-				}											// If we get here, no match has been found in the second nyad yet.
-
-			}												// If we get here, a monad in the first nyad was matched and found equal 
-															// and now it is time to move to the next monad in the first nyad.
-
-			if (!forwardCheck)								// If we get to the end of the second nyad with no algebra match
-				return false;								// the first nyad has a dangling monad... thus can't be MEqual.
-		}
-
-															// To get this far all monads in first pass GEquality tests for 
-															// counterparts in the second. So... now we we test for reflexivity 
-															// by checking the nyads pass the same test in swapped order.
+			return false;									// Return false if they don't	
 		
-		boolean backwardCheck = false;						// Assume the reflexive test will fail
-		for (Monad tSpot : pN.getMonadList()) {
-			backwardCheck = false;							// Assume there is no matching algebra for tSpot in the first nyad
-			Algebra tSpotAlg1 = tSpot.getAlgebra();			// Get the Algebra for tSpot in second algebra
-			for (Monad tSpot2 : pT.getMonadList()) {		// Now loop through the first nyad looking for an algebra match
-				if (tSpotAlg1 == tSpot2.getAlgebra()) {		// ah ha! Found an algebra match in tSpot2
-					backwardCheck = true;
-					if (!tSpot.isGEqual(tSpot2))			// Now check of tSpot is GEqual to tSpot2
-						return false;						// Equal Algebra but not GEqual means not MEqual.
-					
-					break;									// If we get here, tSpot is GEqual to tSpot2 and there is no need to 
-															// look further in the first nyad for an algebra match
-
-				}											// If we get here, no match has been found in the first nyad yet.
-			
-			}												// If we get here, a monad in the second nyad was matched and found equal 
-															// and now it is time to move to the next monad in the second nyad.
-
-			if (!backwardCheck)								// If we get to the end of the first nyad with no algebra match
-				return false;								// the second nyad has a dangling monad... thus can't be MEqual.
-		}
-		return true;										// Getting this far means all monads in the second pass Gequal tests for
-															// counterparts in the first. Since The other direction has already been 
-															// checked, reflexivity is proven and the nyads are MEqual.
-		*/
+		boolean fcheck = pT.monadStream().allMatch(y -> pN.monadStream().anyMatch(x -> x.isGEqual(y)));
+		boolean bcheck = pN.monadStream().allMatch(y -> pT.monadStream().anyMatch(x -> x.isGEqual(y)));
+		return fcheck & bcheck;								// These two ensure reflexive testing is complete
+															// Failures in one should stop the other, but the streams will
+															// halt in a protected way where loops risk mutability.	
 	}
 
 	/**
-	 * If the monads listed within a nyad are all of a different algebra, the nyad is modeling a
-	 * juxtaposition and the jFlag should be set to true. This method returns that flag and 
-	 * makes no attempt to determine whether it should be set one way or the other.
-	 * <br>
-	 * @param pN Nyad to be tested
-	 * @return boolean True if nyad is strong meaning each Monad is of a different
-	 *         algebra False if nyad's monads double up on any particular algebra
-	 */
-	public static final boolean isJuxtaposition(Nyad pN) {
-		return pN.jFlag;
-	}
-
-	/**
-	 * This method performs a strong test for a reference match. All properties of Nyads must match 
-	 * except for names. Each monads within must also have a counterpart that is a reference matches.
-	 * There must also be NO unpaired monads, so the algebra lists have to be identical to within sorting. 
+	 * This method performs a strong test for a reference match. All properties of Nyads must match  except for names. 
+	 * Each monad in a nyad must have a counterpart in the other that is a reference matches.  There must be NO unpaired 
+	 * monads, so the algebra lists have to be identical to within sorting as well.
+	 * 
 	 * Only monads sharing the same algebra need to be checked against each other for reference matches. 
 	 * For those in the same algebra, we make use of the isRefereceMatch method and compare the two.
 	 * <br>
@@ -235,8 +112,6 @@ public class Nyad implements Modal {
 	 * @return boolean
 	 */
 	public static final boolean isStrongReferenceMatch(Nyad pT, Nyad pN) {
-		//TODO Lots of stuff in Algebra and reference matching changed between v1.0 and v2.0. Re-think this one.
-		
 		if (pT.getNyadMOrder() != pN.getNyadMOrder())		// Check if the Nyads are of the same order
 			return false;									// Return false if they are not
 		
@@ -244,127 +119,70 @@ public class Nyad implements Modal {
 			return false;									// Return false if they are not
 
 		if (pT.getFoot() != pN.getFoot())					// Check if the feet match
-			return false;									// Return false if they do not
-
-															// Now we start into the Monad lists.
-		boolean forwardcheck = false;
-		for (Monad tSpot : pT.getMonadList()) {
-			forwardcheck = false;
-			for (Monad tSpot2 : pN.getMonadList()) {
-				if (tSpot.getAlgebra().equals(tSpot2.getAlgebra())) {
-					forwardcheck = true; // this is a temporary truth. More to check
-					if (!isReferenceMatch(tSpot, tSpot2))
-						return false;
-					// break;
-					// Don't break and we catch the case for weak nyads.
-				}
-			}
-			// if check is true match(es) were found and passed isReferenceMatch
-			// if check is false, we have a dangling monad in pTs, thus a fail.
-			if (!forwardcheck)
-				return false;
-		}
-		// Making it this far implies that all tests have passed in forward order.
-		// Now for reverse order.
-
-		Boolean backwardcheck = false;
-		for (Monad tSpot : pN.getMonadList()) {
-			backwardcheck = false;
-			for (Monad tSpot2 : pT.getMonadList()) {
-				if (tSpot.getAlgebra().equals(tSpot2.getAlgebra())) {
-					backwardcheck = true; // this is a temporary truth. More to check
-					if (!isReferenceMatch(tSpot, tSpot2))
-						return false;
-					// break;
-					// Don't break and we catch the case for weak nyads.
-				}
-			}
-			// if check is true match(es) were found and passed isReferenceMatch
-			// if check is false, we have a dangling monad in pTs, thus a fail.
-			if (!backwardcheck)
-				return false;
-		}
-		// Making it this far implies that all tests have passed in reverse order.
-		// SINCE they have also passed in the forward order...
-		// pN is a strong reference match for pTs.
-		return true;
+			return false;									// Return false if they do not		
+		
+		boolean fcheck = pT.monadStream().allMatch(y -> pN.monadStream().anyMatch(x -> Monad.isReferenceMatch(x, y)));
+		boolean bcheck = pN.monadStream().allMatch(y -> pT.monadStream().anyMatch(x -> Monad.isReferenceMatch(x, y)));
+		return fcheck & bcheck;								// These two ensure reflexive testing is complete
+															// Failures in one should stop the other, but the streams will
+															// halt in a protected way where loops risk mutability.	
 	}
 
 	/**
-	 * If the monads listed within a nyad are NOT all of a different algebra, the jFlag 
-	 * is set to true. If not, it is set to false. This method returns the flag's complement.
+	 * This method performs a weak test for a reference match. It is similar to the strong reference match, but 
+	 * tolerates dangling monads. Only monads in each nyad that share an algebra must reference match.
 	 * <br>
-	 * @param pN Nyad to be tested
-	 * @return boolean False if nyad is a juxtaposition. True otherwise.
-	 */
-	public static final boolean isMixed(Nyad pN) {
-		return !pN.jFlag;
-	}
-
-	/**
-	 * This method performs a weak test for a reference match. All properties of the
-	 * Nyads must match except for the NyadRealF names and orders. The monads within
-	 * the NyadRealF must also be reference matches for pairs from the same algebra.
-	 * It is NOT required that monads from this nyad have counterparts in the other
-	 * nyad, so the passed NyadRealFs may have a different order than this one.
-	 * Unpaired monads are counted as matches against scalars from the field. Only
-	 * monads sharing the same algebra name need to be checked against each other
-	 * for reference matches. For those in the same algebra, we make use of the
-	 * isRefereceMatch method and compare the two.
+	 * Unpaired monads (those with no algebra matching counterpart in the other nyad) are counted as matches 
+	 * against unit scalars even though the matching unit scalar monad isn't present. The isUnitMatch*() method 
+	 * compares two monads this time because the monad lists are already filtered to ensure algebras already match.
 	 * <br>
-	 * @param pTs Nyad
+	 * @param pT Nyad
 	 * @param pN  Nyad
 	 * @return boolean
 	 */
-	public static final boolean isWeakReferenceMatch(Nyad pTs, Nyad pN) {
-		// Check to see if the foot objects match
-		if (pTs.getFoot() != pN.getFoot())
-			return false;
+	public static final boolean isWeakReferenceMatch(Nyad pT, Nyad pN) {
+		if (pT.getFoot() != pN.getFoot())					// Check to see if the Feet match
+			return false;									// Return false if they do not	
 
-		// Now we start into the Monad lists. Find a monad from pTs and its
-		// counterpart in other. If they are a reference match, move on. If
-		// not return a false result.
+		if (pT.getNyadAOrder() == 0 | pN.getNyadAOrder() == 0)
+			return true;									// If one nyad is empty, the other has danglers and passes.
 
-		for (Monad tSpot : pTs.getMonadList()) {
-			Algebra tAlg1 = tSpot.getAlgebra();
-			for (Monad tSpot2 : pN.getMonadList()) {
-				if (tAlg1.equals(tSpot2.getAlgebra())) {
-					if (!isReferenceMatch(tSpot, tSpot2))
-						return false;
-					break;
-				}
-			}
-		}
-		// Making it this far implies that tests have failed. There could be
-		// dangling monads in either nyad or they could all be dangling, but
-		// that is sufficient for a weak match because one can pad the nyads
-		// with scalar (zero) monads to plug the gaps, thus turning each nyad
-		// into one that is essentially the same until the pair pass as strong
-		// reference matches. pN is a weak reference match for pTs.
-		return true;
+		if (!pT.algebraStream().anyMatch(y -> pN.algebraStream().anyMatch(x -> x.equals(y)))) 										
+			return true;									// Edge case: ALL monads are danglers. Weak reference match occurs by default
+		
+		return  pT.algebraStream().anyMatch(y -> 			// Pick an algebra in pT [Failure to match means algebra in both and unit match failed]
+					pT.monadInAlgebraStream(y).anyMatch(pTm -> 		// Pick a monad in pT using the algebra and find anyMatch of
+						pN.monadInAlgebraStream(y).anyMatch(pNm -> 			// Pick a monad in pN using the algebra and find anyMatch of
+							Monad.isUnitMatch(pNm, pTm) | !pN.hasAlgebra(y)			// The two monads being unit matches or pT's being a dangler
+								)));
+															// Any monad in pN not chosen for a check is a known dangler. No need to check it.
+															// Any unit match for monads sharing an algebra suffices, so two nyads with 
+															// two monads in the same algebra with different units will pass weak matching
+															// but if they had differnt algebras (swapped) and the units swapped, they'd fail.
+															// Examples filling in the truth table are obviously needed as test cases.
 	}
 
 	/**
 	 * This is a boolean flag set to True when the monads ALL refer to the same
 	 * algebra. Otherwise it should be false.
 	 */
-	protected boolean _oneAlgebra = false;
+	private boolean compositionFlag = false;
 
 	/**
 	 * This is a boolean flag set to True when the monads ALL refer to DIFFERENT
 	 * algebras. Otherwise it should be false.
 	 */
-	protected boolean jFlag;
+	private boolean jFlag = false;
 
 	/**
 	 * This array is the list of algebras used in the Nyad.
 	 */
-	protected ArrayList<Algebra> algebraList;
+	private ArrayList<Algebra> algebraList;
 
 	/**
 	 * This is the Foot to which all the algebras of all monads should reference
 	 */
-	protected Foot footPoint;
+	private Foot sharedFoot;
 
 	/**
 	 * This is the internal element supporting the Modal interface.
@@ -375,7 +193,7 @@ public class Nyad implements Modal {
 	 * This array is the list of Monads that makes up the NyadRealF. It will be tied
 	 * to the footPoint members of each Monad as keys.
 	 */
-	protected ArrayList<Monad> monadList;
+	private ArrayList<Monad> monadList;
 
 	/**
 	 * All objects of this class have a name independent of all other features.
@@ -412,7 +230,7 @@ public class Nyad implements Modal {
 	 *                              there is something malformed about the monad
 	 *                              being used/copied.
 	 */
-	public Nyad(String pName, Monad pM, boolean pCopy) throws CladosNyadException, CladosMonadException {
+	public Nyad(String pName, Monad pM, boolean pCopy) throws CladosNyadException {
 		setName(pName);
 		setFoot(pM.getAlgebra().getFoot());
 		mode = pM.getMode();
@@ -442,13 +260,13 @@ public class Nyad implements Modal {
 	 *                              there is something malformed one one of the
 	 *                              monads in the nyad being copied.
 	 */
-	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException, CladosMonadException {
+	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException {
 		if (pN.getNyadMOrder() == 0)
 			throw new IllegalArgumentException("Offered Nyad to copy is empty.");
 
 		setName(pName);
 		setFoot(pN.getFoot());
-		mode = pN.getMonadList(0).getMode();
+		mode = pN.getMonadAt(0).getMode();
 		if (pN.getMonadList() != null) {
 			monadList = new ArrayList<Monad>(pN.getMonadList().size());
 			algebraList = new ArrayList<Algebra>(pN.getAlgebraList().size());
@@ -471,48 +289,47 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Add another Monad to the list of monads in this nyad. This method re-uses the
-	 * Monad offered as a parameter, so the NyadRealF DOES reference it.
+	 * Add another Monad to the list of monads in this nyad. This method re-uses the Monad offered 
+	 * as a parameter, so the Nyad DOES reference it.
 	 * <br>
-	 * @param pM Monad
-	 * @throws CladosNyadException This exception is thrown if the foot of the new
-	 *                             monad fails to match
+	 * Be aware that this method silently disallows adding the same monad to the list again. 
+	 * This prevents two entries in the monad list pointing at the same monad. If two ARE needed, 
+	 * use the appendMonadCopy method.
+	 * <br>
+	 * @param pM Monad to append to the list
+	 * @throws CladosNyadException Exception thrown if the foot of the new monad fails to match
 	 * @return Nyad
 	 */
 	public Nyad appendMonad(Monad pM) throws CladosNyadException {
-		// This method works if the foot of pM matches the foot of this nyad
-		if (!pM.getAlgebra().getFoot().equals(getFoot()))
-			throw new CladosNyadException(this, "Monads is a nyad should share a Foot");
+		if (findMonad(pM) != -1)							// -1 implies the monad is not already in the list
+			return this;									// If it is in the list, silently return.
 
-		// Add Monad to the ArrayList
-		monadList.ensureCapacity(monadList.size() + 1);
+		if (!pM.getAlgebra().getFoot().equals(getFoot()))
+			throw new CladosNyadException(this, "Nyad / New Monad Foot mismatch");
+
+		monadList.ensureCapacity(monadList.size() + 1);		// Append monad to the list
 		monadList.add(pM);
 		resetAlgebraList();
 		return this;
 	}
 
 	/**
-	 * Add another Monad to the list of monads in this nyad. This method creates a
-	 * new copy of the Monad offered as a parameter, so the Nyad does not
-	 * wind up referencing the passed Monad.
+	 * Add another Monad to the list of monads in this nyad. This method creates a new copy 
+	 * of the offered monad, so the Nyad does not wind up referencing the one passed in.
 	 * <br>
-	 * @param pM Monad
+	 * Be aware that this method silently allows adding the a monad to the list again. Two 
+	 * references to the same monad are still avoided, but two monads will pass a GEquals test.
+	 * <br>
+	 * @param pM Monad to append to the list
+	 * @throws CladosNyadException  Exception thrown if the foot of the new monad fails to match.
 	 * @return Nyad
-	 * @throws CladosNyadException  This exception is thrown if the foot of the new
-	 *                              monad fails to match.
-	 * @throws CladosMonadException This shouldn't happen very often. If it does,
-	 *                              there is something malformed about the monad
-	 *                              being copied.
 	 */
-	public Nyad appendMonadCopy(Monad pM) throws CladosNyadException, CladosMonadException {
-		// This method works if the foot of pM matches the foot of this nyad
-		// The footPoint objects must match.
+	public Nyad appendMonadCopy(Monad pM) throws CladosNyadException {
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
-			throw new CladosNyadException(this, "Monads is a nyad should share a Foot");
-
-		// Add Monad to the ArrayList
-		monadList.ensureCapacity(monadList.size() + 1);
-		monadList.add((Monad) GBuilder.copyOfMonad(pM));
+			throw new CladosNyadException(this, "Nyad / New Monad Foot mismatch");
+		
+		monadList.ensureCapacity(monadList.size() + 1);		// Add Monad to the ArrayList
+		monadList.add(GBuilder.copyOfMonad(pM));
 		resetAlgebraList();
 		return this;
 	}
@@ -687,30 +504,35 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Return an integer pointing to a monad in the nyad that uses the algebra
-	 * referenced in the parameter.
+	 * Return an integer pointing to a monad that uses the algebra referenced. If more than
+	 * one monad uses the algebra, the returned integer will point at the first one in the list.
 	 * <br>
-	 * @param pAlg Algebra
-	 * @return int
+	 * @param pAlg Algebra used to filter the monads to find the first to use it.
+	 * @return int index of the first monad found using the offered algebra. -1 if none are found.
 	 */
 	public int findAlgebra(Algebra pAlg) {
-		for (Monad pM : getMonadList())
-			if (pAlg.equals(pM.getAlgebra()))
-				return monadList.indexOf(pM);
-		return -1;
+		Optional<Monad> foundThis = monadInAlgebraStream(pAlg).findFirst();
+
+		if (foundThis.isEmpty())
+			return -1;
+		
+		return monadList.indexOf(foundThis.get());
 	}
 
 	/**
-	 * Return the index for monad within the nyad if found.
+	 * Return an integer pointing to a monad that equals the referenced one. If more than one monad 
+	 * might match, the returned integer will point at the first one in the list.
 	 * <br>
-	 * @param pIn Monad
-	 * @return int
+	 * @param pIn Monad used to filter the monads to find the first one.
+	 * @return int index of the first monad found. -1 if none are found.
 	 */
 	public int findMonad(Monad pIn) {
-		for (Monad pM : getMonadList())
-			if (pIn == pM)
-				return monadList.indexOf(pM);
-		return -1;
+		Optional<Monad> foundThis = monadStream().filter(pM -> pM == pIn).findFirst();
+
+		if (foundThis.isEmpty())
+			return -1;
+		
+		return monadList.indexOf(foundThis.get());				
 	}
 
 	/**
@@ -735,12 +557,13 @@ public class Nyad implements Modal {
 	 * @return int
 	 */
 	public int findNextAlgebra(Algebra pAlg, int pStart) {
-		if (getMonadList().size() < pStart)
+
+		Optional<Monad> foundThis = monadStream().skip(pStart).filter(x -> x.getAlgebra().equals(pAlg)).findFirst();
+
+		if (foundThis.isEmpty())
 			return -1;
-		for (int j = pStart + 1; j < getMonadList().size(); j++)
-			if (pAlg.equals(getMonadList(j).getAlgebra()))
-				return j;
-		return -1;
+		
+		return monadList.indexOf(foundThis.get());
 	}
 
 	/**
@@ -749,7 +572,9 @@ public class Nyad implements Modal {
 	 * @param pj int
 	 * @return Algebra
 	 */
-	public Algebra getAlgebra(int pj) {
+	public Algebra getAlgebraAt(int pj) {
+		if (pj < 0 | pj > algebraList.size())
+			return null;
 		return algebraList.get(pj);
 	}
 
@@ -768,7 +593,7 @@ public class Nyad implements Modal {
 	 * @return Foot
 	 */
 	public Foot getFoot() {
-		return footPoint;
+		return sharedFoot;
 	}
 
 	@Override
@@ -791,7 +616,9 @@ public class Nyad implements Modal {
 	 * @param pj int
 	 * @return Monad
 	 */
-	public Monad getMonadList(int pj) {
+	public Monad getMonadAt(int pj) {
+		if (pj < 0 | pj > monadList.size())
+			return null;
 		return monadList.get(pj);
 	}
 
@@ -823,16 +650,44 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Return a boolean stating whether or not the nyad contained the named monad.
+	 * Return a boolean stating whether or not the nyad has a monad using the algebra offered. 
+	 * More than one might exist in the nyad. One is enough for a True response.
+	 * <br>
+	 * @param pAlg Algebra to be checked to see if it is used in the nyad anywhere.
+	 * @return boolean
+	 */
+	public boolean hasAlgebra(Algebra pAlg) {
+		return algebraStream().filter(x -> (x.equals(pAlg))).findAny().isPresent();			
+	}
+
+	/**
+	 * This method reports on whether the offered monad is in the nyad's list. If it is in the list 
+	 * more than once it is the same as being present only once.
+	 * <br>
+	 * @param pIn Monad used to filter the monads to find the first one.
+	 * @return boolean True if monad found in the list.
+	 */
+	public boolean hasMonad(Monad pIn) {
+		Optional<Monad> foundThis = monadStream().filter(pM -> pM == pIn).findFirst();
+
+		return foundThis.isPresent();
+						
+	}
+
+	/**
+	 * Return a boolean stating whether or not the nyad contains the named monad.
 	 * <br>
 	 * @param pName String
 	 * @return boolean
 	 */
 	public boolean hasName(String pName) {
+		return monadStream().filter(x -> x.getName() == pName).findAny().isPresent();		
+		/*
 		for (Monad pM : getMonadList())
 			if (pName.equals(pM.getName()))
 				return true;
 		return false;
+		*/
 	}
 
 	/**
@@ -843,80 +698,122 @@ public class Nyad implements Modal {
 	 * @return int This method counts how many instances of the algebra are present
 	 *         in monads in the nyad
 	 */
-	public int howManyAtAlgebra(Algebra pAlg) {
-		if (getNyadMOrder() == 0)
-			return 0;
-		if (pAlg == null)
-			return 0;
-		int found = 1;
-		int test = findAlgebra(pAlg);
-		if (test == -1)
-			found--;
-		while (test >= 0) {
-			test = findNextAlgebra(pAlg, test);
-			if (test >= 0)
-				found++;
-		}
-		return found;
+	public long howManyAtAlgebra(Algebra pAlg) {
+		return monadInAlgebraStream(pAlg).count();
 	}
 
 	/**
-	 * This method determines whether or not the Nyad is a pscalar in the algebra in
-	 * question. It works essentially the same way as isScalarAt.
+	 * If the monads listed within a nyad are all of the same algebra, the nyad is modeling
+	 * a composition of monads without simplifying them. The jFlag should be set to false 
+	 * AND the compositionFlag should be set to True. 
 	 * <br>
-	 * @param pAlg Algebra
-	 * @return boolean
+	 * This method returns False unless the jFlag is false when it returns the compositionFlag.
+	 * If the nyad has one monad, False is returned because composition requires at least two.
+	 * <br>
+	 * This method does NOT evaluate the nyad for whether the flags are set correctly.
+	 * <br>
+	 * @return boolean True if nyad's monads are all of the same algebra
+	 */
+	public boolean isComposition() {
+		if (jFlag)
+			return !jFlag;
+		return compositionFlag;
+	}
+
+	/**
+	 * If the monads listed within a nyad are all of a different algebra, the nyad is modeling a
+	 * juxtaposition and the jFlag should be set to true. This method returns that flag and 
+	 * makes no attempt to determine whether it should be set one way or the other.
+	 * <br>
+	 * @return boolean True if nyad is strong meaning each Monad is of a different
+	 *         algebra False if nyad's monads double up on any particular algebra
+	 */
+	public boolean isJuxtaposition() {
+		return jFlag;
+	}
+
+	/**
+	 * If the monads listed within a nyad are NOT all of a different algebra, the jFlag 
+	 * is set to true. If not, it is set to false. This method returns the flag's complement.
+	 * <br>
+	 * @return boolean False if nyad is a juxtaposition. True otherwise.
+	 */
+	public boolean isMixed() {
+		return !jFlag;
+	}
+
+	/**
+	 * This method determines whether or not the Nyad is a pscalar in the algebra in question. 
+	 * It works essentially the same way as isScalarAt. It checks all monads using the offered algebra.
+	 * <br>
+	 * The edge case present in isScalarAt is not present here so tests for proper function of this 
+	 * method should try empty nyads and nyads without monads using this algebra.
+	 * <br>
+	 * @param pAlg Algebra offered as a filter for this test.
+	 * @return boolean returned if all monads (at least one) in the algebra test true for isGrade(max).
 	 */
 	public boolean isPScalarAt(Algebra pAlg) {
-		boolean test = false; // Assume test fails
-		if (getNyadMOrder() > 0 | pAlg != null) {
-			int maxGrade = pAlg.getGradeCount() - 1; // find pAlg's max grade
-			int tSpot = findAlgebra(pAlg);
-			while (tSpot >= 0) { // loop through monads with that algebra
-				if (Monad.isGrade(getMonadList(tSpot), maxGrade)) {
-					test = true; // found and IS scalar? test=true because one was found.
-					tSpot = findNextAlgebra(pAlg, tSpot++); // find a monad using pAlg
-				} else {
-					test = false;
-					break; // found and not scalar? Fails.
-				}
-			} // loop all done
-		}
-		return test; // if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
+		int maxGrade = pAlg.getGradeCount() - 1;		// find pAlg's max grade
+		final long count1 = howManyAtAlgebra(pAlg);		// this could be zero or all the monads
+		final long count2 = monadInAlgebraStream(pAlg).filter(tM -> Monad.isGrade(tM, maxGrade)).count();
+		return (count1 > 0) & (count2 > 0) & (count1 == count2);
 	}
 
 	/**
 	 * This method determines whether the Nyad is a scalar in the algebra in question.
 	 * <br>
-	 * The method looks for Algebra matches in the monad list. If none are found the
-	 * test fails. If one is found and the related monad is a scalar, the test is
-	 * temporarily true, but the search continues until one exhausts the monad list
-	 * for algebra matches. If exhaustion occurs before another match is found with
-	 * a non-scalar monad, the test is solidly true. If a non-scalar is found before
-	 * the monad list is exhausted, the test fails.
+	 * This method counts the number of monads using the algebra in the first stream.
+	 * It then counts the streamed monads in that algebra and filters them for scalar grade.
+	 * If the two counts match, then all monads in that algebra are scalars.
 	 * <br>
-	 * @param pAlg Algebra
-	 * @return boolean
+	 * One edge case involves the algebra not being present in the nyad at all. In that case  both counts 
+	 * will be zero and this test will pass. That represents how we can append a monad set to scalar = 1 
+	 * without changing how the nyad functions in compositions or as scalar = 0 without changing how it 
+	 * behaves in additions.
+	 * <br>
+	 * @param pAlg Algebra offered as a filter for this test.
+	 * @return boolean returned if all monads (even none) in the algebra test true for isGrade(0).
 	 */
 	public boolean isScalarAt(Algebra pAlg) {
-		boolean test = false; // Assume test fails
-		if (getNyadMOrder() > 0 | pAlg != null) {
-			int tSpot = findAlgebra(pAlg);
-			while (tSpot >= 0) { // loop through monads with that algebra
-				if (Monad.isGrade(getMonadList(tSpot), 0)) {
-					test = true; // found and IS scalar? test=true because one was found.
-					tSpot = findNextAlgebra(pAlg, tSpot++); // find a monad using pAlg
-				} else {
-					test = false;
-					break; // found and not scalar? Fails.
-				}
-			} // loop all done
-		}
-		return test; // if test is true, no non-scalar(s) found at pAlg, but scalar WAS found.
+		final long count1 = howManyAtAlgebra(pAlg);		// this could be zero or all the monads
+		final long count2 = monadInAlgebraStream(pAlg).filter(tM -> Monad.isGrade(tM, 0)).count();
+		return (count1 == count2);
 	}
 
 	/**
 	 * This is just an alias for monadList.stream().
+	 * <br>
+	 * @param pAlg Algebra to use as a filter on the monad stream.
+	 * @return Stream of distinct monads listed in this Nyad.
+	 */
+	public Stream<Monad> monadInAlgebraStream(Algebra pAlg) {
+		return monadList.stream().filter(x -> x.getAlgebra().equals(pAlg));
+	}
+
+	/**
+	 * This is just an alias for monadList.reversed().stream(). There are a number of internal uses for a reversed
+	 * stream of the monads, but the biggest will likely be how it reverse streams a stack of monads for compositions.
+	 * <br>
+	 * @return Stream of distinct monads listed in reverse.
+	 */
+	public Stream<Monad> monadReverseStream() {
+		return monadList.reversed().stream();
+	}
+
+	/**
+	 * This is just an alias for monadList.stream() where each of the monads has been reversed. 
+	 * The biggest use will probably be with conjugation/sandwich products involving stacks.
+	 * <br>
+	 * @return Stream of distinct reversed monads.
+	 */
+	public Stream<Monad> monadsReversedStream() {
+		return monadList.stream().map(pM -> pM.reverse());
+	}
+
+	/**
+	 * This is just an alias for monadList.stream(). There are a number of internal uses for a stream
+	 * of the monads in this nyad, but the biggest will likely be how it streams a stack of monads
+	 * for compositions.
 	 * <br>
 	 * @return Stream of distinct monads listed in this Nyad.
 	 */
@@ -960,41 +857,35 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Remove a Monad on the list of monads in this nyad.
+	 * Remove a Monad on the list of monads in this nyad using it's integer index.
+	 * If the index is out of range, this method silently fails.
 	 * <br>
-	 * @param pthisone int
-	 * @throws CladosNyadException This exception is thrown when the monad to be
-	 *                             removed can't be found.
-	 * @return Nyad
+	 * @param pthisone int index of the monad to be removed.
+	 * @return Nyad this nyad.
 	 */
-	public Nyad removeMonad(int pthisone) throws CladosNyadException {
-		Monad test = null;
-		try {
-			test = monadList.remove(pthisone);
-		} catch (IndexOutOfBoundsException e) {
-			throw new CladosNyadException(this, "Can't find the Monad to remove.");
-		} finally {
-			if (test != null) {
+	public Nyad removeMonad(int pthisone) {
+		if (pthisone < 0 | pthisone > getNyadMOrder()-1)		// Silently fail if removal is impossible
+			return this;
+
+		if (monadList.remove(pthisone) != null) {
 				monadList.trimToSize();
 				resetAlgebraList();
 			}
-		}
 		return this;
 	}
 
 	/**
 	 * Remove a Monad on the list of monads in this nyad.
+	 * If the monad isn't in the nyad, this method silently fails.
 	 * <br>
-	 * @param pM Monad
-	 * @throws CladosNyadException This exception is thrown when the monad to be
-	 *                             removed can't be found.
-	 * @return Nyad
+	 * @param pM Monad to be removed
+	 * @return Nyad this nyad.
 	 */
-	public Nyad removeMonad(Monad pM) throws CladosNyadException {
-		int testfind = monadList.indexOf(pM);
-		if (testfind < 0)
-			throw new CladosNyadException(this, "Can't find the Monad to remove.");
-		removeMonad(testfind);
+	public Nyad removeMonad(Monad pM) {
+		if (monadList.removeAll(Collections.singleton(pM))) {
+			monadList.trimToSize();
+			resetAlgebraList();
+		}
 		return this;
 	}
 
@@ -1128,16 +1019,16 @@ public class Nyad implements Modal {
 
 		if (monadList.size() == 1) {
 			jFlag = true;
-			_oneAlgebra = true;
+			compositionFlag = true;
 		} else if (algebraList.size() == 1) {
 			jFlag = false;
-			_oneAlgebra = true;
+			compositionFlag = true;
 		} else if (monadList.size() == algebraList.size()) {
 			jFlag = true;
-			_oneAlgebra = false;
+			compositionFlag = false;
 		} else {// We know monadList.size()>algebraList.size()>1 at this point
 			jFlag = false;
-			_oneAlgebra = false;
+			compositionFlag = false;
 		}
 	}
 
@@ -1148,19 +1039,16 @@ public class Nyad implements Modal {
 	 * @param pF Foot to set for the nyad.
 	 */
 	protected void setFoot(Foot pF) {
-		footPoint = pF;
+		sharedFoot = pF;
 	}
 
 	/**
-	 * Set the Monad List array of this Nyad. A new ArrayList is created, but the
-	 * Monads list the list are reused.
+	 * Set the Monad List for this Nyad. A new ArrayList is constructed, but the monads 
+	 * in the offered list are NOT copied.
 	 * <br>
 	 * @param pML ArrayList Contains the list of monads for the nyad
 	 */
 	protected void setMonadList(ArrayList<Monad> pML) {
-		if (pML == null)
-			monadList = null;
-		else
-			monadList = new ArrayList<Monad>(pML);
+		monadList = (pML == null) ? new ArrayList<Monad>() : new ArrayList<Monad>(pML);
 	}
 }

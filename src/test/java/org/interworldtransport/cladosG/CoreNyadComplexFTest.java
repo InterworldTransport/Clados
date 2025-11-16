@@ -62,7 +62,7 @@ public class CoreNyadComplexFTest {
 		void testAlgebraHunt() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
 			assertFalse(thing1.findAlgebra(property.getAlgebra()) >= 0);
-			assertTrue(Nyad.hasAlgebra(thing1, motion.getAlgebra()));
+			assertTrue(thing1.hasAlgebra(motion.getAlgebra()));
 			thing1.appendMonad(property);
 			thing1.appendMonadCopy(motion);
 			assertTrue(thing1.findNextAlgebra(motion.getAlgebra(), 1) == 2);
@@ -117,16 +117,25 @@ public class CoreNyadComplexFTest {
 			thing1.appendMonadCopy(property);
 			assertTrue(thing1.getNyadMOrder() == 4);
 			assertTrue(thing1.getNyadAOrder() == 2);
-			assertTrue(Nyad.isMixed(thing1));
+			assertTrue(thing1.isMixed());
 		}
 
 		@Test
 		void testWeakReferenceMatch() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing1.appendMonad(property);
 			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
-			// thing2.appendMonad(motion);
 			assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));
+			
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));
+			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
+
+			thing1.appendMonad(property);
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));
+			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
+
+			thing2.appendMonad(motion);
+			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));
 			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
 		}
 
@@ -153,7 +162,7 @@ public class CoreNyadComplexFTest {
 		thing1.appendMonad(property);
 		assertTrue(thing1.getNyadMOrder() == 2);
 		assertTrue(thing1.getNyadAOrder() == 2);
-		assertTrue(Nyad.isJuxtaposition(thing1));
+		assertTrue(thing1.isJuxtaposition());
 	}
 	
 	@Test
