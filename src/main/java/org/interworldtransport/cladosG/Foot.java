@@ -25,6 +25,7 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
@@ -153,6 +154,16 @@ public final class Foot {
 		if (cardinalList.contains(pIn))
 			return cardinalList.indexOf(pIn);
 		return -1;
+	}
+
+	/**
+	 * Find a cardinal in the Foot's list if it exists and return it within an Optional.
+	 * <br>
+	 * @param pName String name requested to be found
+	 * @return Optional Cardinal if one is found by the requested name
+	 */
+	public Optional<Cardinal> findCardinal(String pName) {
+		return cardinalList.stream().filter(x -> x.getUnit().equals(pName)).findFirst();
 	}
 
 	/**
