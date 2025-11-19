@@ -88,30 +88,29 @@ public class CoreGBuilderTest {
         public void testCreateFootVariants(){
             Foot tf0=GBuilder.createFoot(twoDPGA, "TestUnits");
             assertTrue(tf0.findCardinal(tCard) == -1);                                 //Wrong Cardinal but Foot exists
-            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isEmpty());    //NOT Present in the FCache
+            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isPresent());  //IS Present in the FCache
             int cardListSize = FCache.INSTANCE.getCardinalListSize();
 
-            Foot tf01=GBuilder.createFoot(twoDPGA+"b", "TestUnits" );
-            assertTrue(tf01.findCardinal(tCard) == -1);                               //Wrong Cardinal but Foot exists
-            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isEmpty());   //NOT Present in the FCache
-            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());        //Cardinal.generate doesn't cache.
-
+            Foot tf01=GBuilder.createFoot(twoDPGA+"b", "TestUnits" );        //Same Cardinal Unit as earlier
+            assertTrue(tf01.findCardinal(tCard) == -1);                                 //Wrong Cardinal but Foot exists
+            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isPresent());   //NOT Present in the FCache
+            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());          //Cardinal.generate does(!) cache
+                                                                                        //but new Foot re-used(!)
             Foot tf02=GBuilder.createFoot(twoDPGA+"c", "TestDimensionalUnit" );
-            assertTrue(tf02.findCardinal(tCard) != -1);                               //Cardinals match! (.createFoot re-uses)
+            assertTrue(tf02.findCardinal(tCard) != -1);                                 //Cardinals match! (.createFoot re-uses)
             assertTrue(FCache.INSTANCE.findCardinal("TestDimensionalUnit").isPresent());   //See? Present in the FCache
-            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());        //Cardinal got re-used.
-            
+            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());          //Cardinal cache hasn't grown in size
 
             Foot tf1=GBuilder.createFootLike("test1", tCard);
-            assertTrue(tf1.findCardinal(tCard) != -1);                      //A good Cardinal and Foot exists
+            assertTrue(tf1.findCardinal(tCard) != -1);                                  //A good Cardinal and Foot exists
 
             Foot tf2=GBuilder.createFootLike("test2", tf1, 0);
-            assertTrue(tf2.findCardinal(tCard) != -1);                      //A good Cardinal and Foot exists
-            assertFalse(tf2.getFootName().equals(tf1.getFootName()));       //and the new one has a different name
+            assertTrue(tf2.findCardinal(tCard) != -1);                                  //A good Cardinal and Foot exists
+            assertFalse(tf2.getFootName().equals(tf1.getFootName()));                   //and the new one has a different name
 
             Foot tf3=GBuilder.createFootLike("test3", FBuilder.REALF.createONE(tCard));
-            assertTrue(tf3.findCardinal(tCard) != -1);                      //A good Cardinal and Foot exists
-            assertTrue(tf3.getFootName().equals("test3"));        //and the new one has its own name
+            assertTrue(tf3.findCardinal(tCard) != -1);                                  //A good Cardinal and Foot exists
+            assertTrue(tf3.getFootName().equals("test3"));                     //and the new one has its own name
         }
 
         @Test

@@ -2,6 +2,8 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealD;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +19,7 @@ class CoreFootTest {
 	@BeforeEach
 	public void setUp() {
 		//fType = Cardinal.generate("Test:NumberType");
-		rNumber = new RealD(fType, 0.0);
+		rNumber = new RealD(fType, 0.0D);
 		tFoot = new Foot(fName, fType);
 		// A foot can be created with a raw number type of no magnitude
 		tFoot2 = new Foot(fName, rNumber);
@@ -69,8 +71,21 @@ class CoreFootTest {
 		assertTrue(tStaticFoot4.findCardinal(tStaticFoot2.getCardinal(0)) == -1); //Nothing to find.
 	}
 
-	//@Test
-	//public void testFootStrings() {
+	@Test
+	public void testFindingCardinals() {
+		Optional<Cardinal> tFind = tFoot.findCardinal("Test:NumberType");
+		assertTrue(tFind.isPresent());
+	}
+
+	@Test
+	public void testFootStrings() {
+		String tOut = Foot.toXMLString(tFoot, "");
+		assertNotNull(tOut);
+		int howLong = tOut.length();
+
+		tOut = Foot.toXMLString(tFoot, null);
+		assertTrue(tOut.length()>howLong);
+
 	//	System.out.println(tFoot.toXMLString(fName));
-	//}
+	}
 }

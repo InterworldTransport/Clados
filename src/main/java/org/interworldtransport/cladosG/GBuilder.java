@@ -549,11 +549,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * <br>
 	 * @param pN The nyad to be copied. USE A CONCRETE Nyad here or nada
 	 * @return Nyad (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
-	public final Nyad copyOfNyad(Nyad pN) throws BadSignatureException, CladosMonadException, CladosNyadException {
+	public final Nyad copyOfNyad(Nyad pN) 
+			throws CladosMonadException, CladosNyadException {
 		return new Nyad(pN);
 	}
 
@@ -563,12 +563,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pN    The nyad to copy causing all listed monads TO BE CONSTRUCTED.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final Nyad copyOfNyad(Nyad pN, String pName)
-			throws BadSignatureException, CladosMonadException, CladosNyadException {
+			throws CladosMonadException, CladosNyadException {
 		return new Nyad(pName, pN, true);
 	}
 
@@ -581,7 +580,8 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws CladosMonadException Thrown for a general monad constructor error
 	 * @throws CladosNyadException  Thrown for a general nyad constructor error
 	 */
-	public final Nyad createNyadUsingMonad(Monad pM, String pName) throws CladosNyadException, CladosMonadException {
+	public final Nyad createNyadUsingMonad(Monad pM, String pName) 
+			throws CladosNyadException, CladosMonadException {
 		return new Nyad(pName, pM, false);
 	}
 
@@ -591,12 +591,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pM    The monad to be COPIED as the first in the list in a new nyad.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final Nyad createNyadWithMonadCopy(Monad pM, String pName)
-			throws BadSignatureException, CladosMonadException, CladosNyadException {
+			throws CladosMonadException, CladosNyadException {
 		return new Nyad(pName, pM, true);
 	}
 
@@ -608,12 +607,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pN    The nyad to use causing all listed monads TO BE RE-USED AS IS.
 	 * @param pName A String for the new Nyad's name.
 	 * @return Nyad (Cast this as the concrete nyad to be used)
-	 * @throws BadSignatureException Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException  Thrown for a general monad constructor error
 	 * @throws CladosNyadException   Thrown for a general nyad constructor error
 	 */
 	public final Nyad duplicateNyadReference(Nyad pN, String pName)
-			throws BadSignatureException, CladosMonadException, CladosNyadException {
+			throws CladosMonadException, CladosNyadException {
 		return new Nyad(pName, pN, false);
 	}
 }
