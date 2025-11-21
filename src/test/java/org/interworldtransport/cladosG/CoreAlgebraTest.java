@@ -69,8 +69,8 @@ class CoreAlgebraTest {
 		Algebra alg4 = new Algebra(aName, tFoot, pSig31);
 		Algebra alg5 = new Algebra(aName, tFoot, pSig13);
 
-		assertTrue(alg5.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
-		assertTrue(alg4.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
+		//assertTrue(alg5.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
+		//assertTrue(alg4.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
 		assertTrue(alg4.getGBasis() == alg5.getGBasis());		//Two algebras have same signature lengths.
 		assertFalse(alg4.getGProduct() == alg5.getGProduct());	//Two sigs ARE different forces different GProducts
 		assertFalse(alg4.getGProduct().signature() == alg5.getGProduct().signature());

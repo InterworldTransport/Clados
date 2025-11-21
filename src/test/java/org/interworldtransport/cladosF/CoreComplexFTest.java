@@ -144,13 +144,18 @@ class CoreComplexFTest {
 	}
 
 	@Test
-	public void testMultiplyInvertFails() throws FieldException {
+	public void testMultiplyInvertFails() {
 		ComplexF testThis = ComplexF.newZERO(Cardinal.generate("not important"));
 		Assertions.assertThrows(FieldException.class, () -> testThis.invert());
+		try {
+			testThis.invert();
+		} catch (FieldException ex) {
+			assertNotNull(ex.getSourceMessage());
+		}
 	}
 
 	@Test
-	public void testDivideByZero() throws FieldException {
+	public void testDivideByZero() {
 		ComplexF testThis = ComplexF.copyZERO(tComplex1);
 		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexF.divide(tComplex1, testThis));
 		Assertions.assertThrows(FieldBinaryException.class, () -> tComplex1.divide(testThis));

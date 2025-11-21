@@ -135,13 +135,20 @@ class CoreRealFTest {
 	}
 
 	@Test
-	public void testMultiplyInvertFails() throws FieldException {
+	public void testMultiplyInvertFails() {
 		RealF testThis = RealF.newZERO(Cardinal.generate("not important"));
 		Assertions.assertThrows(FieldException.class, () -> testThis.invert());
+		try {
+			testThis.invert();
+		} catch (FieldException ex) {
+			assertNotNull(ex.getSourceMessage());
+		}
+		
+	
 	}
 
 	@Test
-	public void testDivideByZero() throws FieldException {
+	public void testDivideByZero() {
 		RealF testThis = RealF.copyZERO(tReal1);
 		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.divide(tReal1, testThis));
 		Assertions.assertThrows(FieldBinaryException.class, () -> tReal1.divide(testThis));

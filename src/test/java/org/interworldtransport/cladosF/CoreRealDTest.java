@@ -135,9 +135,14 @@ class CoreRealDTest {
 	}
 
 	@Test
-	public void testMultiplyInvertFails() throws FieldException {
+	public void testMultiplyInvertFails() {
 		RealD testThis = RealD.newZERO(Cardinal.generate("not important"));
 		Assertions.assertThrows(FieldException.class, () -> testThis.invert());
+		try {
+			testThis.invert();
+		} catch (FieldException ex) {
+			assertNotNull(ex.getSourceMessage());
+		}
 	}
 
 	@Test

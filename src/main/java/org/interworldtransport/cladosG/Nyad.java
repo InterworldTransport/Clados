@@ -840,10 +840,24 @@ public class Nyad implements Modal {
 	 * @return Nyad this nyad after alteration of the monad list
 	 */
 	public Nyad pop(int key) {
-		int limit = monadList.size();
-		if (key > 0 && key < limit) {
-			Monad temp = monadList.remove(key - 1);
-			monadList.add(key, temp);
+		if (key >= 1 && key < monadList.size()) 
+			monadList.add(key, monadList.remove(key-1));
+		return this;
+	}
+
+	/**
+	 * This method takes the offered Monad swaps it for the one before it in the stack. 
+	 * <br>
+	 * 1. If the monad isn't there, nothing happens.<br>
+	 * 2. If the monad is at the top of the list, popping up isn't possible, thus nothing happens.<br> 
+	 * <br>
+	 * @param pKey Monad in the list to be popped if possible
+	 * @return Nyad this nyad after alteration of the monad list
+	 */
+	public Nyad popMonad(Monad pKey) {
+		if(monadList.contains(pKey)){
+			int key = monadList.indexOf(pKey);
+			pop(key);
 		}
 		return this;
 	}
@@ -857,10 +871,24 @@ public class Nyad implements Modal {
 	 * @return Nyad this nyad after alteration of the monad list
 	 */
 	public Nyad push(int key) {
-		int limit = monadList.size();
-		if (key >= 0 && key < limit - 1) {
-			Monad temp = monadList.remove(key);
-			monadList.add(key + 1, temp);
+		if (key >= 0 && key < monadList.size() - 1) 
+			monadList.add(key+1, monadList.remove(key));
+		return this;
+	}
+
+	/**
+	  * This method takes the offered Monad and swaps it for the next one lower in the stack.
+	 * <br>
+	 * 1. If the monad isn't there, nothing happens.<br>
+	 * 2. If the monad is at the bottom of the list, pushign down isn't possible, thus nothing happens.<br> 
+	 * <br>
+	 * @param pKey Monad in the list to be pushed if possible
+	 * @return Nyad this nyad after alteration of the monad list
+	 */
+	public Nyad pushMonad(Monad pKey) {
+		if(monadList.contains(pKey)){
+			int key = monadList.indexOf(pKey);
+			push(key);
 		}
 		return this;
 	}
