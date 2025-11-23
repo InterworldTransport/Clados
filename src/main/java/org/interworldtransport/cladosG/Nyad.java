@@ -72,10 +72,9 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  */
 public class Nyad implements Modal {
 	/**
-	 * Return true if the Monads in the two lists are GEqual and the nyads are
-	 * reference matches. Only monads sharing the same algebra name need to be
-	 * checked against each other. No check is to be made for equality between the
-	 * monad names.
+	 * Return true if the Monads in the two lists are GEqual and the nyads are reference matches. 
+	 * Only monads sharing the same algebra name need to be checked against each other. 
+	 * No check is to be made for equality between the monad names.
 	 * <br>
 	 * This method is needed to compare Nyads since comparing instances via their
 	 * variable names only checks to see if both variables reference the same place
@@ -85,7 +84,7 @@ public class Nyad implements Modal {
 	 * @param pN  Nyad to be tested (the other one)
 	 * @return boolean
 	 */
-	public static final boolean isMEqual(Nyad pT, Nyad pN) {
+	public static final boolean isNEqual(Nyad pT, Nyad pN) {
 		if (pT.getMOrder() != pN.getMOrder())		// Check if the Nyads are of the same order
 			return false;							// Return false if they are not
 
@@ -148,10 +147,10 @@ public class Nyad implements Modal {
 			return false;							// Return false if they do not	
 
 		if (pT.getAOrder() == 0 | pN.getAOrder() == 0)
-			return true;							// If one nyad is empty, the other has danglers and passes.
+			return true;							// Edge case: AT LEAST one nyad is empty... so the other has danglers and passes.
 
 		if (!pT.algebraStream().anyMatch(y -> pN.algebraStream().anyMatch(x -> x.equals(y)))) 										
-			return true;							// Edge case: ALL monads are danglers. Weak reference match occurs by default
+			return true;							// Edge case: ALL monads are danglers. Weak match passes by default
 		
 		return  pT.algebraStream().anyMatch(y -> 	// Pick an algebra in pT [Failure to match means algebra in both and unit match failed]
 					pT.monadInAlgebraStream(y).anyMatch(pTm -> 	// Pick a monad in pT using the algebra and find anyMatch of
@@ -195,6 +194,54 @@ public class Nyad implements Modal {
 		pRight.setAlgebra(pLeft.getAlgebra());
 
 		return pRight;
+	}
+
+	/**
+	 * Display XML string that represents the Nyad and all its internal details
+	 * <br>
+	 * @param pN The Nyad to be exported as XML
+	 * @param indent String of tab characters to assist with human readability.
+	 * @return String
+	 */
+	public final static String toXMLFullString(Nyad pN, String indent) {
+		if (indent == null)
+			indent = "\t";
+		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(pN.getMOrder()).append("\" ");
+		rB.append("algorder=\"").append(pN.getAOrder()).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pN.getName()).append("</Name>\n");
+		rB.append(Foot.toXMLString(pN.getFoot(), indent + "\t"));
+		rB.append(indent).append("\t<AlgebraList>\n");
+		for (Algebra point : pN.algebraList)
+			rB.append(indent).append("\t\t<AlgebraName>").append(point.getAlgebraName()).append("</AlgebraName>\n");
+		rB.append(indent).append("\t</AlgebraList>\n");
+		rB.append(indent).append("\t<MonadList>\n");
+		for (Monad tSpot : pN.monadList)
+			rB.append(Monad.toXMLFullString(tSpot, indent + "\t\t"));
+		rB.append(indent).append("\t</MonadList>\n");
+		rB.append(indent).append("</Nyad>\n");
+		return rB.toString();
+	}
+
+	/**
+	 * Display XML string that represents the Nyad
+	 * <br>
+	 * @param pN The Nyad to be exported as XML
+	 * @param indent String of tab characters to assist with human readability.
+	 * @return String
+	 */
+	public final static String toXMLString(Nyad pN, String indent) {
+		if (indent == null)
+			indent = "\t";
+		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(pN.getMOrder()).append("\" ");
+		rB.append("algorder=\"").append(pN.getAOrder()).append("\" >\n");
+		rB.append(indent).append("\t<Name>").append(pN.getName()).append("</Name>\n");
+		rB.append(Foot.toXMLString(pN.getFoot(), indent + "\t"));
+		rB.append(indent + "\t<MonadList>\n");
+		for (Monad tSpot : pN.monadList)
+			rB.append(Monad.toXMLString(tSpot, indent + "\t\t"));
+		rB.append(indent).append("\t</MonadList>\n");
+		rB.append(indent).append("</Nyad>\n");
+		return rB.toString();
 	}
 
 	/**
@@ -410,7 +457,7 @@ public class Nyad implements Modal {
 	 * This is exactly the case for using nyads as juxtapositions.
 	 * <br><br>
 	 * @param pLeft Monad in the left multiplication role. (This is the one with the algebra that is kept.)
-	 * @param pFrom Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
+	 * @param pRight Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
 	 * @throws CladosNyadException 	This happens with an edge case involving a basis mis-match in the two algebras.
 	 * @return Nyad this nyad after the alteration.
 	 */
@@ -420,9 +467,9 @@ public class Nyad implements Modal {
 			pRight = Nyad.projectOntoAlgebra(pLeft, pRight);					// Right Monad is ALTERED HERE!
 			pLeft.multiplyAntisymm(pRight);										// Only now can we do the deed.
 
-			monadList.remove(pRight);											// Right Monad is REMOVED HERE!
+			monadList.remove(pRight);											// Right Monad is REMOVED HERE! 
 			monadList.trimToSize();
-			resetFlags();														// Work out consequences
+			resetFlags();														// Work out consequences 
 		} 
 		else throw new CladosNyadException(this, "Anti-Symmetric Compression requires exact Basis match.");
 		
@@ -470,7 +517,7 @@ public class Nyad implements Modal {
 	 * This is exactly the case for using nyads as juxtapositions.
 	 * <br><br>
 	 * @param pLeft Monad in the left multiplication role. (This is the one with the algebra that is kept.)
-	 * @param pFrom Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
+	 * @param pRight Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
 	 * @throws CladosNyadException 	This happens with an edge case involving a basis mis-match in the two algebras.
 	 * @return Nyad this nyad after the alteration.
 	 */
@@ -636,12 +683,12 @@ public class Nyad implements Modal {
 	/**
 	 * Return the element of the array of Algebras at the jth index.
 	 * <br>
-	 * @param pj int
+	 * @param pIndex int
 	 * @return Algebra
 	 */
-	public Algebra getAlgebraAt(int pj) {
-		if (validateAIndex(pj))
-			return algebraList.get(pj);
+	public Algebra getAlgebraAt(int pIndex) {
+		if (validateAIndex(pIndex))
+			return algebraList.get(pIndex);
 
 		return null;
 	}
@@ -662,14 +709,14 @@ public class Nyad implements Modal {
 
 	/**
 	 * Return the element of the array of Monads at the jth index. If the index is out of bounds
-	 * this method silently fails by returning null.
+	 * this method silently returns with a null.
 	 * <br>
-	 * @param pj int
+	 * @param pIndex int
 	 * @return Monad
 	 */
-	public Monad getMonadAt(int pj) {
-		if(validateMIndex(pj))
-			return monadList.get(pj);
+	public Monad getMonadAt(int pIndex) {
+		if(validateMIndex(pIndex))
+			return monadList.get(pIndex);
 		
 		return null;
 	}
@@ -793,7 +840,7 @@ public class Nyad implements Modal {
 	 */
 	public boolean isPScalarAt(Algebra pAlg) {
 		int maxGrade = pAlg.getGradeCount() - 1;		// find pAlg's max grade
-		final long count1 = howManyUsing(pAlg);		// this could be zero or all the monads
+		final long count1 = howManyUsing(pAlg);			// this could be zero or all the monads
 		final long count2 = monadInAlgebraStream(pAlg).filter(tM -> Monad.isGrade(tM, maxGrade)).count();
 		return (count1 > 0) & (count2 > 0) & (count1 == count2);
 	}
@@ -862,16 +909,15 @@ public class Nyad implements Modal {
 
 	/**
 	 * This method takes the Monad at the k'th position in the list and swaps it for
-	 * the one in the k-1 position if there is one there. If the the key points to
-	 * the first Monad, this function silently fails to pop it since it can't be
-	 * popped.
+	 * the one in the k-1 position if there is one there. If the index points to
+	 * the first Monad, this function silently returns with no pop action.
 	 * <br>
-	 * @param key int at which the pop is to occur
+	 * @param pIndex int at which the pop is to occur
 	 * @return Nyad this nyad after alteration of the monad list
 	 */
-	public Nyad pop(int key) {
-		if (validateMIndex(key) & key != 0) 				//Net result: Valid key but not the top of the stack
-			monadList.add(key, monadList.remove(key-1));
+	public Nyad pop(int pIndex) {
+		if (validateMIndex(pIndex) & pIndex != 0) 				//Net result: Valid key but not the top of the stack
+			monadList.add(pIndex, monadList.remove(pIndex-1));
 		return this;
 	}
 
@@ -881,12 +927,12 @@ public class Nyad implements Modal {
 	 * 1. If the monad isn't there, nothing happens.<br>
 	 * 2. If the monad is at the top of the list, popping up isn't possible, thus nothing happens.<br> 
 	 * <br>
-	 * @param pKey Monad in the list to be popped if possible
+	 * @param pM Monad in the list to be popped if possible
 	 * @return Nyad this nyad after alteration of the monad list
 	 */
-	public Nyad pop(Monad pKey) {
-		if(monadList.contains(pKey)){
-			int key = monadList.indexOf(pKey);
+	public Nyad pop(Monad pM) {
+		if(monadList.contains(pM)){
+			int key = monadList.indexOf(pM);
 			pop(key);
 		}
 		return this;
@@ -894,15 +940,15 @@ public class Nyad implements Modal {
 
 	/**
 	 * This method takes the Monad at the k'th position in the list and swaps it for
-	 * the one in the k+1 position if there is one there. If the the key points to the
-	 * last Monad, this function silently fails to push it since it can't be pushed.
+	 * the one in the k+1 position if there is one there. If the index points to the
+	 * last Monad, this function silently returns with no push action.
 	 * <br>
-	 * @param key int at which the push is to occur
+	 * @param pIndex int at which the push is to occur
 	 * @return Nyad this nyad after alteration of the monad list
 	 */
-	public Nyad push(int key) {
-		if (validateMIndex(key) & key != monadList.size())  //Net result: Valid key but not the bottom of the stack
-			monadList.add(key+1, monadList.remove(key));
+	public Nyad push(int pIndex) {
+		if (validateMIndex(pIndex) & pIndex != monadList.size())  //Net result: Valid key but not the bottom of the stack
+			monadList.add(pIndex+1, monadList.remove(pIndex));
 		return this;
 	}
 
@@ -912,12 +958,12 @@ public class Nyad implements Modal {
 	 * 1. If the monad isn't there, nothing happens.<br>
 	 * 2. If the monad is at the bottom of the list, pushign down isn't possible, thus nothing happens.<br> 
 	 * <br>
-	 * @param pKey Monad in the list to be pushed if possible
+	 * @param pM Monad in the list to be pushed if possible
 	 * @return Nyad this nyad after alteration of the monad list
 	 */
-	public Nyad push(Monad pKey) {
-		if(monadList.contains(pKey)){
-			int key = monadList.indexOf(pKey);
+	public Nyad push(Monad pM) {
+		if(monadList.contains(pM)){
+			int key = monadList.indexOf(pM);
 			push(key);
 		}
 		return this;
@@ -925,23 +971,24 @@ public class Nyad implements Modal {
 
 	/**
 	 * Remove a Monad on the list of monads in this nyad using it's integer index.
-	 * If the index is out of range, this method silently fails.
+	 * If the index is out of range, this method silently returns.
 	 * <br>
-	 * @param pthisone int index of the monad to be removed.
+	 * @param pIndex int index of the monad to be removed.
 	 * @return Nyad this nyad after the attempted removal.
 	 */
-	public Nyad remove(int pthisone) {
-		if (validateMIndex(pthisone))					
-			if (monadList.remove(pthisone) != null) {	// Silently fail if removal is impossible
-				monadList.trimToSize();
-				resetFlags();
-			}
+	public Nyad remove(int pIndex) {
+		if (validateMIndex(pIndex))	{
+			monadList.remove(pIndex);
+			monadList.trimToSize();
+			resetFlags();
+		}
+			
 		return this;
 	}
 
 	/**
-	 * Remove a Monad on the list of monads in this nyad.
-	 * If the monad isn't in the nyad, this method silently fails.
+	 * Remove a monad on the list of monads in this nyad.
+	 * If the monad isn't in the nyad, this method silently returns.
 	 * <br>
 	 * @param pM Monad to be removed
 	 * @return Nyad this nyad after the attempted removal.
@@ -955,18 +1002,30 @@ public class Nyad implements Modal {
 	}
 
 	/**
+	 * Remove monads in the nyad using the offered algebra.
+	 * If the algebra isn't inuse in the nyad, this method silently returns.
+	 * <br>
+	 * @param pA Algebra to use as a filter to collect monads to be removed
+	 * @return Nyad this one after the alteration
+	 */
+	public Nyad removeAt(Algebra pA) {
+		monadInAlgebraStream(pA).toList().forEach(x -> remove(x));		
+		return this;
+	}
+
+	/**
 	 * Nyad Scaling: Pick a monad and scale it by the magnitude provided. Only one monad can 
 	 * be scaled within a nyad at a time. Note that a request to scale a monad that cannot be 
 	 * found in the list results in no action and no exception.
 	 * <br><br>
-	 * @param pk   int index at which to find the monad
+	 * @param pIndex   int index at which to find the monad
 	 * @param pMag ProtoN child object used to scale the monad. Can't be an actual ProtoN.
 	 * @param <T> ProtoN child object generic type support
 	 * @return Nyad after the monads at the offered index has been scaled
 	 */
-	public <T extends ProtoN & Field & Normalizable> Nyad scale(int pk, T pMag) {
-		if (validateMIndex(pk))
-			monadList.get(pk).scale(pMag);
+	public <T extends ProtoN & Field & Normalizable> Nyad scale(int pIndex, T pMag) {
+		if (validateMIndex(pIndex))
+			monadList.get(pIndex).scale(pMag);
 		return this;
 	}
 
@@ -997,54 +1056,6 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Display XML string that represents the Nyad and all its internal details
-	 * <br>
-	 * @param pN The Nyad to be exported as XML
-	 * @param indent String of tab characters to assist with human readability.
-	 * @return String
-	 */
-	public final static String toXMLFullString(Nyad pN, String indent) {
-		if (indent == null)
-			indent = "\t";
-		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(pN.getMOrder()).append("\" ");
-		rB.append("algorder=\"").append(pN.getAOrder()).append("\" >\n");
-		rB.append(indent).append("\t<Name>").append(pN.getName()).append("</Name>\n");
-		rB.append(Foot.toXMLString(pN.getFoot(), indent + "\t"));
-		rB.append(indent).append("\t<AlgebraList>\n");
-		for (Algebra point : pN.algebraList)
-			rB.append(indent).append("\t\t<AlgebraName>").append(point.getAlgebraName()).append("</AlgebraName>\n");
-		rB.append(indent).append("\t</AlgebraList>\n");
-		rB.append(indent).append("\t<MonadList>\n");
-		for (Monad tSpot : pN.monadList)
-			rB.append(Monad.toXMLFullString(tSpot, indent + "\t\t"));
-		rB.append(indent).append("\t</MonadList>\n");
-		rB.append(indent).append("</Nyad>\n");
-		return rB.toString();
-	}
-
-	/**
-	 * Display XML string that represents the Nyad
-	 * <br>
-	 * @param pN The Nyad to be exported as XML
-	 * @param indent String of tab characters to assist with human readability.
-	 * @return String
-	 */
-	public final static String toXMLString(Nyad pN, String indent) {
-		if (indent == null)
-			indent = "\t";
-		StringBuilder rB = new StringBuilder(indent).append("<Nyad order=\"").append(pN.getMOrder()).append("\" ");
-		rB.append("algorder=\"").append(pN.getAOrder()).append("\" >\n");
-		rB.append(indent).append("\t<Name>").append(pN.getName()).append("</Name>\n");
-		rB.append(Foot.toXMLString(pN.getFoot(), indent + "\t"));
-		rB.append(indent + "\t<MonadList>\n");
-		for (Monad tSpot : pN.monadList)
-			rB.append(Monad.toXMLString(tSpot, indent + "\t\t"));
-		rB.append(indent).append("\t</MonadList>\n");
-		rB.append(indent).append("</Nyad>\n");
-		return rB.toString();
-	}
-
-	/*
 	 * This method resets the internal list of algebras associated with the nyad. It streams the monads 
 	 * and copies references to unique algebras found along the way. The juxtapositon and composition 
 	 * flags are reset based on what conditions are found in the monad and algebra lists.
@@ -1058,20 +1069,19 @@ public class Nyad implements Modal {
 	 * <br>
 	 * @return Nyad this nyad after the alteration.
 	 */
-	private Nyad resetFlags() {
+	public Nyad resetFlags() {
 		algebraList.clear();
 		algebraList.ensureCapacity(monadList.size());
 
 		if (monadList.size() == 0) {							//Empty set edge case
-			jFlag = true;										
+			jFlag = true;
 			compositionFlag = true;
-			return this;												//and we're done.
+			return this;										//and we're done.
 		}
 		monadStream().forEach(m -> {							//At least one monad to process
 			if (!algebraList.contains(m.getAlgebra()))			//Stash a reference to the algebra if 
 				algebraList.add(m.getAlgebra());				//it isn't already stashed.
 		});
-		//Collections.sort(algebraList); 						//Can't think of why we should bother sorting the list.
 																//Now we set/reset the state flags.
 		if (monadList.size() == 1) {							//Singlton nyad edge case is similar to empty set, so...
 			jFlag = true;										//is a juxtaposition by default

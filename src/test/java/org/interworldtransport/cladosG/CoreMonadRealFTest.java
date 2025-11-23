@@ -433,6 +433,12 @@ public class CoreMonadRealFTest {
                                                     "0++");       
         assertThrows(CladosMonadException.class, () -> tM1.setScale(tM5b.getWeights()));  
                                                                     //Proving Bases get checked
+        try {
+            tM1.setScale(tM5b.getWeights());
+        } catch (CladosMonadException eM) {
+            assertTrue(eM.getSourceMonad() == tM1);
+            assertTrue(eM.getSourceMessage() != null);
+        }
     }
     
 	//@Test

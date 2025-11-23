@@ -97,7 +97,7 @@ public class CoreNyadComplexFTest {
 			thing1.append(property);
 			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
 			thing2.append(motion);
-			assertTrue(Nyad.isMEqual(thing1, thing2));
+			assertTrue(Nyad.isNEqual(thing1, thing2));
 		}
 
 		@Test

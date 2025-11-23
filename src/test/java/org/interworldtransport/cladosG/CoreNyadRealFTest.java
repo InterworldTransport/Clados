@@ -1,19 +1,20 @@
 package org.interworldtransport.cladosG;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import org.interworldtransport.cladosF.Cardinal;
+import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
 import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author Dr Alfred Differ
@@ -57,11 +58,210 @@ public class CoreNyadRealFTest {
 	}
 
 	@Nested
-	class testFinding {
+	class testStates {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
+			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");	//one monad in second algebra
+		}
+
+		@Test 
+		void testMode() {
+			assertTrue(thing1.getMode() == CladosField.REALF);
+		}
 
 		@Test
-		void testAlgebraHunt() throws CladosNyadException, CladosMonadException {
+		void testReplaceMonadList() {
+			assertFalse(Nyad.isNEqual(thing2, thing1));								//They aren't the same
+			thing2.setMonadList(new ArrayList<>(thing1.monadList));					//Copy thing1's monadList into thing2
+			assertTrue(Nyad.isNEqual(thing2, thing1));								//Now they are the same
+			thing2.setMonadList(null);											//Reinitiates the monadList
+			assertTrue(thing2.getMOrder() == 0);									//THIS is how we get empty nyads easily.
+		}
+
+		@Test
+		void testJuxtaposition() throws CladosNyadException {
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.getAOrder() == 1);
+			
+			thing1.append(property);
+			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.isJuxtaposition());
+		}
+
+		@Test
+		void testComposition() throws CladosNyadException {
+			thing1.appendACopy(motion);
+			thing1.appendACopy(motion);
+			thing1.appendACopy(motion);
+			assertTrue(thing1.getMOrder() == 4);
+			assertTrue(thing1.isComposition());
+			thing1.appendACopy(property);
+			assertFalse(thing1.isComposition());
+		}
+
+		@Test
+		void testMixed() throws CladosNyadException {
+			thing1.appendACopy(motion);											//two copies of same monad
+			thing1.append(property);											//appended distinct monad with new algebra
+			thing1.appendACopy(property);										//two copies of each monad (total 4)
+			assertTrue(thing1.getMOrder() == 4);
+			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.isMixed());										//Mixed because MOrder>AOrder and counts>1
+
+			thing1.remove(property);											//MOrder = 3, AOrder = 2
+			assertTrue(thing1.isMixed());
+
+			thing1.remove(thing1.find(property.getAlgebra()));					//MOrder = 2, AOrder = 1
+			assertFalse(thing1.isMixed());
+			assertTrue(thing1.isComposition());
+
+			thing1.remove(motion);												//MOrder = 1, AOrder = 1
+			assertTrue(thing1.isComposition());
+			assertTrue(thing1.isJuxtaposition());
+			assertFalse(thing1.isMixed());
+		}
+
+		@Test
+		void testScalarAt() throws CladosNyadException {
+			thing1.append(property);											//two monads. Both = ZERO by construction
+			assertTrue(thing1.isScalarAt(motion.getAlgebra()));					//ZERO monads are scalars
+			assertTrue(thing1.isScalarAt(property.getAlgebra()));				//ZERO monads are scalars
+		}
+
+		@Test
+		void testPScalarAt() throws CladosNyadException {
+			thing1.append(property);											//two monads. Both = ZERO by construction
+
+			((RealF) property.getWeights().getScalar()).setReal(1.0f);	//Now property is scalar = 1.
+			assertTrue(thing1.isScalarAt(property.getAlgebra()));				//Still passes for isScalarAt
+
+			property.multiplyByPSLeft();										//Take the left dual of property
+			assertFalse(thing1.isScalarAt(property.getAlgebra()));				//No longer a scalar
+			assertTrue(thing1.isPScalarAt(property.getAlgebra()));				//Scalar -> PScalar during dual
+																	//THIS DOES NOT ALWAYS WORK in degenerate spaces because 
+																	//multiplyByPSLeft can produce zeroes on ideal blades. 
+																	//Not the case here, though, so the test is valid.
+		}
+
+		@Test
+		void testAlgebraProjection() throws CladosNyadException {	//Part of the compression concept for juxtapositions.
+			thing1.append(property);											//two monads. Both = ZERO by construction
+			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.isJuxtaposition());
+
+			Nyad.projectOntoAlgebra(property, motion);
+			assertTrue(property.getAlgebra().equals(motion.getAlgebra()));		//Projection is class method. NO NYADS informed of need for flag reset.
+			assertTrue(thing1.isJuxtaposition());								//Proof of not being informed. Nyad still says it is a juxtaposition.
+			thing1.resetFlags();												//Force the reset
+			assertFalse(thing1.isJuxtaposition());								//Now the nyad knows
+			assertTrue(thing1.isComposition());									//there is just one algebra left
+																				//so this doubles up as composition test.
+		}
+
+		@Test
+		void testNEquals() throws CladosNyadException {
+			assertFalse(Nyad.isNEqual(thing2, thing1));							//Different monads AND algebras
+			thing1.append(property);											//thing1 now has both monads
+			assertFalse(Nyad.isNEqual(thing2, thing1));							//Only one monad from thing1 is GEqual
+			thing2.append(motion);												//thing2 now has both monads
+			assertTrue(Nyad.isNEqual(thing1, thing2));							//GEqual pairs can be found.
+		}
+
+		@Test
+		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosMonadException, GeneratorRangeException {
+			Foot overHere = GBuilder.createFootLike("over here", speed);
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
+
+			Nyad thing3 = GBuilder.INSTANCE.createNyadUsingMonad(newMotion, "");	
+			assertFalse(Nyad.isNEqual(thing3, thing1));							//Foot mismatch
+			assertThrows(CladosNyadException.class, () -> thing3.appendACopy(property));
+																				//Should glitch on foot mismatch
+			try {
+				thing3.appendACopy(property);
+			} catch (CladosNyadException eN) {
+				assertTrue(eN.getSourceNyad() == thing3);
+				assertTrue(eN.getSourceMessage() != null);
+			}
+
+			thing2.append(motion);												//thing2 now has both monads
+			assertFalse(Nyad.isNEqual(thing2, thing1));							//MOrders don't match
+			thing1.appendACopy(motion);
+			assertFalse(Nyad.isNEqual(thing2, thing1));							//MOrders match, AOrders don't match
+		}
+
+		@Test
+		void testStrongReferenceMatch() throws CladosNyadException {
+			thing1.append(property);											//thing1 has both monads
+			thing2.append(motion);												//thing2 has both monads
+			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));			//of course they match
+		}
+
+		@Test 
+		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, GeneratorRangeException, CladosNyadException {
+			Foot overHere = GBuilder.createFootLike("over here", speed);
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
+																									//newMotion has a different algebra AND foot than motion
+			Nyad thing3 = GBuilder.INSTANCE.createNyadUsingMonad(newMotion, "");				//testable nyad
+			assertFalse(Nyad.isStrongReferenceMatch(thing3, thing1));								//Foot mismatch
+
+			thing2.remove(property);																//empty nyad
+			assertTrue(thing2.getMOrder() == 0);
+			assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));								//thing1 is ALL danglers
+
+			thing2.appendACopy(motion);
+			thing2.appendACopy(property);															//thing2 should be a juxtaposition
+			assertTrue(thing2.isJuxtaposition());
+			thing1.appendACopy(motion);																//thing1 should be a composition
+			assertTrue(thing1.isComposition());
+			assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));								//MOrders match, AOrders don't match
+		}
+
+		@Test
+		void testWeakReferenceMatch() throws CladosNyadException {
+			assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));			//of course they aren't strong matches
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));				//both nyads ARE danglers, so weak match works.
+			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));				//reflexive test here. Should always work.
+
+			thing1.appendACopy(property);										//Now thing1 has thing2's monad (a copy)
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));				//Still works. motion monad is a dangler.
+			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));				//reflexive test here.
+
+			thing2.appendACopy(motion);											//Now thing2 has thing1's dangler
+			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));			//No danglers left, so strong match
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));				//Strong matches also satisfy weak match
+			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));				//reflexive test here.
+		}
+
+		@Test 
+		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, GeneratorRangeException, CladosNyadException {
+			Foot overHere = GBuilder.createFootLike("over here", speed);
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
+																									//newMotion has a different algebra AND foot than motion
+			Nyad thing3 = GBuilder.INSTANCE.createNyadUsingMonad(newMotion, "");				//testable nyad
+			assertFalse(Nyad.isWeakReferenceMatch(thing3, thing1));									//Foot mismatch
+			assertFalse(Nyad.isWeakReferenceMatch(thing1, thing3));									//reflexive test
+
+			thing2.setMonadList(null);															//empty nyad
+			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));									//thing1 is ALL danglers
+			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));									//reflexive test
+		}
+	}
+
+	@Nested
+	class testFinding {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		}
+
+		@Test
+		void testAlgebraHunt() throws CladosNyadException {
 			assertFalse(thing1.find(property.getAlgebra()) >= 0);
 			assertTrue(thing1.has(motion.getAlgebra()));
 			thing1.append(property);
@@ -71,127 +271,246 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test
-		void testFindByName() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		void testFindByName() throws CladosNyadException {
 			thing1.append(property);
 			assertTrue(thing1.find(mNameU) >= 0);
 			assertFalse(thing1.find("unused name") >= 0);
+
+			assertTrue(thing1.has(mNameQ));
+			assertTrue(thing1.has(mNameU));
+			assertFalse(thing1.has("an unused name"));
 		}
 
 		@Test
-		void testFindMonad() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+		void testFindMonad() throws CladosNyadException {
 			thing1.append(property);
 			assertTrue(thing1.find(motion) >= 0);
 			assertTrue(thing1.find(property) >= 0);
 			thing1.remove(property);
 			assertFalse(thing1.find(property) >= 0);
+
+			assertTrue(thing1.has(motion));
+			assertFalse(thing1.has(property));
 		}
+
+		@Test 
+		void testGetAlgebraAt() throws CladosNyadException {
+			assertTrue(thing1.getAlgebraAt(0).equals(motion.getAlgebra()));
+			thing1.append(property);
+			assertTrue(thing1.getAlgebraAt(1).equals(property.getAlgebra()));
+			assertTrue(thing1.getAlgebraAt(2) == null);
+			assertTrue(thing1.getAlgebraAt(-2) == null);
+		}
+
+		@Test 
+		void testGetMonadAt() throws CladosNyadException {
+			thing1.append(property);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == property);
+			assertTrue(thing1.getMonadAt(2) == null);
+			assertTrue(thing1.getMonadAt(-3) == null);
+		}
+
 	}
 
 	@Nested
-	class testReference {
-
-		@Test
-		void testInteriorEquality() throws CladosNyadException, CladosMonadException {
+	class testUnaryOperations {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing1.append(property);
-			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
-			thing2.append(motion);
-			assertTrue(Nyad.isMEqual(thing1, thing2));
+			thing1.append(property);																//Motion,Property juxtaposition
+			((RealF) property.getWeights().getScalar()).setReal(2.0f);						//Now property is scalar = 2.
+			((RealF) motion.getWeights().getScalar()).setReal(1.0f);							//Now motion is scalar = 1.
 		}
 
 		@Test
-		void testStrongReferenceMatch() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing1.append(property);
-			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
-			thing2.append(motion);
-			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));
+		void testScalingAtOutOfBounds() throws CladosNyadException {
+			assertDoesNotThrow(() -> thing1.scale(3, RealF.newONE(charge).scale(2.0f)));	 //No monad at index=3. Silent fail.
+			assertTrue(((RealF)property.getWeights().getScalar()).getReal() == 2.0f);				//Unaltered in silent fail.
 		}
 
 		@Test
-		void testWeakness() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing1.appendACopy(motion);
-			thing1.append(property);
+		void testScalingAtInboundsIndex() throws CladosNyadException {
+			thing1.scale(thing1.find(property), RealF.newONE(charge).scale(16.0f));				//Scale where property monad is found
+			assertTrue(thing1.isScalarAt(property.getAlgebra()));									//Still a scalar
+			assertTrue(((RealF) property.getWeights().getScalar()).getReal() == 32.0f);
+		}
+
+		@Test
+		void testScaleIn() throws CladosNyadException {
 			thing1.appendACopy(property);
-			assertTrue(thing1.getMOrder() == 4);
+			assertTrue(thing1.getMOrder() == 3);
 			assertTrue(thing1.getAOrder() == 2);
+			thing1.scaleUsing(property.getAlgebra(), RealF.newONE(charge).scale(3.0f));			//now property is scalar = 6.
+			assertTrue(thing1.monadInAlgebraStream(property.getAlgebra()).allMatch(x -> ((RealF) x.getWeights().getScalar()).getReal() == 6.0f));
+																									//scaled EVERY monad in the property algebra
+			assertTrue(((RealF)motion.getWeights().getScalar()).getReal() == 1.0f);					//did not scale at the motion algebra
+		}
+
+		@Test 
+		void testRemoval() throws CladosNyadException {
+			thing1.appendACopy(property);
 			assertTrue(thing1.isMixed());
-		}
+			thing1.remove(property);
+			assertTrue(thing1.isJuxtaposition());
+			assertTrue(thing1.getMOrder() == 2);
 
-		@Test
-		void testWeakReferenceMatch() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");
-			assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));
+			thing1.remove(thing1.find(property.getAlgebra()));										//only removes one
+			assertTrue(thing1.getMOrder() == 1);
+
+			thing1.append(property);																//back to juxtaposition
+			thing1.append(property);																//won't get appended because it is there!
+			assertFalse(thing1.isMixed());															//would be true if append didn't check for dupes.
+			thing1.appendACopy(property);
+			thing1.appendACopy(property);															//MOrder = 4
+			assertTrue(thing1.getMOrder() == 4);
+			assertTrue(thing1.isMixed());															//is true because appendACopy doesn't append a dupe.
 			
-			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));
-			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
+			thing1.remove(thing1.findNext(property.getAlgebra(), 2));						//only removes one copy
+			assertTrue(thing1.getMOrder() == 3);
+			thing1.remove(property);																//removes the monad at 'property' reference
+			assertTrue(thing1.getMOrder() == 2);													//property algebra still in use, but we have
+																									//no reference to the monad using it.
+			assertTrue(thing1.findNext(property.getAlgebra(), 2) == -1);					//Nothing out there. List is smaller.
+			assertTrue(thing1.findNext(motion.getAlgebra(), 1) == -1);						//motion happens to be in the 0 position.
 
-			thing1.append(property);
-			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));
-			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
+			thing1.remove(property);																//Try to remove it using old reference.
+			assertTrue(thing1.getMOrder() == 2);													//Proof we didn't succeed. Shows appendACopy works.
+			assertTrue(thing1.isJuxtaposition());
 
-			thing2.append(motion);
-			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));
-			assertTrue(Nyad.isWeakReferenceMatch(thing2, thing1));
-			assertTrue(Nyad.isWeakReferenceMatch(thing1, thing2));
+			thing1.remove(10);															//Out of bounds index should do nothing
+			assertTrue(thing1.getMOrder() == 2);													//Proof nothing happened.
+		}
+
+		@Test 
+		void testRemovalAt() throws CladosNyadException {
+			thing1.appendACopy(property);
+			thing1.appendACopy(property);
+			thing1.appendACopy(property);
+			assertTrue(thing1.getMOrder() == 5);													//One motion monad. Four property monads.
+
+			thing1.removeAt(property.getAlgebra());													//remove all monads using property's algebra
+			assertTrue(thing1.getMOrder() == 1);													//just one left.
 		}
 
 		@Test
-		void testScalarAt() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");	//motion happens to be ZERO
-			thing1.append(property);										//property happens to be ZERO
-			assertTrue(thing1.isScalarAt(motion.getAlgebra()));
-			assertTrue(thing1.isScalarAt(property.getAlgebra()));
-
-			((RealF) property.getWeights().getScalar()).setReal(1.0f);
-			assertTrue(thing1.isScalarAt(property.getAlgebra()));
-			property.multiplyByPSLeft();
-			assertTrue(thing1.isPScalarAt(property.getAlgebra()));
+		void testAppendWrongFoot() throws BadSignatureException, CladosMonadException, GeneratorRangeException, CladosNyadException {
+			Foot overHere = GBuilder.createFootLike("over here", speed);
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
+																									//newMotion has a different algebra AND foot than motion
+			assertThrows(CladosNyadException.class, () -> thing1.append(newMotion));	//Should glitch on the attempt
 		}
+
 	}
 
-	@Test
-	void testConstructOrders() throws CladosMonadException, CladosNyadException {
-		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-		assertTrue(thing1.getMOrder() == 1);
-		assertTrue(thing1.getAOrder() == 1);
-		thing1.append(property);
-		assertTrue(thing1.getMOrder() == 2);
-		assertTrue(thing1.getAOrder() == 2);
-		assertTrue(thing1.isJuxtaposition());
+	@Nested
+	class testListManagement {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
+			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing1.append(property);																//Motion,Property juxtaposition
+			((RealF) property.getWeights().getScalar()).setReal(2.0f);						//Now property is scalar = 2.
+			((RealF) motion.getWeights().getScalar()).setReal(1.0f);							//Now motion is scalar = 1.
+		}
+
+		@Test
+		void testPopAt() {
+			assertTrue(thing1.find(motion) == 0);
+			assertTrue(thing1.find(property) == 1);
+			thing1.pop(1);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+			thing1.pop(-1);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+			thing1.pop(0);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+		}
+
+		@Test
+		void testPopUsing() throws CladosNyadException {
+			assertTrue(thing1.find(motion) == 0);
+			assertTrue(thing1.find(property) == 1);
+			thing1.pop(property);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+
+			thing1.remove(property);
+			assertTrue(thing1.find(motion) == 0);
+			thing1.appendACopy(motion);
+			assertTrue(thing1.find(motion) == 0);
+			assertTrue(thing1.getMonadAt(1) != motion);
+			thing1.pop(property);
+			assertTrue(thing1.find(motion) == 0);
+		}
+
+		@Test
+		void testPushAt() {
+			assertTrue(thing1.find(motion) == 0);
+			assertTrue(thing1.find(property) == 1);
+			thing1.push(0);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+			thing1.push(-1);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+			thing1.push(thing1.getMOrder());
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+		}
+
+		@Test
+		void testPushUsing() throws CladosNyadException {
+			assertTrue(thing1.find(motion) == 0);
+			assertTrue(thing1.find(property) == 1);
+			thing1.push(motion);
+			assertTrue(thing1.find(motion) == 1);
+			assertTrue(thing1.find(property) == 0);
+
+			thing1.remove(property);
+			assertTrue(thing1.find(motion) == 0);
+			thing1.appendACopy(motion);
+			assertTrue(thing1.find(motion) == 0);
+			assertTrue(thing1.getMonadAt(1) != motion);
+			thing1.push(property);
+			assertTrue(thing1.find(motion) == 0);
+		}
+
 	}
 
-	@Test
-	void testScalingAt() throws CladosNyadException, CladosMonadException, FieldBinaryException {
-		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-		thing1.append(property);
-		((RealF) property.getWeights().getScalar()).setReal(16.0f);
-		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		thing1.scale(thing1.find(property), RealF.newONE(charge).scale(16.0f));
-		assertTrue(thing1.isScalarAt(property.getAlgebra()));
-		assertTrue(((RealF) property.getWeights().getScalar()).getReal() == 256.0f);
-	}
+	@Nested
+	class testOutputText {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
+			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
+			thing1.append(property);
+		}
 
-	@Test
-	void testXMLFullOutput() throws CladosMonadException, CladosNyadException {
-		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
-		thing1.append(property);
-		String printIt = Nyad.toXMLFullString(thing1, "");
-		assertTrue(printIt != null);
-		// System.out.println(printIt);
-	}
+		@Test
+		void testXMLFullOutput() throws CladosNyadException {
+			String printIt = Nyad.toXMLFullString(thing1, "");
+			assertTrue(printIt != null);
 
-	@Test
-	void testXMLShortOutput() throws CladosMonadException, CladosNyadException {
-		thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
-		thing1.append(property);
-		String printIt = Nyad.toXMLString(thing1, "");
-		assertTrue(printIt != null);
-		// System.out.println(printIt);
+			printIt = Nyad.toXMLFullString(thing1, null);
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLFullString(thing1, "\t\t\t");
+			assertTrue(printIt != null);
+		}
+
+		@Test
+		void testXMLShortOutput() throws CladosNyadException {
+			String printIt = Nyad.toXMLString(thing1, "");
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLString(thing1, null);
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLString(thing1, "\t\t\t");
+			assertTrue(printIt != null);
+		}
 	}
 
 }
