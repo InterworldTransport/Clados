@@ -167,12 +167,14 @@ public class Nyad implements Modal {
 	/**
 	 * Project the second Monad into the algebra of the first where it is assumed that the two algebras
 	 * share the same basis. In that rare case, the algebra distinctions are merely bookkeeping tricks.
-	 * <br>
+	 * <br><br>
+	 * Also project onto the units of the first monad. Basically point at the other cardinal.
+	 * <br><br>
 	 * @param pLeft the monad acting as a source of an algebra to project into
 	 * @param pRight the monad to be projected
 	 * @return Monad which has been pressed into the other algebra
 	 */
-	public static Monad projectOntoAlgebra(Monad pLeft, Monad pRight) {
+	public static Monad projectReference(Monad pLeft, Monad pRight) {
 
 		//Scale<?> tempRightWeights = pRight.getWeights();
 		//Algebra tempLeftAlg = pLeft.getAlgebra();
@@ -192,6 +194,7 @@ public class Nyad implements Modal {
 		// and place one of the monads in the degenerate extension. Weird, but it might work.
 
 		pRight.setAlgebra(pLeft.getAlgebra());
+		pRight.getWeights().setCardinal(pLeft.getWeights().getCardinal());
 
 		return pRight;
 	}
@@ -462,17 +465,19 @@ public class Nyad implements Modal {
 	 * @return Nyad this nyad after the alteration.
 	 */
 	public Nyad compressAntiSymm(Monad pLeft, Monad pRight) throws CladosNyadException {
-		if (pLeft.getAlgebra().getGBasis() == pRight.getAlgebra().getGBasis()) {// Proceed only if Basis is exact match
-
-			pRight = Nyad.projectOntoAlgebra(pLeft, pRight);					// Right Monad is ALTERED HERE!
-			pLeft.multiplyAntisymm(pRight);										// Only now can we do the deed.
-
-			monadList.remove(pRight);											// Right Monad is REMOVED HERE! 
-			monadList.trimToSize();
-			resetFlags();														// Work out consequences 
-		} 
-		else throw new CladosNyadException(this, "Anti-Symmetric Compression requires exact Basis match.");
+		if (pLeft.getAlgebra().getGBasis() != pRight.getAlgebra().getGBasis()) 	// Proceed only if Basis is exact match
+			throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
 		
+		if (!this.has(pLeft) || !this.has(pRight))								// Proceed only if both monads in nyad.
+			throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
+
+		pRight = Nyad.projectReference(pLeft, pRight);							// Right Monad is ALTERED HERE!
+		pLeft.multiplyAntisymm(pRight);											// Only now can we do the deed.
+
+		monadList.remove(pRight);												// Right Monad is REMOVED HERE!
+		monadList.trimToSize();
+		resetFlags();															// Work out consequences
+		 
 		return this;
 	}
 
@@ -522,17 +527,19 @@ public class Nyad implements Modal {
 	 * @return Nyad this nyad after the alteration.
 	 */
 	public Nyad compressSymm(Monad pLeft, Monad pRight) throws CladosNyadException {
-		if (pLeft.getAlgebra().getGBasis() == pRight.getAlgebra().getGBasis()) {// Proceed only if Basis is exact match
-
-			pRight = Nyad.projectOntoAlgebra(pLeft, pRight);					// Right Monad is ALTERED HERE!
-			pLeft.multiplySymm(pRight);											// Only now can we do the deed.
-
-			monadList.remove(pRight);											// Right Monad is REMOVED HERE!
-			monadList.trimToSize();
-			resetFlags();														// Work out consequences
-		} 
-		else throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
+		if (pLeft.getAlgebra().getGBasis() != pRight.getAlgebra().getGBasis()) 	// Proceed only if Basis is exact match
+			throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
 		
+		if (!this.has(pLeft) || !this.has(pRight))								// Proceed only if both monads in nyad.
+			throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
+
+		pRight = Nyad.projectReference(pLeft, pRight);							// Right Monad is ALTERED HERE!
+		pLeft.multiplySymm(pRight);												// Only now can we do the deed.
+
+		monadList.remove(pRight);												// Right Monad is REMOVED HERE!
+		monadList.trimToSize();
+		resetFlags();															// Work out consequences
+		 
 		return this;
 	}
 

@@ -21,16 +21,18 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  *
  */
 public class CoreNyadRealFTest {
-	//Algebra alg1, alg2;
+	final Cardinal charge = FBuilder.createCardinal("q/dV");
+	final Cardinal speed = FBuilder.createCardinal("c=1");
+	
+	final String footName = "YouAreHere";
 	final String aName = "MotionAlgebra";
 	final String aName2 = "PropertyAlgebra";
-	final Cardinal charge = FBuilder.createCardinal("q/dV");
-	final String footName = "YouAreHere";
+	final String mNameU = "Velocity";
 	final String mNameQ = "ChargeDensity";
-	final String mNameU = "4-Velocity";
+	final String sigD = "-+++";
+
 	Monad motion, property;
-	final String sig4D = "-+++";
-	final Cardinal speed = FBuilder.createCardinal("c=1");
+	Monad newMotion, newMotion2, newProperty, newProperty2;
 	Nyad thing1, thing2;
 
 	/**
@@ -47,13 +49,13 @@ public class CoreNyadRealFTest {
 												here, 
 												mNameU, 
 												aName,
-												sig4D);
+												sigD);
 
 		property = GBuilder.createMonadWithFoot(FBuilder.REALF.createZERO(charge), 
 												here, 
 												mNameQ, 
 												aName2,
-												sig4D);
+												sigD);
 		assertFalse(motion.getAlgebra().equals(property.getAlgebra()));
 	}
 
@@ -152,7 +154,7 @@ public class CoreNyadRealFTest {
 			assertTrue(thing1.getAOrder() == 2);
 			assertTrue(thing1.isJuxtaposition());
 
-			Nyad.projectOntoAlgebra(property, motion);
+			Nyad.projectReference(property, motion);
 			assertTrue(property.getAlgebra().equals(motion.getAlgebra()));		//Projection is class method. NO NYADS informed of need for flag reset.
 			assertTrue(thing1.isJuxtaposition());								//Proof of not being informed. Nyad still says it is a juxtaposition.
 			thing1.resetFlags();												//Force the reset
@@ -324,8 +326,36 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test
+		void testDualLeft() {
+			((RealF) property.getWeights().getPScalar()).setReal(2.0f);						//Property's scale is Scalar+PScalar
+			property.setGradeKey();																	//Now property knows.
+			thing1.dualLeft();
+
+			assertTrue(thing1.isPScalarAt(motion.getAlgebra()));
+			assertTrue(((RealF)thing1.getMonadAt(1).getWeights().getScalar()).getReal() == -2.0f);
+
+			thing1.dualLeft();
+			assertTrue(thing1.isScalarAt(motion.getAlgebra()));
+			assertTrue(((RealF)thing1.getMonadAt(1).getWeights().getScalar()).getReal() == -2.0f);
+		}
+
+		@Test
+		void testDualRight() {
+			((RealF) property.getWeights().getPScalar()).setReal(2.0f);						//Property's scale is Scalar+PScalar
+			property.setGradeKey();																	//Now property knows.
+			thing1.dualRight();
+
+			assertTrue(thing1.isPScalarAt(motion.getAlgebra()));
+			assertTrue(((RealF)thing1.getMonadAt(1).getWeights().getScalar()).getReal() == -2.0f);
+
+			thing1.dualRight();
+			assertTrue(thing1.isScalarAt(motion.getAlgebra()));
+			assertTrue(((RealF)thing1.getMonadAt(1).getWeights().getScalar()).getReal() == -2.0f);
+		}
+
+		@Test
 		void testScalingAtOutOfBounds() throws CladosNyadException {
-			assertDoesNotThrow(() -> thing1.scale(3, RealF.newONE(charge).scale(2.0f)));	 //No monad at index=3. Silent fail.
+			assertDoesNotThrow(() -> thing1.scale(3, RealF.newONE(charge).scale(2.0f))); //No monad at index=3. Silent fail.
 			assertTrue(((RealF)property.getWeights().getScalar()).getReal() == 2.0f);				//Unaltered in silent fail.
 		}
 
@@ -513,4 +543,84 @@ public class CoreNyadRealFTest {
 		}
 	}
 
+	@Nested
+	class testBinaryOps {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
+			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing1.append(property);
+			((RealF) property.getWeights().getScalar()).setReal(2.0f);		//Now property is scalar = 2.
+			((RealF) motion.getWeights().getScalar()).setReal(1.0f);			//Now motion is scalar = 1.
+			newMotion = GBuilder.copyOfMonad(motion, "CopyMotion");
+			newMotion2 = GBuilder.copyOfMonad(motion, "Copy2Motion");
+			newProperty = GBuilder.copyOfMonad(property, "CopyProperty");
+			newProperty2 = GBuilder.copyOfMonad(property, "Copy2Property");
+		}
+
+		@Test
+		void testSymmetricCompression() throws CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == property);
+	
+			thing1.compressSymm(property, motion);									//motion gets property's algebra and cardinal
+			assertTrue(thing1.getMonadAt(0) == property);
+	
+			assertTrue(thing1.getMOrder() == 1);									
+			assertTrue(thing1.getAOrder() == 1);									//(It happens with only one monad)
+			assertTrue(((RealF) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 2.0f);
+			
+			thing1.append(newMotion).pop(newMotion);								//Back to a juxtaposition
+			thing1.compressSymm(newMotion, property);								//property gets newMotion's algebra and cardinal
+			assertTrue(thing1.getMOrder() == 1);									
+			assertTrue(thing1.getAOrder() == 1);									//(It happens with only one monad)
+			assertTrue(((RealF) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 2.0f);
+
+			thing1.append(newProperty);
+			assertDoesNotThrow(() -> thing1.compressSymm(0, 1));	//property winds up with motion's algebra and cardinal
+			assertTrue(thing1.getMOrder() == 1);									//Test caused mutation of thing1.
+																					//So doing it again should causes out of bounds
+			assertThrows(IndexOutOfBoundsException.class, () -> thing1.compressSymm(0, 1));
+
+			thing1.append(newProperty2);											//Back to juxtaposition with newMotion
+			assertThrows(CladosNyadException.class, () -> thing1.compressSymm(newMotion, newMotion2));
+																					//Should bark because newMotion2 not in list
+			assertThrows(CladosNyadException.class, () -> thing1.compressSymm(newMotion2, newMotion));
+																					//Reflexive test to be sure.
+		}
+
+		@Test
+		void testAntiSymmetricCompression() throws CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == property);
+			
+			thing1.compressAntiSymm(property, motion);								//motion gets property's algebra and cardinal
+			assertTrue(thing1.getMonadAt(0) == property);
+			assertTrue(thing1.getMOrder() == 1);									//One left
+			assertTrue(((RealF) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 0.0f);	//Because anti-symmetric
+			
+			thing1.append(newMotion).pop(newMotion);								//Back to a juxtaposition
+			((RealF) property.getWeights().getScalar()).setReal(2.0f);		//Now property is back to scalar = 2.
+			
+			thing1.compressAntiSymm(newMotion, property);							//property gets newMotion's algebra and cardinal
+			assertTrue(thing1.getMOrder() == 1);									//One left
+			assertTrue(((RealF) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 0.0f);
+			
+			thing1.append(newProperty);
+			((RealF) newMotion.getWeights().getScalar()).setReal(1.0f);		//Now newMotion is back to scalar = 1.
+			
+			assertDoesNotThrow(() -> thing1.compressAntiSymm(0, 1));	//NewPproperty winds up with NewMotion's algebra and cardinal
+			assertTrue(thing1.getMOrder() == 1);									//Test caused mutation of thing1.
+																					//So doing it again should causes out of bounds
+			assertThrows(IndexOutOfBoundsException.class, () -> thing1.compressAntiSymm(0, 1));
+			
+			thing1.append(newProperty2);											//Back to juxtaposition with newMotion
+			((RealF) newProperty2.getWeights().getScalar()).setReal(2.0f);	//Now property is back to scalar = 2.
+			
+			assertThrows(CladosNyadException.class, () -> thing1.compressAntiSymm(newMotion, newMotion2));
+																					//Should bark because newMotion2 not in list
+			assertThrows(CladosNyadException.class, () -> thing1.compressAntiSymm(newMotion2, newMotion));
+																					//Reflexive test to be sure.
+		}
+
+	}
 }

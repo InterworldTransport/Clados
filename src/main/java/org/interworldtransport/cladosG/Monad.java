@@ -400,12 +400,7 @@ public class Monad implements Modal {
 	 * key is a sum over powers of 10 with the grade as the exponent.
 	 */
 	private long gradeKey;
-	/**
-	 * This element specifying the field type one should expect for coefficients 
-	 * of the monad. It is allowed to change, but should be considered subordinate
-	 * to the mode of the Scale which is finalized.
-	 */
-	//private CladosField mode;
+
 	/**
 	 * All objects of this class have a name independent of all other features.
 	 */
@@ -1558,23 +1553,30 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Set the grade key for the monad. Never accept an externally provided key.
-	 * Always recalculate it after any of the unary or binary operations.
+	 * Set the grade key for the monad. Never accept an externally provided key. Always recalculate it 
+	 * after any of the unary or binary operations.
 	 * <br>
-	 * While we are here, we ALSO set the sparseFlag. The nonZero coeff detection
-	 * loop that fills gradeKey is a grade detector, so if foundGrade is less than
-	 * or equal to half gradeCount, sparseFlag is set to true and false otherwise.
+	 * While we are here, we ALSO set the sparseFlag. The nonZero coeff detection loop that fills gradeKey 
+	 * is a grade detector, so if foundGrade is less than or equal to half gradeCount, sparseFlag is set 
+	 * to true and false otherwise.
+	 * <br>
+	 * Use this IF you set one of the weights manually by reaching into the scales.
 	 */
-	private void setGradeKey() {
+	public Monad setGradeKey() {
 		foundGrades = 0;
 		gradeKey = 0;
 
 		gradeStream().forEach(grade -> {
-			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-					.filter(blade -> getWeights().isNotZeroAt(blade)).parallel().findAny().isPresent()) {
+			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade).parallel().anyMatch(
+															blade -> getWeights().isNotZeroAt(blade))){
 				foundGrades++;
 				gradeKey += (long) Math.pow(10, grade);
 			}
+			//if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
+			//		.filter(blade -> getWeights().isNotZeroAt(blade)).parallel().findAny().isPresent()) {
+			//	foundGrades++;
+			//	gradeKey += (long) Math.pow(10, grade);
+			//}
 		});
 
 		if (gradeKey == 0) {	//Special case for scalars. If no grades detected, scalar it must be.
@@ -1582,6 +1584,7 @@ public class Monad implements Modal {
 			gradeKey++;
 		}
 		sparseFlag = (foundGrades < getAlgebra().getGradeCount() / 2) ? true : false;
+		return this;
 	}
 
 	/**

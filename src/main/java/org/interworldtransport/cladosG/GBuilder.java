@@ -134,12 +134,12 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T extends ProtoN & Field & Normalizable> Monad pscalarOfMonad(Monad pM) {
-		Scale<T> tempScales = (Scale<T>) GBuilder.copyOfScale(pM.getWeights());
-		tempScales.zeroAllButGrade((byte) (pM.getAlgebra().getGradeCount() - 1));
-		tempScales.setPScalarWeight((T) FBuilder.createONE(pM.getMode(), pM.getWeights().getCardinal()));
 		Monad returnThis = GBuilder.copyOfMonad(pM, pM.getName()+"-PScalarOf");
-		returnThis.scales = tempScales;
-		return returnThis;
+		returnThis.scales = ((Scale<T>) GBuilder.copyOfScale(pM.getWeights()))
+										.zeroAllButGrade((byte) (pM.getAlgebra().getGradeCount() - 1))
+										.setPScalarWeight(FBuilder.createONE(	pM.getMode(), 
+																				pM.getWeights().getCardinal()));
+		return returnThis.setGradeKey();
 	}
 
 	/**

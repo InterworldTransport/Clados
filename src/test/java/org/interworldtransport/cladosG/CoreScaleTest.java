@@ -316,10 +316,10 @@ public class CoreScaleTest {
         workScaleCF.setCardinal(newCard);
         workScaleCD.setCardinal(newCard);
 
-        assertTrue(RealF.isZero(workScaleRF.getScalar()));      //Change of units clears the weights.
-        assertTrue(RealD.isZero(workScaleRD.getScalar()));      //Change of units clears the weights.
-        assertTrue(ComplexF.isZero(workScaleCF.getScalar()));   //Change of units clears the weights.
-        assertTrue(ComplexD.isZero(workScaleCD.getScalar()));   //Change of units clears the weights.
+        assertFalse(RealF.isZero(workScaleRF.getScalar()));      //Change of units DOES NOT clear weights.
+        assertFalse(RealD.isZero(workScaleRD.getScalar()));      //Change of units DOES NOT clear weights.
+        assertFalse(ComplexF.isZero(workScaleCF.getScalar()));   //Change of units DOES NOT clear weights.
+        assertFalse(ComplexD.isZero(workScaleCD.getScalar()));   //Change of units DOES NOT clear weights.
     }
     
     @Test

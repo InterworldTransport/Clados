@@ -707,11 +707,11 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 			rB.append(indent).append("\t\t\t<Pair>\n");
 			rB.append(indent).append(Blade.toXMLString(blade, "\t\t\t\t"));
 			switch (pS.getMode()){
-				case COMPLEXD -> {rB.append(indent + "\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
-				case COMPLEXF -> {rB.append(indent + "\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
-				case REALD -> 	{rB.append(indent + "\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
-				case REALF -> 	{rB.append(indent + "\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
-				default -> 		{rB.append(indent + "\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
+				case COMPLEXD -> {rB.append(indent + "\t\t\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
+				case COMPLEXF -> {rB.append(indent + "\t\t\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
+				case REALD -> 	{rB.append(indent + "\t\t\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
+				case REALF -> 	{rB.append(indent + "\t\t\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
+				default -> 		{rB.append(indent + "\t\t\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
 			}	
 			rB.append(indent).append("\t\t\t</Pair>\n");
 		});
@@ -762,9 +762,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	protected Scale<D> setCardinal(Cardinal pCard) {
 		if (card != pCard & pCard != null) {
-			map.clear();
+			weightsParallelStream().forEach(x -> x.setCardinal(pCard));
 			card = pCard;
-			zeroAll();
+			//map.clear();									//This used to be essentially disallowed. DANGER!
+			//zeroAll();									//Doing it reset the weights to zero. Not any more.
 		}
 		return this;
 	}
