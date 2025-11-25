@@ -32,11 +32,7 @@ import java.util.stream.Stream;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.ProtoN;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -293,11 +289,8 @@ public class Nyad implements Modal {
 	 * @param pN Nyad
 	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
 	 *                              is malformed. Make no assumptions!
-	 * @throws CladosMonadException This shouldn't happen very often. If it does,
-	 *                              there is something malformed one one of the
-	 *                              monads in the nyad being copied.
 	 */
-	public Nyad(Nyad pN) throws CladosNyadException, CladosMonadException {
+	public Nyad(Nyad pN) throws CladosNyadException {
 		this(pN.getName(), pN, true);
 	}
 
@@ -346,16 +339,19 @@ public class Nyad implements Modal {
 		setName(pName);
 		setFoot(pN.getFoot());
 		mode = pN.getMonadAt(0).getMode();
-		if (pN.monadList != null) {
-			monadList = new ArrayList<Monad>(pN.monadList.size());
-			algebraList = new ArrayList<Algebra>(pN.algebraList.size());
-			if (pCopy)
-				for (Monad tSpot : pN.monadList)
-					appendACopy(tSpot);
-			else
-				for (Monad tSpot : pN.monadList)
-					append(tSpot);
-		}
+		
+		monadList = new ArrayList<Monad>(pN.monadList.size());
+		algebraList = new ArrayList<Algebra>(pN.algebraList.size());
+		if (pCopy)
+			pN.monadStream().forEach(x -> {
+				try {appendACopy(x);} 
+				catch (CladosNyadException e) {new IllegalArgumentException("Nyad copied changed during construction.");}
+			});
+		else 
+			pN.monadStream().forEach(x -> {
+				try {append(x);} 
+				catch (CladosNyadException e) {new IllegalArgumentException("Nyad reused changed during construction.");}
+			});
 	}
 
 	/**
@@ -585,24 +581,17 @@ public class Nyad implements Modal {
 		Algebra tAlg = null;
 		Optional<Algebra> foundAlg = algebraStream().filter(x -> x.getAlgebraName().equals(pAlgebraName)).findFirst();
 		if(foundAlg.isPresent())							//Algebra found by name
-			tAlg = foundAlg.get();							//and simply referenced
-		else {												//Have to construct algebra not found
+			tAlg = foundAlg.get();							//and simply referenced AND THE OFFERED SIGNATURE IS IGNORED
+		else {												//Have to construct algebra not found. Signature gets used.
 			Optional<GProduct> foundGP = GCache.INSTANCE.findGProduct(pSig);
 			if (foundGP.isPresent()) 						//GP for new algebra already constructed
 				tAlg = GBuilder.createAlgebraWithFootGP(sharedFoot, foundGP.get(), pAlgebraName);
 			else 											//Don't need to hunt basis for re-use
 				tAlg = GBuilder.createAlgebraWithFoot(sharedFoot, pAlgebraName, pSig);			
 		}
-		//With Algebra and a Cardinal to use, we can construct a viable Scale<ProtoN child> now.
-		Scale<?> tScale = null;
-		switch (mode) {										//re-use nyad's mode to avoid mismatches
-			case COMPLEXD -> new Scale<ComplexD>(mode, tAlg.getGBasis(), tCard);
-			case COMPLEXF -> new Scale<ComplexF>(mode, tAlg.getGBasis(), tCard);
-			case REALD -> new Scale<RealD>(mode, tAlg.getGBasis(), tCard);
-			case REALF -> new Scale<RealF>(mode, tAlg.getGBasis(), tCard);
-			default -> throw new IllegalArgumentException("Unexpected ProtoN child: " + mode);
-		}
-		//The point was to use GBuilder.createMonadWithAlgebra(Scale<T> pNumbers, Algebra pA, String pName)
+				//With Algebra and a Cardinal, we can construct a Scale<?> without specifying the ProtoN child
+		Scale<?> tScale = new Scale<>(mode, tAlg.getGBasis(), tCard);
+				//The point was to use GBuilder.createMonadWithAlgebra(Scale<T> pNumbers, Algebra pA, String pName)
 		this.append(GBuilder.createMonadWithAlgebra(tScale, tAlg, pMonadName));
 		return this;										//All done!
 	}

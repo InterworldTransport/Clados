@@ -60,11 +60,93 @@ public class CoreNyadRealFTest {
 	}
 
 	@Nested
+	class testConstructions {
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException {
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
+		}
+		
+		@Test
+		void testConstructor1() throws CladosNyadException {
+			Nyad thing2 = new Nyad(thing1);
+			assertTrue(Nyad.isNEqual(thing1, thing2));
+		}
+
+		@Test
+		void testConstructor2() throws CladosNyadException {
+			Nyad thing2 = new Nyad("thing2", motion, false);
+			assertTrue(Nyad.isNEqual(thing1, thing2));						//because motion was reused
+
+			thing2 = new Nyad("thing2", motion, true);
+			assertTrue(Nyad.isNEqual(thing1, thing2));						//because motion was NOT reused
+			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));		//because motion was copied
+		}
+
+		@Test
+		void testConstructor3() throws CladosNyadException {
+			Nyad thing2 = new Nyad("thing2", thing1, false);
+			assertTrue(Nyad.isNEqual(thing1, thing2));						//because thing1's motion was reused
+
+			thing2 = new Nyad("thing2", thing1, true);
+			assertTrue(Nyad.isNEqual(thing1, thing2));						//because thing1's motion was NOT reused
+			assertTrue(Nyad.isStrongReferenceMatch(thing1, thing2));		//because thing1's motion was copied
+		}
+
+		@Test
+		void testShouldntHappens() {
+			thing1.remove(motion);
+			assertTrue(thing1.getMOrder() == 0);
+			assertThrows(IllegalArgumentException.class, () -> new Nyad("", thing1, false));
+			assertThrows(IllegalArgumentException.class, () -> new Nyad("", thing1, true));
+		}
+
+		@Test
+		void testCreateMonad() throws BadSignatureException, GeneratorRangeException, CladosMonadException, CladosNyadException {
+			//create(String pMonadName, String pAlgebraName, String pSig, String pCard)
+			// throws most everything: BadSignatureException, GeneratorRangeException, CladosMonadException, CladosNyadException 
+			String newMName = "IsoChargeDensity";
+			String newAName = "NewPropertyAlgebra";
+			String newSig = "--";
+			String newCard = "iso";
+
+			thing1.create(newMName, newAName, newSig, newCard);
+			assertTrue(thing1.getMOrder() == 2);
+			thing1.remove(1);
+
+			thing1.create(newMName, newAName, newSig, null);
+			assertTrue(thing1.getMOrder() == 2);
+			thing1.remove(1);
+
+			thing1.getFoot().getCardinals().clear();
+			thing1.create(newMName, newAName, newSig, null);
+			assertTrue(thing1.getMOrder() == 2);
+			thing1.remove(1);
+
+			thing1.getFoot().appendCardinal(Cardinal.generate(newCard));
+			thing1.create(newMName, newAName, newSig, null);
+			assertTrue(thing1.getMOrder() == 2);
+			thing1.remove(1);
+
+			thing1.getFoot().getCardinals().clear();
+			Cardinal testCard = Cardinal.generate(newCard);
+			thing1.getFoot().appendCardinal(testCard);
+			thing1.create(newMName, newAName, newSig, testCard.getUnit());
+			assertTrue(thing1.getMOrder() == 2);
+			thing1.remove(1);
+
+			thing1.create(newMName, aName, newSig, newCard);
+			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.isComposition());								//aName algebra got re-used and newSig IGNORED!
+			thing1.remove(1);
+		}
+	}
+
+	@Nested
 	class testStates {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
-			thing2 = GBuilder.INSTANCE.createNyadUsingMonad(property, "");	//one monad in second algebra
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
+			thing2 = GBuilder.createNyadUsingMonad(property, "");	//one monad in second algebra
 		}
 
 		@Test 
@@ -178,7 +260,7 @@ public class CoreNyadRealFTest {
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 
-			Nyad thing3 = GBuilder.INSTANCE.createNyadUsingMonad(newMotion, "");	
+			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");	
 			assertFalse(Nyad.isNEqual(thing3, thing1));							//Foot mismatch
 			assertThrows(CladosNyadException.class, () -> thing3.appendACopy(property));
 																				//Should glitch on foot mismatch
@@ -208,7 +290,7 @@ public class CoreNyadRealFTest {
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
-			Nyad thing3 = GBuilder.INSTANCE.createNyadUsingMonad(newMotion, "");				//testable nyad
+			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");				//testable nyad
 			assertFalse(Nyad.isStrongReferenceMatch(thing3, thing1));								//Foot mismatch
 
 			thing2.remove(property);																//empty nyad
@@ -245,7 +327,7 @@ public class CoreNyadRealFTest {
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
-			Nyad thing3 = GBuilder.INSTANCE.createNyadUsingMonad(newMotion, "");				//testable nyad
+			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");				//testable nyad
 			assertFalse(Nyad.isWeakReferenceMatch(thing3, thing1));									//Foot mismatch
 			assertFalse(Nyad.isWeakReferenceMatch(thing1, thing3));									//reflexive test
 
@@ -259,7 +341,7 @@ public class CoreNyadRealFTest {
 	class testFinding {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 		}
 
 		@Test
@@ -312,14 +394,13 @@ public class CoreNyadRealFTest {
 			assertTrue(thing1.getMonadAt(2) == null);
 			assertTrue(thing1.getMonadAt(-3) == null);
 		}
-
 	}
 
 	@Nested
 	class testUnaryOperations {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 			thing1.append(property);																//Motion,Property juxtaposition
 			((RealF) property.getWeights().getScalar()).setReal(2.0f);						//Now property is scalar = 2.
 			((RealF) motion.getWeights().getScalar()).setReal(1.0f);							//Now motion is scalar = 1.
@@ -438,7 +519,7 @@ public class CoreNyadRealFTest {
 	class testListManagement {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 			thing1.append(property);																//Motion,Property juxtaposition
 			((RealF) property.getWeights().getScalar()).setReal(2.0f);						//Now property is scalar = 2.
 			((RealF) motion.getWeights().getScalar()).setReal(1.0f);							//Now motion is scalar = 1.
@@ -514,7 +595,7 @@ public class CoreNyadRealFTest {
 	class testOutputText {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "Print this nyad");
+			thing1 = GBuilder.createNyadUsingMonad(motion, "Print this nyad");
 			thing1.append(property);
 		}
 
@@ -547,7 +628,7 @@ public class CoreNyadRealFTest {
 	class testBinaryOps {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.INSTANCE.createNyadUsingMonad(motion, "");
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 			thing1.append(property);
 			((RealF) property.getWeights().getScalar()).setReal(2.0f);		//Now property is scalar = 2.
 			((RealF) motion.getWeights().getScalar()).setReal(1.0f);			//Now motion is scalar = 1.

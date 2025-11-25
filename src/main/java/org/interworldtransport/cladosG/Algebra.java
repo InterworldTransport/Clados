@@ -258,49 +258,37 @@ public final class Algebra implements Comparable<Algebra> {
 	 */
 	@Override
 	public int compareTo(Algebra pAnother) {
-		if (this.name == null)
-			if (pAnother.name == null)
-				return 0;
-			else
-				return +1; // A null name is considered larger than a non-null name
-		else if (pAnother.name == null)
-			return -1; // A null name is considered larger than a non-null name
-		else if (this.name.equals(pAnother.name))
-			return 0;
-		else // At this point neither name is null nor are they equal
-		{
+		if (this.name == null)						return (pAnother.name == null) ? 0 : 1; 			//Null name is larger than a non-null name
+		else if (pAnother.name == null)				return -1;	//Null name is larger than a non-null name
+		else if (this.name.equals(pAnother.name))	return 0;	
+		else {													//Neither name is null. Nor are they equal
 			char[] first = this.name.toCharArray();
 			char[] second = pAnother.name.toCharArray();
 			int loopLimit = (first.length <= second.length) ? first.length : second.length;
 			for (int j = 0; j < loopLimit; j++) {
-				if (first[j] < second[j])
-					return -1;
-				if (first[j] > second[j])
-					return +1;
-			}
-			/* We know this.name and pAnother.name are the same up to all characters
-			*  in the smaller one. We also know they can't be equal.
-			*/
-			if (first.length < second.length)
-				return -1;
-			else return +1;
+				if (first[j] < second[j])			return -1;	//Character in first name is smaller. Decision done.
+				if (first[j] > second[j])			return +1;	//Character in second name is smaller. Decision done.
+			}													//No decision. Loop to the next character
+
+			return (first.length < second.length) ? -1 : +1;	//We know the two names are the same up to the characters 
+																//in the shorter one. We also know they can't be equal. 
+																//So the longer one wins.
 		}
 	}
 	/**
 	 * Overridden Equals method from Object.
-	 * This ensures reference quality is the standard.
-	 * They must literally be the same object to be equal.
+	 * This ensures reference equality is the standard. They must literally be the same object to be equal.
+	 * @return boolean check for reference equality
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		return false;
+		return (this == obj) ? true : false;
 	}
 
 	/**
 	 * This method returns the Algebra's name.
 	 * <br>
-	 * @return String
+	 * @return String name of the algebra
 	 */
 	public String getAlgebraName() {
 		return name;

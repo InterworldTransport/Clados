@@ -191,11 +191,12 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pInMap This is a Map to copy. Probably a view of another Scale object.
 	 */
 	public Scale(CladosField pMode, Basis pB, Map<Blade, D> pInMap) {
-		map = new TreeMap<>();
 		mode = pMode;
 		gBasis = pB;
+		card = pInMap.get(pB.getScalarBlade()).getCardinal();
+		map = new TreeMap<>();
 		map.putAll(pInMap);
-		card = map.get(gBasis.getScalarBlade()).getCardinal(); // gets scalar part cardinal
+		
 		assert (pInMap.keySet().size() == pB.getBladeCount());
 	}
 

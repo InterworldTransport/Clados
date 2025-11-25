@@ -245,9 +245,9 @@ public class DegenerateRealMonadTests {
         assertFalse(tM3.getSparseFlag());   //ONE
 
         //System.out.println(Monad.toXMLFullString(tM4, ""));
-        assertFalse(tM4.getSparseFlag());   //Idempotent, but in a small algebra... so half the grades are present.
-        assertFalse(tM5.getSparseFlag());   //Nilpotent... so same issue.
-        assertFalse(tM6.getSparseFlag());   //Fake nilpotent in a small algebra...
+        assertTrue(tM4.getSparseFlag());   //Idempotent, but in a small algebra... so half the grades are present.
+        assertTrue(tM5.getSparseFlag());   //Nilpotent... so same issue.
+        assertTrue(tM6.getSparseFlag());   //Fake nilpotent in a small algebra...
 
         assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM0)));
 		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM0)));

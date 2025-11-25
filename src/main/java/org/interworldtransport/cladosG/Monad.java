@@ -1555,12 +1555,14 @@ public class Monad implements Modal {
 	/**
 	 * Set the grade key for the monad. Never accept an externally provided key. Always recalculate it 
 	 * after any of the unary or binary operations.
-	 * <br>
+	 * <br><br>
 	 * While we are here, we ALSO set the sparseFlag. The nonZero coeff detection loop that fills gradeKey 
 	 * is a grade detector, so if foundGrade is less than or equal to half gradeCount, sparseFlag is set 
 	 * to true and false otherwise.
-	 * <br>
+	 * <br><br>
 	 * Use this IF you set one of the weights manually by reaching into the scales.
+	 * <br><br>
+	 * @return Monad this one after the grade key is set.
 	 */
 	public Monad setGradeKey() {
 		foundGrades = 0;
@@ -1572,18 +1574,13 @@ public class Monad implements Modal {
 				foundGrades++;
 				gradeKey += (long) Math.pow(10, grade);
 			}
-			//if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade)
-			//		.filter(blade -> getWeights().isNotZeroAt(blade)).parallel().findAny().isPresent()) {
-			//	foundGrades++;
-			//	gradeKey += (long) Math.pow(10, grade);
-			//}
 		});
 
 		if (gradeKey == 0) {	//Special case for scalars. If no grades detected, scalar it must be.
 			foundGrades++;
 			gradeKey++;
 		}
-		sparseFlag = (foundGrades < getAlgebra().getGradeCount() / 2) ? true : false;
+		sparseFlag = (foundGrades <= getAlgebra().getGradeCount() / 2) ? true : false;
 		return this;
 	}
 
