@@ -26,7 +26,7 @@ class CoreAlgebraTest {
 	public void setUp() throws BadSignatureException, GeneratorRangeException {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealF(fType, 0.0f);
-		tFoot = new Foot(fName, fType);
+		tFoot = new Foot(fName);
 		tFoot2 = new Foot(fName, rNumber);
 
 		alg1 = new Algebra(aName, tFoot, pSig31);
@@ -85,36 +85,7 @@ class CoreAlgebraTest {
 		assertFalse(alg3.equals(alg2));							//Two distinct algebras though.
 	}
 
-	/**
-	 * This test shows how altering a shared foot (adding Cardinals in this case)
-	 * alters the available cardinals for algebra making use of the foot.
-	 * 
-	 * @throws BadSignatureException
-	 * @throws GeneratorRangeException
-	 */
-	@Test
-	public void testFootSharing() throws BadSignatureException, GeneratorRangeException {
-		assertSame(alg1.getFoot(), alg2.getFoot()); 			//Two algebras share the foot
-		
-		Cardinal pCard = Cardinal.generate("New One?");
-		tFoot.appendCardinal(pCard);							//The foot is altered
-		assertTrue(tFoot.getCardinals().size() > 1);			//Prove it.
-		assertTrue(alg1.getFoot().getCardinals().size() == alg2.getFoot().getCardinals().size());
-																//New Cardinal available to both.
-
-		Algebra alg7 = new Algebra(aName, tFoot, pSig31); 		//new Algebra reusing the foot
-		assertSame(alg1.getFoot(), alg7.getFoot());				//Common Foot proof
-		assertTrue(alg1.getFoot().getCardinals().size() == alg7.getFoot().getCardinals().size());
-																//New Cardinal available to both.
-		alg7.setFoot(tFoot2);									//Force a foot change
-		assertNotSame(alg1.getFoot(), alg7.getFoot());			//Proof of change
-		assertFalse(alg1.getFoot().getCardinals().size() == alg7.getFoot().getCardinals().size());
-																//alg7 has fewer Cardinals at the Foot
-		tFoot2.appendCardinal(pCard);							//Now alg7 has same Cardinals
-		assertTrue(alg1.getFoot().getCardinals().size() == alg7.getFoot().getCardinals().size());
-		assertNotSame(alg1.getFoot(),  alg7.getFoot());			// Both feet are the same inside,
-																// but are two distinct objects.
-	}
+	
 
 	@Test
 	public void testCompareCores() throws BadSignatureException, GeneratorRangeException {
@@ -140,7 +111,6 @@ class CoreAlgebraTest {
 		assertNotSame(alg6, alg1);								//Different objects
 		assertNotSame(alg6.getFoot(), alg1.getFoot());			//with different feet
 		assertSame(alg6.getGProduct(), alg1.getGProduct());		//and same gProduct
-		assertFalse(alg6.getFoot().getCardinal(0) == alg1.getFoot().getCardinal(0));
 	}
 
 	@Test

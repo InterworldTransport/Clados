@@ -1,6 +1,3 @@
 <Foot>
 	<Name>Test:TangentPoint</Name>
-	<Cardinals number="1" >
-		<Cardinal unit="Test:NumberType" />
-	</Cardinals>
 </Foot>

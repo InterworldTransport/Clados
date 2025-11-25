@@ -765,8 +765,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 		if (card != pCard & pCard != null) {
 			weightsParallelStream().forEach(x -> x.setCardinal(pCard));
 			card = pCard;
-			//map.clear();									//This used to be essentially disallowed. DANGER!
-			//zeroAll();									//Doing it reset the weights to zero. Not any more.
 		}
 		return this;
 	}

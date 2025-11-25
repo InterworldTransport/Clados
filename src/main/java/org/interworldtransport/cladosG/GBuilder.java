@@ -96,11 +96,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * to be imitated.
 	 * <br>
 	 * @param pF    Foot object to copy
-	 * @param pSpot indexed location in offered Foot to find a Cardinal
 	 * @return Foot (new instance)
 	 */
-	public final static Foot copyOfFoot(Foot pF, int pSpot) {
-		return createFootLike(pF.getFootName(), pF, pSpot);
+	public final static Foot copyOfFoot(Foot pF) {
+		return createFootLike(pF.getFootName());
 	}
 
 	/**
@@ -262,10 +261,8 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Foot (new instance)
 	 */
 	public final static Foot createFoot(String pName, String pCardName) {
-		Optional<Cardinal> find = FCache.INSTANCE.findCardinal(pCardName);
-		if (find.isPresent())
-			return createFootLike(pName, find.get());
-		return Foot.buildAsType(pName, Cardinal.generate(pCardName));
+		Cardinal.generate(pCardName);
+		return Foot.buildAsType(pName);
 	}
 
 	/**
@@ -276,7 +273,8 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Foot (new instance)
 	 */
 	public final static Foot createFootLike(String pName, Cardinal pCard) {
-		return Foot.buildAsType(pName, pCard);
+		FCache.INSTANCE.appendCardinal(pCard);
+		return Foot.buildAsType(pName);
 	}
 
 	/**
@@ -290,12 +288,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * the cardinal list. 'null' IS A VALID CARDINAL conceptually speaking.
 	 * <br>
 	 * @param pName New string name for Foot to be created.
-	 * @param pF    Foot object to copy
-	 * @param pSpot indexed location in offered Foot to find a Cardinal
 	 * @return Foot (new instance)
 	 */
-	public final static Foot createFootLike(String pName, Foot pF, int pSpot) {
-		return Foot.buildAsType(pName, pF.getCardinal(pSpot));
+	public final static Foot createFootLike(String pName) {
+		return Foot.buildAsType(pName);
 	}
 
 	/**
@@ -306,6 +302,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Foot (new instance)
 	 */
 	public final static Foot createFootLike(String pName, ProtoN pDiv) {
+		FCache.INSTANCE.appendCardinal(pDiv.getCardinal());
 		return createFootLike(pName, pDiv.getCardinal());
 	}
 

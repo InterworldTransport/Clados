@@ -4,9 +4,6 @@
 		<Name>Property Algebra</Name>
 		<Foot>
 			<Name>Test Foot 1</Name>
-			<Cardinals number="1" >
-				<Cardinal unit="Test Double 1" />
-			</Cardinals>
 		</Foot>
 		<GProduct>
 			<Signature>-+++</Signature>

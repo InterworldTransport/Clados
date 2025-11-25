@@ -431,7 +431,7 @@ public class CoreMonadComplexFTest {
 
         assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
 
-        Foot tFoot = Foot.buildAsType("0++", tCard);        //One Cardinal in the Foot's tracker
+        Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
         Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.COMPLEXF.createONE(tCard) , 
                                                     tFoot,
                                                     "TestMonadNameCF",

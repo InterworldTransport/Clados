@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 public class DegenerateComplexMonadTests {
     Cardinal tCard = Cardinal.generate("TestMonads");
     String mName = "Monad-";
-    Foot pFoot0 = new Foot("Foot0", tCard);
-    Foot pFoot1 = new Foot("Foot1", tCard);
+    Foot pFoot0 = new Foot("Foot0");
+    Foot pFoot1 = new Foot("Foot1");
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
     String pgasig = "+++0";

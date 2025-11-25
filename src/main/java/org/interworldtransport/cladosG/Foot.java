@@ -24,11 +24,12 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.ArrayList;
-import java.util.Optional;
+//import java.util.ArrayList;
+//import java.util.Optional;
 
-import org.interworldtransport.cladosF.Cardinal;
+//import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
+import org.interworldtransport.cladosF.FCache;
 import org.interworldtransport.cladosF.ProtoN;
 
 /**
@@ -61,24 +62,6 @@ public final class Foot {
 	}
 
 	/**
-	 * This factory build method produces a new Foot using the offered Cardinal. It
-	 * is intend to name an otherwise opaque constructor that creates a new Foot but
-	 * re-uses a Cardinal.
-	 * <br>
-	 * @param pFootName    String name for the new Foot
-	 * @param pNewCardinal Cardinal to re-use for this new Foot
-	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
-	 */
-	public static final Foot buildAsType(String pFootName, Cardinal pNewCardinal) {
-		return new Foot(pFootName, pNewCardinal);
-	}
-
-	/**
-	 * This object defines the type of numbers used by all objects that share this
-	 * footPoint.
-	 */
-	private ArrayList<Cardinal> cardinalList;
-	/**
 	 * This String is the name the footPoint. Think of it as naming the tangent
 	 * point between a flat algebra and the curvy manifold.
 	 */
@@ -91,21 +74,7 @@ public final class Foot {
 	 */
 	public Foot(String pName) {
 		setFootName(pName);
-		cardinalList = new ArrayList<Cardinal>(1);
-		cardinalList.add(FBuilder.createCardinal(pName));
-	}
-
-	/**
-	 * Build the Foot from scratch then put the Cardinal in the internal list.
-	 * <br>
-	 * @param pName String This string will be the name of the foot point.
-	 * @param pFT   Cardinal This object defines the kind of numbers that are
-	 *              meaningful for this foot point
-	 */
-	public Foot(String pName, Cardinal pFT) {
-		setFootName(pName);
-		cardinalList = new ArrayList<Cardinal>(1);
-		cardinalList.add(pFT);
+		FBuilder.createCardinal(pName);
 	}
 
 	/**
@@ -117,76 +86,7 @@ public final class Foot {
 	 */
 	public Foot(String pName, ProtoN pF) {
 		setFootName(pName);
-		cardinalList = new ArrayList<Cardinal>(1);
-		cardinalList.add(pF.getCardinal());
-	}
-
-	/**
-	 * This method appends a Cardinal to the list of known cardinals for this foot.
-	 * It will silently terminate IF the cardinal is already in the list.
-	 * <br>
-	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
-	 * That means visual inspection of the cardinal list could reveal entries that
-	 * appear to be the same. They aren't, though. The cardinalList references
-	 * objects and NOT their string names. To avoid this use CladosFCache.
-	 * <br>
-	 * @param fN Cardinal reference to append to this Foot
-	 */
-	public void appendCardinal(Cardinal fN) {
-		if (cardinalList.contains(fN))
-			return;
-		cardinalList.ensureCapacity(cardinalList.size() + 1);
-		cardinalList.add(fN);
-	}
-
-	/**
-	 * This method looks for the requested cardinal object in the Foot's tracking
-	 * list.
-	 * <br>
-	 * @param pIn Cardinal This is a reference to the Cardinal to be found in the
-	 *            Foot's cardinal list.
-	 * @return int This method looks for the requested Cardinal in the Foot's list
-	 *         and returns the index if it is found. If not, it returns -1.
-	 */
-	public int findCardinal(Cardinal pIn) {
-		if (cardinalList.isEmpty())
-			return -1;
-		if (cardinalList.contains(pIn))
-			return cardinalList.indexOf(pIn);
-		return -1;
-	}
-
-	/**
-	 * Find a cardinal in the Foot's list if it exists and return it within an Optional.
-	 * <br>
-	 * @param pName String name requested to be found
-	 * @return Optional Cardinal if one is found by the requested name
-	 */
-	public Optional<Cardinal> findCardinal(String pName) {
-		return cardinalList.stream().filter(x -> x.getUnit().equals(pName)).findFirst();
-	}
-
-	/**
-	 * Simple gettor for one of the cardinals associated with this Foot.
-	 * <br>
-	 * Note that an error condition (like indexOutOfBounds) will return null.
-	 * <br>
-	 * @param pIn Integer index of Cardinal in this Foot to retrieve.
-	 * @return Cardinal found at the integer index... or null.
-	 */
-	public Cardinal getCardinal(int pIn) {
-		if (pIn >= 0 & pIn < cardinalList.size())
-			return cardinalList.get(pIn);
-		return null;
-	}
-
-	/**
-	 * Simple gettor for the entire list of cardinals associated with this Foot.
-	 * <br>
-	 * @return ArrayList of Cardinal instances associated with this Foot.
-	 */
-	public ArrayList<Cardinal> getCardinals() {
-		return cardinalList;
+		FCache.INSTANCE.appendCardinal(pF.getCardinal());
 	}
 
 	/**
@@ -196,21 +96,6 @@ public final class Foot {
 	 */
 	public String getFootName() {
 		return footName;
-	}
-
-	/**
-	 * This method removes a Cardinal from the list of known cardinals for this
-	 * foot. It will silently return IF the cardinal wasn't already on the list.
-	 * <br>
-	 * The uniqueness test is done BY OBJECT and not by the cardinal's string name.
-	 * That means visual inspection of the cardinal list could reveal entries that
-	 * appear to be the same. They aren't, though. The cardinalList references
-	 * objects and NOT their string names. To avoid this use CladosFCache.
-	 * <br>
-	 * @param pCard Cardinal reference to remove to this Foot
-	 */
-	public void removeCardinal(Cardinal pCard) {
-		cardinalList.remove(pCard);
 	}
 
 	/**
@@ -236,12 +121,6 @@ public final class Foot {
 			indent = "\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Foot>\n");
 		rB.append(indent).append("\t<Name>").append(pF.getFootName()).append("</Name>\n");
-		// -----------------------------------------------------------------------
-		rB.append(indent).append("\t<Cardinals number=\"").append(pF.cardinalList.size()).append("\" >\n");
-		for (Cardinal point : pF.cardinalList)
-			rB.append(indent).append(Cardinal.toXMLString(point, "\t\t"));
-		rB.append(indent).append("\t</Cardinals>\n");
-		// -----------------------------------------------------------------------
 		rB.append(indent).append("</Foot>\n");
 		return rB.toString();
 	}

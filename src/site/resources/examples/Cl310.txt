@@ -2,9 +2,6 @@
 	<Name>Tst Algebra</Name>
 	<Foot>
 		<Name>Tst:TangentPoint</Name>
-		<Cardinals number="1" >
-			<Cardinal unit="Test:NumberType" />
-		</Cardinals>
 	</Foot>
 	<GProduct>
 		<Signature>-+++</Signature>

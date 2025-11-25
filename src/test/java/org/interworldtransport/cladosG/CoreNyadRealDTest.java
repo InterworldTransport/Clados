@@ -43,7 +43,6 @@ public class CoreNyadRealDTest {
 	@BeforeEach
 	void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
 		Foot here = GBuilder.createFootLike(footName, speed);
-		here.appendCardinal(charge);
 
 		motion = GBuilder.createMonadWithFoot(	FBuilder.REALD.createZERO(speed), 
 												here, 
@@ -117,19 +116,15 @@ public class CoreNyadRealDTest {
 			assertTrue(thing1.getMOrder() == 2);
 			thing1.remove(1);
 
-			thing1.getFoot().getCardinals().clear();
 			thing1.create(newMName, newAName, newSig, null);
 			assertTrue(thing1.getMOrder() == 2);
 			thing1.remove(1);
 
-			thing1.getFoot().appendCardinal(Cardinal.generate(newCard));
 			thing1.create(newMName, newAName, newSig, null);
 			assertTrue(thing1.getMOrder() == 2);
 			thing1.remove(1);
 
-			thing1.getFoot().getCardinals().clear();
 			Cardinal testCard = Cardinal.generate(newCard);
-			thing1.getFoot().appendCardinal(testCard);
 			thing1.create(newMName, newAName, newSig, testCard.getUnit());
 			assertTrue(thing1.getMOrder() == 2);
 			thing1.remove(1);

@@ -430,7 +430,7 @@ public class CoreMonadComplexDTest {
 
         assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
 
-        Foot tFoot = Foot.buildAsType("0++", tCard);        //One Cardinal in the Foot's tracker
+        Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
         Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.COMPLEXD.createONE(tCard) , 
                                                     tFoot,
                                                     "TestMonadNameCD",
@@ -440,9 +440,10 @@ public class CoreMonadComplexDTest {
                                                                         //Proving Bases get checked
     }
 
-	//@Test
-	//public void testXMLOutputs() {
+	@Test
+	public void testXMLOutputs() {
+        assertNotNull(Monad.toXMLString(tM6, ""));
 		//System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
         //System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
-	//}
+	}
 }

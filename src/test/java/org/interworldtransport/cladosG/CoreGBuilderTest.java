@@ -75,41 +75,12 @@ public class CoreGBuilderTest {
             GCache.INSTANCE.clearBases();
             GCache.INSTANCE.clearGProducts();
 
-            tFoot = Foot.buildAsType(twoDPGA, tCard);                   //One Cardinal in the Foot's tracker
+            tFoot = Foot.buildAsType(twoDPGA);                   //One Cardinal in the Foot's tracker
             tAlgebra = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra", twoDPGA);
                                 //This constructure adds the GP to the cache by calling GBuilder.createGProduct(sig)
                                 //which means it looks for the GP first and builds it if needed.
         }
-
-        @Test
-        public void testCreateFootVariants(){
-            Foot tf0=GBuilder.createFoot(twoDPGA, "TestUnits");
-            assertTrue(tf0.findCardinal(tCard) == -1);                                 //Wrong Cardinal but Foot exists
-            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isPresent());  //IS Present in the FCache
-            int cardListSize = FCache.INSTANCE.getCardinalListSize();
-
-            Foot tf01=GBuilder.createFoot(twoDPGA+"b", "TestUnits" );        //Same Cardinal Unit as earlier
-            assertTrue(tf01.findCardinal(tCard) == -1);                                 //Wrong Cardinal but Foot exists
-            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isPresent());   //NOT Present in the FCache
-            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());          //Cardinal.generate does(!) cache
-                                                                                        //but new Foot re-used(!)
-            Foot tf02=GBuilder.createFoot(twoDPGA+"c", "TestDimensionalUnit" );
-            assertTrue(tf02.findCardinal(tCard) != -1);                                 //Cardinals match! (.createFoot re-uses)
-            assertTrue(FCache.INSTANCE.findCardinal("TestDimensionalUnit").isPresent());   //See? Present in the FCache
-            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());          //Cardinal cache hasn't grown in size
-
-            Foot tf1=GBuilder.createFootLike("test1", tCard);
-            assertTrue(tf1.findCardinal(tCard) != -1);                                  //A good Cardinal and Foot exists
-
-            Foot tf2=GBuilder.createFootLike("test2", tf1, 0);
-            assertTrue(tf2.findCardinal(tCard) != -1);                                  //A good Cardinal and Foot exists
-            assertFalse(tf2.getFootName().equals(tf1.getFootName()));                   //and the new one has a different name
-
-            Foot tf3=GBuilder.createFootLike("test3", FBuilder.REALF.createONE(tCard));
-            assertTrue(tf3.findCardinal(tCard) != -1);                                  //A good Cardinal and Foot exists
-            assertTrue(tf3.getFootName().equals("test3"));                     //and the new one has its own name
-        }
-
+       
         @Test
         public void testCreateBasisVariants() {
             GCache.INSTANCE.clearBases();
@@ -473,7 +444,7 @@ public class CoreGBuilderTest {
             GCache.INSTANCE.clearBases();
             GCache.INSTANCE.clearGProducts();
 
-            tFoot = Foot.buildAsType(twoDPGA, tCard);                   //One Cardinal in the Foot's tracker
+            tFoot = Foot.buildAsType(twoDPGA);                   //One Cardinal in the Foot's tracker
             tAlgebra = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra", twoDPGA);
             tAlgebra2 = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra2", twoDPGA);
                                 //This constructure adds the GP to the cache by calling GBuilder.createGProduct(sig)
@@ -493,10 +464,9 @@ public class CoreGBuilderTest {
 
         @Test
         public void testCopyOfFoot() {
-            assertDoesNotThrow(() -> GBuilder.copyOfFoot(tFoot, 0));
-            Foot tf2 = GBuilder.copyOfFoot(tFoot, 0);
+            assertDoesNotThrow(() -> GBuilder.copyOfFoot(tFoot));
+            Foot tf2 = GBuilder.copyOfFoot(tFoot);
             assertNotNull(tf2);
-            assertNotNull(tf2.getCardinal(0));
         }
 
         @Test

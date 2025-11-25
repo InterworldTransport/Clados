@@ -559,41 +559,22 @@ public class Nyad implements Modal {
 	public Nyad create(String pMonadName, String pAlgebraName, String pSig, String pCard)
 							throws 			BadSignatureException, GeneratorRangeException,
 											CladosMonadException, CladosNyadException {
-		//Prepare Cardinal and append to nyad's shared Foot if needed. Re-use where possible.
-		Cardinal tCard = null;
-		if (pCard == null) {								//No unit offered			
-			if (getFoot().getCardinals().size() > 0) 		//Units present in Foot
-				tCard = sharedFoot.getCardinal(0);		//Use the first one
-			else {											//No units present in Foot
-				tCard = Cardinal.generate(getMode());		//Create default mode unit
-				sharedFoot.appendCardinal(tCard);			//Ensure Foot has default cardinal
-			}
-		} else {											//Unit specifically offered
-			Optional<Cardinal> foundThis = getFoot().findCardinal(pCard);	//Find it in Nyad foot
-			if (foundThis.isPresent()) 						//If Cardinal found
-				tCard = foundThis.get();					//re-use it
-			else {											//If not
-				tCard = FBuilder.createCardinal(pCard);		//construct the Cardinal
-				sharedFoot.appendCardinal(tCard);			//and ensure Foot knows about it.
-			}
-		}
-		//Prepare algebra for monad if needed. Re-use where possible.
-		Algebra tAlg = null;
+																		//Prepare Cardinal. Re-use where possible.
+		Cardinal tCard = (pCard == null) ? Cardinal.generate(getMode()) : FBuilder.createCardinal(pCard);
+																		
+		Algebra tAlg = null;											//Prepare algebra for monad if needed. Re-use where possible
 		Optional<Algebra> foundAlg = algebraStream().filter(x -> x.getAlgebraName().equals(pAlgebraName)).findFirst();
-		if(foundAlg.isPresent())							//Algebra found by name
-			tAlg = foundAlg.get();							//and simply referenced AND THE OFFERED SIGNATURE IS IGNORED
-		else {												//Have to construct algebra not found. Signature gets used.
+		if(foundAlg.isPresent())										//Algebra found by name
+			tAlg = foundAlg.get();										//and simply referenced AND THE OFFERED SIGNATURE IS IGNORED
+		else {															//Have to construct algebra not found. Signature gets used.
 			Optional<GProduct> foundGP = GCache.INSTANCE.findGProduct(pSig);
-			if (foundGP.isPresent()) 						//GP for new algebra already constructed
-				tAlg = GBuilder.createAlgebraWithFootGP(sharedFoot, foundGP.get(), pAlgebraName);
-			else 											//Don't need to hunt basis for re-use
-				tAlg = GBuilder.createAlgebraWithFoot(sharedFoot, pAlgebraName, pSig);			
+			tAlg = (foundGP.isPresent()) ? GBuilder.createAlgebraWithFootGP(sharedFoot, foundGP.get(), pAlgebraName)
+										 : GBuilder.createAlgebraWithFoot(sharedFoot, pAlgebraName, pSig);				
 		}
-				//With Algebra and a Cardinal, we can construct a Scale<?> without specifying the ProtoN child
-		Scale<?> tScale = new Scale<>(mode, tAlg.getGBasis(), tCard);
-				//The point was to use GBuilder.createMonadWithAlgebra(Scale<T> pNumbers, Algebra pA, String pName)
-		this.append(GBuilder.createMonadWithAlgebra(tScale, tAlg, pMonadName));
-		return this;										//All done!
+		Scale<?> tScale = new Scale<>(mode, tAlg.getGBasis(), tCard);	//Now make a ZERO Scale<?> w/o naming the ProtoN child
+
+		append(GBuilder.createMonadWithAlgebra(tScale, tAlg, pMonadName));	//Now append a newly constructed monad
+		return this;													//All done!
 	}
 
 	/**
