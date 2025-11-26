@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class CoreMonadComplexFTest {
 	Monad tM10, tM11;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 16); //new ComplexF[16];
 
@@ -301,7 +300,7 @@ public class CoreMonadComplexFTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cCF = (ComplexF[]) FListBuilder.COMPLEXF.create(tCard, 4); //new ComplexF[4];
         for (int i=0; i<4; i++){            //Modulus will still be one for each weight, but conjugate will matter here.
             cCF[i].setImg(1.0f);
@@ -425,7 +424,7 @@ public class CoreMonadComplexFTest {
     }
 
     @Test
-    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException {
         assertThrows(IllegalArgumentException.class, () -> tM1.add(tM5));
         assertThrows(IllegalArgumentException.class, () -> tM1.subtract(tM5));
 

@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import static org.interworldtransport.cladosG.CladosConstant.*;
 
 /**
  * All geometry objects within the cladosG package have elements that form a
@@ -86,7 +86,7 @@ import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
  * the equality test. A convenient cache already exists in the singleton
  * GCache.
  * <br><br>
- * The choice limit of 15 generators produces a maximum basis size of 32,768.
+ * The choice a limit of 15 generators produces a maximum basis size of 32,768.
  * More can be used, but one must change the 'magic numbers' in the
  * CladosConstant class and recompile.
  * <br><br>
@@ -121,12 +121,9 @@ public final class Basis implements CanonicalBasis {
 	 * <br>
 	 * @param numberOfGenerators Byte representing unique algebraic directions
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. 
 	 */
-	public static final Basis using(byte numberOfGenerators) throws GeneratorRangeException {
-		return new Basis(numberOfGenerators);
+	public static final Basis using(byte numberOfGenerators) {
+		return new Basis(Generator.get(numberOfGenerators));
 	}
 
 	/**
@@ -135,14 +132,9 @@ public final class Basis implements CanonicalBasis {
 	 * <br>
 	 * @param mxBlade Generator representing a pscalar with all directions.
 	 * @return Basis Factory method returns a Basis with numberOfGenerators
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range.
 	 */
-	public static final Basis using(Generator mxBlade) throws GeneratorRangeException {
-		if (CanonicalBasis.validateSize(mxBlade.ord))	// Never use Generator's ordinal
-			return new Basis(mxBlade); 
-		throw new GeneratorRangeException("Supported range is 0<->CladosConstant.MAXGRADE");
+	public static final Basis using(Generator mxBlade) {
+		return new Basis(mxBlade); 
 	}
 
 	/*
@@ -245,96 +237,69 @@ public final class Basis implements CanonicalBasis {
 	 * algebra, so all it does is show the basis.
 	 * <br>
 	 * @param pGens byte This is the number of generators that make up the basis
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, ..., CladosConstant.MAXGRADE}
 	 */
-	public Basis(byte pGens) throws GeneratorRangeException {
-		if (!CanonicalBasis.validateSize(pGens))
-			throw new GeneratorRangeException("Supported range is 0<->CladosConstant.MAXGRADE using 8 bit integers");
-		// ------Initialize
-		gradeCount = (byte) (pGens + 1);
-		gradeList = new ArrayList<Integer>(gradeCount);
-		bladeList = new ArrayList<Blade>(1 << pGens);
-		keyIndexMap = new TreeMap<>();
-		// ------Build bladeList
-		if (pGens == 0) {
-			bladeList.add(Blade.createBlade(pGens));
-			gradeList.add(Integer.valueOf(0));
-			keyIndexMap.put(0L, 1);
-		} else if (pGens == 1) {
-			bladeList.add(Blade.createScalarBlade(Generator.E1));
-			gradeList.add(Integer.valueOf(0));
-			keyIndexMap.put(0L, 1);
-			bladeList.add(Blade.createPScalarBlade(Generator.E1));
-			gradeList.add(Integer.valueOf(1));
-			keyIndexMap.put(1L, 2);
-		} else {
-			EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, Generator.get(pGens));
-			TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
-			for (EnumSet<Generator> pG : powerSet(offer))
-				sorted.add(new Blade(pGens, pG)); // Adds in SORTED ORDER because... TreeSet
-				
-			sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
-				bladeList.add(blade); // causing bladeList to be in ascending (by key) order
-				keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
-			});
-
-			// ------Build gradeList
-			gradeList.add(Integer.valueOf(0)); // First entry in gradeList is for scalar grade
-			gradeList.add(Integer.valueOf(1)); // Second entry in gradeList is for vector grade
-			IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
-				gradeList
-						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
-				}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
-			gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
-		}
+	public Basis(byte pGens) {
+		this(Generator.get(pGens));
 	}
 
 	/**
-	 * This is a 'from point' constructor. It takes a generator and treats it as the pscalar to factor.
-	 * It can be instantiated on its own for demonstration purposes, but it has no awareness of the 
-	 * addition and multiplication operations in an algebra, so all it does is show the basis.
-	 * <br>
-	 * @param pGen Generator This is the pscalar to factor to make up the basis
+	 * This is the constructor that takes one generator and assumes all generators with smaller ordinals
+	 * are to be used to create the basis. For example, offering E3 will result in a basis for {E1, E2, E3}.
+	 * <br><br>
+	 * It is not possible to construct a 'no generator' algebra with this method. Use Basis(byte pGens) for that.
+	 * <br><br>
+	 * @param pGen Generator that is the largest one in the set of generators to use to create the basis
 	 */
 	public Basis(Generator pGen) {
-		// ------Initialize
-		gradeCount = (byte) (pGen.ord + 1);
-		gradeList = new ArrayList<Integer>(gradeCount);
-		bladeList = new ArrayList<Blade>(1 << pGen.ord);
-		keyIndexMap = new TreeMap<>();
-		// ------Build bladeList
-		switch (pGen.ord) {
-			case 1 -> {
-				bladeList.add(Blade.createScalarBlade(Generator.E1));
-				gradeList.add(Integer.valueOf(0));
-				keyIndexMap.put(0L, 1);
-				bladeList.add(Blade.createPScalarBlade(Generator.E1));
-				gradeList.add(Integer.valueOf(1));
-				keyIndexMap.put(1L, 2);
-				break;
+		if (pGen != null) {
+			gradeCount = (byte) (pGen.ord + 1);									//Initializing starts here
+			gradeList = new ArrayList<Integer>(gradeCount);						//Exactly as many entries as basis grades
+			bladeList = new ArrayList<Blade>(1 << pGen.ord);					//Exactly as many entries as 2^(gradeCount-1)
+			keyIndexMap = new TreeMap<>();										//Relates the two blade keys
+			
+			switch (pGen.ord) {													//Now build the bladeList
+				case 1 -> {
+					bladeList.add(Blade.createScalarBlade(Generator.E1));		//One generator is easier
+					gradeList.add(Integer.valueOf(0));						//to set up manually rather
+					keyIndexMap.put(0L, 1);							//than use loops.
+					bladeList.add(Blade.createPScalarBlade(Generator.E1));
+					gradeList.add(Integer.valueOf(1));
+					keyIndexMap.put(1L, 2);
+					break;
+				}
+				default -> {													//Two or more generators -> use loops
+					EnumSet<Generator> offer = EnumSet.range(GENERATOR_MIN, pGen); //Set of generators to use for basis
+					TreeSet<Blade> sorted = new TreeSet<>(); 					//Natural order! This is how sort is avoided.
+					for (EnumSet<Generator> pG : powerSet(offer))				//Magic(!) creating every blade as a set
+						sorted.add(new Blade(pGen, pG)); 						//Adds in SORTED ORDER because... TreeSet
+					
+					sorted.iterator().forEachRemaining(blade -> { 				//Iterator works in ascending order causing
+						bladeList.add(blade); 									//bladeList to be in key ascending order
+						keyIndexMap.put(blade.key(), 							//as blades are added to key map.
+										Integer.valueOf(bladeList.indexOf(blade) + 1));
+					});
+																				//Now build the gradeList
+					gradeList.add(Integer.valueOf(0)); 						//First entry is 0-blade grade (scalar)
+					gradeList.add(Integer.valueOf(1)); 						//Second entry is 1-blade grade
+					IntStream.range(2, gradeCount - 1)			//IntStream handles 2-blade to pscalar-1
+						.forEachOrdered(i -> {gradeList.add(					//add starting indexes in order...
+							keyIndexMap.ceilingEntry(							//getting least key greater than or equal to
+									//Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1
+									pow(gradeCount, i - 1)).getValue() - 1		//a possible key slightly below or at the next grade
+							);
+						}); 													//keyIndexMap links a blade's bladeKey to its bladeIndex 
+																				//Useful for the Cayley table which stores bladeIndex values.
+					gradeList.add(getBladeCount() - 1); 						//Last entry is pscalar grade
+				}
 			}
-			default -> {
-				EnumSet<Generator> offer = EnumSet.range(CladosConstant.GENERATOR_MIN, pGen);
-				TreeSet<Blade> sorted = new TreeSet<>(); // Expects things that have a natural order
-				for (EnumSet<Generator> pG : powerSet(offer))
-					sorted.add(new Blade(pGen, pG)); // Adds in SORTED ORDER because... TreeSet
-				
-				sorted.iterator().forEachRemaining(blade -> { // Iterator works in ascending order
-					bladeList.add(blade); // causing bladeList to be in ascending (by key) order
-					keyIndexMap.put(blade.key(), Integer.valueOf(bladeList.indexOf(blade) + 1));
-				});
-
-				// ------Build gradeList
-				gradeList.add(Integer.valueOf(0)); // First entry in gradeList is for scalar grade
-				gradeList.add(Integer.valueOf(1)); // Second entry in gradeList is for vector grade
-				IntStream.range(2, gradeCount - 1).forEachOrdered(i -> {
-					gradeList
-						.add(keyIndexMap.ceilingEntry(Long.valueOf((long) Math.pow(gradeCount, i - 1))).getValue() - 1);
-					}); // keyIndexMap uses bladeKey (known to blade) to get bladeIndex for products.
-				gradeList.add(getBladeCount() - 1); // Last entry in gradeList is for pscalar grade
-			}
+		} else {
+			gradeCount = 1;
+			gradeList = new ArrayList<Integer>(gradeCount);
+			gradeList.add(Integer.valueOf(0));
+			bladeList = new ArrayList<Blade>(1);
+			bladeList.add(Blade.createBlade((byte)0));
+			keyIndexMap = new TreeMap<>();
+			keyIndexMap.put(0L, 1);
 		}
 	}
 
@@ -361,15 +326,11 @@ public final class Basis implements CanonicalBasis {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		if (gradeCount != ((Basis) obj).gradeCount)
-			return false;
-		return true;
+		if (this == obj) 							return true;
+		if (obj == null) 							return false;
+		if (getClass() != obj.getClass())			return false;
+		if (gradeCount != ((Basis) obj).gradeCount)	return false;
+													return true;
 	}
 
 	/**
@@ -591,7 +552,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public final boolean validateBladeIndex(int pIn) {
-		return (pIn >= CladosConstant.SCALARGRADE & pIn < getBladeCount());
+		return (pIn >= SCALARGRADE & pIn < getBladeCount());
 	}
 
 	/**
@@ -604,7 +565,7 @@ public final class Basis implements CanonicalBasis {
 	 */
 	@Override
 	public final boolean validateGradeIndex(int pIn) {
-		return (pIn >= CladosConstant.SCALARGRADE & pIn < getGradeCount());
+		return (pIn >= SCALARGRADE & pIn < getGradeCount());
 	}
 
 }

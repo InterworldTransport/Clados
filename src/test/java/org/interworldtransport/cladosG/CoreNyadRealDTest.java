@@ -14,7 +14,6 @@ import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * @author Dr Alfred Differ
@@ -38,10 +37,9 @@ public class CoreNyadRealDTest {
 	/**
 	 * @throws BadSignatureException
 	 * @throws CladosMonadException
-	 * @throws GeneratorRangeException
 	 */
 	@BeforeEach
-	void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	void setUp() throws BadSignatureException, CladosMonadException {
 		Foot here = GBuilder.createFootLike(footName, speed);
 
 		motion = GBuilder.createMonadWithFoot(	FBuilder.REALD.createZERO(speed), 
@@ -100,9 +98,9 @@ public class CoreNyadRealDTest {
 		}
 
 		@Test
-		void testCreateMonad() throws BadSignatureException, GeneratorRangeException, CladosMonadException, CladosNyadException {
+		void testCreateMonad() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			//create(String pMonadName, String pAlgebraName, String pSig, String pCard)
-			// throws most everything: BadSignatureException, GeneratorRangeException, CladosMonadException, CladosNyadException 
+			// throws most everything: BadSignatureException, CladosMonadException, CladosNyadException 
 			String newMName = "IsoChargeDensity";
 			String newAName = "NewPropertyAlgebra";
 			String newSig = "--";
@@ -250,7 +248,7 @@ public class CoreNyadRealDTest {
 		}
 
 		@Test
-		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosMonadException, GeneratorRangeException {
+		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosMonadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -280,7 +278,7 @@ public class CoreNyadRealDTest {
 		}
 
 		@Test 
-		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, GeneratorRangeException, CladosNyadException {
+		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -317,7 +315,7 @@ public class CoreNyadRealDTest {
 		}
 
 		@Test 
-		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, GeneratorRangeException, CladosNyadException {
+		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -500,7 +498,7 @@ public class CoreNyadRealDTest {
 		}
 
 		@Test
-		void testAppendWrongFoot() throws BadSignatureException, CladosMonadException, GeneratorRangeException, CladosNyadException {
+		void testAppendWrongFoot() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");

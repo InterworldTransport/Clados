@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 public class CoreDegeneracyTest {
 
@@ -33,11 +32,9 @@ public class CoreDegeneracyTest {
 
         /**
          * This test just makes sure that the mixed blade scenario is still prevented with degenerate signatures.
-         * 
-         * @throws GeneratorRangeException
          */
         @Test
-         public void testBladeMatchFail() throws GeneratorRangeException {
+         public void testBladeMatchFail() {
             euclidianB = new Blade((byte) 3, g);
             minkowskiB = new Blade((byte) 4, i);
             projectiveB = new Blade((byte) 5, j);
@@ -49,10 +46,9 @@ public class CoreDegeneracyTest {
          * This test checks two mostly filled blades to ensure their products resolve to scalars when a degenerate 
          * generator is involved in both operands and doesn't with a Euclidian signature. This one covers the 
          * typical PGA signature
-         * @throws GeneratorRangeException
          */
         @Test
-        public void testStaticPGASimplify() throws GeneratorRangeException {
+        public void testStaticPGASimplify() {
             firstB = new Blade((byte) 4, g);
             secondB = new Blade((byte) 4, i);
 
@@ -73,10 +69,9 @@ public class CoreDegeneracyTest {
          * This test checks two mostly filled blades to ensure their products resolve to scalars when a degenerate 
          * generator is involved in both operands and doesn't with a Euclidian signature. This one covers one of 
          * the STAP signatures.
-         * @throws GeneratorRangeException
          */
         @Test
-        public void testStaticSTAPESimplify() throws GeneratorRangeException {
+        public void testStaticSTAPESimplify() {
             firstB = new Blade((byte) 5, g);
             secondB = new Blade((byte) 5, i);
             thirdB = new Blade((byte) 5, j);
@@ -102,10 +97,9 @@ public class CoreDegeneracyTest {
          * This test checks two mostly filled blades to ensure their products resolve to scalars when a degenerate 
          * generator is involved in both operands and doesn't with a Euclidian signature. This one covers the 
          * other STAP signature.
-         * @throws GeneratorRangeException
          */
         @Test
-        public void testStaticSTAPWSimplify() throws GeneratorRangeException {
+        public void testStaticSTAPWSimplify() {
             firstB = new Blade((byte) 5, g);
             secondB = new Blade((byte) 5, i);
             thirdB = new Blade((byte) 5, j);
@@ -173,13 +167,11 @@ public class CoreDegeneracyTest {
                 assertTrue(tGP.signature().length() == 4);
             } catch (BadSignatureException esig) {
                 ;
-            } catch (GeneratorRangeException egen) {
-                ;
             }
 	    }
 
         @Test
-		public void test101() throws BadSignatureException, GeneratorRangeException {
+		public void test101() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig101);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0+"));
@@ -202,7 +194,7 @@ public class CoreDegeneracyTest {
 		}
 
         @Test
-		public void test201() throws BadSignatureException, GeneratorRangeException {
+		public void test201() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig201);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0++"));
@@ -225,7 +217,7 @@ public class CoreDegeneracyTest {
 		}
 
         @Test
-		public void test301() throws BadSignatureException, GeneratorRangeException {
+		public void test301() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig301);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0+++"));
@@ -248,7 +240,7 @@ public class CoreDegeneracyTest {
 		}
 
         @Test
-		public void test401() throws BadSignatureException, GeneratorRangeException {
+		public void test401() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig401);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0++++"));
@@ -271,7 +263,7 @@ public class CoreDegeneracyTest {
 		}
 
         //@Test
-        //public void testXMLOutput() throws BadSignatureException, GeneratorRangeException {
+        //public void testXMLOutput() throws BadSignatureException {
             //GProduct printThis = new GProduct(pSig301);
             //System.out.println(printThis.toXMLString(""));
         //}

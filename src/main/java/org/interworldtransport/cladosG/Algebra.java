@@ -30,7 +30,6 @@ import org.interworldtransport.cladosF.Field;			//Algebras are defined over fiel
 import org.interworldtransport.cladosF.Normalizable;	//Limit on usable fields
 import org.interworldtransport.cladosF.ProtoN;			//Parent class of usable fields
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * The algebra object holds all geometric details that support the definition of
@@ -195,11 +194,9 @@ public final class Algebra implements Comparable<Algebra> {
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
 	 *                                 exception is thrown.
-	 * @throws GeneratorRangeException This exception catches when the supported
-	 *                                 number of generators is out of range.
 	 */
 	public Algebra(String pNewName, Foot pF, String pSig)
-			throws BadSignatureException, GeneratorRangeException {
+			throws BadSignatureException {
 		this(	pNewName, 
 				pF, 
 				GBuilder.createGProduct(	GCache.INSTANCE.findBasis((byte) pSig.length()),
@@ -228,14 +225,12 @@ public final class Algebra implements Comparable<Algebra> {
 	 *                                 requires a signature for the generators. This
 	 *                                 signature string must be parse-able or this
 	 *                                 exception is thrown.
-	 * @throws GeneratorRangeException This exception catches when the supported
-	 *                                 number of generators is out of range.
 	 */
 	public <D extends ProtoN & Field & Normalizable>  Algebra(	String pNewName, 
 																String pFootName, 
 																String pSig, 
 																D pF)
-			throws BadSignatureException, GeneratorRangeException {
+			throws BadSignatureException {
 		
 		this(	pNewName, 
 				GBuilder.createFoot(		pFootName, 

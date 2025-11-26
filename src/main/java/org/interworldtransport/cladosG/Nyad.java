@@ -38,7 +38,6 @@ import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * Nyads are for all practical purposes just lists of monads that share a common
@@ -552,13 +551,10 @@ public class Nyad implements Modal {
 	 * @throws BadSignatureException	This exception is thrown when signature is rejected as invalid.
 	 * @throws CladosNyadException		This exception is thrown when the new monad cannot be appended. 
 	 * 									Perhaps there is a reference mismatch or the new monad failed construction.
-	 * @throws GeneratorRangeException	This exception is thrown when the integer number of generators for the basis 
-	 *									is out of the supported range. {0, 1, 2, ..., 15(for now)}
 	 * @return Nyad
 	 */
 	public Nyad create(String pMonadName, String pAlgebraName, String pSig, String pCard)
-							throws 			BadSignatureException, GeneratorRangeException,
-											CladosMonadException, CladosNyadException {
+							throws 			BadSignatureException, CladosMonadException, CladosNyadException {
 																		//Prepare Cardinal. Re-use where possible.
 		Cardinal tCard = (pCard == null) ? Cardinal.generate(getMode()) : FBuilder.createCardinal(pCard);
 																		

@@ -54,15 +54,6 @@ public class GeneratorRangeException extends Exception {
 	protected String SourceMessage;
 
 	/**
-	 * Construct this exception. This exception fabricates a message complaining
-	 * about the expectations of the source.
-	 */
-	//public GeneratorRangeException() {
-	//	super();
-	//	SourceMessage = "Likely blade construction attempt failed.";
-	//}
-
-	/**
 	 * Construct this exception. This exception must have a message complaining
 	 * about the expectations of the source.
 	 * <br>

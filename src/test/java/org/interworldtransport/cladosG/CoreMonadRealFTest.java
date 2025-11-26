@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ public class CoreMonadRealFTest {
 
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 16); //new RealF[16];
 
@@ -302,7 +301,7 @@ public class CoreMonadRealFTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 4); //new RealF[4];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 
@@ -419,7 +418,7 @@ public class CoreMonadRealFTest {
     }
 
     @Test
-    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException {
         assertThrows(IllegalArgumentException.class, () -> tM1.add(tM5));
         assertThrows(IllegalArgumentException.class, () -> tM1.subtract(tM5));
 

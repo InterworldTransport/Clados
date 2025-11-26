@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +22,7 @@ class CoreAlgebraTest {
 	protected Algebra alg3;
 
 	@BeforeEach
-	public void setUp() throws BadSignatureException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException {
 		fType = Cardinal.generate("Test:NumberType");
 		rNumber = new RealF(fType, 0.0f);
 		tFoot = new Foot(fName);
@@ -65,7 +64,7 @@ class CoreAlgebraTest {
 	}
 
 	@Test
-	public void testSignatureSimilarityReuse() throws BadSignatureException, GeneratorRangeException {
+	public void testSignatureSimilarityReuse() throws BadSignatureException {
 		Algebra alg4 = new Algebra(aName, tFoot, pSig31);
 		Algebra alg5 = new Algebra(aName, tFoot, pSig13);
 
@@ -88,7 +87,7 @@ class CoreAlgebraTest {
 	
 
 	@Test
-	public void testCompareCores() throws BadSignatureException, GeneratorRangeException {
+	public void testCompareCores() throws BadSignatureException {
 		Algebra alg4 = new Algebra("light weight frame", alg1);
 		Algebra alg5 = new Algebra("medium weight frame", alg1);
 		Algebra alg6 = new Algebra(aName, fName, pSig31, rNumber);

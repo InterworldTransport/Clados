@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ public class DegenerateComplexMonadTests {
 
     
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 16); //new ComplexF[16];
 
@@ -210,7 +209,7 @@ public class DegenerateComplexMonadTests {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 8); //new ComplexF[8];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 

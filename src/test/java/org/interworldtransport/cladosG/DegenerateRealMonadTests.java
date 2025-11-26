@@ -9,7 +9,6 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +24,7 @@ public class DegenerateRealMonadTests {
     Monad tM0, tM1, tM2, tM3, tM4, tM5, tM6, tM8;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 16); //new RealF[16];
 
@@ -211,7 +210,7 @@ public class DegenerateRealMonadTests {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 8); //new RealF[8];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 

@@ -36,7 +36,6 @@ import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * This builder gets basic information and constructs many Clados Geometry objects.
@@ -173,11 +172,9 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Algebra
 	 * @throws BadSignatureException   Thrown by an algebra constructor if the pSig
 	 *                                 parameter is malformed
-	 * @throws GeneratorRangeException Thrown by an algebra constructor if the pSig
-	 *                                 parameter is too long
 	 */
 	public final static Algebra createAlgebra(ProtoN pNumber, String pName, String pFTName, String pSig)
-			throws BadSignatureException, GeneratorRangeException {
+			throws BadSignatureException {
 		return new Algebra(pName, createFoot(pFTName, pNumber.getCardinalString()), pSig);
 	}
 
@@ -189,10 +186,9 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pSig  A String for the new algebra's signature.
 	 * @return Algebra
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final static Algebra createAlgebraWithFoot(Foot pF, String pName, String pSig)
-			throws BadSignatureException, GeneratorRangeException {
+			throws BadSignatureException {
 		return new Algebra(pName, pF, pSig);
 	}
 
@@ -213,12 +209,8 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * <br>
 	 * @param pGen integer number of generators to use in constructing the basis.
 	 * @return Basis constructed
-	 * @throws GeneratorRangeException This can be thrown by the constructors on
-	 *                                 which this method depends. Nothing special in
-	 *                                 this method will throw them, so look to the
-	 *                                 Basis and see why it complains.
 	 */
-	public final static Basis createBasis(byte pGen) throws GeneratorRangeException {
+	public final static Basis createBasis(byte pGen) {
 		Optional<Basis> tB = GCache.INSTANCE.findBasis(pGen);
 		if (tB.isPresent())
 			return tB.get();
@@ -234,12 +226,8 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * <br>
 	 * @param pGen Generator to use in constructing the basis.
 	 * @return Basis constructed
-	 * @throws GeneratorRangeException This can be thrown by the constructors on
-	 *                                 which this method depends. Nothing special in
-	 *                                 this method will throw them, so look to the
-	 *                                 Basis and see why it complains.
 	 */
-	public final static Basis createBasis(Generator pGen) throws GeneratorRangeException {
+	public final static Basis createBasis(Generator pGen) {
 		Optional<Basis> tB = GCache.INSTANCE.findBasis(pGen.ord);
 		if (tB.isPresent())
 			return tB.get();
@@ -319,14 +307,9 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pB   Basis to re-use in constructing product
 	 * @param pSig String form of the product's signature
 	 * @return GProduct constructed
-	 * @throws GeneratorRangeException This can be thrown by the constructors on
-	 *                                 which this method depends. Nothing special in
-	 *                                 this method will throw them, so look to the
-	 *                                 Basis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public final static GProduct createGProduct(Optional<Basis> pB, String pSig)
-			throws BadSignatureException, GeneratorRangeException {
+	public final static GProduct createGProduct(Optional<Basis> pB, String pSig) throws BadSignatureException {
 
 		if (!GBuilder.validateSignature(pSig))
 			throw new BadSignatureException(null, "Asked to create a GProduct using: "+pSig);
@@ -334,17 +317,17 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 		Optional<GProduct> tSpot = GCache.INSTANCE.findGProduct(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get();
-		else {
-			if (pB.isPresent()) {
-				GCache.INSTANCE.appendBasis(pB.get()); 					//append to ensure it's findable
-				tSpot = Optional.ofNullable(createGProduct(pSig));
-			} else {
-				tSpot = Optional.ofNullable(createGProduct(pSig));
-				GCache.INSTANCE.appendBasis(tSpot.get().getBasis());	//new one to append
-			}
-			
-			return tSpot.get();
+		
+		if (pB.isPresent()) {
+			GCache.INSTANCE.appendBasis(pB.get()); 					//append to ensure it's findable
+			tSpot = Optional.ofNullable(createGProduct(pSig));
+		} else {
+			tSpot = Optional.ofNullable(createGProduct(pSig));
+			GCache.INSTANCE.appendBasis(tSpot.get().getBasis());	//new one to append
 		}
+			
+		return tSpot.get();
+		
 	}
 
 	/**
@@ -357,40 +340,30 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * <br>
 	 * @param pSig String form of the product's signature
 	 * @return GProduct constructed
-	 * @throws GeneratorRangeException This can be thrown by the constructors on
-	 *                                 which this method depends. Nothing special in
-	 *                                 this method will throw them, so look to the
-	 *                                 Basis and see why it complains.
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 */
-	public final static GProduct createGProduct(String pSig)
-			throws BadSignatureException, GeneratorRangeException {
-
+	public final static GProduct createGProduct(String pSig) throws BadSignatureException {
 		if (!GBuilder.validateSignature(pSig))
 				throw new BadSignatureException(null, "Asked to create a GProduct using: "+pSig);
 		
 		Optional<GProduct> tSpot = GCache.INSTANCE.findGProduct(pSig);
 		if (tSpot.isPresent())
 			return tSpot.get(); // GProduct already created. return it.
-		else {
-			// Create a new GProduct, but might still find a cached Basis.
-			Optional<Basis> tB = GCache.INSTANCE.findBasis((byte) pSig.length());
-			GProduct tSpot2;
-			if (tB.isPresent()){
-				tSpot2 = new GProduct(tB, pSig);
-				GCache.INSTANCE.appendGProduct(tSpot2);
-			}
-			else {
-				tSpot2 = new GProduct(pSig);
-				GCache.INSTANCE.appendBasis(tSpot2.getBasis());	//new one to append
-				GCache.INSTANCE.appendGProduct(tSpot2);
-			}
-			//if (tSpot2 != null) {
-			//	GCache.INSTANCE.appendBasis(tSpot2.getBasis());
-			//	GCache.INSTANCE.appendGProduct(tSpot2);
-			//}
-			return tSpot2;
+		
+		// Create a new GProduct, but might still find a cached Basis.
+		Optional<Basis> tB = GCache.INSTANCE.findBasis((byte) pSig.length());
+		GProduct tSpot2;
+		if (tB.isPresent()){
+			tSpot2 = new GProduct(tB, pSig);
+			GCache.INSTANCE.appendGProduct(tSpot2);
 		}
+		else {
+			tSpot2 = new GProduct(pSig);
+			GCache.INSTANCE.appendBasis(tSpot2.getBasis());	//new one to append
+			GCache.INSTANCE.appendGProduct(tSpot2);
+		}
+		return tSpot2;
+		
 	}
 
 	/**
@@ -408,12 +381,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	@SuppressWarnings("unchecked")
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadSpecial(ProtoN pNumber,
 			String pName, String pAName, String pFoot, String pSig, String pSpecial)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		return new Monad(pName, pAName, pFoot, pSig, (T) pNumber, pSpecial);
 	}
 
@@ -427,12 +399,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(	Scale<T> pNumbers,
 																								Algebra pA, 
 																								String pName)
-			throws BadSignatureException, GeneratorRangeException, CladosMonadException{
+			throws BadSignatureException, CladosMonadException{
 		if (pA.getGBasis() != pNumbers.getBasis()) 
 			throw new CladosMonadException(	null, 
 											"Monad construction fails when Scale and Algebra bases aren't identical.");
@@ -453,11 +424,10 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumbers,
 			String pName, String pAName, String pFoot, String pSig)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		
 		return new Monad(	pName, 		//A String
 							createAlgebraWithFootGP(createFoot(pFoot, pNumbers.getCardinal().getUnit()), 
@@ -479,7 +449,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	@SuppressWarnings("unchecked")
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadWithFoot(	ProtoN pNumber,
@@ -487,7 +456,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 																								String pName, 
 																								String pAName, 
 																								String pSig)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		return new Monad(pName, pAName, pFt, pSig, (T) pNumber);
 	}
 
@@ -505,14 +474,13 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Monad (Cast this as the concrete monad to be used)
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
-	 * @throws GeneratorRangeException Thrown if the pSig parameter is too long
 	 */
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadZero(	T pNumber, 
 																							String pName,
 																							String pAName, 
 																							String pFoot, 
 																							String pSig)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		return new Monad(pName, pAName, pFoot, pSig, pNumber);
 	}
 

@@ -11,7 +11,6 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +67,7 @@ public class CoreGBuilderTest {
         Algebra tAlgebra;
         
         @BeforeEach
-        public void setUp() throws GeneratorRangeException, BadSignatureException {
+        public void setUp() throws BadSignatureException {
             FCache.INSTANCE.clearCardinals();
             FCache.INSTANCE.appendCardinal(tCard);                      //One cardinal in the cache
 
@@ -84,23 +83,17 @@ public class CoreGBuilderTest {
         @Test
         public void testCreateBasisVariants() {
             GCache.INSTANCE.clearBases();
-            try {
-                Basis tb0 = GBuilder.createBasis(Generator.E4); 
-                assertNotNull(tb0);
-                assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
-                assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
-            } catch (GeneratorRangeException eg) {
-                assertNotNull(eg.getSourceMessage());
-            }
+            
+            Basis tb0 = GBuilder.createBasis(Generator.E4); 
+            assertNotNull(tb0);
+            assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
+            assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
+            
             GCache.INSTANCE.clearBases();
-            try {
-                Basis tb1 = GBuilder.createBasis((byte) 4);
-                assertNotNull(tb1);
-                assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
-                assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
-            } catch (GeneratorRangeException egr) {
-                assertNotNull(egr.getSourceMessage());
-            }
+            Basis tb1 = GBuilder.createBasis((byte) 4);
+            assertNotNull(tb1);
+            assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
+            assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
         }
 
         @Test
@@ -141,8 +134,6 @@ public class CoreGBuilderTest {
             try {
                 Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAlgebraName()+"2", tFoot.getFootName()+"2", twoDPGA);
                 assertNotNull(ta2);
-            } catch (GeneratorRangeException er) {
-                ;
             } catch (BadSignatureException es) {
                 ;
             }
@@ -437,7 +428,7 @@ public class CoreGBuilderTest {
         Nyad thing1;
         
         @BeforeEach
-        public void setUp() throws GeneratorRangeException, BadSignatureException, CladosMonadException {
+        public void setUp() throws BadSignatureException, CladosMonadException {
             FCache.INSTANCE.clearCardinals();
             FCache.INSTANCE.appendCardinal(tCard);                      //One cardinal in the cache
 

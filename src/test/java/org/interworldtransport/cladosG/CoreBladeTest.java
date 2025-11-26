@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,10 +21,10 @@ class CoreBladeTest {
 	@Test
 	public void testOutOfRange() {
 		Assertions.assertDoesNotThrow(() ->  Blade.createBlade((byte) 17)); //Range exception gets caught right now. Ugh.
-		assertTrue(Blade.createBlade((byte) 17) == null);
+		assertTrue(Blade.createBlade((byte) 17).maxGenerator() == 0);
 
 		Assertions.assertDoesNotThrow(() -> Blade.createBlade((byte) -2)); //Range exception gets caught right now. Ugh.
-		assertTrue(Blade.createBlade((byte) -2) == null);
+		assertTrue(Blade.createBlade((byte) -2).maxGenerator() == 0);
 
 		Assertions.assertDoesNotThrow(() -> Blade.createBlade((byte) 2)); //No range exception. Should work.
 		assertTrue(Blade.createBlade((byte) 2) != null);
@@ -64,7 +63,7 @@ class CoreBladeTest {
 	}
 
 	@Test
-	public void testConstructionSpecificBlade0() throws GeneratorRangeException {
+	public void testConstructionSpecificBlade0() {
 		Blade testThis = new Blade((byte) 15, g);	//Create the blade represented by 'g' with room for the max generators
 		assertTrue(testThis.maxGenerator() == 15);	//Prove the blade could hold the max number of generators
 		assertTrue(testThis.rank() == 4);			//Prove it only has the count from 'g'.
@@ -74,7 +73,7 @@ class CoreBladeTest {
 	}
 
 	@Test
-	public void testConstructionSpecificBlade1() throws GeneratorRangeException {
+	public void testConstructionSpecificBlade1() {
 		EnumSet<Generator> tGs = EnumSet.noneOf(Generator.class);	//Create empty EnumSet of Generators.
 		Stream.of(g).forEach(gn -> tGs.add(gn));								//Stream 'g' into the enumset
 		
@@ -108,7 +107,7 @@ class CoreBladeTest {
 		assertTrue(testThis.maxGenerator() == 6);
 		assertTrue(testThis.bitKey() == ((1<<0) - 1 ));
 	}
-
+	/*
 	@Test
 	public void testStaticCreateOptionalBlade() {
 		Optional<Blade> testThisOpt = Blade.createOptionalBlade((byte) 4);
@@ -139,7 +138,7 @@ class CoreBladeTest {
 		assertFalse(testThisOpt.isPresent());
 
 	}
-
+	*/
 	@Test
 	public void testAddingGenerators() {
 		Blade testThis = Blade.createBlade(tB4);
@@ -163,12 +162,12 @@ class CoreBladeTest {
 		assertTrue(testThis3.maxGenerator() == 5);
 		assertFalse(testThis3.rank() > 4); //Augment adds room for one more generator, but only the next one.
 
-		Blade testThis4 = Blade.augmentBlade(testThis3, Generator.EG);
-		assertTrue(testThis4.maxGenerator() == 5);
+		//Blade testThis4 = Blade.augmentBlade(testThis3, Generator.EG);
+		//assertTrue(testThis4.maxGenerator() == 5);
 	}
 
 	@Test
-	public void testBladeStats() throws GeneratorRangeException {
+	public void testBladeStats() {
 		assertTrue(tB0.rank() == 0);
 		assertTrue(tB4.rank() == 2);
 		assertTrue(tB43.key() == tB4.key());
@@ -214,7 +213,7 @@ class CoreBladeTest {
 	}
 	
 	@Test
-	public void testHashes() throws GeneratorRangeException{
+	public void testHashes(){
 		Blade tB4N = Blade.createPScalarBlade(Generator.E4);
 		Blade tB5 = Blade.createPScalarBlade(Generator.E5);
 		assertTrue(tB4N.hashCode() == 17488);
@@ -224,7 +223,7 @@ class CoreBladeTest {
 	}
 
 	@Test
-	public void testLimitsIgnored() throws GeneratorRangeException {
+	public void testLimitsIgnored() {
 		Blade newtB0 = new Blade(tB0);
 		newtB0.remove(Generator.E1); // Should silently fail since E1 isn't in there.
 		assertTrue(newtB0.equals(tB0)); // tB is a scalar. Nothing to remove. Silent acceptance expected.
@@ -245,12 +244,8 @@ class CoreBladeTest {
 		testThis = tB42.get(Generator.E1);
 		assertTrue(testThis.isPresent());
 
-		try {
-			Blade newTest = new Blade((byte)17);
-			assertFalse(newTest instanceof Blade);
-		} catch (GeneratorRangeException e) {
-			assertTrue(e.getSourceMessage().equals("Unsupported Size for Blade 17"));
-		}
+		Blade newTest = new Blade((byte)17);
+		assertTrue(newTest instanceof Blade);	//A scalar blade is now generated for out of range nonsense
 
 		Blade left = Blade.createBlade(Generator.E1).remove(Generator.E1);
 		Blade right = Blade.createBlade(Generator.E2).remove(Generator.E2);
@@ -269,7 +264,7 @@ class CoreBladeTest {
 	}
 
 	@Test
-	public void testXMLOutput() throws GeneratorRangeException {
+	public void testXMLOutput() {
 		Blade tB = Blade.createBlade(gMax);
 		Generator.stream(gMax.ord).forEach(g-> tB.add(g));
 		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";

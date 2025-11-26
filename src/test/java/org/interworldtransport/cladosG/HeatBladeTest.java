@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen00() throws GeneratorRangeException {
+	public void testGen00()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(0).toArray();
 		Generator[] j = {};
 		int m = 0;
@@ -29,7 +28,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen01() throws GeneratorRangeException {
+	public void testGen01()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(1).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 1);
 		int m = 0;
@@ -40,7 +39,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen02() throws GeneratorRangeException {
+	public void testGen02()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(2).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 2);
 		int m = 0;
@@ -51,7 +50,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen03() throws GeneratorRangeException {
+	public void testGen03()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(3).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 3);
 		int m = 0;
@@ -62,7 +61,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen04() throws GeneratorRangeException {
+	public void testGen04()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(4).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 4);
 		int m = 0;
@@ -73,7 +72,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen05() throws GeneratorRangeException {
+	public void testGen05()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(5).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 5);
 		int m = 0;
@@ -84,7 +83,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen06() throws GeneratorRangeException {
+	public void testGen06()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(6).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 6);
 		int m = 0;
@@ -95,7 +94,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen07() throws GeneratorRangeException {
+	public void testGen07()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(7).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 7);
 		int m = 0;
@@ -106,7 +105,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen08() throws GeneratorRangeException {
+	public void testGen08()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(8).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 8);
 		int m = 0;
@@ -117,7 +116,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen09() throws GeneratorRangeException {
+	public void testGen09()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(9).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 9);
 		int m = 0;
@@ -128,7 +127,7 @@ class HeatBladeTest {
 	}
 
 	@Test
-	public void testGen10() throws GeneratorRangeException {
+	public void testGen10()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(10).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 10);
 		int m = 0;
@@ -139,7 +138,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen11() throws GeneratorRangeException {
+	public void testGen11()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(11).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 11);
 		int m = 0;
@@ -150,7 +149,7 @@ class HeatBladeTest {
 	}
 
 	@Test
-	public void testGen12() throws GeneratorRangeException {
+	public void testGen12()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(12).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 12);
 		int m = 0;
@@ -161,7 +160,7 @@ class HeatBladeTest {
 	}
 
 	@Test
-	public void testGen13() throws GeneratorRangeException {
+	public void testGen13()  {
 		//Generator[] j = (Generator[]) Generator.flow().limit(13).toArray();
 		Generator[] j = Arrays.copyOf(Generator.values(), 13);
 		int m = 0;
@@ -172,7 +171,7 @@ class HeatBladeTest {
 	}
 
 	@Test
-	public void testGen14() throws GeneratorRangeException {
+	public void testGen14()  {
 		Generator[] j = Arrays.copyOf(Generator.values(), 14);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
@@ -182,7 +181,7 @@ class HeatBladeTest {
 	}
 	
 	@Test
-	public void testGen15() throws GeneratorRangeException {
+	public void testGen15()  {
 		Generator[] j = Arrays.copyOf(Generator.values(), 15);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {
@@ -192,7 +191,7 @@ class HeatBladeTest {
 	}
 /*
 	@Test
-	public void testGen16() throws GeneratorRangeException {
+	public void testGen16()  {
 		Generator[] j = Arrays.copyOf(Generator.values(), 16);
 		int m = 0;
 		for (m = 0; m < 10000000; m++) {

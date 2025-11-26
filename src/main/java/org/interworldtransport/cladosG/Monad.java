@@ -47,7 +47,6 @@ import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * A CladosG Monad is better known as a multivector to anyone with experience
@@ -468,16 +467,13 @@ public class Monad implements Modal {
 	 *                                 with the coefficients offered. The issues
 	 *                                 could involve null coefficients or a
 	 *                                 coefficient array of the wrong size.
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
 															String pAlgebraName,
 															String pFootName, 
 															String pSig, 
 															T pF)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		this(	pMonadName, 
 				pAlgebraName,
 				GBuilder.createFootLike(pFootName, pF), 
@@ -502,16 +498,13 @@ public class Monad implements Modal {
 	 *                                 with the coefficients offered. The issues
 	 *                                 could involve null coefficients or a
 	 *                                 coefficient array of the wrong size.
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
 															String pAlgebraName,
 															Foot pFoot, 
 															String pSig, 
 															T pF)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		setName(pMonadName);
 		setAlgebra(GBuilder.createAlgebraWithFoot(pFoot, pAlgebraName, pSig));
 
@@ -556,11 +549,7 @@ public class Monad implements Modal {
 	 * @throws CladosMonadException    This exception is thrown if there is an issue
 	 *                                 with the coefficients offered the default
 	 *                                 constructor. The issues could involve null
-	 *                                 coefficients or a coefficient array of the
-	 *                                 wrong size.
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 14}
+	 *                                 coefficients or a coefficient array of the wrong size.
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
 															String pAlgebraName,
@@ -568,7 +557,7 @@ public class Monad implements Modal {
 															String pSig, 
 															T pF, 
 															String pSpecial)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 		this(	pMonadName, 
 				pAlgebraName, 
 				GBuilder.createFootLike(pFootName, pF), 
@@ -680,16 +669,13 @@ public class Monad implements Modal {
 	 *                                 with the coefficients offered. The issues
 	 *                                 could involve null coefficients or a
 	 *                                 coefficient array of the wrong size.
-	 * @throws GeneratorRangeException This exception is thrown when the integer
-	 *                                 number of generators for the basis is out of
-	 *                                 the supported range. {0, 1, 2, ..., 15}
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
 															String pAlgebraName,
 															String pFootName, 
 															String pSig, 
 															Scale<T> pScale)
-			throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+			throws BadSignatureException, CladosMonadException {
 
 		this(	pMonadName, 
 				GBuilder.createAlgebraWithFootGP(

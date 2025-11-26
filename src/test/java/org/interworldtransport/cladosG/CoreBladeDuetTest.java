@@ -3,7 +3,6 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ class CoreBladeDuetTest {
 	BladeDuet tBD;
 
 	@BeforeEach
-	public void setUp() throws GeneratorRangeException {
+	public void setUp() {
 		firstB = new Blade((byte) 4, g);
 		secondB = new Blade((byte) 4, i);
 		
@@ -27,7 +26,7 @@ class CoreBladeDuetTest {
 	}
 
 	@Test
-	void testStatic() throws GeneratorRangeException, BadSignatureException {
+	void testStatic() throws BadSignatureException {
 		out = BladeDuet.simplify(firstB, secondB, sig);
 		assertTrue(Blade.isNBlade(out, (byte) 1));
 		out = BladeDuet.simplify(firstB, firstB, sig);

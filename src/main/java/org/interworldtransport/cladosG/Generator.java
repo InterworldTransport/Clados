@@ -123,7 +123,7 @@ public enum Generator {
 	 * This is generator number fifteen. 
 	 * An implicit private constructor exists.
 	 */
-	EF((byte) 15),
+	EF((byte) 15);//,
 	/**
 	 * This is generator number sixteen and is likely beyond the maximum size
 	 * most commodity computers can use as they'll run out of memory before 
@@ -131,7 +131,7 @@ public enum Generator {
 	 * <br>
 	 * An implicit private constructor exists.
 	 */
-	EG((byte) 16);
+	//EG((byte) 16);
 
 	/**
 	 * This method returns a stream of generators in this enumeration up to a limit
