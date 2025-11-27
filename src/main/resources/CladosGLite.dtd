@@ -16,25 +16,25 @@
 							realvalue	CDATA 	#REQUIRED
 							imgvalue	CDATA 	#REQUIRED>
 							
-<!ELEMENT	Name 			(CDATA)>
-
 <!ELEMENT	Cardinals		(Cardinal+)>
 
 <!ELEMENT	Foot			(Name)>
 
-<!ELEMENT 	Coefficients 	((RealF|RealD|ComplexF|ComplexD)+)>
-<!ATTLIST 	Coefficients	number 		CDATA 	#REQUIRED
+<!ELEMENT 	Weights 		((RealF|RealD|ComplexF|ComplexD)+)>
+<!ATTLIST 	Weights			number 		CDATA 	#REQUIRED
 							gradeKey	CDATA	#REQUIRED>
 
-<!ELEMENT 	Monad 			(Name,Coefficients)>
-<!ATTLIST 	Monad 			algebra		CDATA	#REQUIRED
+<!ELEMENT 	Monad 			(Weights)>
+<!ATTLIST 	Monad 			name 		CDATA	#optional
+							algebra		CDATA	#REQUIRED
 							gradeKey	CDATA	#REQUIRED
 							sparseFlag	CDATA	#REQUIRED>
 
 <!ELEMENT 	MonadList 		(Monad+)>
 
-<!ELEMENT	Nyad			(Name,Foot,MonadList)>
-<!ATTLIST 	Nyad 			order 		CDATA	#REQUIRED
+<!ELEMENT	Nyad			(Foot,MonadList)>
+<!ATTLIST 	Nyad 			name 		CDATA	#optional
+							order 		CDATA	#REQUIRED
 							algorder	CDATA	#REQUIRED>
 
 <!ELEMENT 	NyadList 		(Nyad+)>

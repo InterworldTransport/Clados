@@ -57,9 +57,7 @@
 
 <xs:element 		name="Foot" 		type="Foot"/>
 <xs:complexType 	name="Foot">
-	<xs:all>
-		<xs:element	name="Name"			type="xs:string"/>
-	</xs:all>
+	<xs:attribute	name="Name"			type="xs:string"/>
 </xs:complexType>
 
 <xs:element 		name="Grade"		type="Grade"/>
@@ -126,10 +124,10 @@
 <xs:element 		name="Algebra"		type="Algebra"/>
 <xs:complexType 	name="Algebra">
 	<xs:all>
-		<xs:element	name="Name"			type="xs:string"/>
 		<xs:element name="Foot"			type="Foot"/>
 		<xs:element name="GProduct"		type="GProduct"/>
 	</xs:all>
+	<xs:attribute 	name="name" 		type="xs:string" use="optional"/>
 	<xs:attribute 	name="UUID" 		type="xs:string" use="optional"/>
 </xs:complexType>
 
@@ -157,10 +155,10 @@
 <xs:element 		name="Monad"		type="Monad"/>
 <xs:complexType		name="Monad">
 	<xs:all>
-		<xs:element	name="Name"			type="xs:string"/>
 		<xs:element	name="Algebra"		type="Algebra"/>
 		<xs:element name="Scales" 		type="Scales"/>
 	</xs:all>
+	<xs:attribute 	name="name" 		type="xs:string" use="optional"/>
 	<xs:attribute 	name="gradeKey" 	type="xs:positiveInteger"/>
 	<xs:attribute 	name="sparseFlag" 	type="xs:boolean"/>
 </xs:complexType>
@@ -182,11 +180,11 @@
 <xs:element			name="Nyad"			type="Nyad"/>
 <xs:complexType		name="Nyad">
 	<xs:all>
-		<xs:element	name="Name"			type="xs:string"/>
 		<xs:element	name="Foot"			type="Foot"/>
 		<xs:element name="AlgebraList" 	type="AlgebraList"/>
 		<xs:element name="MonadList" 	type="MonadList"/>
 	</xs:all>
+	<xs:attribute 	name="name" 		type="xs:string" use="optional"/>
 	<xs:attribute 	name="order" 		type="xs:positiveInteger"/>
 	<xs:attribute 	name="algorder" 	type="xs:positiveInteger"/>
 </xs:complexType>

@@ -1,5 +1,4 @@
-<Monad algebra="Property Algebra" gradeKey="11111" sparseFlag="false" >
-	<Name>Test MonadRD6</Name>
+tM6: <Monad name="Test MonadRD6" algebra="Property Algebra" gradeKey="11111" sparseFlag="false" >
 	<Scales mode="REALD" pans="16">
 				<Pair>
 					<Blade key="0" bitKey="0b0000" sign="1" generators="" />

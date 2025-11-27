@@ -334,19 +334,15 @@ public class Monad implements Modal {
 	 * @return String
 	 */
 	public final static String toXMLFullString(Monad pM, String indent) {
-		if (indent == null)
-			indent = "\t\t\t";
-		StringBuilder rB = (new StringBuilder(indent + "<Monad "))
-			.append("gradeKey=\"")
-			.append(pM.getGradeKey())
-			.append("\" ")
-			.append("sparseFlag=\"")
-			.append(pM.getSparseFlag())
-			.append("\" ")
-			.append(">\n");
-		rB.append(indent + "\t<Name>")
+		if (indent == null)			indent = "\t\t\t";
+		StringBuilder rB = new StringBuilder(indent + "<Monad ");
+		rB.append("name=\"")
 			.append(pM.getName())
-			.append("</Name>\n");
+			.append("\" gradeKey=\"")
+			.append(pM.getGradeKey())
+			.append("\" sparseFlag=\"")
+			.append(pM.getSparseFlag())
+			.append("\" >\n");
 		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
 		rB.append(indent)
 			.append(Scale.toXMLString(pM.scales, "\t"));
@@ -362,22 +358,17 @@ public class Monad implements Modal {
 	 * @return String
 	 */
 	public final static String toXMLString(Monad pM, String indent) {
-		if (indent == null)
-			indent = "\t\t\t";
+		if (indent == null)			indent = "\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("algebra=\"")
-			.append(pM.getAlgebra().getAlgebraName())
-			.append("\" ");
-		rB.append("gradeKey=\"")	
-			.append(pM.getGradeKey())
-			.append("\" ")
-			.append("sparseFlag=\"")
-			.append(pM.getSparseFlag())
-			.append("\" ")
-			.append(">\n");
-		rB.append(indent + "\t<Name>")
+		rB.append("name=\"")
 			.append(pM.getName())
-			.append("</Name>\n");
+			.append("\" algebra=\"")
+			.append(pM.getAlgebra().getAlgebraName())
+			.append("\" gradeKey=\"")
+			.append(pM.getGradeKey())
+			.append("\" sparseFlag=\"")
+			.append(pM.getSparseFlag())
+			.append("\" >\n");
 		rB.append(indent)
 			.append(Scale.toXMLString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");

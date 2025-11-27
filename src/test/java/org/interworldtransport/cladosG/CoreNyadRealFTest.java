@@ -594,13 +594,22 @@ public class CoreNyadRealFTest {
 
 		@Test
 		void testXMLFullOutput() throws CladosNyadException {
-			String printIt = Nyad.toXMLFullString(thing1, "");
+			String printIt = Nyad.toXMLString(thing1, "");
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLFullString(thing1, "");
 			assertTrue(printIt != null);
 
 			printIt = Nyad.toXMLFullString(thing1, null);
 			assertTrue(printIt != null);
 
+			printIt = Nyad.toXMLString(thing1, null);
+			assertTrue(printIt != null);
+
 			printIt = Nyad.toXMLFullString(thing1, "\t\t\t");
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLString(thing1, "\t\t\t");
 			assertTrue(printIt != null);
 		}
 

@@ -84,14 +84,18 @@ public final class Algebra implements Comparable<Algebra> {
 	 * @return String formatted as XML containing information about the Algebra
 	 */
 	public final static String toXMLString(Algebra pA, String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent).append("<Algebra UUID=\"").append(pA.uuid).append("\" >\n");
-		rB.append(indent).append("\t<Name>").append(pA.getAlgebraName()).append("</Name>\n");
-		// -----------------------------------------------------------------------
-		rB.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));
-		rB.append(GProduct.toXMLString(pA.getGProduct(), indent + "\t"));
-		rB.append(indent).append("</Algebra>\n");
+		if (indent == null)		indent = "\t\t\t\t";
+		StringBuilder rB = new StringBuilder(indent+"<Algebra name=\"");
+		rB	.append(pA.getAlgebraName())
+			.append("\" UUID=\"")
+			.append(pA.uuid)
+			.append("\" >\n");
+		
+		rB	.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));			//Algebra owns a reference to a Foot
+		rB	.append(GProduct.toXMLString(pA.getGProduct(), indent + "\t"));	//Algebra owns a reference to a GP
+		
+		rB	.append(indent)
+			.append("</Algebra>\n");
 		return rB.toString();
 	}
 

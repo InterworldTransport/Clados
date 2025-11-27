@@ -117,11 +117,10 @@ public final class Foot {
 	 * @return String formatted as XML containing information about the Foot
 	 */
 	public final static String toXMLString(Foot pF, String indent) {
-		if (indent == null)
-			indent = "\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Foot>\n");
-		rB.append(indent).append("\t<Name>").append(pF.getFootName()).append("</Name>\n");
-		rB.append(indent).append("</Foot>\n");
+		if (indent == null)		indent = "\t\t";
+		StringBuilder rB = new StringBuilder(indent + "<Foot name=\"");
+		rB	.append(pF.getFootName())
+			.append("\" />\n");
 		return rB.toString();
 	}
 }

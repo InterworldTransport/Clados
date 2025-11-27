@@ -1,10 +1,6 @@
-<Monad gradeKey="10" sparseFlag="true" >
-	<Name>Test MonadRD9</Name>
-	<Algebra UUID="7b984054-1dac-434e-affe-de37fd587bbf" >
-		<Name>Property Algebra</Name>
-		<Foot>
-			<Name>Test Foot 1</Name>
-		</Foot>
+<Monad name="Test MonadRD6" gradeKey="11111" sparseFlag="false" >
+	<Algebra name="Property Algebra" UUID="47417346-9c52-4370-bd6f-d14b6099a7f8" >
+		<Foot name="Test Foot 6" />
 		<GProduct>
 			<Signature>-+++</Signature>
 			<Basis>
@@ -55,72 +51,69 @@
 		</GProduct>
 	</Algebra>
 	<Scales mode="REALD" pans="16">
-		<Pair>
-			<Blade key="0" bitKey="0b0000" sign="1" generators="" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="1" bitKey="0b0001" sign="1" generators="E1" />
-			<RealD cardinal="Test Double 1" realvalue="1.0" />
-		</Pair>
-		<Pair>
-			<Blade key="2" bitKey="0b0010" sign="1" generators="E2" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="3" bitKey="0b0100" sign="1" generators="E3" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="4" bitKey="0b1000" sign="1" generators="E4" />
-			<RealD cardinal="Test Double 1" realvalue="1.0" />
-		</Pair>
-		<Pair>
-			<Blade key="7" bitKey="0b0011" sign="1" generators="E1,E2" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="8" bitKey="0b0101" sign="1" generators="E1,E3" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="9" bitKey="0b1001" sign="1" generators="E1,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="13" bitKey="0b0110" sign="1" generators="E2,E3" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="14" bitKey="0b1010" sign="1" generators="E2,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="19" bitKey="0b1100" sign="1" generators="E3,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="38" bitKey="0b0111" sign="1" generators="E1,E2,E3" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="39" bitKey="0b1011" sign="1" generators="E1,E2,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="44" bitKey="0b1101" sign="1" generators="E1,E3,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="69" bitKey="0b1110" sign="1" generators="E2,E3,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-		<Pair>
-			<Blade key="194" bitKey="0b1111" sign="1" generators="E1,E2,E3,E4" />
-			<RealD cardinal="Test Double 1" realvalue="0.0" />
-		</Pair>
-	</Scales>
+				<Pair>
+					<Blade key="0" bitKey="0b0000" sign="1" generators="" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="1" bitKey="0b0001" sign="1" generators="E1" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="2" bitKey="0b0010" sign="1" generators="E2" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="3" bitKey="0b0100" sign="1" generators="E3" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="4" bitKey="0b1000" sign="1" generators="E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="7" bitKey="0b0011" sign="1" generators="E1,E2" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="8" bitKey="0b0101" sign="1" generators="E1,E3" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="9" bitKey="0b1001" sign="1" generators="E1,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="13" bitKey="0b0110" sign="1" generators="E2,E3" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="14" bitKey="0b1010" sign="1" generators="E2,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="19" bitKey="0b1100" sign="1" generators="E3,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="38" bitKey="0b0111" sign="1" generators="E1,E2,E3" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="39" bitKey="0b1011" sign="1" generators="E1,E2,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="44" bitKey="0b1101" sign="1" generators="E1,E3,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="69" bitKey="0b1110" sign="1" generators="E2,E3,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+				<Pair>
+					<Blade key="194" bitKey="0b1111" sign="1" generators="E1,E2,E3,E4" />
+					<RealD cardinal="TestMonads" realvalue="1.0" />
+				</Pair>
+			</Scales>
 </Monad>
-
-
-

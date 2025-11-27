@@ -1,3 +1,0 @@
-<Foot>
-	<Name>Test:TangentPoint</Name>
-</Foot>
