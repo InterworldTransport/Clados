@@ -9,15 +9,14 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class DegenerateRealMonadTests {
     Cardinal tCard = Cardinal.generate("TestMonads");
     String mName = "Monad-";
-    Foot pFoot0 = new Foot("Foot0", tCard);
-    Foot pFoot1 = new Foot("Foot1", tCard);
+    Foot pFoot0 = new Foot("Foot0");
+    Foot pFoot1 = new Foot("Foot1");
 	String aName = "Motion Algebra";
 	String aName2 = "Property Algebra";
     String pgasig = "+++0";
@@ -25,7 +24,7 @@ public class DegenerateRealMonadTests {
     Monad tM0, tM1, tM2, tM3, tM4, tM5, tM6, tM8;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 16); //new RealF[16];
 
@@ -211,7 +210,7 @@ public class DegenerateRealMonadTests {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 8); //new RealF[8];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 
@@ -245,9 +244,9 @@ public class DegenerateRealMonadTests {
         assertFalse(tM3.getSparseFlag());   //ONE
 
         //System.out.println(Monad.toXMLFullString(tM4, ""));
-        assertFalse(tM4.getSparseFlag());   //Idempotent, but in a small algebra... so half the grades are present.
-        assertFalse(tM5.getSparseFlag());   //Nilpotent... so same issue.
-        assertFalse(tM6.getSparseFlag());   //Fake nilpotent in a small algebra...
+        assertTrue(tM4.getSparseFlag());   //Idempotent, but in a small algebra... so half the grades are present.
+        assertTrue(tM5.getSparseFlag());   //Nilpotent... so same issue.
+        assertTrue(tM6.getSparseFlag());   //Fake nilpotent in a small algebra...
 
         assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM0)));
 		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM0)));

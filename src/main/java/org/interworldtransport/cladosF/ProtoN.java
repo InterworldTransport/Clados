@@ -172,13 +172,13 @@ public class ProtoN {
 	 * @return boolean
 	 */
 	public static final boolean isTypeMatch(ProtoN pE, ProtoN pF) {
-		if (pE._card == null && pF._card == null)
+		if (pE.card == null && pF.card == null)
 			return true;
-		if (pE._card != null && pF._card == null)
+		if (pE.card != null && pF.card == null)
 			return false;
-		if (pE._card == null && pF._card != null)
+		if (pE.card == null && pF.card != null)
 			return false;
-		return pE._card.getUnit() == pF._card.getUnit();
+		return pE.card.getUnit() == pF.card.getUnit();
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class ProtoN {
 	 * <br>
 	 * This Cardinal is what gives a proto number a sense of what the number means.
 	 */
-	protected Cardinal _card;
+	protected Cardinal card;
 
 	/**
 	 * Construct a simple ProtoN using the Cardinal offered.
@@ -229,7 +229,7 @@ public class ProtoN {
 	 * @return Cardinal (A cardinal name for a ProtoN)
 	 */
 	public Cardinal getCardinal() {
-		return _card;
+		return card;
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class ProtoN {
 	 * @return Cardinal (A cardinal name for a ProtoN)
 	 */
 	public String getCardinalString() {
-		return _card.getUnit();
+		return card.getUnit();
 	}
 
 	@Override
@@ -260,11 +260,13 @@ public class ProtoN {
 	}
 	
 	/**
-	 * Set method for _card
-	 * <br>
+	 * Set method for the cardinal. Mess with this at your peril. Seriously. Altering
+	 * it after construction leads to a redefining of what the number means and in 
+	 * multivectors it HAS to be done consistently or you'll get reference match failures.
+	 * <br><br>
 	 * @param pType Cardinal
 	 */
-	protected void setCardinal(Cardinal pType) {
-		_card = pType;
+	public void setCardinal(Cardinal pType) {
+		card = pType;
 	}
 }

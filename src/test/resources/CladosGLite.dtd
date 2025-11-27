@@ -20,7 +20,7 @@
 
 <!ELEMENT	Cardinals		(Cardinal+)>
 
-<!ELEMENT	Foot			(Name,Cardinals)>
+<!ELEMENT	Foot			(Name)>
 
 <!ELEMENT 	Coefficients 	((RealF|RealD|ComplexF|ComplexD)+)>
 <!ATTLIST 	Coefficients	number 		CDATA 	#REQUIRED

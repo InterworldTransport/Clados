@@ -86,6 +86,74 @@ public final class CladosConstant {
 	 */
 	public final static Double BY2_D = Double.valueOf(0.5d);
 
+	/**
+	 * This small function is for key building and exist soley because java's 
+	 * Math.pow() accepts doubles and returns a double. I get why they do that, 
+	 * but I have fairly tight control over the inputs on this method in the 
+	 * Blade and Basis classes, so overflow isn't likely. 
+	 * <br><br>
+	 * Having said that (!), future expansion the number of generators that can 
+	 * be used in blades and bases will have to revisit this method since long 
+	 * integers have a limit... even if it is very large by current standards.
+	 * <br><br>
+	 * @param base byte to use as the exponential base
+	 * @param exponent integer to use as the power to raise the base
+	 * @return Long wrapped result of base^exponent
+	 */
+	protected final static Long pow(byte base, int exponent) {
+		long result = 1;					//Establish default return value... anything^zero is 1.
+		long sq = base;						//Establish default return value if exponent is 1.
+		int power = Math.abs(exponent);		//Just in case some quirk hands in negative numbers
+		while (power > 0) {					//Start looping on the exponent
+			if (power % 2 == 1) 			//If power is odd
+				result *= sq;				//update result by multiplying it by the base^(some power of 2)
+			sq *= sq;						//else power is odd and we square the base
+			power /= 2;						//Cut the power in half trimming fractions then
+											//return to the top of the loop
+		}
+		return Long.valueOf(result);
+
+		/*
+		Try it out.
+
+		Call: 
+		pow(16, 15)
+			result starts as 1			
+			sq starts as 16		
+			power starts as 15
+			loop starts with power>0	Decision spots that power is odd
+											result becomes 1*16
+										sq becomes 16^2
+										power becomes 7
+			loop detects power>0		Decision spots power is odd
+											result becomes 16*16^2
+										sq becomes 16^4
+										power becomes 3
+			loop detects power>0		Decison spots power is odd
+											result becomes 16^3*16^4
+										sq becomes 16^8
+										power becomes 1
+			loop detects power>0		Decison spots power is odd
+											result becomes 16^7*16^8
+										sq becomes 16^16
+										power becomes 0
+			loop detects termination condition
+		return Long.valueOf(16^15) 
+
+		task complete in 4 iterations. (Ceiling of log_2() of exponent )
+		but did overflows happen?
+
+		The longest long integer (32bits) is 	9,223,372,036,854,775,807 (or 2^63 - 1)
+		The pscalar in a 15 generator algebra is   81,985,529,216,486,896 (grade count = 16)
+		while 16^15 (15 bit binary key) is		1,152,921,504,606,846,976 (meaning result doesn't overflow)
+		but setting sq = 16^16 does overflow. Fortunately sq isn't need again in this maximum case.
+			This overflow is why java's Math.pow() using double precision floats, but it does so at a small cost.
+			It isn't clear that Clados should roll it's own pow function, but it isn't used often by Blade 
+			or Basis and developers are discouraged from re-using it. Even large byte entries can blow up.
+		Speed tests suggest any change in efficiency is negligible for our purposes.
+		*/
+	}
+
 	private CladosConstant() {
 		;
 	}

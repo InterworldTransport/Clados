@@ -61,7 +61,12 @@ public enum CladosField {
 	/**
 	 * There is an implicit private constructor for this, but we won't override it.
 	 */
-	COMPLEXD;
+	COMPLEXD//,
+	/**
+	 * This is a test for extending the enumeration. Curious to see what complains. 8)
+	 */
+	//NADA
+	;
 
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
@@ -86,7 +91,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(pCard, 1d, 0d);
 		default:
-			return null;
+			return new ProtoN(pCard);
 		}
 	}
 
@@ -113,7 +118,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(pCard, 0d, 0d);
 		default:
-			return null;
+			return new ProtoN(pCard);
 		}
 	}
 
@@ -138,7 +143,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(pCard, 1d, 0d);
 		default:
-			return null;
+			return new ProtoN(pCard);
 		}
 	}
 
@@ -163,7 +168,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(pDiv.getCardinal(), 1d, 0d);
 		default:
-			return null;
+			return new ProtoN(pDiv.getCardinal());
 		}
 	}
 
@@ -188,7 +193,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(Cardinal.generate(pCard), 1d, 0d);
 		default:
-			return null;
+			return new ProtoN(Cardinal.generate(pCard));
 		}
 	}
 
@@ -213,7 +218,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(pCard, 0d, 0d);
 		default:
-			return null;
+			return new ProtoN(pCard);
 		}
 	}
 
@@ -238,7 +243,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(pDiv.getCardinal(), 0d, 0d);
 		default:
-			return null;
+			return new ProtoN(pDiv.getCardinal());
 		}
 	}
 
@@ -263,7 +268,7 @@ public enum CladosField {
 		case COMPLEXD:
 			return new ComplexD(Cardinal.generate(pCard), 0d, 0d);
 		default:
-			return null;
+			return new ProtoN(Cardinal.generate(pCard));
 		}
 	}
 }

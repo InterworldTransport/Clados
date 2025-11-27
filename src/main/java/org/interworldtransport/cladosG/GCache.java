@@ -97,8 +97,11 @@ public enum GCache {
 	 *            present.
 	 */
 	public void appendGProduct(GProduct pGP) {
-		if (!listOfGProducts.contains(pGP))
+		if (!listOfGProducts.contains(pGP)){
 			listOfGProducts.add(pGP);
+			if(!listOfBases.contains(pGP.getBasis()))
+				listOfBases.add(pGP.getBasis());
+		}
 	}
 
 	/**

@@ -59,7 +59,6 @@
 <xs:complexType 	name="Foot">
 	<xs:all>
 		<xs:element	name="Name"			type="xs:string"/>
-		<xs:element name="Cardinals" 	type="Cardinals"/>
 	</xs:all>
 </xs:complexType>
 

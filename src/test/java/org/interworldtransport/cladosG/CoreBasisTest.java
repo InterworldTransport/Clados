@@ -8,8 +8,8 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class CoreBasisTest {
@@ -19,7 +19,7 @@ class CoreBasisTest {
 //	Basis tBasis16;
 
 	@BeforeEach
-	public void setUp() throws GeneratorRangeException {
+	public void setUp() {
 		tBasis0 = new Basis((byte) 0);
 		tBasis1 = new Basis((byte) 1);
 		tBasis4 = new Basis((byte) 4);
@@ -27,31 +27,113 @@ class CoreBasisTest {
 		tBasis8 = new Basis((byte) 8);
 	}
 
-	@Test
-	public void testCachePrefill() throws GeneratorRangeException {
-		GCache.INSTANCE.clearBases();
-		for (byte k = 0; k < 11; k++)
-			GBuilder.createBasis(k);
-		assertTrue(GCache.INSTANCE.getBasisListSize() == 11);
-		for (byte k = 0; k < 11; k++)
-			GCache.INSTANCE.removeBasis(k);
-		assertTrue(GCache.INSTANCE.getBasisListSize() == 0);
+	@Nested
+	class testCaching {
+		@Test
+		public void testCachePrefill() {
+			GCache.INSTANCE.clearBases();
+			for (byte k = 0; k < 11; k++)
+				GBuilder.createBasis(k);
+			assertTrue(GCache.INSTANCE.getBasisListSize() == 11);
+			for (byte k = 0; k < 11; k++)
+				GCache.INSTANCE.removeBasis(k);
+			assertTrue(GCache.INSTANCE.getBasisListSize() == 0);
+		}
+		@Test
+		public void testCachedBasis() {
+			GCache.INSTANCE.clearBases();
+			Basis tB1 = GBuilder.createBasis((byte) 3);	//Builder cached it
+			assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 	
+			Basis tB2 = GBuilder.createBasis((byte) 3); 	//Building another like it
+			assertTrue(tB1 == tB2);		//Builder noticed identical size and returned first one instead.
+			GBuilder.createBasis(Generator.EA);					//Builder cached it
+			assertTrue(GCache.INSTANCE.getBasisListSize() == 2);	//Two now
+			GCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
+			assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 
+			Optional<Basis> get10 = GCache.INSTANCE.findBasis((byte) 10);
+			assertTrue(get10.isPresent()); //Earlier removal got rid of the correct one.
+			assertTrue(GCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
+		}
 	}
-	
+
+	@Nested
+	class testCountAndRange {
+		@Test
+		public void testBladeCount() {
+			tBasis10 = new Basis((byte) 10);
+			tBasis14 = new Basis((byte) 14);
+			//tBasis16 = new Basis((byte) 16);
+			assertTrue(tBasis0.getBladeCount() == (1 << 0));
+			assertTrue(tBasis4.getBladeCount() == (1 << 4));
+			assertTrue(tBasis8.getBladeCount() == (1 << 8));
+			assertTrue(tBasis10.getBladeCount() == (1 << 10));
+			assertTrue(tBasis14.getBladeCount() == (1 << 14));
+			//assertTrue(tBasis16.getBladeCount() == (1 << 16));
+		}
+		@Test
+		public void testGradeCount() {
+			tBasis10 = new Basis((byte) 10);
+			tBasis14 = new Basis((byte) 14);
+			//tBasis16 = new Basis((byte) 16);
+			assertTrue(tBasis0.getGradeCount() == 1);
+			assertTrue(tBasis4.getGradeCount() == 5);
+			assertTrue(tBasis8.getGradeCount() == 9);
+			assertTrue(tBasis10.getGradeCount() == 11);
+			assertTrue(tBasis14.getGradeCount() == 15);
+			//assertTrue(tBasis16.getGradeCount() == 17);
+		}
+		@Test
+		public void testGradeRange()  {
+			//We enter with tBasis4, tBasis8 already constructed
+			tBasis10 = new Basis((byte) 10);
+			tBasis14 = new Basis((byte) 14);
+			//tBasis16 = new Basis((byte) 16);
+			ArrayList<Integer> tSpot;
+
+			tSpot = tBasis0.getGrades();
+			assertTrue(tSpot.get(0) == 0);
+
+			tSpot = tBasis4.getGrades();
+			assertTrue(tBasis4.getBladeCount() == 16);
+			for (int k = 1; k < 0.5 * (tBasis4.getGradeCount() - 1); k++) 
+				assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(4 - k + 1) - tSpot.get(4 - k));
+			
+			tSpot = tBasis8.getGrades();
+			assertTrue(tBasis8.getBladeCount() == 256);
+			for (int k = 1; k < 0.5 * (tBasis8.getGradeCount() - 1); k++)
+				assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(8 - k + 1) - tSpot.get(8 - k));
+
+			tSpot = tBasis10.getGrades();
+			assertTrue(tBasis10.getBladeCount() == 1024);
+			for (int k = 1; k < 0.5 * (tBasis10.getGradeCount() - 1); k++)
+				assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(10 - k + 1) - tSpot.get(10 - k));
+
+			tSpot = tBasis14.getGrades();
+			assertTrue(tBasis14.getBladeCount() == 16384);
+			for (int k = 1; k < 0.5 * (tBasis14.getGradeCount() - 1); k++)
+				assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(14 - k + 1) - tSpot.get(14 - k));
+
+			/*
+			tSpot = tBasis16.getGrades();
+			for (int k=50000; k<55540; k++) {
+				System.out.println("Key Index Map: "+k+" goes with "+tBasis16.getKey(k));
+			}
+			assertTrue(tBasis16.getBladeCount() == 65536);
+
+			for (int k = 1; k < 0.5 * (tBasis16.getGradeCount() - 1); k++)
+				System.out.println("Asserting something for "+k+": "+(tSpot.get(k + 1) - tSpot.get(k))+" and "+(tSpot.get(17 - k ) - tSpot.get(16 - k)));
+					assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(16 - k + 1) - tSpot.get(16 - k));
+			*/
+		}
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	public void testCachedBasis() throws GeneratorRangeException {
-		GCache.INSTANCE.clearBases();
-		Basis tB1 = GBuilder.createBasis((byte) 3);	//Builder cached it
-		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 	
-		Basis tB2 = GBuilder.createBasis((byte) 3); 	//Building another like it
-		assertTrue(tB1 == tB2);		//Builder noticed identical size and returned first one instead.
-		GBuilder.createBasis(Generator.EA);					//Builder cached it
-		assertTrue(GCache.INSTANCE.getBasisListSize() == 2);	//Two now
-		GCache.INSTANCE.removeBasis((byte) 3);				//Get rid of first one
-		assertTrue(GCache.INSTANCE.getBasisListSize() == 1); 
-		Optional<Basis> get10 = GCache.INSTANCE.findBasis((byte) 10);
-		assertTrue(get10.isPresent()); //Earlier removal got rid of the correct one.
-		assertTrue(GCache.INSTANCE.removeBasis((byte) 3));	//Get rid of first one again doesn't error.
+	public void testWhatShouldntHappen() {
+		assertFalse(tBasis4.equals(null));
+		assertFalse(tBasis4.equals(Generator.E4));
+		assertFalse(tBasis4.validateGradeIndex((byte) 5));
+		assertTrue(tBasis4.validateGradeIndex((byte) 4));
 	}
 
 	@Test
@@ -63,82 +145,14 @@ class CoreBasisTest {
 	}
 
 	@Test
-	public void testBladeCount() throws GeneratorRangeException {
-		tBasis10 = new Basis((byte) 10);
-		tBasis14 = new Basis((byte) 14);
-//		tBasis16 = new Basis((byte) 16);
-		assertTrue(tBasis0.getBladeCount() == (1 << 0));
-		assertTrue(tBasis4.getBladeCount() == (1 << 4));
-		assertTrue(tBasis8.getBladeCount() == (1 << 8));
-		assertTrue(tBasis10.getBladeCount() == (1 << 10));
-		assertTrue(tBasis14.getBladeCount() == (1 << 14));
-//		assertTrue(tBasis16.getBladeCount() == (1 << 16));
-	}
+	public void testEveryConstruction() {
+		assertDoesNotThrow(() -> Basis.using(null)); //The no generator basis (scalar) is generated instead.
 
-	@Test
-	public void testGradeCount() throws GeneratorRangeException {
-		tBasis10 = new Basis((byte) 10);
-		tBasis14 = new Basis((byte) 14);
-//		tBasis16 = new Basis((byte) 16);
-		assertTrue(tBasis0.getGradeCount() == 1);
-		assertTrue(tBasis4.getGradeCount() == 5);
-		assertTrue(tBasis8.getGradeCount() == 9);
-		assertTrue(tBasis10.getGradeCount() == 11);
-		assertTrue(tBasis14.getGradeCount() == 15);
-//		assertTrue(tBasis16.getGradeCount() == 17);
-	}
+		Basis tryThisNow = Basis.using((byte) 0);
+		assertTrue(tryThisNow.getGradeCount() == 1);
+		assertTrue(tryThisNow.getBladeCount() == 1);
 
-	@Test
-	public void testGradeRange() throws GeneratorRangeException  {
-		tBasis10 = new Basis((byte) 10);
-		tBasis14 = new Basis((byte) 14);
-		//Basis tBasis15 = new Basis((byte) 15);
-//		tBasis16 = new Basis((byte) 16);
-		ArrayList<Integer> tSpot;
-
-		tSpot = tBasis0.getGrades();
-		assertTrue(tSpot.get(0) == 0);
-
-		tSpot = tBasis4.getGrades();
-		assertTrue(tBasis4.getBladeCount() == 16);
-		for (int k = 1; k < 0.5 * (tBasis4.getGradeCount() - 1); k++) {
-			assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(4 - k + 1) - tSpot.get(4 - k));
-		}
-
-		tSpot = tBasis8.getGrades();
-		assertTrue(tBasis8.getBladeCount() == 256);
-		for (int k = 1; k < 0.5 * (tBasis8.getGradeCount() - 1); k++)
-			assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(8 - k + 1) - tSpot.get(8 - k));
-
-		tSpot = tBasis10.getGrades();
-		assertTrue(tBasis10.getBladeCount() == 1024);
-		for (int k = 1; k < 0.5 * (tBasis10.getGradeCount() - 1); k++)
-			assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(10 - k + 1) - tSpot.get(10 - k));
-
-		tSpot = tBasis14.getGrades();
-		assertTrue(tBasis14.getBladeCount() == 16384);
-		for (int k = 1; k < 0.5 * (tBasis14.getGradeCount() - 1); k++)
-			assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(14 - k + 1) - tSpot.get(14 - k));
-
-		//System.out.println(tBasis15.toXMLString(""));
-
-//		tSpot = tBasis16.getGrades();
-		
-
-		//for (int k=50000; k<55540; k++) {
-		//	System.out.println("Key Index Map: "+k+" goes with "+tBasis16.getKey(k));
-		//}
-//		assertTrue(tBasis16.getBladeCount() == 65536);
-
-		//for (int k = 1; k < 0.5 * (tBasis16.getGradeCount() - 1); k++)
-		//	System.out.println("Asserting something for "+k+": "+(tSpot.get(k + 1) - tSpot.get(k))+" and "+(tSpot.get(17 - k ) - tSpot.get(16 - k)));
-		//		assertTrue(tSpot.get(k + 1) - tSpot.get(k) == tSpot.get(16 - k + 1) - tSpot.get(16 - k));
-	}
-
-	@Test
-	public void testEveryConstruction() throws GeneratorRangeException {
-
-		Basis tryThisNow = Basis.using(Generator.E1);
+		tryThisNow = Basis.using(Generator.E1);
 		assertTrue(tryThisNow.getGradeCount() == 2);
 		assertTrue(tryThisNow.getBladeCount() == 2);
 
@@ -197,8 +211,6 @@ class CoreBasisTest {
 		tryThisNow = Basis.using(Generator.EF);
 		assertTrue(tryThisNow.getGradeCount() == 16);
 		assertTrue(tryThisNow.getBladeCount() == 32768);
-
-		assertThrows(GeneratorRangeException.class, () -> Basis.using(Generator.EG));
 	}
 
 	@Test
@@ -216,9 +228,8 @@ class CoreBasisTest {
 		assertNull(tBasis8.getSingleBlade(256));
 		assertTrue(tBasis8.getSingleBlade(255) instanceof Blade);
 
-		assertThrows(GeneratorRangeException.class, () -> Basis.using((byte) 17));
+		assertDoesNotThrow(() -> Basis.using((byte) 17));
 		assertDoesNotThrow(() -> Basis.using(Generator.EF));
-		assertThrows(GeneratorRangeException.class, () -> Basis.using(Generator.EG));
 
 		Stream<Blade> testThis = tBasis4.bladeStream();
 		assertTrue(testThis.count() == 16);	// 16 blades in a 4-gen basis
@@ -272,7 +283,8 @@ class CoreBasisTest {
 	@Test
 	void testXMLOutput() {
 		String xml = Basis.toXMLString(tBasis4, "");
-		//System.out.println(xml);
+		assertTrue(xml != null);
+		xml = Basis.toXMLString(tBasis4, null);
 		assertTrue(xml != null);
 	}
 }

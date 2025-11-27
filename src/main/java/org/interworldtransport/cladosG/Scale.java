@@ -191,11 +191,12 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pInMap This is a Map to copy. Probably a view of another Scale object.
 	 */
 	public Scale(CladosField pMode, Basis pB, Map<Blade, D> pInMap) {
-		map = new TreeMap<>();
 		mode = pMode;
 		gBasis = pB;
+		card = pInMap.get(pB.getScalarBlade()).getCardinal();
+		map = new TreeMap<>();
 		map.putAll(pInMap);
-		card = map.get(gBasis.getScalarBlade()).getCardinal(); // gets scalar part cardinal
+		
 		assert (pInMap.keySet().size() == pB.getBladeCount());
 	}
 
@@ -707,11 +708,11 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 			rB.append(indent).append("\t\t\t<Pair>\n");
 			rB.append(indent).append(Blade.toXMLString(blade, "\t\t\t\t"));
 			switch (pS.getMode()){
-				case COMPLEXD -> {rB.append(indent + "\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
-				case COMPLEXF -> {rB.append(indent + "\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
-				case REALD -> 	{rB.append(indent + "\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
-				case REALF -> 	{rB.append(indent + "\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
-				default -> 		{rB.append(indent + "\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
+				case COMPLEXD -> {rB.append(indent + "\t\t\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
+				case COMPLEXF -> {rB.append(indent + "\t\t\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
+				case REALD -> 	{rB.append(indent + "\t\t\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
+				case REALF -> 	{rB.append(indent + "\t\t\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
+				default -> 		{rB.append(indent + "\t\t\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
 			}	
 			rB.append(indent).append("\t\t\t</Pair>\n");
 		});
@@ -762,9 +763,8 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	protected Scale<D> setCardinal(Cardinal pCard) {
 		if (card != pCard & pCard != null) {
-			map.clear();
+			weightsParallelStream().forEach(x -> x.setCardinal(pCard));
 			card = pCard;
-			zeroAll();
 		}
 		return this;
 	}

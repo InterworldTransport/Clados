@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class CoreMonadRealDTest {
 	Monad tM10, tM11;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cRD = (RealD[]) FListBuilder.REALD.createONE(tCard, 16); //new RealD[16];
 
@@ -300,7 +299,7 @@ public class CoreMonadRealDTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cRD = (RealD[]) FListBuilder.REALD.createONE(tCard, 4); //new RealD[4];
         Monad tryThis = new Monad(mName + "RD0", 
                                     aName, 
@@ -414,6 +413,23 @@ public class CoreMonadRealDTest {
         tM8.multiplyByPSRight();
         assertTrue(((RealD) tM8.scales.getScalar()).getReal() == -1.0d);
         assertTrue(((RealD) tM8.scales.getPScalar()).getReal() == -1.0d);
+    }
+
+    @Test
+    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException {
+        assertThrows(IllegalArgumentException.class, () -> tM1.add(tM5));
+        assertThrows(IllegalArgumentException.class, () -> tM1.subtract(tM5));
+
+        assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
+
+        Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+        Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.REALD.createONE(tCard) , 
+                                                    tFoot,
+                                                    "TestMonadNameRD",
+                                                    "TestAlgebraNameRD", 
+                                                    "0++");       
+        assertThrows(CladosMonadException.class, () -> tM1.setScale(tM5b.getWeights()));  
+                                                                        //Proving Bases get checked
     }
     
 	//@Test

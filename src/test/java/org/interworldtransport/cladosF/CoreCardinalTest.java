@@ -15,11 +15,17 @@ class CoreCardinalTest {
         tCard2 = Cardinal.generate(CladosField.REALF);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testCardinalEquality() {
         assertFalse(tCard1.equals(tCard2)); //their unit strings do not match
         Cardinal tCard3 = tCard2;
         assertTrue(tCard3.equals(tCard2)); //object equality wins out
+        assertFalse(tCard2.equals(null));
+        assertFalse(tCard2.equals(CladosField.REALF));
+
+        Cardinal tCard4 = Cardinal.generate("");
+        assertFalse(tCard4.equals(tCard2));
     }
 
     @Test

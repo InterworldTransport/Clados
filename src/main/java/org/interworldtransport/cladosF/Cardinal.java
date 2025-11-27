@@ -87,12 +87,25 @@ public final class Cardinal {
 
 	private final String unit;
 
+	/*
+	 * This private constructor re-uses the CladosField enumeration as a basic unit.
+	 * This constructor exists so objects using CladosF classes have a basic unit that
+	 * doesn't have to mean anything. The other option they could have is to use a null 
+	 * Cardinal, but then type matching likely fails. Anyone using the CladosField 
+	 * enumeration likely prefers not to use Cardinals at all.
+	 */
 	private Cardinal(CladosField pT) {
 		unit = pT.name();
+		FCache.INSTANCE.appendCardinal(this);
 	}
 
+	/*
+	 * This private constructor accepts a string as the name of some 'units' associated 
+	 * with a CladosF number class. The string may be any legal java string.
+	 */
 	private Cardinal(String pT) {
 		unit = pT;
+		FCache.INSTANCE.appendCardinal(this);
 	}
 
 	@Override
@@ -104,10 +117,7 @@ public final class Cardinal {
 		if (getClass() != obj.getClass())
 			return false;
 		Cardinal other = (Cardinal) obj;
-		if (unit == null) {
-			if (other.unit != null)
-				return false;
-		} else if (!this.getUnit().equals(other.getUnit()))
+		if (!this.getUnit().equals(other.getUnit()))
 			return false;
 		return true;
 	}

@@ -15,7 +15,7 @@
 		<maven.compiler.release>25</maven.compiler.release>
 		<junit.jupiter.version>5.11.0</junit.jupiter.version>
 		<project.organization.name>Interworld Transport</project.organization.name>
-		<project.organization.url>https://github.com/InterworldTransport/Clados</project.organization.url>
+		<project.organization.url>http://interworldtransport.org</project.organization.url>
 		<project.license.name>GNU Affero General Public License v3.0</project.license.name>
 		<project.license.url>https://www.gnu.org/licenses/agpl-3.0.en.html</project.license.url>
 		<project.description>A Java library for Clifford Algebra computations</project.description>	
@@ -89,21 +89,53 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.13</version>
+                <version>0.8.14</version>
                 <executions>
                     <execution>
-						<id>prepare-agent</id>
+						<id>default-prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>report</id>
-                        <phase>verify</phase>
+                        <id>default-report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<excludes>
+										<exclude>*Test</exclude>
+									</excludes>
+									<limits>
+										<limit>
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.80</minimum>
+										</limit>
+										<limit>
+											<counter>CLASS</counter>
+											<value>MISSEDCOUNT</value>
+											<maximum>10</maximum>
+										</limit>
+										<limit>
+											<counter>COMPLEXITY</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.60</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -111,9 +143,11 @@
 				<version>3.5.4</version>
 				<configuration>
 					<argLine>-Xmx16G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
+					<excludes>
+						<exclude>**/Heat*.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
-
         </plugins>
 	</build>
 
@@ -136,12 +170,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>3.9.0</version>
-      		</plugin>
+				</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>3.6.0</version> <!-- Use an appropriate version -->
-			</plugin>
+      		</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>

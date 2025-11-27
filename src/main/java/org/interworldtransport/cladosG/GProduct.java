@@ -27,7 +27,6 @@ package org.interworldtransport.cladosG;
 import java.util.Optional;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 
 /**
  * This class defines a geometric product on an associated basis within a
@@ -99,12 +98,9 @@ public class GProduct implements CliffordProduct {
 	 * figures out the rest of what it needs.
 	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++0".
-	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
-	 *                                 some internal call demands a generator not in
-	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProduct(String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(String pSig) throws BadSignatureException {
 		this(Optional.ofNullable(null), pSig);
 	}
 
@@ -118,12 +114,9 @@ public class GProduct implements CliffordProduct {
 	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++0".
 	 * @param pB   Optional Basis to re-use in constructing this product.
-	 * @throws GeneratorRangeException Thrown when a Basis fails to form because
-	 *                                 some internal call demands a generator not in
-	 *                                 the supported list.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
-	public GProduct(Optional<Basis> pB, String pSig) throws BadSignatureException, GeneratorRangeException {
+	public GProduct(Optional<Basis> pB, String pSig) throws BadSignatureException {
 		if (!CliffordProduct.validateSignature(pSig))
 			throw new BadSignatureException(this, "Valid signature required.");
 		// ------Init signature

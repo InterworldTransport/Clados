@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class CoreMonadComplexDTest {
 	Monad tM10, tM11;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(tCard, 16); //new ComplexD[16];
 
@@ -300,7 +299,7 @@ public class CoreMonadComplexDTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cCD = (ComplexD[]) FListBuilder.COMPLEXD.create(tCard, 4); //new ComplexD[4];
         for (int i=0; i<4; i++){            //Modulus will still be one for each weight, but conjugate will matter here.
             cCD[i].setImg(1.0d);
@@ -423,9 +422,27 @@ public class CoreMonadComplexDTest {
         assertTrue(((ComplexD) tM8.scales.getPScalar()).getReal() == -1.0d);
     }
     
-	//@Test
-	//public void testXMLOutputs() {
+    @Test
+    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException {
+        assertThrows(IllegalArgumentException.class, () -> tM1.add(tM5));
+        assertThrows(IllegalArgumentException.class, () -> tM1.subtract(tM5));
+
+        assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
+
+        Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+        Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.COMPLEXD.createONE(tCard) , 
+                                                    tFoot,
+                                                    "TestMonadNameCD",
+                                                    "TestAlgebraNameCD", 
+                                                    "0++");       
+        assertThrows(CladosMonadException.class, () -> tM1.setScale(tM5b.getWeights()));  
+                                                                        //Proving Bases get checked
+    }
+
+	@Test
+	public void testXMLOutputs() {
+        assertNotNull(Monad.toXMLString(tM6, ""));
 		//System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
         //System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
-	//}
+	}
 }

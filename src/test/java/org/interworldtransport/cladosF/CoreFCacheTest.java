@@ -23,9 +23,11 @@ public class CoreFCacheTest {
  
     @Test
     public void testInitialState() {
-        assertTrue(cache.isEmpty());
+        assertTrue(cache.getCardinalListSize() == 2);
         cache.appendCardinal(tCard2);
-        assertFalse(cache.isEmpty());
+        assertTrue(cache.getCardinalListSize() == 2);
+        cache.appendCardinal(Cardinal.generate("BrandNewOne"));
+        assertTrue(cache.getCardinalListSize() == 3);
     }
 
     @Test

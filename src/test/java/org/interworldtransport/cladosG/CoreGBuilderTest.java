@@ -9,7 +9,8 @@ import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
+import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.CladosNyadException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,74 +67,33 @@ public class CoreGBuilderTest {
         Algebra tAlgebra;
         
         @BeforeEach
-        public void setUp() throws GeneratorRangeException, BadSignatureException {
+        public void setUp() throws BadSignatureException {
             FCache.INSTANCE.clearCardinals();
             FCache.INSTANCE.appendCardinal(tCard);                      //One cardinal in the cache
 
             GCache.INSTANCE.clearBases();
             GCache.INSTANCE.clearGProducts();
 
-            tFoot = Foot.buildAsType(twoDPGA, tCard);                   //One Cardinal in the Foot's tracker
+            tFoot = Foot.buildAsType(twoDPGA);                   //One Cardinal in the Foot's tracker
             tAlgebra = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra", twoDPGA);
                                 //This constructure adds the GP to the cache by calling GBuilder.createGProduct(sig)
                                 //which means it looks for the GP first and builds it if needed.
-            //GCache.INSTANCE.appendBasis(tAlgebra.getGBasis());
-                                //This step isn't needed because when GBuilder builds the GP it builds the basis
-                                //if it can't find THAT and then appends the Basis and GP in the cache.
-                                                                        //One GP and one Basis in the cache
-
         }
-
-        @Test
-        public void testCreateFootVariants(){
-            Foot tf0=GBuilder.createFoot(twoDPGA, "TestUnits");
-            assertTrue(tf0.findCardinal(tCard) == -1);                                 //Wrong Cardinal but Foot exists
-            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isEmpty());    //NOT Present in the FCache
-            int cardListSize = FCache.INSTANCE.getCardinalListSize();
-
-            Foot tf01=GBuilder.createFoot(twoDPGA+"b", "TestUnits" );
-            assertTrue(tf01.findCardinal(tCard) == -1);                               //Wrong Cardinal but Foot exists
-            assertTrue(FCache.INSTANCE.findCardinal("TestUnits").isEmpty());   //NOT Present in the FCache
-            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());        //Cardinal.generate doesn't cache.
-
-            Foot tf02=GBuilder.createFoot(twoDPGA+"c", "TestDimensionalUnit" );
-            assertTrue(tf02.findCardinal(tCard) != -1);                               //Cardinals match! (.createFoot re-uses)
-            assertTrue(FCache.INSTANCE.findCardinal("TestDimensionalUnit").isPresent());   //See? Present in the FCache
-            assertTrue(cardListSize == FCache.INSTANCE.getCardinalListSize());        //Cardinal got re-used.
-            
-
-            Foot tf1=GBuilder.createFootLike("test1", tCard);
-            assertTrue(tf1.findCardinal(tCard) != -1);                      //A good Cardinal and Foot exists
-
-            Foot tf2=GBuilder.createFootLike("test2", tf1, 0);
-            assertTrue(tf2.findCardinal(tCard) != -1);                      //A good Cardinal and Foot exists
-            assertFalse(tf2.getFootName().equals(tf1.getFootName()));       //and the new one has a different name
-
-            Foot tf3=GBuilder.createFootLike("test3", FBuilder.REALF.createONE(tCard));
-            assertTrue(tf3.findCardinal(tCard) != -1);                      //A good Cardinal and Foot exists
-            assertTrue(tf3.getFootName().equals("test3"));        //and the new one has its own name
-        }
-
+       
         @Test
         public void testCreateBasisVariants() {
             GCache.INSTANCE.clearBases();
-            try {
-                Basis tb0 = GBuilder.createBasis(Generator.E4); 
-                assertNotNull(tb0);
-                assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
-                assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
-            } catch (GeneratorRangeException eg) {
-                assertNotNull(eg.getSourceMessage());
-            }
+            
+            Basis tb0 = GBuilder.createBasis(Generator.E4); 
+            assertNotNull(tb0);
+            assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
+            assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
+            
             GCache.INSTANCE.clearBases();
-            try {
-                Basis tb1 = GBuilder.createBasis((byte) 4);
-                assertNotNull(tb1);
-                assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
-                assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
-            } catch (GeneratorRangeException egr) {
-                assertNotNull(egr.getSourceMessage());
-            }
+            Basis tb1 = GBuilder.createBasis((byte) 4);
+            assertNotNull(tb1);
+            assertTrue(GCache.INSTANCE.getBasisListSize() > 0);
+            assertTrue(GCache.INSTANCE.findBasis((byte) 4).isPresent());
         }
 
         @Test
@@ -174,9 +134,6 @@ public class CoreGBuilderTest {
             try {
                 Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAlgebraName()+"2", tFoot.getFootName()+"2", twoDPGA);
                 assertNotNull(ta2);
-                //assertTrue(ta2.getMode() == CladosField.COMPLEXD);
-            } catch (GeneratorRangeException er) {
-                ;
             } catch (BadSignatureException es) {
                 ;
             }
@@ -374,82 +331,167 @@ public class CoreGBuilderTest {
                                                                         twoDPGA));
         }
 
-    @Test
-    void testCreateMonadWithFoot() {
-        ComplexD tCD0 = FBuilder.COMPLEXD.createONE(tCard);     
-        ComplexF tCF0 = FBuilder.COMPLEXF.createONE(tCard);     
-        RealD tRD0 = FBuilder.REALD.createONE(tCard);     
-        RealF tRF0 = FBuilder.REALF.createONE(tCard);     //There are my examples
+        @Test
+        void testCreateMonadWithFoot() {
+            ComplexD tCD0 = FBuilder.COMPLEXD.createONE(tCard);     
+            ComplexF tCF0 = FBuilder.COMPLEXF.createONE(tCard);     
+            RealD tRD0 = FBuilder.REALD.createONE(tCard);     
+            RealF tRF0 = FBuilder.REALF.createONE(tCard);     //There are my examples
 
-        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRF0, 
-                                                                tFoot,
+            assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRF0, 
+                                                                    tFoot,
+                                                                    "TestMonadNameRF",
+                                                                    "TestAlgebraNameRF", 
+                                                                    twoDPGA));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRD0, 
+                                                                    tFoot,
+                                                                    "TestMonadNameRD",
+                                                                    "TestAlgebraNameRD", 
+                                                                    twoDPGA));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCF0, 
+                                                                    tFoot,
+                                                                    "TestMonadNameCF",
+                                                                    "TestAlgebraNameCF", 
+                                                                    twoDPGA));
+
+            assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCD0, 
+                                                                    tFoot,
+                                                                    "TestMonadNameCD",
+                                                                    "TestAlgebraNameCD", 
+                                                                    twoDPGA));
+            }
+
+        @Test
+        void testCreateMonadZero() {
+            ComplexD tCD0 = FBuilder.COMPLEXD.createONE(tCard);     
+            ComplexF tCF0 = FBuilder.COMPLEXF.createONE(tCard);     
+            RealD tRD0 = FBuilder.REALD.createONE(tCard);     
+            RealF tRF0 = FBuilder.REALF.createONE(tCard);     //There are my examples
+
+            assertDoesNotThrow(() -> GBuilder.createMonadZero(  tRF0, 
                                                                 "TestMonadNameRF",
                                                                 "TestAlgebraNameRF", 
+                                                                "TestFootNameRF",
                                                                 twoDPGA));
 
-        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tRD0, 
-                                                                tFoot,
+            assertDoesNotThrow(() -> GBuilder.createMonadZero(  tRD0, 
                                                                 "TestMonadNameRD",
                                                                 "TestAlgebraNameRD", 
+                                                                "TestFootNameRD",
                                                                 twoDPGA));
 
-        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCF0, 
-                                                                tFoot,
+            assertDoesNotThrow(() -> GBuilder.createMonadZero(  tCF0, 
                                                                 "TestMonadNameCF",
                                                                 "TestAlgebraNameCF", 
+                                                                "TestFootNameCF",
                                                                 twoDPGA));
 
-        assertDoesNotThrow(() -> GBuilder.createMonadWithFoot(  tCD0, 
-                                                                tFoot,
+            assertDoesNotThrow(() -> GBuilder.createMonadZero(  tCD0, 
                                                                 "TestMonadNameCD",
                                                                 "TestAlgebraNameCD", 
+                                                                "TestFootNameCD",
                                                                 twoDPGA));
+            }
+
+        @Test
+        void testCreateScale(){
+            Scale<RealF> testScaleRF = GBuilder.createScale(CladosField.REALF, tAlgebra.getGBasis(), tCard);
+            assertTrue(testScaleRF.getMode() == CladosField.REALF);
+            assertTrue(testScaleRF.getBasis().getGradeCount() == 4);
+            assertTrue(RealF.isZero(testScaleRF.getScalar()));
+
+            Scale<RealD> testScaleRD = GBuilder.createScale(CladosField.REALD, tAlgebra.getGBasis(), tCard);
+            assertTrue(testScaleRD.getMode() == CladosField.REALD);
+            assertTrue(testScaleRD.getBasis().getGradeCount() == 4);
+            assertTrue(RealD.isZero(testScaleRD.getScalar()));
+
+            Scale<ComplexF> testScaleCF = GBuilder.createScale(CladosField.COMPLEXF, tAlgebra.getGBasis(), tCard);
+            assertTrue(testScaleCF.getMode() == CladosField.COMPLEXF);
+            assertTrue(testScaleCF.getBasis().getGradeCount() == 4);
+            assertTrue(ComplexF.isZero(testScaleCF.getScalar()));
+
+            Scale<ComplexD> testScaleCD = GBuilder.createScale(CladosField.COMPLEXD, tAlgebra.getGBasis(), tCard);
+            assertTrue(testScaleCD.getMode() == CladosField.COMPLEXD);
+            assertTrue(testScaleCD.getBasis().getGradeCount() == 4);
+            assertTrue(ComplexD.isZero(testScaleCD.getScalar()));
         }
-
-    @Test
-    void testCreateMonadZero() {
-        ComplexD tCD0 = FBuilder.COMPLEXD.createONE(tCard);     
-        ComplexF tCF0 = FBuilder.COMPLEXF.createONE(tCard);     
-        RealD tRD0 = FBuilder.REALD.createONE(tCard);     
-        RealF tRF0 = FBuilder.REALF.createONE(tCard);     //There are my examples
-
-        assertDoesNotThrow(() -> GBuilder.createMonadZero(  tRF0, 
-                                                            "TestMonadNameRF",
-                                                            "TestAlgebraNameRF", 
-                                                            "TestFootNameRF",
-                                                            twoDPGA));
-
-        assertDoesNotThrow(() -> GBuilder.createMonadZero(  tRD0, 
-                                                            "TestMonadNameRD",
-                                                            "TestAlgebraNameRD", 
-                                                            "TestFootNameRD",
-                                                            twoDPGA));
-
-        assertDoesNotThrow(() -> GBuilder.createMonadZero(  tCF0, 
-                                                            "TestMonadNameCF",
-                                                            "TestAlgebraNameCF", 
-                                                            "TestFootNameCF",
-                                                            twoDPGA));
-
-        assertDoesNotThrow(() -> GBuilder.createMonadZero(  tCD0, 
-                                                            "TestMonadNameCD",
-                                                            "TestAlgebraNameCD", 
-                                                            "TestFootNameCD",
-                                                            twoDPGA));
-
-
-
-
-
-
-        }
-
-
-
-
     }    
 
+    @Nested
+    class testCopyMethods {
+        Cardinal tCard= FBuilder.createCardinal("TestDimensionalUnit"); //Cardinal cached
+        Foot tFoot;
+        Algebra tAlgebra, tAlgebra2;
+        Monad motion, property;
+        Nyad thing1;
+        
+        @BeforeEach
+        public void setUp() throws BadSignatureException, CladosMonadException {
+            FCache.INSTANCE.clearCardinals();
+            FCache.INSTANCE.appendCardinal(tCard);                      //One cardinal in the cache
+
+            GCache.INSTANCE.clearBases();
+            GCache.INSTANCE.clearGProducts();
+
+            tFoot = Foot.buildAsType(twoDPGA);                   //One Cardinal in the Foot's tracker
+            tAlgebra = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra", twoDPGA);
+            tAlgebra2 = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra2", twoDPGA);
+                                //This constructure adds the GP to the cache by calling GBuilder.createGProduct(sig)
+                                //which means it looks for the GP first and builds it if needed.
+
+            motion = GBuilder.createMonadWithAlgebra(	GBuilder.createScale(   CladosField.REALF, 
+                                                                                tAlgebra.getGBasis(), 
+                                                                                tCard), 
+                                                        tAlgebra, 
+                                                        "velocityDensity");
+            property = GBuilder.createMonadWithAlgebra(	GBuilder.createScale(   CladosField.REALF, 
+                                                                                tAlgebra2.getGBasis(), 
+                                                                                tCard), 
+                                                        tAlgebra2, 
+                                                        "velocityDensity");
+        }
+
+        @Test
+        public void testCopyOfFoot() {
+            assertDoesNotThrow(() -> GBuilder.copyOfFoot(tFoot));
+            Foot tf2 = GBuilder.copyOfFoot(tFoot);
+            assertNotNull(tf2);
+        }
+
+        @Test
+        public void testCopyAlgebra() {
+            assertDoesNotThrow(() -> GBuilder.copyOfAlgebra(tAlgebra, "An Algebra Name"));
+            GCache.INSTANCE.clearBases();
+            GCache.INSTANCE.clearGProducts();
+            
+            Algebra ta2 = GBuilder.copyOfAlgebra(tAlgebra, "Another Algebra Name");
+            assertNotNull(ta2);
+        }
+
+        @Test
+        public void testNyadConstructs() throws CladosMonadException, CladosNyadException {
+            thing1 = GBuilder.createNyadWithMonadCopy(motion, "thing1");
+            assertTrue(thing1.getMOrder() == 1);
+            thing1.append(property);
+
+            Nyad thing2 = GBuilder.copyOfNyad(thing1);
+            assertTrue(thing2.getMOrder() == 2);
+            assertTrue(thing2.isJuxtaposition());
+
+            Nyad thing3 = GBuilder.copyOfNyad(thing1, "Copy of thing1");
+            assertTrue(thing3.getMOrder() == 2);
+            assertTrue(thing3.isJuxtaposition());
+
+            Nyad thing4 = GBuilder.duplicateNyadReference(thing1, "Copy of thing1 that REUSES thing1s monads");
+            assertTrue(thing3.getMOrder() == 2);
+            assertTrue(thing3.isJuxtaposition());
+            assertTrue(thing1.getMonadAt(0) == thing4.getMonadAt(0));
 
 
+        }
+
+    }
 
 }

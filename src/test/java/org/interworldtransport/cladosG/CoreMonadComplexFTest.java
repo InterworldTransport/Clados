@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class CoreMonadComplexFTest {
 	Monad tM10, tM11;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException, GeneratorRangeException {
+	public void setUp() throws BadSignatureException, CladosMonadException {
 
 		cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 16); //new ComplexF[16];
 
@@ -301,7 +300,7 @@ public class CoreMonadComplexFTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, GeneratorRangeException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
         cCF = (ComplexF[]) FListBuilder.COMPLEXF.create(tCard, 4); //new ComplexF[4];
         for (int i=0; i<4; i++){            //Modulus will still be one for each weight, but conjugate will matter here.
             cCF[i].setImg(1.0f);
@@ -422,6 +421,23 @@ public class CoreMonadComplexFTest {
         tM8.multiplyByPSRight();
         assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == -1.0f);
         assertTrue(((ComplexF) tM8.scales.getPScalar()).getReal() == -1.0f);
+    }
+
+    @Test
+    public void testWhatShouldntHappen() throws BadSignatureException, CladosMonadException {
+        assertThrows(IllegalArgumentException.class, () -> tM1.add(tM5));
+        assertThrows(IllegalArgumentException.class, () -> tM1.subtract(tM5));
+
+        assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
+
+        Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+        Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.COMPLEXF.createONE(tCard) , 
+                                                    tFoot,
+                                                    "TestMonadNameCF",
+                                                    "TestAlgebraNameCF", 
+                                                    "0++");       
+        assertThrows(CladosMonadException.class, () -> tM1.setScale(tM5b.getWeights()));  
+                                                                        //Proving Bases get checked
     }
     
 	//@Test

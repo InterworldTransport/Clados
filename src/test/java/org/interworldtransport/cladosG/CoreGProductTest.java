@@ -3,7 +3,6 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.GeneratorRangeException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -28,8 +27,6 @@ class CoreGProductTest {
 		try {
 			GProduct newTest = new GProduct(pSig16);
 			assertFalse(newTest instanceof GProduct);
-		} catch (GeneratorRangeException e) {
-			assertTrue(e.getSourceMessage().equals("Unsupported Size for Blade 16"));
 		} catch (BadSignatureException eS) {
 			assertTrue(eS.getSourceMessage().equals("Valid signature required."));
 			assertTrue(eS.getSource() instanceof GProduct);
@@ -40,23 +37,24 @@ class CoreGProductTest {
 	class testInfrastructure {
 
 		@Test
-		public void testCachedGP() throws BadSignatureException, GeneratorRangeException {
+		public void testCachedGP() throws BadSignatureException {
 			GCache.INSTANCE.clearGProducts();
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 
 			GProduct tGP1 = GBuilder.createGProduct(pSig3);
-			assertTrue(GCache.INSTANCE.findGProduct(pSig3).isPresent());		//The builder cached it
+			assertTrue(GCache.INSTANCE.findGProduct(pSig3).isPresent());			//The builder cached it
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
-			GProduct tGP2 = GBuilder.createGProduct(pSig3);				//Same sig so a repeat
+			GProduct tGP2 = GBuilder.createGProduct(pSig3);							//Same sig so a repeat
 			assertTrue(tGP1 == tGP2);					//The builder noticed a GP with the same sig and returned it instead
-			GProduct tGP3 = GBuilder.createGProduct(pSig4);				//Inverted sig this time. different GP.
-			assertTrue(GCache.INSTANCE.findGProduct(pSig4).isPresent());		//The builder cached it
+			GProduct tGP3 = GBuilder.createGProduct(pSig4);							//Inverted sig this time. different GP.
+			assertTrue(GCache.INSTANCE.findGProduct(pSig4).isPresent());			//The builder cached it
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 2);
 
-			GCache.INSTANCE.removeGProduct(pSig3);								//Remove the gp named by its signature	
-			assertFalse(GCache.INSTANCE.findGProduct(pSig3).isPresent());	//Found the first GP and removed it.
+			GCache.INSTANCE.removeGProduct(pSig3);									//Remove the gp named by its signature	
+			assertFalse(GCache.INSTANCE.findGProduct(pSig3).isPresent());			//Found the first GP and removed it.
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 	
-			assertDoesNotThrow(() -> GCache.INSTANCE.removeGProduct(pSig3));	//Remove the gp named by its signature	
-			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 			//Not found and silently handled.
-			GCache.INSTANCE.removeGProduct(tGP3);								//Remove the gp named by reference.
+			assertDoesNotThrow(() -> GCache.INSTANCE.removeGProduct(pSig3));		//Remove the gp named by its signature	
+			//assertTrue(GCache.INSTANCE.getGProductListSize() == 1); 				//Not found and silently handled.
+			GCache.INSTANCE.removeGProduct(tGP3);									//Remove the gp named by reference.
 			assertFalse(GCache.INSTANCE.findGProduct(tGP3.signature()).isPresent()); //Found the second GP and removed it.
 			//assertTrue(GCache.INSTANCE.getGProductListSize() == 0); 	
 		}
@@ -87,13 +85,11 @@ class CoreGProductTest {
 			assertTrue(tGP.signature().length() == 4);
 		} catch (BadSignatureException esig) {
 			;
-		} catch (GeneratorRangeException egen) {
-			;
 		}
 	}
 
 	@Test
-	public void testRanges() throws BadSignatureException, GeneratorRangeException {
+	public void testRanges() throws BadSignatureException {
 		try {
 			GProduct tGP = (GProduct) GBuilder.createGProduct(pSig8);
 			int[] pRange = tGP.getPScalarRange();
@@ -108,8 +104,6 @@ class CoreGProductTest {
 
 		} catch (BadSignatureException esig) {
 			;
-		} catch (GeneratorRangeException egen) {
-			;
 		}
 	}
 /* 
@@ -120,8 +114,6 @@ class CoreGProductTest {
 			//System.out.println(tGP.toXMLString(""));
 		} catch (BadSignatureException esig) {
 			;
-		} catch (GeneratorRangeException egen) {
-			;
 		}
 	}
 */
@@ -130,7 +122,7 @@ class CoreGProductTest {
 	class testSizing {
 	
 		@Test
-		public void test00s() throws BadSignatureException, GeneratorRangeException {
+		public void test00s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig0);
 			assertTrue(tGP.signature().equals(""));
 			assertTrue(tGP.getGradeCount() == 1);
@@ -149,7 +141,7 @@ class CoreGProductTest {
 		}
 		
 		@Test
-		public void test01s() throws BadSignatureException, GeneratorRangeException {
+		public void test01s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig1);
 			assertTrue(tGP.signature().equals("+"));
 			assertTrue(tGP.getGradeCount() == 2);
@@ -168,7 +160,7 @@ class CoreGProductTest {
 		}
 
 		@Test
-		public void test02s() throws BadSignatureException, GeneratorRangeException {
+		public void test02s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig2);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("-+"));
@@ -188,7 +180,7 @@ class CoreGProductTest {
 
 		
 		@Test
-		public void test03s() throws BadSignatureException, GeneratorRangeException {
+		public void test03s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig3);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("+++"));
@@ -208,7 +200,7 @@ class CoreGProductTest {
 		}
 
 		@Test
-		public void test04s() throws BadSignatureException, GeneratorRangeException {
+		public void test04s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig4);
 			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("-+++"));
@@ -228,7 +220,7 @@ class CoreGProductTest {
 		}
 
 		@Test
-		public void test08s() throws BadSignatureException, GeneratorRangeException {
+		public void test08s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig8);
 			assertTrue(tGP.signature().equals("-+++-+++"));
 			assertTrue(tGP.getGradeCount() == 9);
@@ -247,7 +239,7 @@ class CoreGProductTest {
 		}
 
 		@Test
-		public void test10s() throws BadSignatureException, GeneratorRangeException {
+		public void test10s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig10);
 			assertTrue(tGP.signature().equals("+++-++++++"));
 			assertTrue(tGP.getGradeCount() == 11);
@@ -266,7 +258,7 @@ class CoreGProductTest {
 		}
 
 		@Test
-		public void test12s() throws BadSignatureException, GeneratorRangeException {
+		public void test12s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig12);
 			assertTrue(tGP.signature().equals("-+++-+++-+++"));
 			assertTrue(tGP.getGradeCount() == 13);
@@ -285,7 +277,7 @@ class CoreGProductTest {
 		}
 
 		@Test
-		public void test14s() throws BadSignatureException, GeneratorRangeException {
+		public void test14s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig14);
 			assertTrue(tGP.signature().equals("++-+++-+++-+++"));
 			assertTrue(tGP.getGradeCount() == 15);
@@ -304,7 +296,7 @@ class CoreGProductTest {
 		}
 		
 		@Test
-		public void test15s() throws BadSignatureException, GeneratorRangeException {
+		public void test15s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig15);
 			assertTrue(tGP.signature().equals("+++-+++-+++-+++"));
 			assertTrue(tGP.getGradeCount() == 16);
@@ -324,7 +316,7 @@ class CoreGProductTest {
 
 	/* 
 		@Test
-		public void test16s() throws BadSignatureException, GeneratorRangeException {
+		public void test16s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig16);
 			assertTrue(tGP.signature().equals("-+++-+++-+++-+++"));
 			assertTrue(tGP.getGradeCount() == 17);
