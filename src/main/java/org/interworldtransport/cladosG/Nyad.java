@@ -218,7 +218,7 @@ public class Nyad implements Modal {
 		for (Algebra point : pN.algebraList)
 			rB	.append(indent)
 				.append("\t\t<AlgebraName>")
-				.append(point.getAlgebraName())
+				.append(point.getAName())
 				.append("</AlgebraName>\n");
 		rB	.append(indent)
 			.append("\t</AlgebraList>\n");
@@ -307,8 +307,9 @@ public class Nyad implements Modal {
 	 * the nyads when the developer does not wish it to be altered.
 	 * <br>
 	 * @param pN Nyad
-	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
-	 *                              is malformed. Make no assumptions!
+	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null.
+	 * 								If the 'appendMonad' methods complain the exception
+	 * 								will arrive as an IllegalArgumentException instead.
 	 */
 	public Nyad(Nyad pN) throws CladosNyadException {
 		this(pN.getName(), pN, true);
@@ -322,19 +323,22 @@ public class Nyad implements Modal {
 	 * @param pName String
 	 * @param pM    Monad
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
-	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
-	 *                              is malformed. Make no assumptions!
+	 * @throws CladosNyadException 	Two possible reasons for this. 
+	 * 								(1) The initialzing nyad is null or
+	 * 								(2) The 'appendMonad' methods threw it and this method passes it along.
 	 */
 	public Nyad(String pName, Monad pM, boolean pCopy) throws CladosNyadException {
-		setName(pName);
-		setFoot(pM.getAlgebra().getFoot());
-		mode = pM.getMode();
+		if (pM == null) 			throw new CladosNyadException(null, "This nyad constructor requires initializing nyad.");
+		
 		monadList = new ArrayList<Monad>(1);
 		algebraList = new ArrayList<Algebra>(1);
-		if (pCopy)
-			appendACopy(pM);
-		else
-			append(pM);
+		
+		setName(pName);	
+		setFoot(pM.getAlgebra().getFoot());
+		mode = pM.getMode();
+		
+		if (pCopy)		appendACopy(pM);
+		else			append(pM);
 	}
 
 	/**
@@ -349,12 +353,14 @@ public class Nyad implements Modal {
 	 * @param pName String
 	 * @param pN    Nyad
 	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
-	 * @throws CladosNyadException  This exception is thrown when the offered Nyad
-	 *                              is malformed. Make no assumptions!
+	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null.
+	 * 								If the 'appendMonad' methods complain the exception
+	 * 								will arrive as an IllegalArgumentException instead.
 	 */
 	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException {
-		if (pN.getMOrder() == 0)
-			throw new IllegalArgumentException("Offered Nyad to copy is empty.");
+		if (pN == null) 			throw new CladosNyadException(null, "This nyad constructor requires initializing monad.");
+
+		if (pN.getMOrder() == 0) 	throw new IllegalArgumentException("Offered Nyad to copy is empty.");
 
 		setName(pName);
 		setFoot(pN.getFoot());
@@ -365,12 +371,12 @@ public class Nyad implements Modal {
 		if (pCopy)
 			pN.monadStream().forEach(x -> {
 				try {appendACopy(x);} 
-				catch (CladosNyadException e) {new IllegalArgumentException("Nyad copied changed during construction.");}
+				catch (CladosNyadException e) {throw new IllegalArgumentException("Nyad copied changed during construction.");}
 			});
 		else 
 			pN.monadStream().forEach(x -> {
 				try {append(x);} 
-				catch (CladosNyadException e) {new IllegalArgumentException("Nyad reused changed during construction.");}
+				catch (CladosNyadException e) {throw new IllegalArgumentException("Nyad reused changed during construction.");}
 			});
 	}
 
@@ -396,14 +402,13 @@ public class Nyad implements Modal {
 	 * @return Nyad
 	 */
 	public Nyad append(Monad pM) throws CladosNyadException {
-		if (has(pM))									// If it is in the list...
-			return this;								// silently return.
+		if (has(pM))	return this;					// If it is in the list... silently return.
 
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
-			throw new CladosNyadException(this, "Nyad / New Monad Foot mismatch");
+						throw new CladosNyadException(this, "Nyad / New Monad Foot mismatch");
 
 		if (pM.getMode() != mode)
-			throw new CladosNyadException(this, "Nyad / New Monad Mode mismatch");
+						throw new CladosNyadException(this, "Nyad / New Monad Mode mismatch");
 
 		monadList.ensureCapacity(monadList.size() + 1);	// Append monad to the list
 		monadList.add(pM);
@@ -424,10 +429,10 @@ public class Nyad implements Modal {
 	 */
 	public Nyad appendACopy(Monad pM) throws CladosNyadException {
 		if (!pM.getAlgebra().getFoot().equals(getFoot()))
-			throw new CladosNyadException(this, "Nyad / New Monad Foot mismatch");
+						throw new CladosNyadException(this, "Nyad / New Monad Foot mismatch");
 
 		if (pM.getMode() != mode)
-			throw new CladosNyadException(this, "Nyad / New Monad Mode mismatch");
+						throw new CladosNyadException(this, "Nyad / New Monad Mode mismatch");
 		
 		monadList.ensureCapacity(monadList.size() + 1);
 		monadList.add(GBuilder.copyOfMonad(pM));		// Add Monad to the ArrayList
@@ -447,18 +452,15 @@ public class Nyad implements Modal {
 	 * This happens, though, for cases where algebras are kept as book-keeping devices preventing simplification of operations.
 	 * This is exactly the case for using nyads as juxtapositions.
 	 * <br><br>
-	 * @param pInto int
-	 * @param pFrom int
+	 * @param pKeep	int Index for the monad to be altered by multiplication. Operand
+	 * @param pUse	int Index for the monad to DO the alteration bymultiplication. Operator
 	 * @throws CladosNyadException 	This happens with an edge case involving a basis mis-match in the two algebras.
 	 * @return Nyad this nyad after the alteration.
 	 */
-	public Nyad compressAntiSymm(int pInto, int pFrom) throws CladosNyadException {
-		if (validateMIndex(pInto) & validateMIndex(pFrom)) {					// Check for monad list out of bounds errors.
-			Monad tLeft = monadList.get(pInto);
-			Monad tRight = monadList.get(pFrom);
-			compressAntiSymm(tLeft, tRight);
-		} 
-		else throw new IndexOutOfBoundsException("Anti-Symmetric Compression out of range error");
+	public Nyad compressAntiSymm(int pKeep, int pUse) throws CladosNyadException {
+		if (validateMIndex(pKeep) & validateMIndex(pUse)) 					// Check for monad list out of bounds errors.
+						compressAntiSymm(monadList.get(pKeep), monadList.get(pUse));
+		else 			throw new IndexOutOfBoundsException("Anti-Symmetric Compression out of range error");
 
 		return this;
 	}
@@ -475,22 +477,22 @@ public class Nyad implements Modal {
 	 * This happens, though, for cases where algebras are kept as book-keeping devices preventing simplification of operations.
 	 * This is exactly the case for using nyads as juxtapositions.
 	 * <br><br>
-	 * @param pLeft Monad in the left multiplication role. (This is the one with the algebra that is kept.)
-	 * @param pRight Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
+	 * @param pKeep Monad in the left multiplication role. (This is the one with the algebra that is kept.)
+	 * @param pUse 	Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
 	 * @throws CladosNyadException 	This happens with an edge case involving a basis mis-match in the two algebras.
 	 * @return Nyad this nyad after the alteration.
 	 */
-	public Nyad compressAntiSymm(Monad pLeft, Monad pRight) throws CladosNyadException {
-		if (pLeft.getAlgebra().getGBasis() != pRight.getAlgebra().getGBasis()) 	// Proceed only if Basis is exact match
-			throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
+	public Nyad compressAntiSymm(Monad pKeep, Monad pUse) throws CladosNyadException {
+		if (pKeep.getAlgebra().getBasis() != pUse.getAlgebra().getBasis()) 	// Proceed only if Basis is exact match
+						throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
 		
-		if (!this.has(pLeft) || !this.has(pRight))								// Proceed only if both monads in nyad.
-			throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
+		if (!this.has(pKeep) || !this.has(pUse))								// Proceed only if both monads in nyad.
+						throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
 
-		pRight = Nyad.projectReference(pLeft, pRight);							// Right Monad is ALTERED HERE!
-		pLeft.multiplyAntisymm(pRight);											// Only now can we do the deed.
+		pUse = Nyad.projectReference(pKeep, pUse);								// Right Monad is ALTERED HERE!
+		pKeep.multiplyAntisymm(pUse);											// Only now can we do the deed.
 
-		monadList.remove(pRight);												// Right Monad is REMOVED HERE!
+		monadList.remove(pUse);													// Right Monad is REMOVED HERE!
 		monadList.trimToSize();
 		resetFlags();															// Work out consequences
 		 
@@ -509,18 +511,15 @@ public class Nyad implements Modal {
 	 * This happens, though, for cases where algebras are kept as book-keeping devices preventing simplification of operations.
 	 * This is exactly the case for using nyads as juxtapositions.
 	 * <br><br>
-	 * @param pInto int
-	 * @param pFrom int
+	 * @param pKeep	int Index for the monad to be altered by multiplication. Operand
+	 * @param pUse	int Index for the monad to DO the alteration bymultiplication. Operator
 	 * @throws CladosNyadException 	This happens with an edge case involving a basis mis-match in the two algebras.
 	 * @return Nyad this nyad after the alteration.
 	 */
-	public Nyad compressSymm(int pInto, int pFrom) throws CladosNyadException {
-		if (validateMIndex(pInto) & validateMIndex(pFrom)) {					// Check for monad list out of bounds errors.
-			Monad tLeft = monadList.get(pInto);
-			Monad tRight = monadList.get(pFrom);
-			compressSymm(tLeft, tRight);
-		} 
-		else throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+	public Nyad compressSymm(int pKeep, int pUse) throws CladosNyadException {
+		if (validateMIndex(pKeep) & validateMIndex(pUse)) 						// Check for monad list out of bounds errors.
+						compressSymm(monadList.get(pKeep), monadList.get(pUse));
+		else 			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
 		
 		return this;
 	}
@@ -543,11 +542,11 @@ public class Nyad implements Modal {
 	 * @return Nyad this nyad after the alteration.
 	 */
 	public Nyad compressSymm(Monad pLeft, Monad pRight) throws CladosNyadException {
-		if (pLeft.getAlgebra().getGBasis() != pRight.getAlgebra().getGBasis()) 	// Proceed only if Basis is exact match
-			throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
+		if (pLeft.getAlgebra().getBasis() != pRight.getAlgebra().getBasis()) 	// Proceed only if Basis is exact match
+						throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
 		
 		if (!this.has(pLeft) || !this.has(pRight))								// Proceed only if both monads in nyad.
-			throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
+						throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
 
 		pRight = Nyad.projectReference(pLeft, pRight);							// Right Monad is ALTERED HERE!
 		pLeft.multiplySymm(pRight);												// Only now can we do the deed.
@@ -576,22 +575,21 @@ public class Nyad implements Modal {
 	 */
 	public Nyad create(String pMonadName, String pAlgebraName, String pSig, String pCard)
 							throws 			BadSignatureException, CladosMonadException, CladosNyadException {
-																		//Prepare Cardinal. Re-use where possible.
+																			//Prepare Cardinal. Re-use where possible.
 		Cardinal tCard = (pCard == null) ? Cardinal.generate(getMode()) : FBuilder.createCardinal(pCard);
 																		
-		Algebra tAlg = null;											//Prepare algebra for monad if needed. Re-use where possible
-		Optional<Algebra> foundAlg = algebraStream().filter(x -> x.getAlgebraName().equals(pAlgebraName)).findFirst();
-		if(foundAlg.isPresent())										//Algebra found by name
-			tAlg = foundAlg.get();										//and simply referenced AND THE OFFERED SIGNATURE IS IGNORED
-		else {															//Have to construct algebra not found. Signature gets used.
+		Algebra tAlg = null;												//Prepare algebra for monad if needed. Re-use where possible
+		Optional<Algebra> foundAlg = algebraStream().filter(x -> x.getAName().equals(pAlgebraName)).findFirst();
+		if(foundAlg.isPresent())		tAlg = foundAlg.get();				//Algebra found by name, referenced, then OFFERED SIGNATURE IS IGNORED
+		else {																//Have to construct algebra not found. Signature gets used.
 			Optional<GProduct> foundGP = GCache.INSTANCE.findGProduct(pSig);
 			tAlg = (foundGP.isPresent()) ? GBuilder.createAlgebraWithFootGP(sharedFoot, foundGP.get(), pAlgebraName)
 										 : GBuilder.createAlgebraWithFoot(sharedFoot, pAlgebraName, pSig);				
 		}
-		Scale<?> tScale = new Scale<>(mode, tAlg.getGBasis(), tCard);	//Now make a ZERO Scale<?> w/o naming the ProtoN child
+		Scale<?> tScale = new Scale<>(mode, tAlg.getBasis(), tCard);		//Now make a ZERO Scale<?> w/o naming the ProtoN child
 
 		append(GBuilder.createMonadWithAlgebra(tScale, tAlg, pMonadName));	//Now append a newly constructed monad
-		return this;													//All done!
+		return this;														//All done!
 	}
 
 	/**
@@ -623,9 +621,8 @@ public class Nyad implements Modal {
 	 */
 	public int find(Algebra pAlg) {
 		Optional<Monad> foundThis = monadInAlgebraStream(pAlg).findFirst();
-		if (foundThis.isEmpty())
-			return -1;
 		
+		if (foundThis.isEmpty())			return -1;
 		return monadList.indexOf(foundThis.get());
 	}
 
@@ -638,9 +635,8 @@ public class Nyad implements Modal {
 	 */
 	public int find(Monad pIn) {
 		Optional<Monad> foundThis = monadStream().filter(pM -> pM == pIn).findFirst();
-		if (foundThis.isEmpty())
-			return -1;
 		
+		if (foundThis.isEmpty())			return -1;
 		return monadList.indexOf(foundThis.get());				
 	}
 
@@ -652,9 +648,8 @@ public class Nyad implements Modal {
 	 */
 	public int find(String pName) {
 		Optional<Monad> foundThis = monadStream().filter(pM -> pName.equals(pM.getName())).findFirst();
-		if(foundThis.isEmpty())
-			return -1;
-
+		
+		if(foundThis.isEmpty())			return -1;
 		return monadList.indexOf(foundThis.get());
 	}
 
@@ -668,9 +663,8 @@ public class Nyad implements Modal {
 	 */
 	public int findNext(Algebra pAlg, int pStart) {
 		Optional<Monad> foundThis = monadStream().skip(pStart).filter(x -> x.getAlgebra().equals(pAlg)).findFirst();
-		if (foundThis.isEmpty())
-			return -1;
 		
+		if (foundThis.isEmpty())			return -1;
 		return monadList.indexOf(foundThis.get());
 	}
 
@@ -681,9 +675,7 @@ public class Nyad implements Modal {
 	 * @return Algebra
 	 */
 	public Algebra getAlgebraAt(int pIndex) {
-		if (validateAIndex(pIndex))
-			return algebraList.get(pIndex);
-
+		if (validateAIndex(pIndex))			return algebraList.get(pIndex);
 		return null;
 	}
 
@@ -709,9 +701,7 @@ public class Nyad implements Modal {
 	 * @return Monad
 	 */
 	public Monad getMonadAt(int pIndex) {
-		if(validateMIndex(pIndex))
-			return monadList.get(pIndex);
-		
+		if(validateMIndex(pIndex))			return monadList.get(pIndex);
 		return null;
 	}
 
@@ -902,6 +892,96 @@ public class Nyad implements Modal {
 	}
 
 	/**
+	 * This method takes a pair of monads (keep, use) and multiplies the left one by the right one from the right.
+	 * When it is done, the left monad is changed and the right monad is removed from the nyad. Finding these monads
+	 * is the task of this method... then it hands off to the similarly named method that accepts the monads directly.
+	 * <br><br>
+	 * @param pKeep	int Index for the monad to be altered by multiplication. Operand
+	 * @param pUse	int Index for the monad to DO the alteration bymultiplication. Operator
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 * @return Nyad this nyad after the alteration.
+	 * 
+	 */
+	public Nyad multiplyLeftward(int pKeep, int pUse) throws CladosNyadException, CladosMonadException {
+		if (validateMIndex(pKeep) & validateMIndex(pUse)) 					// Check for monad list out of bounds errors.
+						multiplyLeftward(monadList.get(pKeep), monadList.get(pUse));
+		else			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+		
+		return this;
+	}
+
+	/**
+	 * This method takes a pair of monads (keep, use) and multiplies the left one by the right one from the right.
+	 * When it is done, the left monad is changed and the right monad is removed from the nyad.
+	 * <br><br>
+	 * @param pKeep Monad to be altered by multiplication. Operand
+	 * @param pUse 	Monad to DO the alteration bymultiplication. Operator
+	 * @return Nyad	after the multiplication is complete and the 'use' monad removed
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 */
+	public Nyad multiplyLeftward(Monad pKeep, Monad pUse) throws CladosMonadException, CladosNyadException {
+		if (!Monad.isReferenceMatch(pKeep, pUse)) 				// Proceed only if they reference match.
+						throw new CladosMonadException(pKeep, "Monad pair fails reference match for multiplication onto left.");
+		
+		if (!this.has(pKeep) || !this.has(pUse))				// Proceed only if both monads in nyad.
+						throw new CladosNyadException(this, "Monad pair must be in nyad for multiplication onto left.");
+		
+		pKeep.multiplyRight(pUse);								// Only now can we do the deed.
+		monadList.remove(pUse);									// Right Monad is REMOVED HERE!
+		monadList.trimToSize();
+		resetFlags();											// Work out consequences
+
+		return this;
+	}
+
+	/**
+	 * This method takes a pair of monads (Use, keep) and multiplies the right one by the left one from the left.
+	 * When it is done, the right monad is changed and the left monad is removed from the nyad. Finding these monads
+	 * is the task of this method... then it hands off to the similarly named method that accepts the monads directly.
+	 * <br><br>
+	 * @param pKeep	int Index for the monad to be altered by multiplication. Operand
+	 * @param pUse	int Index for the monad to DO the alteration bymultiplication. Operator
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 * @return Nyad this nyad after the alteration.
+	 * 
+	 */
+	public Nyad multiplyRightward(int pKeep, int pUse) throws CladosNyadException, CladosMonadException {
+		if (validateMIndex(pKeep) & validateMIndex(pUse)) 					// Check for monad list out of bounds errors.
+						multiplyRightward(monadList.get(pUse), monadList.get(pKeep));
+		else 			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+
+		return this;
+	}
+
+	/**
+	 * This method takes a pair of monads (Use, keep) and multiplies the right one by the left one from the left.
+	 * When it is done, the right monad is changed and the left monad is removed from the nyad.
+	 * <br><br>
+	 * @param pUse 	Monad to DO the alteration bymultiplication. Operator
+	 * @param pKeep Monad to be altered by multiplication. Operand
+	 * @return Nyad	after the multiplication is complete and the 'use' monad removed
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 */
+	public Nyad multiplyRightward(Monad pUse, Monad pKeep) throws CladosMonadException, CladosNyadException {
+		if (!Monad.isReferenceMatch(pUse, pKeep)) 				// Proceed only if they reference match.
+						throw new CladosMonadException(pUse, "Monad pair fails reference match for multiplication onto right.");
+		
+		if (!this.has(pUse) || !this.has(pKeep))				// Proceed only if both monads in nyad.
+						throw new CladosNyadException(this, "Monad pair must be in nyad for multiplication onto right.");
+
+		pKeep.multiplyLeft(pUse);								// Only now can we do the deed.
+		monadList.remove(pUse);									// Left Monad is REMOVED HERE!
+		monadList.trimToSize();
+		resetFlags();											// Work out consequences
+
+		return this;
+	}
+
+	/**
 	 * This method takes the Monad at the k'th position in the list and swaps it for
 	 * the one in the k-1 position if there is one there. If the index points to
 	 * the first Monad, this function silently returns with no pop action.
@@ -1008,6 +1088,105 @@ public class Nyad implements Modal {
 	}
 
 	/**
+	 * This method takes a pair of monads (keep, use) and multiplies the left one by the right one from the left
+	 * and then again with the reversed right one from the right. Symbolically: (Right)(Left)(Right.reservse).
+	 * Finding these monads is the task of this method... then it hands off to the similarly named method that 
+	 * accepts the monads directly.  When it is done, the left monad is changed and the right monad is removed from the nyad.
+	 * <br><br>
+	 * @param pKeep Monad to be altered by multiplication. Operand
+	 * @param pUse 	Monad to DO the alteration bymultiplication. Operator
+	 * @return Nyad	after the multiplication is complete and the 'use' monad removed
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 */
+	public Nyad sandwich(int pKeep, int pUse) throws CladosMonadException, CladosNyadException {
+		if (validateMIndex(pKeep) & validateMIndex(pUse)) 					// Check for monad list out of bounds errors.
+						sandwich(monadList.get(pKeep), monadList.get(pUse));
+		else 			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+
+		return this;
+	}
+
+	/**
+	 * This method takes a pair of monads (keep, use) and multiplies the left one by the right one from the left
+	 * and then again with the reversed right one from the right. Symbolically: (Right)(Left)(Right.reservse).
+	 * When it is done, the left monad is changed and the right monad is removed from the nyad.
+	 * <br><br>
+	 * @param pKeep Monad to be altered by sandwich. Operand
+	 * @param pUse 	Monad to DO the alteration by sandwich. Operator
+	 * @return Nyad	after the multiplication is complete and the 'use' monad removed
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 */
+	public Nyad sandwich(Monad pKeep, Monad pUse) throws CladosMonadException, CladosNyadException {
+		if (!Monad.isReferenceMatch(pKeep, pUse)) 				// Proceed only if they reference match.
+						throw new CladosMonadException(pKeep, "Monad pair fails reference match for sandwich multiplication.");
+		
+		if (!this.has(pKeep) || !this.has(pUse))				// Proceed only if both monads in nyad.
+						throw new CladosNyadException(this, "Monad pair must be in nyad for sandwich multiplication.");
+		
+		pKeep.multiplyLeft(pUse);								// Only now can we do the deed.
+		pKeep.multiplyRight(pUse.reverse());	
+		monadList.remove(pUse);									// Right Monad is REMOVED HERE!
+		monadList.trimToSize();
+		resetFlags();											// Work out consequences
+
+		return this;
+	}
+
+	/**
+	 * This method takes a pair of monads (keep, use) and multiplies the left one by the right one from the left
+	 * and then again with the reversed right one from the right. Symbolically: (Right)(Left)(Right.reservse).
+	 * Finding these monads is the task of this method... then it hands off to the similarly named method that 
+	 * accepts the monads directly.  When it is done, the left monad is changed and the right monad is removed from the nyad.
+	 * <br><br>
+	 * @param pKeep Monad to be altered by multiplication. Operand
+	 * @param pUse 	Monad to DO the alteration bymultiplication. Operator
+	 * @return Nyad	after the multiplication is complete and the 'use' monad removed
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 */
+	public Nyad sandwich(int pKeep, int pUse, Nyad pSource) throws CladosMonadException, CladosNyadException {
+		if (pSource == null)															// Check 'use' monad is in source nyad.
+						throw new CladosNyadException(this, "Source nyad needed for this sandwich multiplication."); 
+		else if (this.validateMIndex(pKeep) & pSource.validateMIndex(pUse)) 			// Check for monad list out of bounds errors.
+						sandwich(monadList.get(pKeep), monadList.get(pUse), pSource);
+		else 			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+
+		return this;
+	}
+
+	/**
+	 * This method takes a pair of monads (keep, use) and multiplies the left one by the right one from the left
+	 * and then again with the reversed right one from the right. Symbolically: (Right)(Left)(Right.reservse).
+	 * When it is done, the left monad is changed and the right monad is removed from its nyad source.
+	 * <br><br>
+	 * @param pKeep Monad to be altered by sandwich. Operand
+	 * @param pUse 	Monad to DO the alteration by sandwich. Operator
+	 * @param pSource	Nyad that is the source of the pUse Monad. 
+	 * @return Nyad	this nyad after the multiplication is complete and the 'use' monad removed from the source
+	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
+	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
+	 */
+	public Nyad sandwich(Monad pKeep, Monad pUse, Nyad pSource) throws CladosMonadException, CladosNyadException {
+		if (pSource == null)									// Check 'use' monad is in source nyad.
+						throw new CladosNyadException(this, "Source nyad needed for this sandwich multiplication."); 
+
+		if (!Monad.isReferenceMatch(pKeep, pUse)) 				// Proceed only if they reference match.
+						throw new CladosMonadException(pKeep, "Monad pair fails reference match for sandwich multiplication.");
+		
+		if (!this.has(pKeep) || !pSource.has(pUse))				// Proceed only if both monads in nyad.
+						throw new CladosNyadException(this, "Monad pair must be in nyad for sandwich multiplication.");
+		
+		pKeep.multiplyLeft(pUse).multiplyRight(pUse.reverse());	// Only now can we do the deed.
+		pSource.remove(pUse);									// Right Monad is REMOVED AT SOURCE HERE!
+		monadList.trimToSize();
+		resetFlags();											// Work out consequences
+
+		return this;
+	}
+
+	/**
 	 * Nyad Scaling: Pick a monad and scale it by the magnitude provided. Only one monad can 
 	 * be scaled within a nyad at a time. Note that a request to scale a monad that cannot be 
 	 * found in the list results in no action and no exception.
@@ -1018,8 +1197,7 @@ public class Nyad implements Modal {
 	 * @return Nyad after the monads at the offered index has been scaled
 	 */
 	public <T extends ProtoN & Field & Normalizable> Nyad scale(int pIndex, T pMag) {
-		if (validateMIndex(pIndex))
-			monadList.get(pIndex).scale(pMag);
+		if (validateMIndex(pIndex))			monadList.get(pIndex).scale(pMag);
 		return this;
 	}
 
@@ -1122,8 +1300,7 @@ public class Nyad implements Modal {
 	 * This method checks the offered integer to determine if it is out of bounds with respect to the monad list.
 	 */
 	private boolean validateAIndex(int pHere) {
-		if (pHere >= 0 & pHere < algebraList.size())
-			return true;
+		if (pHere >= 0 & pHere < algebraList.size())	return true;
 		return false;
 	}
 
@@ -1131,8 +1308,7 @@ public class Nyad implements Modal {
 	 * This method checks the offered integer to determine if it is out of bounds with respect to the monad list.
 	 */
 	private boolean validateMIndex(int pHere) {
-		if (pHere >= 0 & pHere < monadList.size())
-			return true;
+		if (pHere >= 0 & pHere < monadList.size())		return true;
 		return false;
 	}
 }

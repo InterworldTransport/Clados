@@ -42,7 +42,7 @@ public class CoreScaleTest {
 
     @BeforeEach
     public void setUp() {
-        workBasis = Basis.using(Generator.E3);
+        workBasis = Basis.using(Generator.E4);
         
     }
 
@@ -58,7 +58,7 @@ public class CoreScaleTest {
 
         @Test
         public void testInits() {
-            assertTrue(workBasis.getGradeCount() == 4); //Four generators makes five grades
+            assertTrue(workBasis.getGradeCount() == 5); //Four generators makes five grades
 
             assertTrue(workScaleRF.getCardinal() == workCard);
             assertTrue(workScaleRD.getCardinal() == workCard);
@@ -172,10 +172,10 @@ public class CoreScaleTest {
             workScaleCF = new Scale<>(CladosField.COMPLEXF, workBasis, workCard);
             workScaleCD = new Scale<>(CladosField.COMPLEXD, workBasis, workCard);
 
-            tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-            tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-            tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-            tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+            tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 16);            //new RealF[16];
+            tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 16);            //new RealD[16];
+            tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
+            tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
 
             workScaleRF.setWeightsArray(tRF);
             workScaleRD.setWeightsArray(tRD);
@@ -190,10 +190,10 @@ public class CoreScaleTest {
             ComplexF testItCF = workScaleCF.modulusSQSum();
             ComplexD testItCD = workScaleCD.modulusSQSum();
 
-            assertTrue(testItRF.getReal() == 8.0F);
-            assertTrue(testItRD.getReal() == 8.0D);
-            assertTrue(testItCF.getReal() == 8.0F);
-            assertTrue(testItCD.getReal() == 8.0D);
+            assertTrue(testItRF.getReal() == 16.0F);
+            assertTrue(testItRD.getReal() == 16.0D);
+            assertTrue(testItCF.getReal() == 16.0F);
+            assertTrue(testItCD.getReal() == 16.0D);
         }
 
         @Test
@@ -203,10 +203,10 @@ public class CoreScaleTest {
             ComplexF testItCF = workScaleCF.modulusSum();
             ComplexD testItCD = workScaleCD.modulusSum();
 
-            assertTrue(testItRF.getReal() == 8.0F);
-            assertTrue(testItRD.getReal() == 8.0D);
-            assertTrue(testItCF.getReal() == 8.0F);
-            assertTrue(testItCD.getReal() == 8.0D);
+            assertTrue(testItRF.getReal() == 16.0F);
+            assertTrue(testItRD.getReal() == 16.0D);
+            assertTrue(testItCF.getReal() == 16.0F);
+            assertTrue(testItCD.getReal() == 16.0D);
         }
     }
     @Nested
@@ -218,20 +218,18 @@ public class CoreScaleTest {
             workScaleCF = new Scale<>(CladosField.COMPLEXF, workBasis, workCard);
             workScaleCD = new Scale<>(CladosField.COMPLEXD, workBasis, workCard);
 
-            tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-            tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-            tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-            tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+            tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 16);            //new RealF[16];
+            tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 16);            //new RealD[16];
+            tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
+            tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
         }
 
         @Test
         public void testConjugate() {
             workScaleRF.getScalar().setReal(1.0f);
             workScaleRD.getScalar().setReal(1.0d);
-            workScaleCF.getScalar().setReal(1.0f);
-            workScaleCF.getScalar().setImg(1.0f);
-            workScaleCD.getScalar().setReal(1.0d);
-            workScaleCD.getScalar().setImg(1.0d);
+            workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
 
             workScaleRF.conjugate();
             workScaleRD.conjugate();
@@ -250,44 +248,53 @@ public class CoreScaleTest {
         public void testInvert() {
             workScaleRF.getPScalar().setReal(1.0f);
             workScaleRD.getPScalar().setReal(1.0d);
-            workScaleCF.getPScalar().setReal(1.0f);
-            workScaleCF.getPScalar().setImg(1.0f);
-            workScaleCD.getPScalar().setReal(1.0d);
-            workScaleCD.getPScalar().setImg(1.0d);
+            workScaleCF.getPScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getPScalar().setReal(1.0d).setImg(1.0d);
+            
 
             workScaleRF.mainInvolution();
             workScaleRD.mainInvolution();
             workScaleCF.mainInvolution();
             workScaleCD.mainInvolution();
 
-            assertTrue(workScaleRF.getPScalar().getReal() == -1.0f);
-            assertTrue(workScaleRD.getPScalar().getReal() == -1.0d);
-            assertTrue(workScaleCF.getPScalar().getReal() == -1.0f);
-            assertTrue(workScaleCD.getPScalar().getReal() == -1.0d);
-            assertTrue(workScaleCF.getPScalar().getImg() == -1.0f);
-            assertTrue(workScaleCD.getPScalar().getImg() == -1.0d);
+            assertTrue(workScaleRF.getPScalar().getReal() == 1.0f);
+            assertTrue(workScaleRD.getPScalar().getReal() == 1.0d);
+            assertTrue(workScaleCF.getPScalar().getReal() == 1.0f);
+            assertTrue(workScaleCD.getPScalar().getReal() == 1.0d);
+            assertTrue(workScaleCF.getPScalar().getImg() == 1.0f);
+            assertTrue(workScaleCD.getPScalar().getImg() == 1.0d);
         }
 
         @Test
         public void testReverse() {
+            workScaleRF.getScalar().setReal(1.0f);
             workScaleRF.getPScalar().setReal(1.0f);
-            workScaleRD.getPScalar().setReal(1.0d);
-            workScaleCF.getPScalar().setReal(1.0f);
-            workScaleCF.getPScalar().setImg(1.0f);
-            workScaleCD.getPScalar().setReal(1.0d);
-            workScaleCD.getPScalar().setImg(1.0d);
-
             workScaleRF.reverse();
-            workScaleRD.reverse();
-            workScaleCF.reverse();
-            workScaleCD.reverse();
+            assertTrue(workScaleRF.getScalar().getReal() == 1.0f);
+            assertTrue(workScaleRF.getPScalar().getReal() == 1.0f);
 
-            assertTrue(workScaleRF.getPScalar().getReal() == -1.0f);
-            assertTrue(workScaleRD.getPScalar().getReal() == -1.0d);
-            assertTrue(workScaleCF.getPScalar().getReal() == -1.0f);
-            assertTrue(workScaleCD.getPScalar().getReal() == -1.0d);
-            assertTrue(workScaleCF.getPScalar().getImg() == -1.0f);
-            assertTrue(workScaleCD.getPScalar().getImg() == -1.0d);
+            workScaleRD.getScalar().setReal(1.0d);
+            workScaleRD.getPScalar().setReal(1.0d);
+            workScaleRD.reverse();
+            assertTrue(workScaleRD.getScalar().getReal() == 1.0d);
+            assertTrue(workScaleRD.getPScalar().getReal() == 1.0d);
+
+            workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCF.getPScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCF.reverse();
+            assertTrue(workScaleCF.getScalar().getReal() == 1.0f);
+            assertTrue(workScaleCF.getScalar().getImg() == 1.0f);
+            assertTrue(workScaleCF.getPScalar().getReal() == 1.0f);
+            assertTrue(workScaleCF.getPScalar().getImg() == 1.0f);
+
+            workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
+            workScaleCD.getPScalar().setReal(1.0d).setImg(1.0d);
+            workScaleCD.reverse();
+            assertTrue(workScaleCD.getScalar().getReal() == 1.0d);
+            assertTrue(workScaleCD.getScalar().getImg() == 1.0d);
+            assertTrue(workScaleCD.getPScalar().getReal() == 1.0d);
+            assertTrue(workScaleCD.getPScalar().getImg() == 1.0d);
+            //System.out.println(Scale.toXMLString(workScaleCD, ""));
         }
     }
     @Nested
@@ -309,10 +316,8 @@ public class CoreScaleTest {
 
             workScaleRF2.getScalar().setReal(1.0f);
             workScaleRD2.getScalar().setReal(1.0d);
-            workScaleCF2.getScalar().setReal(1.0f);
-            workScaleCF2.getScalar().setImg(1.0f);
-            workScaleCD2.getScalar().setReal(1.0d);
-            workScaleCD2.getScalar().setImg(1.0d);
+            workScaleCF2.getScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD2.getScalar().setReal(1.0d).setImg(1.0d);
 
             Assertions.assertDoesNotThrow(() -> workScaleRF2.normalize());
             Assertions.assertDoesNotThrow(() -> workScaleRD2.normalize());
@@ -373,25 +378,21 @@ public class CoreScaleTest {
         public void testZeroing() {
             workScaleRF.getScalar().setReal(1.0f);
             workScaleRD.getScalar().setReal(1.0d);
-            workScaleCF.getScalar().setReal(1.0f);
-            workScaleCF.getScalar().setImg(1.0f);
-            workScaleCD.getScalar().setReal(1.0d);
-            workScaleCD.getScalar().setImg(1.0d);
+            workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
 
             workScaleRF.getPScalar().setReal(1.0f);
             workScaleRD.getPScalar().setReal(1.0d);
-            workScaleCF.getPScalar().setReal(1.0f);
-            workScaleCF.getPScalar().setImg(1.0f);
-            workScaleCD.getPScalar().setReal(1.0d);
-            workScaleCD.getPScalar().setImg(1.0d);
-
+            workScaleCF.getPScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getPScalar().setReal(1.0d).setImg(1.0d);
+            
             workScaleRF.zeroAtGrade((byte) 8);
             assertFalse(RealF.isZero(workScaleRF.getPScalar()));   //Grade out of range silently does nothing.
 
-            workScaleRF.zeroAtGrade((byte) 3);
-            workScaleRD.zeroAtGrade((byte) 3);
-            workScaleCF.zeroAtGrade((byte) 3);
-            workScaleCD.zeroAtGrade((byte) 3);
+            workScaleRF.zeroAtGrade((byte) 4);
+            workScaleRD.zeroAtGrade((byte) 4);
+            workScaleCF.zeroAtGrade((byte) 4);
+            workScaleCD.zeroAtGrade((byte) 4);
 
             assertTrue(RealF.isZero(workScaleRF.getPScalar()));      
             assertTrue(RealD.isZero(workScaleRD.getPScalar()));      
@@ -429,10 +430,10 @@ public class CoreScaleTest {
             workScaleRF.zeroAllButGrade((byte) 8);
             assertFalse(RealF.isZero(workScaleRF.getPScalar()));   //Grade out of range silently does nothing.
 
-            workScaleRF.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
-            workScaleRD.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
-            workScaleCF.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
-            workScaleCD.zeroAllButGrade((byte) 3);  //Knock out everything except the pscalar
+            workScaleRF.zeroAllButGrade((byte) 4);  //Knock out everything except the pscalar
+            workScaleRD.zeroAllButGrade((byte) 4);  //Knock out everything except the pscalar
+            workScaleCF.zeroAllButGrade((byte) 4);  //Knock out everything except the pscalar
+            workScaleCD.zeroAllButGrade((byte) 4);  //Knock out everything except the pscalar
 
             assertTrue(RealF.isZero(workScaleRF.getScalar()));      
             assertTrue(RealD.isZero(workScaleRD.getScalar()));      
@@ -447,10 +448,10 @@ public class CoreScaleTest {
 
         @Test
         public void testSettingWeights() {
-            RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-            RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-            ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-            ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+            RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 16);            //new RealF[16];
+            RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 16);            //new RealD[16];
+            ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
+            ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
 
             workScaleRF.setWeightsArray(tRF);
             workScaleRD.setWeightsArray(tRD);
@@ -462,10 +463,10 @@ public class CoreScaleTest {
             assertTrue(workScaleRF.getScalar() == tRF[0]);
             assertTrue(workScaleRF.getScalar() == tRF[0]);
 
-            tRF = (RealF[]) FListBuilder.REALF.create(workCard, 3);            //new RealF[3];
-            tRD = (RealD[]) FListBuilder.REALD.create(workCard, 3);            //new RealD[3];
-            tCF = (ComplexF[]) FListBuilder.COMPLEXF.create(workCard, 3);   //new ComplexF[3];
-            tCD = (ComplexD[]) FListBuilder.COMPLEXD.create(workCard, 3);   //new ComplexD[3];
+            tRF = (RealF[]) FListBuilder.REALF.create(workCard, 6);            //new RealF[6];
+            tRD = (RealD[]) FListBuilder.REALD.create(workCard, 6);            //new RealD[6];
+            tCF = (ComplexF[]) FListBuilder.COMPLEXF.create(workCard, 6);   //new ComplexF[6];
+            tCD = (ComplexD[]) FListBuilder.COMPLEXD.create(workCard, 6);   //new ComplexD[6];
 
             assertDoesNotThrow(() -> workScaleRF.setWeightsAtGrade((byte) 2, null)); //Do Nothing!
 
@@ -519,10 +520,10 @@ public class CoreScaleTest {
 
         @Test
         public void testSetWeightsMap() {
-            RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);            //new RealF[8];
-            RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 8);            //new RealD[8];
-            ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 8);   //new ComplexF[8];
-            ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 8);   //new ComplexD[8];
+            RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 16);            //new RealF[16];
+            RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 16);            //new RealD[16];
+            ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
+            ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
 
             Map<Blade, RealF> mapRF = new IdentityHashMap<>(tRF.length);
             Map<Blade, RealD> mapRD = new IdentityHashMap<>(tRD.length);
@@ -550,11 +551,11 @@ public class CoreScaleTest {
         }
         @Test
         public void testGetWeights() {
-            RealF[] tRF = workScaleRF.getWeights();
-            RealD[] tRD = workScaleRD.getWeights();
-            ComplexF[] tCF = workScaleCF.getWeights();
-            ComplexD[] tCD = workScaleCD.getWeights();
-            for (int k=0; k<8; k++){
+            RealF[] tRF = workScaleRF.getNumbers();
+            RealD[] tRD = workScaleRD.getNumbers();
+            ComplexF[] tCF = workScaleCF.getNumbers();
+            ComplexD[] tCD = workScaleCD.getNumbers();
+            for (int k=0; k<16; k++){
                 RealF.isZero(tRF[k]);
                 RealD.isZero(tRD[k]);
                 ComplexF.isZero(tCF[k]);

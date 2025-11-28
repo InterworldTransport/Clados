@@ -11,6 +11,7 @@ import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
@@ -250,7 +251,7 @@ public class CoreNyadRealFTest {
 		@Test
 		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosMonadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 
 			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");	
@@ -280,7 +281,7 @@ public class CoreNyadRealFTest {
 		@Test 
 		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
 			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");				//testable nyad
@@ -317,7 +318,7 @@ public class CoreNyadRealFTest {
 		@Test 
 		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
 			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");				//testable nyad
@@ -500,7 +501,7 @@ public class CoreNyadRealFTest {
 		@Test
 		void testAppendWrongFoot() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
 			assertThrows(CladosNyadException.class, () -> thing1.append(newMotion));	//Should glitch on the attempt
@@ -626,8 +627,117 @@ public class CoreNyadRealFTest {
 		}
 	}
 
+@Nested
+	class testCompositionBinaryOps {
+		Monad reflect, boost;
+		Blade time, spaceX, planeTX;
+
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosMonadException, FieldException {
+			RealF by1 = (RealF) FBuilder.REALF.createONE(speed);
+			RealF by2 = (RealF) FBuilder.REALF.createONE(speed).scale(CladosConstant.BY2_F);
+
+			reflect = GBuilder.copyOfMonad(motion,"Reflector");
+			boost = GBuilder.copyOfMonad(motion, "Booster");
+
+			time = motion.getAlgebra().getBasis().getSingleBlade(motion.getAlgebra().getGradeRange((byte) 1)[0]);
+			motion.getWeights().getMap().put(time, by1);	//motion is time-like 1-blade
+			motion.setGradeKey();
+
+			spaceX = motion.getAlgebra().getBasis().getSingleBlade(motion.getAlgebra().getGradeRange((byte) 1)[0]+1);
+			reflect.getWeights().getMap().put(spaceX, by1);	//reflect is space-like 1-blade
+			reflect.setGradeKey();
+
+			planeTX = motion.getAlgebra().getGP().getResult(spaceX, time);
+			boost.getWeights().setScalarWeight(by2);
+			boost.getWeights().getMap().put(planeTX, by2);
+			boost.setGradeKey();
+			//boost.normalize();
+
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
+			thing1.append(reflect);
+			thing1.append(boost);
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both direct reference and indexed reference of the monads.
+		 */
+		@Test
+		void testMultiplyLeftward() throws CladosMonadException, CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == reflect);
+			assertTrue(thing1.getMonadAt(2) == boost);
+
+			thing1.multiplyLeftward(motion, boost);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+
+			thing1.multiplyLeftward(motion, reflect);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both direct reference and indexed reference of the monads.
+		 */
+		@Test
+		void testMultiplyRightward() throws CladosMonadException, CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == reflect);
+			assertTrue(thing1.getMonadAt(2) == boost);
+
+			thing1.multiplyRightward(boost, motion);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+
+			thing1.multiplyRightward(reflect, motion);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both direct reference and indexed reference of the monads.
+		 */
+		@Test
+		void testSandwichInside() throws CladosMonadException, CladosNyadException {
+			//reflect.reverse();
+			//boost.reverse();
+			thing1.sandwich(motion, reflect);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+			assertTrue(((RealF) motion.getWeights().getMap().get(time)).getReal() < 0 );
+
+			System.out.println("Before reverse: "+Monad.toXMLString(boost, ""));
+			boost.reverse();											//Shouldn't switch sign on the scalar.
+			System.out.println("After reverse: "+Monad.toXMLString(boost, ""));
+			thing1.sandwich(motion, boost);
+			//System.out.println("After: "+Nyad.toXMLString(thing1, ""));
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			//assertTrue(Monad.hasGrade(motion, 1));				//Should be grade 1 only
+		}
+
+		/*
+		 * Similar to SandwichInside except the 'use' monad is in a different nyad.
+		 * Test both direct reference and indexed reference of the monads.
+		 */
+		//@Test
+		//void testSandwichOutside() {
+
+		//}
+
+	}
+
 	@Nested
-	class testBinaryOps {
+	class testJuxtapositionBinaryOps {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.createNyadUsingMonad(motion, "");

@@ -254,6 +254,27 @@ public class GProduct implements CliffordProduct {
 	}
 
 	/**
+	 * This method takes two blades, finds their index values in the basis, and then retrieves
+	 * the index value of their product from the Cayley table. With the result index, it return the 
+	 * basis blade at that location.
+	 * <br><br>
+	 * One could just multiply the two blades using BladeDuet.simplify() and get the blade returned.
+	 * That's how the Cayley table was constructed in the first place.
+	 * <br><br>
+	 * @param pRow 	Blade acting as the row entry for the Cayley table result
+	 * @param pCol	Blade acting as the column entry for the Cayley table result
+	 * @return Blade representing the result found in the Cayley table. If none found, null is returned.
+	 */
+	public final Blade getResult(Blade pRow, Blade pCol) {
+		int tRow = canonBasis.find(pRow) - 1;
+		int tCol = canonBasis.find(pCol) - 1;
+		
+		if (canonBasis.validateBladeIndex(tRow) & canonBasis.validateBladeIndex(tCol))
+			return canonBasis.getSingleBlade(Math.abs(getResult(tRow, tCol))-1);			
+		return null;
+	}
+
+	/**
 	 * Return the sign of an element in the geometric multiplication result table.
 	 * <br>
 	 * @param pRow int
