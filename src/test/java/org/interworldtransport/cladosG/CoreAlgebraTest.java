@@ -36,7 +36,7 @@ class CoreAlgebraTest {
 	@Test
 	public void testHashChanges() {
 		int hash3 = alg3.hashCode();
-		alg3.setAlgebraName("Something Else");
+		alg3.setAName("Something Else");
 		assertTrue(alg3.hashCode() == hash3);		//Stays the same because the uuid didn't change.
 		assertFalse(alg2.compareTo(alg3) == 0); 	//Different Names
 		assertFalse(alg3.compareTo(alg2) == 0); 	//Different Names
@@ -54,12 +54,12 @@ class CoreAlgebraTest {
 	public void testCompareTo() {
 		assertTrue(alg2.compareTo(alg3) == 0); //Same Name
 		assertTrue(alg1.compareTo(alg2) == 0); //Same Name even though signatures are different.
-		alg3.setAlgebraName("");
+		alg3.setAName("");
 		assertFalse(alg2.compareTo(alg3) == 0); //Different Names
-		alg3.setAlgebraName(null);
+		alg3.setAName(null);
 		assertFalse(alg2.compareTo(alg3) == 0); //Different Names
 		assertFalse(alg3.compareTo(alg2) == 0); //Different Names
-		alg2.setAlgebraName(null);
+		alg2.setAName(null);
 		assertTrue(alg2.compareTo(alg3) == 0); //Same Null Name
 	}
 
@@ -70,17 +70,17 @@ class CoreAlgebraTest {
 
 		//assertTrue(alg5.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
 		//assertTrue(alg4.getGBasis() == GCache.INSTANCE.findBasis((byte) 4).get());
-		assertTrue(alg4.getGBasis() == alg5.getGBasis());		//Two algebras have same signature lengths.
-		assertFalse(alg4.getGProduct() == alg5.getGProduct());	//Two sigs ARE different forces different GProducts
-		assertFalse(alg4.getGProduct().signature() == alg5.getGProduct().signature());
+		assertTrue(alg4.getBasis() == alg5.getBasis());		//Two algebras have same signature lengths.
+		assertFalse(alg4.getGP() == alg5.getGP());	//Two sigs ARE different forces different GProducts
+		assertFalse(alg4.getGP().signature() == alg5.getGP().signature());
 		assertFalse(alg4.equals(alg5));
 	}
 
 	@Test
 	public void testSignatureSimilarityReuse2() {
-		assertTrue(alg3.getGBasis() == alg2.getGBasis());		//Two algebras have same signature lengths so Basis reuse should happen
-		assertTrue(alg3.getGProduct() == alg2.getGProduct());	//Two sigs are the same, so GProduct reuse should happen
-		assertTrue(alg3.getGProduct().signature() == alg2.getGProduct().signature()); //Seriously... the signatures are the same
+		assertTrue(alg3.getBasis() == alg2.getBasis());		//Two algebras have same signature lengths so Basis reuse should happen
+		assertTrue(alg3.getGP() == alg2.getGP());	//Two sigs are the same, so GProduct reuse should happen
+		assertTrue(alg3.getGP().signature() == alg2.getGP().signature()); //Seriously... the signatures are the same
 		assertFalse(alg3.equals(alg2));							//Two distinct algebras though.
 	}
 
@@ -94,22 +94,22 @@ class CoreAlgebraTest {
 
 		assertNotSame(alg4, alg1);								//Different objects
 		assertSame(alg4.getFoot(), alg1.getFoot());				//with the same foot
-		assertSame(alg4.getGProduct(), alg1.getGProduct());		//and same gProduct
+		assertSame(alg4.getGP(), alg1.getGP());		//and same gProduct
 		assertNotEquals(alg4, alg1);							//Name mismatch => inequality
 
 		assertNotSame(alg5, alg1);								//Different objects
 		assertSame(alg5.getFoot(), alg4.getFoot());				//with the same foot
-		assertSame(alg5.getGProduct(), alg4.getGProduct());		//and same gProduct
-		assertNotSame(alg5.getAlgebraName(), alg4.getAlgebraName());//Obviously
+		assertSame(alg5.getGP(), alg4.getGP());		//and same gProduct
+		assertNotSame(alg5.getAName(), alg4.getAName());//Obviously
 																//Foot, gProduct re-used...
-		alg5.setAlgebraName(alg4.getAlgebraName());				//Force a name change
-		assertSame(alg5.getAlgebraName(), alg4.getAlgebraName());	//Prove it
+		alg5.setAName(alg4.getAName());				//Force a name change
+		assertSame(alg5.getAName(), alg4.getAName());	//Prove it
 		assertFalse(alg5.equals(alg4));							//Still mismatched because
 																//setting names equal isn't
 																//enough to pass reference match		
 		assertNotSame(alg6, alg1);								//Different objects
 		assertNotSame(alg6.getFoot(), alg1.getFoot());			//with different feet
-		assertSame(alg6.getGProduct(), alg1.getGProduct());		//and same gProduct
+		assertSame(alg6.getGP(), alg1.getGP());		//and same gProduct
 	}
 
 	@Test

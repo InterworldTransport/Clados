@@ -63,7 +63,7 @@ public class CoreMonadComplexDTest {
 		tM9 = new Monad(mName + "CF9", tM2);
         tM10 = new Monad(mName+"CF10", tM0.getAlgebra(), tM0.getWeights());
         tM11 = new Monad(mName+"CF11", 
-                        tM0.getAlgebra().getAlgebraName(), 
+                        tM0.getAlgebra().getAName(), 
                         "Test Foot 1", 
                         "-+++", 
                         tM0.getWeights());

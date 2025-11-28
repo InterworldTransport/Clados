@@ -404,7 +404,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 																								Algebra pA, 
 																								String pName)
 			throws BadSignatureException, CladosMonadException{
-		if (pA.getGBasis() != pNumbers.getBasis()) 
+		if (pA.getBasis() != pNumbers.getBasis()) 
 			throw new CladosMonadException(	null, 
 											"Monad construction fails when Scale and Algebra bases aren't identical.");
 		

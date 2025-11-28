@@ -65,7 +65,7 @@ public class CoreMonadRealFTest {
 		tM9 = new Monad(mName + "RF9", tM2);
         tM10 = new Monad(mName+"RF10", tM0.getAlgebra(), tM0.getWeights());
         tM11 = new Monad(mName+"RF11", 
-                        tM0.getAlgebra().getAlgebraName(), 
+                        tM0.getAlgebra().getAName(), 
                         "Test Foot 1", 
                         "-+++", 
                         tM0.getWeights());

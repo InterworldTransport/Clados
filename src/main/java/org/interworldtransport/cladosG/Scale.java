@@ -279,7 +279,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @return an array of ProtoN children.
 	 */
 	@SuppressWarnings("unchecked")
-	public D[] getWeights() {
+	public D[] getNumbers() {
 		switch (mode) {
 			case REALF : return (D[]) map.values().toArray(RealF[]::new);
 			case REALD : return (D[]) map.values().toArray(RealD[]::new);
@@ -791,9 +791,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setScalarWeight(D pIn) {
+	@SuppressWarnings("unchecked")
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setScalarWeight(T pIn) {
 		if (ProtoN.isTypeMatch(this.getScalar(), pIn))
-			map.put(gBasis.getScalarBlade(), pIn);
+			map.put(gBasis.getScalarBlade(), (D) pIn);
 		return this;
 	}
 

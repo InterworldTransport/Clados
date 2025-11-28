@@ -250,7 +250,7 @@ public class CoreNyadRealDTest {
 		@Test
 		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosMonadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 
 			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");	
@@ -280,7 +280,7 @@ public class CoreNyadRealDTest {
 		@Test 
 		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
 			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");				//testable nyad
@@ -317,7 +317,7 @@ public class CoreNyadRealDTest {
 		@Test 
 		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
 			Nyad thing3 = GBuilder.createNyadUsingMonad(newMotion, "");				//testable nyad
@@ -500,7 +500,7 @@ public class CoreNyadRealDTest {
 		@Test
 		void testAppendWrongFoot() throws BadSignatureException, CladosMonadException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
-			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGProduct(), "A new one");
+			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
 																									//newMotion has a different algebra AND foot than motion
 			assertThrows(CladosNyadException.class, () -> thing1.append(newMotion));	//Should glitch on the attempt

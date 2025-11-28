@@ -128,11 +128,11 @@ public class CoreGBuilderTest {
             GCache.INSTANCE.clearGProducts();
             ComplexD tNumber = FBuilder.COMPLEXD.createONE(tCard);
             assertDoesNotThrow(() -> GBuilder.createAlgebra(tNumber, 
-                                                            tAlgebra.getAlgebraName()+"2", 
+                                                            tAlgebra.getAName()+"2", 
                                                             tFoot.getFootName()+"2", 
                                                             twoDPGA));
             try {
-                Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAlgebraName()+"2", tFoot.getFootName()+"2", twoDPGA);
+                Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAName()+"2", tFoot.getFootName()+"2", twoDPGA);
                 assertNotNull(ta2);
             } catch (BadSignatureException es) {
                 ;
@@ -260,14 +260,14 @@ public class CoreGBuilderTest {
         
         @Test
         void testCreateMonadWithAlgebra() {
-            Scale<ComplexD> tCD0 = new Scale<>(CladosField.COMPLEXD, tAlgebra.getGBasis(), tCard); 
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCD0.put(blade, ComplexD.newONE(tCard)));     
-            Scale<ComplexF> tCF0 = new Scale<>(CladosField.COMPLEXF, tAlgebra.getGBasis(), tCard); 
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCF0.put(blade, ComplexF.newONE(tCard)));
-            Scale<RealD> tRD0 = new Scale<>(CladosField.REALD, tAlgebra.getGBasis(), tCard);   
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRD0.put(blade, RealD.newONE(tCard))); 
-            Scale<RealF> tRF0 = new Scale<>(CladosField.REALF, tAlgebra.getGBasis(), tCard);     
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRF0.put(blade, RealF.newONE(tCard)));      //There are my examples
+            Scale<ComplexD> tCD0 = new Scale<>(CladosField.COMPLEXD, tAlgebra.getBasis(), tCard); 
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tCD0.put(blade, ComplexD.newONE(tCard)));     
+            Scale<ComplexF> tCF0 = new Scale<>(CladosField.COMPLEXF, tAlgebra.getBasis(), tCard); 
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tCF0.put(blade, ComplexF.newONE(tCard)));
+            Scale<RealD> tRD0 = new Scale<>(CladosField.REALD, tAlgebra.getBasis(), tCard);   
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tRD0.put(blade, RealD.newONE(tCard))); 
+            Scale<RealF> tRF0 = new Scale<>(CladosField.REALF, tAlgebra.getBasis(), tCard);     
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tRF0.put(blade, RealF.newONE(tCard)));      //There are my examples
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithAlgebra(   tRF0, 
                                                                         tAlgebra, 
@@ -297,14 +297,14 @@ public class CoreGBuilderTest {
             //These works when the basis built in the new algebra matches what is used in the Scale. 
             //How could it? Note the test Scales are created using the test tAlgebra basis!
 
-            Scale<ComplexD> tCD0 = new Scale<>(CladosField.COMPLEXD, tAlgebra.getGBasis(), tCard);          //A 2D PGA Scale
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCD0.put(blade, ComplexD.newONE(tCard)));   //with "ones"
-            Scale<ComplexF> tCF0 = new Scale<>(CladosField.COMPLEXF, tAlgebra.getGBasis(), tCard);          //A 2D PGA Scale
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tCF0.put(blade, ComplexF.newONE(tCard)));   //with "ones"
-            Scale<RealD> tRD0 = new Scale<>(CladosField.REALD, tAlgebra.getGBasis(), tCard);                //A 2D PGA Scale
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRD0.put(blade, RealD.newONE(tCard)));      //with "ones"
-            Scale<RealF> tRF0 = new Scale<>(CladosField.REALF, tAlgebra.getGBasis(), tCard);                //A 2D PGA Scale
-            tAlgebra.getGBasis().bladeStream().forEach(blade -> tRF0.put(blade, RealF.newONE(tCard)));      //There are my examples
+            Scale<ComplexD> tCD0 = new Scale<>(CladosField.COMPLEXD, tAlgebra.getBasis(), tCard);          //A 2D PGA Scale
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tCD0.put(blade, ComplexD.newONE(tCard)));   //with "ones"
+            Scale<ComplexF> tCF0 = new Scale<>(CladosField.COMPLEXF, tAlgebra.getBasis(), tCard);          //A 2D PGA Scale
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tCF0.put(blade, ComplexF.newONE(tCard)));   //with "ones"
+            Scale<RealD> tRD0 = new Scale<>(CladosField.REALD, tAlgebra.getBasis(), tCard);                //A 2D PGA Scale
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tRD0.put(blade, RealD.newONE(tCard)));      //with "ones"
+            Scale<RealF> tRF0 = new Scale<>(CladosField.REALF, tAlgebra.getBasis(), tCard);                //A 2D PGA Scale
+            tAlgebra.getBasis().bladeStream().forEach(blade -> tRF0.put(blade, RealF.newONE(tCard)));      //There are my examples
 
             assertDoesNotThrow(() -> GBuilder.createMonadWithCoeffs(    tRF0, 
                                                                         "TestMonadNameRF",
@@ -397,22 +397,22 @@ public class CoreGBuilderTest {
 
         @Test
         void testCreateScale(){
-            Scale<RealF> testScaleRF = GBuilder.createScale(CladosField.REALF, tAlgebra.getGBasis(), tCard);
+            Scale<RealF> testScaleRF = GBuilder.createScale(CladosField.REALF, tAlgebra.getBasis(), tCard);
             assertTrue(testScaleRF.getMode() == CladosField.REALF);
             assertTrue(testScaleRF.getBasis().getGradeCount() == 4);
             assertTrue(RealF.isZero(testScaleRF.getScalar()));
 
-            Scale<RealD> testScaleRD = GBuilder.createScale(CladosField.REALD, tAlgebra.getGBasis(), tCard);
+            Scale<RealD> testScaleRD = GBuilder.createScale(CladosField.REALD, tAlgebra.getBasis(), tCard);
             assertTrue(testScaleRD.getMode() == CladosField.REALD);
             assertTrue(testScaleRD.getBasis().getGradeCount() == 4);
             assertTrue(RealD.isZero(testScaleRD.getScalar()));
 
-            Scale<ComplexF> testScaleCF = GBuilder.createScale(CladosField.COMPLEXF, tAlgebra.getGBasis(), tCard);
+            Scale<ComplexF> testScaleCF = GBuilder.createScale(CladosField.COMPLEXF, tAlgebra.getBasis(), tCard);
             assertTrue(testScaleCF.getMode() == CladosField.COMPLEXF);
             assertTrue(testScaleCF.getBasis().getGradeCount() == 4);
             assertTrue(ComplexF.isZero(testScaleCF.getScalar()));
 
-            Scale<ComplexD> testScaleCD = GBuilder.createScale(CladosField.COMPLEXD, tAlgebra.getGBasis(), tCard);
+            Scale<ComplexD> testScaleCD = GBuilder.createScale(CladosField.COMPLEXD, tAlgebra.getBasis(), tCard);
             assertTrue(testScaleCD.getMode() == CladosField.COMPLEXD);
             assertTrue(testScaleCD.getBasis().getGradeCount() == 4);
             assertTrue(ComplexD.isZero(testScaleCD.getScalar()));
@@ -442,12 +442,12 @@ public class CoreGBuilderTest {
                                 //which means it looks for the GP first and builds it if needed.
 
             motion = GBuilder.createMonadWithAlgebra(	GBuilder.createScale(   CladosField.REALF, 
-                                                                                tAlgebra.getGBasis(), 
+                                                                                tAlgebra.getBasis(), 
                                                                                 tCard), 
                                                         tAlgebra, 
                                                         "velocityDensity");
             property = GBuilder.createMonadWithAlgebra(	GBuilder.createScale(   CladosField.REALF, 
-                                                                                tAlgebra2.getGBasis(), 
+                                                                                tAlgebra2.getBasis(), 
                                                                                 tCard), 
                                                         tAlgebra2, 
                                                         "velocityDensity");

@@ -86,13 +86,13 @@ public final class Algebra implements Comparable<Algebra> {
 	public final static String toXMLString(Algebra pA, String indent) {
 		if (indent == null)		indent = "\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent+"<Algebra name=\"");
-		rB	.append(pA.getAlgebraName())
+		rB	.append(pA.getAName())
 			.append("\" UUID=\"")
 			.append(pA.uuid)
 			.append("\" >\n");
 		
 		rB	.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));			//Algebra owns a reference to a Foot
-		rB	.append(GProduct.toXMLString(pA.getGProduct(), indent + "\t"));	//Algebra owns a reference to a GP
+		rB	.append(GProduct.toXMLString(pA.getGP(), indent + "\t"));	//Algebra owns a reference to a GP
 		
 		rB	.append(indent)
 			.append("</Algebra>\n");
@@ -144,10 +144,10 @@ public final class Algebra implements Comparable<Algebra> {
 	 * @param pA 		This is the other Algebra to copy.
 	 */
 	public Algebra(String pNewName, Algebra pA) {
-		setAlgebraName(pNewName);
+		setAName(pNewName);
 		setFoot(pA.getFoot());							//RE-USE of Foot
-		setGProduct(pA.getGProduct());					//RE-USE of GP
-		gBasis = pA.getGProduct().getBasis();			//RE-USE of Basis
+		setGP(pA.getGP());					//RE-USE of GP
+		gBasis = pA.getGP().getBasis();			//RE-USE of Basis
 		uuid = UUID.randomUUID().toString();
 		GCache.INSTANCE.appendBasis(gBasis);
 		GCache.INSTANCE.appendGProduct(gProduct);
@@ -170,9 +170,9 @@ public final class Algebra implements Comparable<Algebra> {
 	 * @param pGP   	This is the geometric product being offered for reference
 	 */
 	public Algebra(String pNewName, Foot pF, GProduct pGP) {
-		setAlgebraName(pNewName);
+		setAName(pNewName);
 		setFoot(pF);
-		setGProduct(pGP);							//RE-USE of GP
+		setGP(pGP);							//RE-USE of GP
 		gBasis = pGP.getBasis();					//RE-USE of Basis
 		uuid = UUID.randomUUID().toString();
 		GCache.INSTANCE.appendBasis(gBasis);
@@ -289,7 +289,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * <br>
 	 * @return String name of the algebra
 	 */
-	public String getAlgebraName() {
+	public String getAName() {
 		return name;
 	}
 
@@ -319,7 +319,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * <br>
 	 * @return gBasis
 	 */
-	public Basis getGBasis() {
+	public Basis getBasis() {
 		return gBasis;
 	}
 
@@ -328,7 +328,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * <br>
 	 * @return gProduct
 	 */
-	public GProduct getGProduct() {
+	public GProduct getGP() {
 		return gProduct;
 	}
 
@@ -367,7 +367,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * <br>
 	 * @param pName String for the Algebra's name.
 	 */
-	public void setAlgebraName(String pName) {
+	public void setAName(String pName) {
 		name = pName;
 	}
 
@@ -397,7 +397,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * @param pGP GProduct GProduct object for the Algebra to use as its geometric
 	 *            product operation on the canonical basis.
 	 */
-	protected void setGProduct(GProduct pGP) {
+	protected void setGP(GProduct pGP) {
 		gProduct = pGP;
 		gBasis = pGP.getBasis();
 	}

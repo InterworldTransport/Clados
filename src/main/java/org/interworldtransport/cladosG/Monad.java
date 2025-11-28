@@ -363,7 +363,7 @@ public class Monad implements Modal {
 		rB.append("name=\"")
 			.append(pM.getName())
 			.append("\" algebra=\"")
-			.append(pM.getAlgebra().getAlgebraName())
+			.append(pM.getAlgebra().getAName())
 			.append("\" gradeKey=\"")
 			.append(pM.getGradeKey())
 			.append("\" sparseFlag=\"")
@@ -501,19 +501,19 @@ public class Monad implements Modal {
 
 		switch (pF.getClass().getCanonicalName()){
 			case "org.interworldtransport.cladosF.RealF" -> {
-				scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.RealD" -> {
-				scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.ComplexF" -> {
-				scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.ComplexD" -> {
-				scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getGBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			default -> throw new IllegalArgumentException("Offered Number must be a child of CladosF/ProtoN");
@@ -696,7 +696,7 @@ public class Monad implements Modal {
 	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
 															Algebra pAlgebra, 
 															Scale<T> pScale) throws CladosMonadException {
-		if (pScale.getBasis() != pAlgebra.getGBasis())
+		if (pScale.getBasis() != pAlgebra.getBasis())
 			throw new CladosMonadException(this, "Scale basis must match exactly the basis in Algebra.");
 
 		setName(pMonadName);
@@ -735,7 +735,7 @@ public class Monad implements Modal {
 	 * @return Stream of Blades in the underlying Basis
 	 */
 	public Stream<Blade> bladeStream() {
-		return algebra.getGBasis().bladeStream();
+		return algebra.getBasis().bladeStream();
 	}
 
 	/**
@@ -809,7 +809,7 @@ public class Monad implements Modal {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ProtoN> T[] getCoeff() {
-		return (T[]) scales.getWeights();
+		return (T[]) scales.getNumbers();
 	}
 
 	/**
@@ -837,7 +837,7 @@ public class Monad implements Modal {
 	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field & Normalizable> T getCoeff(int i) {
 		if (i >= 0 & i < getAlgebra().getBladeCount())
-			return (T) scales.getWeights()[i];
+			return (T) scales.getNumbers()[i];
 		return null;
 	}
 
@@ -1060,8 +1060,8 @@ public class Monad implements Modal {
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Left multiply fails reference match.");
-		GProduct tProd = getAlgebra().getGProduct();
-		Basis tBasis = getAlgebra().getGBasis();
+		GProduct tProd = getAlgebra().getGP();
+		Basis tBasis = getAlgebra().getBasis();
 
 		Scale<T> newScales = new Scale<T>(getMode(), tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
@@ -1230,8 +1230,8 @@ public class Monad implements Modal {
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new IllegalArgumentException("Right multiply fails reference match.");
-		GProduct tProd = getAlgebra().getGProduct();
-		Basis tBasis = getAlgebra().getGBasis();
+		GProduct tProd = getAlgebra().getGP();
+		Basis tBasis = getAlgebra().getBasis();
 
 		Scale<T> newScales = new Scale<T>(getMode(), tBasis, scales.getCardinal()).zeroAll();
 		if (sparseFlag) {
@@ -1546,7 +1546,7 @@ public class Monad implements Modal {
 		gradeKey = 0;
 
 		gradeStream().forEach(grade -> {
-			if (getAlgebra().getGBasis().bladeOfGradeStream((byte) grade).parallel().anyMatch(
+			if (getAlgebra().getBasis().bladeOfGradeStream((byte) grade).parallel().anyMatch(
 															blade -> getWeights().isNotZeroAt(blade))){
 				foundGrades++;
 				gradeKey += (long) Math.pow(10, grade);
