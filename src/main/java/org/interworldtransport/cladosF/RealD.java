@@ -529,8 +529,9 @@ public class RealD extends ProtoN implements Field, Normalizable {
 	 * <br>
 	 * @param preal double
 	 */
-	public void setReal(double preal) {
+	public RealD setReal(double preal) {
 		vals[0] = preal;
+		return this;
 	}
 
 	/**
