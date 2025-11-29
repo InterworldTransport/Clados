@@ -39,47 +39,37 @@ import org.interworldtransport.cladosG.GProduct;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class BadSignatureException extends Exception
-{
-	private static final long serialVersionUID = 8706866415790422224L;
+public class BadSignatureException extends CladosException {
 /**
  * The source GProduct originates the Exception.
  */
-   public GProduct  Source;
-/**
- * The source's message is the reason given for the exception.
- */
-   public String  SourceMessage;
+   public GProduct  sourceGP;
     
 /**
  * Construct this exception.  This exception must have the source monad and a
  * message complaining about the expectations of the source.
- * 
+ * <br><br>
  * @param pSource    GProduct issuing the complaint about the signature string
  * @param pMessage   String explaining the complaint.
  */
-   public BadSignatureException(GProduct pSource, String pMessage)
-   {
-      super();
-      Source=pSource;
-      SourceMessage=pMessage;
+   public BadSignatureException(GProduct pSource, String pMessage) {
+      super(pMessage);
+      sourceGP=pSource;
 	}
 /**
- * This method delivers a reference to the source object that originated the Exception
- * 
+ * This method delivers a reference to the source object that originated the Exception.
+ * <br><br>
  * @return GProduct
  */
-   public GProduct  getSource()
-   {
-      return Source;
+   public GProduct  getSourceGP() {
+      return sourceGP;
 	}
 /**
  * This method delivers a the explanation from the source code that originated the Exception
  * 
  * @return String
  */
-   public String  getSourceMessage() 
-   {
-      return this.SourceMessage;
+   public String  getSourceMessage() {
+      return super.getSourceMessage();
    }
 }

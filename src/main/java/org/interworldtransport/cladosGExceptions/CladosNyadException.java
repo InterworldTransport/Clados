@@ -31,22 +31,15 @@ import org.interworldtransport.cladosG.Nyad;
  * instances of descendants are assumed to originate from geometric objects with
  * unhandled problems. Common elements from each exception class are found here.
  * <br><br>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  * 
  */
-public class CladosNyadException extends Exception
-{
-	private static final long serialVersionUID = 8525503660269803527L;
+public class CladosNyadException extends CladosException {
 	/**
 	 * The source NyadRealD is the originator of the Exception.
 	 */
-	private Nyad	Source;
-	/**
-	 * The source message is the reason given by the originating NyadRealD for
-	 * the exception.
-	 */
-	private String			SourceMessage;
+	private Nyad	sourceNyad;
 
 	/**
 	 * This method is the main constructor of all Clados Exceptions. It needs
@@ -55,11 +48,9 @@ public class CladosNyadException extends Exception
 	 * @param pSource Nyad
 	 * @param pMessage String
 	 */
-	public CladosNyadException(Nyad pSource, String pMessage)
-	{
-		super();
-		SourceMessage = pMessage;
-		Source = pSource;
+	public CladosNyadException(Nyad pSource, String pMessage) {
+		super(pMessage);
+		sourceNyad = pSource;
 	}
 
 	/**
@@ -68,9 +59,8 @@ public class CladosNyadException extends Exception
 	 * <br>
 	 * @return Nyad
 	 */
-	public Nyad getSourceNyad()
-	{
-		return Source;
+	public Nyad getSourceNyad() {
+		return sourceNyad;
 	}
 
 	/**
@@ -79,8 +69,7 @@ public class CladosNyadException extends Exception
 	 * <br>
 	 * @return String
 	 */
-	public String getSourceMessage()
-	{
-		return SourceMessage;
+	public String getSourceMessage() {
+		return super.getSourceMessage();
 	}
 }
