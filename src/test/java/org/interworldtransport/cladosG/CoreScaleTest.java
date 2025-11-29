@@ -13,7 +13,6 @@ import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -231,10 +230,10 @@ public class CoreScaleTest {
             workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
             workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
 
-            workScaleRF.conjugate();
-            workScaleRD.conjugate();
-            workScaleCF.conjugate();
-            workScaleCD.conjugate();
+            workScaleRF.conjugateNumbers();
+            workScaleRD.conjugateNumbers();
+            workScaleCF.conjugateNumbers();
+            workScaleCD.conjugateNumbers();
 
             assertTrue(workScaleRF.getScalar().getReal() == 1.0f);
             assertTrue(workScaleRD.getScalar().getReal() == 1.0d);
@@ -252,10 +251,10 @@ public class CoreScaleTest {
             workScaleCD.getPScalar().setReal(1.0d).setImg(1.0d);
             
 
-            workScaleRF.mainInvolution();
-            workScaleRD.mainInvolution();
-            workScaleCF.mainInvolution();
-            workScaleCD.mainInvolution();
+            workScaleRF.conjugateShirokov(1);
+            workScaleRD.conjugateShirokov(1);
+            workScaleCF.conjugateShirokov(1);
+            workScaleCD.conjugateShirokov(1);
 
             assertTrue(workScaleRF.getPScalar().getReal() == 1.0f);
             assertTrue(workScaleRD.getPScalar().getReal() == 1.0d);
@@ -269,19 +268,19 @@ public class CoreScaleTest {
         public void testReverse() {
             workScaleRF.getScalar().setReal(1.0f);
             workScaleRF.getPScalar().setReal(1.0f);
-            workScaleRF.reverse();
+            workScaleRF.conjugateShirokov(2);
             assertTrue(workScaleRF.getScalar().getReal() == 1.0f);
             assertTrue(workScaleRF.getPScalar().getReal() == 1.0f);
 
             workScaleRD.getScalar().setReal(1.0d);
             workScaleRD.getPScalar().setReal(1.0d);
-            workScaleRD.reverse();
+            workScaleRD.conjugateShirokov(2);
             assertTrue(workScaleRD.getScalar().getReal() == 1.0d);
             assertTrue(workScaleRD.getPScalar().getReal() == 1.0d);
 
             workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
             workScaleCF.getPScalar().setReal(1.0f).setImg(1.0f);
-            workScaleCF.reverse();
+            workScaleCF.conjugateShirokov(2);
             assertTrue(workScaleCF.getScalar().getReal() == 1.0f);
             assertTrue(workScaleCF.getScalar().getImg() == 1.0f);
             assertTrue(workScaleCF.getPScalar().getReal() == 1.0f);
@@ -289,12 +288,11 @@ public class CoreScaleTest {
 
             workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
             workScaleCD.getPScalar().setReal(1.0d).setImg(1.0d);
-            workScaleCD.reverse();
+            workScaleCD.conjugateShirokov(2);
             assertTrue(workScaleCD.getScalar().getReal() == 1.0d);
             assertTrue(workScaleCD.getScalar().getImg() == 1.0d);
             assertTrue(workScaleCD.getPScalar().getReal() == 1.0d);
             assertTrue(workScaleCD.getPScalar().getImg() == 1.0d);
-            //System.out.println(Scale.toXMLString(workScaleCD, ""));
         }
     }
     @Nested
@@ -319,10 +317,10 @@ public class CoreScaleTest {
             workScaleCF2.getScalar().setReal(1.0f).setImg(1.0f);
             workScaleCD2.getScalar().setReal(1.0d).setImg(1.0d);
 
-            Assertions.assertDoesNotThrow(() -> workScaleRF2.normalize());
-            Assertions.assertDoesNotThrow(() -> workScaleRD2.normalize());
-            Assertions.assertDoesNotThrow(() -> workScaleCF2.normalize());
-            Assertions.assertDoesNotThrow(() -> workScaleCD2.normalize());
+            assertDoesNotThrow(() -> workScaleRF2.normalize());
+            assertDoesNotThrow(() -> workScaleRD2.normalize());
+            assertDoesNotThrow(() -> workScaleCF2.normalize());
+            assertDoesNotThrow(() -> workScaleCD2.normalize());
 
             assertTrue(workScaleRF2.getScalar().getReal() == 1.0f);
             assertTrue(workScaleRD2.getScalar().getReal() == 1.0d);
@@ -348,10 +346,8 @@ public class CoreScaleTest {
             Cardinal newCard = Cardinal.generate("NewIdea2.0");
             workScaleRF.getScalar().setReal(1.0f);
             workScaleRD.getScalar().setReal(1.0d);
-            workScaleCF.getScalar().setReal(1.0f);
-            workScaleCF.getScalar().setImg(1.0f);
-            workScaleCD.getScalar().setReal(1.0d);
-            workScaleCD.getScalar().setImg(1.0d);
+            workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
 
             workScaleRF.setCardinal(null);
             workScaleRD.setCardinal(null);
@@ -415,17 +411,13 @@ public class CoreScaleTest {
 
             workScaleRF.getScalar().setReal(1.0f);
             workScaleRD.getScalar().setReal(1.0d);
-            workScaleCF.getScalar().setReal(1.0f);
-            workScaleCF.getScalar().setImg(1.0f);
-            workScaleCD.getScalar().setReal(1.0d);
-            workScaleCD.getScalar().setImg(1.0d);
+            workScaleCF.getScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getScalar().setReal(1.0d).setImg(1.0d);
 
             workScaleRF.getPScalar().setReal(1.0f);
             workScaleRD.getPScalar().setReal(1.0d);
-            workScaleCF.getPScalar().setReal(1.0f);
-            workScaleCF.getPScalar().setImg(1.0f);
-            workScaleCD.getPScalar().setReal(1.0d);
-            workScaleCD.getPScalar().setImg(1.0d);
+            workScaleCF.getPScalar().setReal(1.0f).setImg(1.0f);
+            workScaleCD.getPScalar().setReal(1.0d).setImg(1.0d);
 
             workScaleRF.zeroAllButGrade((byte) 8);
             assertFalse(RealF.isZero(workScaleRF.getPScalar()));   //Grade out of range silently does nothing.

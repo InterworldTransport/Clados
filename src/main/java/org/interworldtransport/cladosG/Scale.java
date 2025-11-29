@@ -218,8 +218,44 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * <br>
 	 * @return Scale object. Just this object after modification.
 	 */
-	public Scale<D> conjugate() {
+	public Scale<D> conjugateNumbers() {
 		this.weightsParallelStream().forEach(w -> w.conjugate());
+		return this;
+	}
+
+	/**
+	 * This method 'conjugates' blades of the algebra, but leaves the numbers untouched.
+	 * blades of the algebra untouched. 
+	 * <br><br>
+	 * These are Shrirokov's 'standard conjugates' that flip signs on blocks of weights
+	 * in powers of two. For example...<br>
+	 * invoke with (0) is the identity. It flips nothing.<br>
+	 * invoke with (1) is the main involution. It flips every odd grade... so Integer.lowestOneBit(j)) == 1 <br>
+	 * invoke with (2) is the reverse involution. It flips every other pair of grades... so Integer.lowestOneBit(j/2)) == 1 <br>
+	 * invoke with (3) is unnamed, but flips every other quartet of grades... so Integer.lowestOneBit(j/4)) == 1 <br>
+	 * invoke with (4) is unnamed, but flips every other octet of grades... so Integer.lowestOneBit(j/8)) == 1 <br>
+	 * etc.
+	 * <br><br>
+	 * @param pWhich int used for pow(2, pWhich-1) which is the grade block size for sign switches.
+	 * @return Scale after modification of numbers.
+	 */
+	public Scale<D> conjugateShirokov(int pWhich) {
+		if (pWhich <1) 			return this;
+
+		int power = CladosConstant.pow((byte) 2, pWhich-1).intValue();			//1 -> 2^0=1	2 -> 2^1=2
+		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j/power)) == 1).parallel().forEach(grade -> {
+			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
+				switch (mode) {
+				case REALF:						//Tricky here. This case falls through to the next and gets handled.
+				case COMPLEXF:
+					(map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+					break;						//Both cases handled in one then break.
+				case REALD:						//Tricky here. This case falls through to the next and gets handled.
+				case COMPLEXD:
+					(map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+				}			//Both cases handled in one then done.
+			});
+		});
 		return this;
 	}
 
@@ -342,32 +378,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	public D getScalar() {
 		return map.get(gBasis.getScalarBlade());
-	}
-
-	/**
-	 * This method imitates the main involution. All generators in each blade flip sign, so the
-	 * implications for the values in the internal map are worked out. No typeMismatch can occur. 
-	 * <br>
-	 * This is what we called a parity inversion where generator.# goes to -1.0 * generator.#, 
-	 * but that's not a good name for it going forward.
-	 * <br>
-	 * @return Scale object. Just this object after modification.
-	 */
-	public Scale<D> mainInvolution() {
-		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j) == 1)).parallel().forEach(grade -> {
-			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
-				switch (mode) {
-				case REALF:
-				case COMPLEXF:
-					(map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-					break;
-				case REALD:
-				case COMPLEXD:
-					(map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-				}
-			});
-		});
-		return this;
 	}
 
 	/**
@@ -515,27 +525,27 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This method takes all values in the map and returns one ProtoN child
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each value.
-	 * <br>
+	 * <br><br>
 	 * Because these are real numbers, though, we get away with simply summing the
 	 * moduli instead. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
-	 * <br>
+	 * <br><br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <br>
+	 * <br><br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <br>
+	 * <br><br>
 	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <br>
+	 * <br><br>
 	 * @return D ProtoN child that implements all the number interfaces too.
 	 */
 	@SuppressWarnings("unchecked")
@@ -593,27 +603,21 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
-	 * This method normalizes the coefficients as if they were a vector in 2^N
-	 * vector space described by the implied basis from the monad. It's pretty
-	 * simple, though. Just add up the squares of the numbers and then take the
-	 * square root to determine the magnitude and then invert that to scale the
-	 * original numbers.
-	 * <br>
-	 * Since the internal map can accept any of the CladosF numbers as values, there
-	 * is a cast to a 'generic' type within this method. This would normally cause
-	 * warnings by the compiler since the generic named in the internal map IS a
-	 * ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br>
-	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a ProtoN child. They can't even build a
-	 * ProtoN instance directly. Therefore, only children can arrive as the
-	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new ProtoN child class and
-	 * fails to update all builders.
-	 * <br>
-	 * @throws FieldException This happens when normalizing something that has a
-	 *                        zero magnitude. The exception is thrown by the
-	 *                        invert() method and passed along here.
+	 * This method normalizes the coefficients as if they were a vector in 2^N vector space described by the 
+	 * implied basis from the monad. It's pretty simple, though. Just add up the squares of the numbers and 
+	 * then take the square root to determine the magnitude and then invert that to scale the original numbers.
+	 * <br><br>
+	 * Since the internal map can accept any of the CladosF numbers as values, there is a cast to a 'generic' 
+	 * type within this method. This would normally cause warnings by the compiler since the generic named in
+	 *  the internal map IS a ProtoN child AND casting an unchecked type could fail at runtime.
+	 * <br><br>
+	 * That won't happen here when CladosF builders are used. They can't build anything that is NOT a ProtoN 
+	 * child. They can't even build a ProtoN instance directly. Therefore, only children can arrive as the 
+	 * value parameter of the 'put' function. Thus, there is no danger of a failed cast operation... until 
+	 * someone creates a new ProtoN child class and fails to update all builders.
+	 * <br><br>
+	 * @throws FieldException 	This happens when normalizing something that has a zero magnitude. 
+	 * 							The exception is thrown by the number's invert() and passed along.
 	 */
 	@SuppressWarnings("unchecked")
 	public void normalize() throws FieldException {
@@ -621,45 +625,16 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
-	 * Put a key/value pair into the internal map of coefficients. A Blade acts as
-	 * key. A ProtoN child acts as coefficient.
-	 * <br>
-	 * 
+	 * Put a key/value pair into the internal map of coefficients. A Blade acts as key. A ProtoN child acts as coefficient.
+	 * <br><br>
+	 * The offered number IS USED DIRECTLY. NO COPY IS CREATED!
+	 * <br><br>
 	 * @param pB  Blade acting as key in the internal map
 	 * @param pD  ProtoN child acting as the coefficient.
 	 * @return Scale of Unit Abstract objects. Just this object after modification if it occurs.
 	 */
 	public Scale<D> put(Blade pB, D pD) {
 		map.put(pB, pD);
-		return this;
-	}
-
-	/**
-	 * This method reverses all the order of implied multiplication in blade
-	 * generators and works out the sign implications for the values in the internal
-	 * map. No typeMismatch can occur here.
-	 * <br>
-	 * This method shows that blade reversion is handled HERE and not with the sign 
-	 * of the blades themselves. The sign in Blade is ONLY for the order of the 
-	 * enumset of its generators. Grade convolutions are remembered in Scale by
-	 * flipping signs of the ProtoN child values in map.
-	 * <br>
-	 * @return Scale object. Just this object after modification.
-	 */
-	public Scale<D> reverse() {
-		gBasis.gradeStream().filter(j -> (j % 4 > 1)).parallel().forEach(grade -> {
-			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
-				switch (mode) {
-				case REALF:	//Tricky here. This case falls through to the next and gets handled.
-				case COMPLEXF:
-					(map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
-					break;	//Both cases handled in one then break.
-				case REALD:	//Tricky here. This case falls through to the next and gets handled.
-				case COMPLEXD:
-					(map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
-				}			//Both cases handled in one then done.
-			});
-		});
 		return this;
 	}
 
@@ -772,7 +747,9 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method just sets the pscalar weight with a number that should satisfy type matches. If it
 	 * does not get past the type match check, nothing is done to change any weights.
-	 * <br>
+	 * <br><br>
+	 * The offered number IS USED DIRECTLY. NO COPY IS CREATED!
+	 * <br><br>
 	 * @param <T> is a child of ProtoN used as the generic identity of the weights in this object.
 	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
@@ -786,7 +763,9 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method just sets the scalar weight with a number that should satisfy type matches. If it
 	 * does not get past the type match check, nothing is done to change any weights.
-	 * <br>
+	 * <br><br>
+	 * The offered number IS USED DIRECTLY. NO COPY IS CREATED!
+	 * <br><br>
 	 * @param <T> is a child of ProtoN used as the generic identity of the weights in this object.
 	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
@@ -830,8 +809,8 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * if the map is of the wrong size and throws an IllegalArgumentException if so.
 	 * <br>
 	 * NOTE this method DEEP COPIES the inbound map to disconnect the map's source
-	 * DivFields from the ones added to this object. This is the safest settor
-	 * method to use when handing in information from other clados sources.
+	 * ProtoN children from the ones 'put' here. This is the safest settor method to use 
+	 * when handing in information from other clados sources.
 	 * <br>
 	 * @param pInMap Inbound Map relating blades to ProtoN child numbers.
 	 * @return Scale object. Just this object after modification.
@@ -857,7 +836,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * suggested by the byte parameter.
 	 * <br>
 	 * NOTE | Do NOT use this method if you intend the offered coefficient array to
-	 * be disconnected from this object. It won't be. If you really must use this
+	 * be disconnected from this object. IT WON'T BE! If you really must use this
 	 * method that way, copy your coefficients first.
 	 * <br>
 	 * @param pGrade byte integer naming the grade to be overwritten

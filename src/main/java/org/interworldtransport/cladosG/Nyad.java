@@ -1102,7 +1102,7 @@ public class Nyad implements Modal {
 	public Nyad sandwich(int pKeep, int pUse) throws CladosMonadException, CladosNyadException {
 		if (validateMIndex(pKeep) & validateMIndex(pUse)) 					// Check for monad list out of bounds errors.
 						sandwich(monadList.get(pKeep), monadList.get(pUse));
-		else 			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+		else 			throw new IndexOutOfBoundsException("Sandwich conjugation out of range error");
 
 		return this;
 	}
@@ -1125,8 +1125,7 @@ public class Nyad implements Modal {
 		if (!this.has(pKeep) || !this.has(pUse))				// Proceed only if both monads in nyad.
 						throw new CladosNyadException(this, "Monad pair must be in nyad for sandwich multiplication.");
 		
-		pKeep.multiplyLeft(pUse);								// Only now can we do the deed.
-		pKeep.multiplyRight(pUse.reverse());	
+		(pKeep.multiplyLeft(pUse)).multiplyRight(pUse.reverse());	// Only now can we do the deed.
 		monadList.remove(pUse);									// Right Monad is REMOVED HERE!
 		monadList.trimToSize();
 		resetFlags();											// Work out consequences
@@ -1140,9 +1139,10 @@ public class Nyad implements Modal {
 	 * Finding these monads is the task of this method... then it hands off to the similarly named method that 
 	 * accepts the monads directly.  When it is done, the left monad is changed and the right monad is removed from the nyad.
 	 * <br><br>
-	 * @param pKeep Monad to be altered by multiplication. Operand
-	 * @param pUse 	Monad to DO the alteration bymultiplication. Operator
-	 * @return Nyad	after the multiplication is complete and the 'use' monad removed
+	 * @param pKeep 	Monad to be altered by multiplication. Operand
+	 * @param pUse 		Monad to DO the alteration bymultiplication. Operator
+	 * @param pSource	Nyad that is the source of the pUse Monad. 
+	 * @return Nyad		after the multiplication is complete and the 'use' monad removed
 	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
 	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
 	 */
@@ -1150,8 +1150,8 @@ public class Nyad implements Modal {
 		if (pSource == null)															// Check 'use' monad is in source nyad.
 						throw new CladosNyadException(this, "Source nyad needed for this sandwich multiplication."); 
 		else if (this.validateMIndex(pKeep) & pSource.validateMIndex(pUse)) 			// Check for monad list out of bounds errors.
-						sandwich(monadList.get(pKeep), monadList.get(pUse), pSource);
-		else 			throw new IndexOutOfBoundsException("Symmetric Compression out of range error");
+						sandwich(monadList.get(pKeep), pSource.getMonadAt(pUse), pSource);
+		else 			throw new IndexOutOfBoundsException("Sandwich conjugation out of range error");
 
 		return this;
 	}
@@ -1161,10 +1161,12 @@ public class Nyad implements Modal {
 	 * and then again with the reversed right one from the right. Symbolically: (Right)(Left)(Right.reservse).
 	 * When it is done, the left monad is changed and the right monad is removed from its nyad source.
 	 * <br><br>
-	 * @param pKeep Monad to be altered by sandwich. Operand
-	 * @param pUse 	Monad to DO the alteration by sandwich. Operator
+	 * At present, this method treats reverse() as a cheap inverse(). What we really want is the GP reciprocal.
+	 * <br><br>
+	 * @param pKeep 	Monad to be altered by sandwich. Operand
+	 * @param pUse 		Monad to DO the alteration by sandwich. Operator
 	 * @param pSource	Nyad that is the source of the pUse Monad. 
-	 * @return Nyad	this nyad after the multiplication is complete and the 'use' monad removed from the source
+	 * @return Nyad		this nyad after the multiplication is complete and the 'use' monad removed from the source
 	 * @throws CladosMonadException	This happens if the monad pair fail a reference match test
 	 * @throws CladosNyadException	This happens if the monad pair are not in the nyad
 	 */
@@ -1178,7 +1180,7 @@ public class Nyad implements Modal {
 		if (!this.has(pKeep) || !pSource.has(pUse))				// Proceed only if both monads in nyad.
 						throw new CladosNyadException(this, "Monad pair must be in nyad for sandwich multiplication.");
 		
-		pKeep.multiplyLeft(pUse).multiplyRight(pUse.reverse());	// Only now can we do the deed.
+		(pKeep.multiplyLeft(pUse)).multiplyRight(pUse.reverse());	// Only now can we do the deed.
 		pSource.remove(pUse);									// Right Monad is REMOVED AT SOURCE HERE!
 		monadList.trimToSize();
 		resetFlags();											// Work out consequences

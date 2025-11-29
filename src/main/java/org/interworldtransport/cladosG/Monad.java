@@ -295,11 +295,10 @@ public class Monad implements Modal {
 	 * @return boolean
 	 */
 	public static boolean isUniGrade(Monad pM) {
-		if (pM.getGradeKey() == 0)	//Special case should never happen, 
-			return false;			//but if it does it is fatal.
+		if (pM.getGradeKey() == 0)		return false;	//Edge case shouldn't happen, but if it does it is fatal.
+
 		float temp = (float) Math.log10(pM.getGradeKey());
-		if (Math.floor(temp) == temp)	//This avoids precision trap?
-			return true;
+		if (Math.floor(temp) == temp)	return true;	//This avoids precision trap?
 
 		return false;
 	}
@@ -739,12 +738,12 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * This method causes all coefficients of a monad to be conjugated.
+	 * This method causes all weights of a monad to be conjugated.
 	 * <br>
 	 * @return Monad after operation.
 	 */
 	public Monad conjugate() {
-		scales.conjugate();
+		scales.conjugateNumbers();
 		return this;
 	}
 
@@ -934,7 +933,7 @@ public class Monad implements Modal {
 	 * @return Monad after the main involution is complete.
 	 */
 	public Monad mainInvolution() {
-		scales.mainInvolution();
+		scales.conjugateShirokov(1);
 		return this;
 	}
 
@@ -1407,13 +1406,12 @@ public class Monad implements Modal {
 	/**
 	 * Normalize the monad using the definition that involves 
 	 * @return Monad this after the operation is complete
-	 * @throws FieldException This exception is thrown when normalizing a zero-sized
-	 *                        or field-conflicted monad. The object throwing it
-	 * 						  is one of the ProtoN children in Scale
+	 * @throws FieldException 	This exception is thrown when normalizing a zero-sized or field-conflicted monad. 
+	 * 							The object throwing it is one of the ProtoN children in Scale
 	 */
 	public Monad normalize() throws FieldException {
-		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();
-		tRev.multiplyRight(this).gradePart((byte) 0); 	//The scalar part will be real.
+		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();//This is GP reversal and complex conjugation.								
+		(tRev.multiplyRight(this)).gradePart((byte) 0); 					//The scalar part will be real.
 
 		switch (getMode()) {
 			case COMPLEXD -> {
@@ -1424,12 +1422,12 @@ public class Monad implements Modal {
 			case COMPLEXF -> {
 				ComplexF tMagCF = ((ComplexF) tRev.getWeights().getScalar().invert()); //img part == 0
 				tMagCF.setReal((float) Math.sqrt(Math.abs(tMagCF.getReal())));
-				this.scale(tMagCF);		
+				this.scale(tMagCF);	
 			}
 			case REALD -> {
 				RealD tMagRD = ((RealD) tRev.getWeights().getScalar().invert());
 				tMagRD.setReal(Math.sqrt(Math.abs(tMagRD.getReal())));
-				this.scale(tMagRD);				
+				this.scale(tMagRD);		
 			}
 			case REALF -> {
 				RealF tMagRF = ((RealF) tRev.getWeights().getScalar().invert());
@@ -1438,6 +1436,7 @@ public class Monad implements Modal {
 			}
 			default -> {}
 		}
+		setGradeKey();
 		return this;
 	}
 
@@ -1465,7 +1464,7 @@ public class Monad implements Modal {
 	 * @return Monad returns itself when done to support streaming operations.
 	 */
 	public Monad reverse() {
-		scales.reverse();
+		scales.conjugateShirokov(2);
 		return this;
 	}
 
