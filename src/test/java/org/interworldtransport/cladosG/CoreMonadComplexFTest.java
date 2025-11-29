@@ -9,6 +9,7 @@ import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class CoreMonadComplexFTest {
 	Monad tM10, tM11;
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException {
+	public void setUp() throws BadSignatureException, CladosException, CladosMonadException {
 
 		cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 16); //new ComplexF[16];
 
@@ -258,7 +259,7 @@ public class CoreMonadComplexFTest {
     }
 
     @Test
-    public void testNorms() throws CladosMonadException{
+    public void testNorms() throws CladosException{
         ComplexF testThis = tM6.sqMagnitude();
         assertTrue(testThis.getReal() == 16);
         testThis = tM6.magnitude();
@@ -299,7 +300,7 @@ public class CoreMonadComplexFTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosException, FieldException {
         cCF = (ComplexF[]) FListBuilder.COMPLEXF.create(tCard, 4); //new ComplexF[4];
         for (int i=0; i<4; i++){            //Modulus will still be one for each weight, but conjugate will matter here.
             cCF[i].setImg(1.0f);

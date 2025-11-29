@@ -13,6 +13,7 @@ import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
 
@@ -40,7 +41,7 @@ public class CoreNyadRealFTest {
 	 * @throws CladosMonadException
 	 */
 	@BeforeEach
-	void setUp() throws BadSignatureException, CladosMonadException {
+	public void setUp() throws BadSignatureException, CladosException, CladosMonadException {
 		Foot here = GBuilder.createFootLike(footName, speed);
 
 		motion = GBuilder.createMonadWithFoot(	FBuilder.REALF.createZERO(speed), 
@@ -99,7 +100,7 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test
-		void testCreateMonad() throws BadSignatureException, CladosMonadException, CladosNyadException {
+		void testCreateMonad() throws BadSignatureException, CladosException, CladosNyadException {
 			//create(String pMonadName, String pAlgebraName, String pSig, String pCard)
 			// throws most everything: BadSignatureException, CladosMonadException, CladosNyadException 
 			String newMName = "IsoChargeDensity";
@@ -249,7 +250,7 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test
-		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosMonadException {
+		void testNEqualsDefaults() throws CladosNyadException, BadSignatureException, CladosException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -279,7 +280,7 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test 
-		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
+		void testStrongReferenceMatchDefaults() throws BadSignatureException, CladosException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -316,7 +317,7 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test 
-		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosMonadException, CladosNyadException {
+		void testWeakReferenceMatchDefaults() throws BadSignatureException, CladosException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -499,7 +500,7 @@ public class CoreNyadRealFTest {
 		}
 
 		@Test
-		void testAppendWrongFoot() throws BadSignatureException, CladosMonadException, CladosNyadException {
+		void testAppendWrongFoot() throws BadSignatureException, CladosException, CladosNyadException {
 			Foot overHere = GBuilder.createFootLike("over here", speed);
 			Algebra newOne = GBuilder.createAlgebraWithFootGP(overHere, motion.getAlgebra().getGP(), "A new one");
 			Monad newMotion = GBuilder.createMonadWithAlgebra(motion.getWeights(), newOne, "A New monad");
@@ -633,7 +634,7 @@ public class CoreNyadRealFTest {
 		Blade time, spaceX, planeTX;
 
 		@BeforeEach
-		void setUp() throws CladosNyadException, CladosMonadException, FieldException {
+		void setUp() throws CladosNyadException, CladosException, FieldException {
 			RealF by1 = (RealF) FBuilder.REALF.createONE(speed);
 			RealF by2 = (RealF) FBuilder.REALF.createONE(speed).scale(CladosConstant.BY2_F);
 
@@ -641,6 +642,7 @@ public class CoreNyadRealFTest {
 			boost = GBuilder.copyOfMonad(motion, "Booster");
 
 			time = motion.getAlgebra().getBasis().getSingleBlade(motion.getAlgebra().getGradeRange((byte) 1)[0]);
+			motion.getWeights().setNumber(time, RealF.copyOf(by1));
 			motion.getWeights().getMap().put(time, RealF.copyOf(by1));	//motion is time-like 1-blade
 			motion.setGradeKey();
 
@@ -649,7 +651,7 @@ public class CoreNyadRealFTest {
 			reflect.setGradeKey();
 
 			planeTX = motion.getAlgebra().getGP().getResult(spaceX, time);
-			boost.getWeights().setScalarWeight(RealF.copyOf(by2));
+			boost.getWeights().setScalar(RealF.copyOf(by2));
 			boost.getWeights().getMap().put(planeTX, RealF.copyOf(by2));
 			boost.setGradeKey();											//setGradeKey() needed because I intruded in the weight map
 

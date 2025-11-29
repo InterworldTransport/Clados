@@ -29,7 +29,7 @@ class CoreGProductTest {
 			assertFalse(newTest instanceof GProduct);
 		} catch (BadSignatureException eS) {
 			assertTrue(eS.getSourceMessage().equals("Valid signature required."));
-			assertTrue(eS.getSource() instanceof GProduct);
+			assertTrue(eS.getSourceGP() instanceof GProduct);
 		}
 	}
 

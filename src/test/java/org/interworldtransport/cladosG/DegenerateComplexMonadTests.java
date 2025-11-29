@@ -9,6 +9,7 @@ import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class DegenerateComplexMonadTests {
 
     
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException {
+	public void setUp() throws BadSignatureException, CladosException {
 
 		cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 16); //new ComplexF[16];
 
@@ -138,7 +139,7 @@ public class DegenerateComplexMonadTests {
     //}
 
     @Test
-    public void testNorms1() throws CladosMonadException{
+    public void testNorms1() throws CladosException{
         ComplexF testThis = tM3.sqMagnitude();
         assertTrue(testThis.getReal() == 16);
         testThis = tM3.magnitude();
@@ -209,7 +210,7 @@ public class DegenerateComplexMonadTests {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosException, FieldException {
         cCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 8); //new ComplexF[8];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 

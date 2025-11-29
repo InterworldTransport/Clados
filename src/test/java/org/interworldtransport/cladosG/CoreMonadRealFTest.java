@@ -9,6 +9,7 @@ import org.interworldtransport.cladosF.FListBuilder;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ public class CoreMonadRealFTest {
 
 
     @BeforeEach
-	public void setUp() throws BadSignatureException, CladosMonadException {
+	public void setUp() throws BadSignatureException, CladosException {
 
 		cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 16); //new RealF[16];
 
@@ -260,7 +261,7 @@ public class CoreMonadRealFTest {
     }
 
     @Test
-    public void testNorms() throws CladosMonadException{
+    public void testNorms() throws CladosException{
         RealF testThis = tM6.sqMagnitude();
         assertTrue(testThis.getReal() == 16);
         testThis = tM6.magnitude();
@@ -300,7 +301,7 @@ public class CoreMonadRealFTest {
     }
 
     @Test
-    public void testCommunityNormalize() throws BadSignatureException, CladosMonadException, FieldException {
+    public void testCommunityNormalize() throws BadSignatureException, CladosException, FieldException {
         cRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 4); //new RealF[4];
         Monad tryThis = new Monad(mName + "RF0", 
                                     aName, 

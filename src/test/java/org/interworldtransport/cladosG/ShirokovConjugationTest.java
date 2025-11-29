@@ -9,7 +9,7 @@ import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
 
 /**
@@ -36,7 +36,7 @@ public class ShirokovConjugationTest {
 	 * Test both direct reference and indexed reference of the monads.
 	 */
 	@Test
-	void testSandwichInside() throws CladosMonadException, CladosNyadException, BadSignatureException {
+	void testSandwichInside() throws CladosException, CladosNyadException, BadSignatureException {
         Algebra physical = GBuilder.createAlgebraWithFoot(here, aName, sigD);                        //A motion algebra
         Scale<RealF> coeff = GBuilder.createScale(CladosField.REALF, physical.getBasis(), speed);    //ZEROES to start
         motion = GBuilder.createMonadWithAlgebra(coeff, physical, mNameU);
@@ -52,7 +52,7 @@ public class ShirokovConjugationTest {
 		reflect.setGradeKey();
 
         planeTX = motion.getAlgebra().getGP().getResult(spaceX, time);
-		boost.getWeights().setScalarWeight(by2);
+		boost.getWeights().setScalar(by2);
 		boost.getWeights().getMap().put(planeTX, RealF.copyOf(by2));
 		boost.setGradeKey();
 
@@ -68,29 +68,10 @@ public class ShirokovConjugationTest {
         assertTrue(((RealF) boost.getWeights().getScalar()).getReal() > 0 );
         assertTrue(((RealF) boost.getWeights().getMap().get(planeTX)).getReal() > 0 );
 
-        //System.out.println("Before reverse: "+Monad.toXMLString(boost, ""));
 		boost.getWeights().conjugateShirokov(2);											//Shouldn't switch sign on the scalar or vector.
-		//System.out.println("After reverse: "+Monad.toXMLString(boost, ""));
+
 		assertTrue(((RealF) boost.getWeights().getScalar()).getReal() > 0 );
         assertTrue(((RealF) boost.getWeights().getMap().get(planeTX)).getReal() < 0 );
-
-		//thing1.sandwich(motion, reflect);
-		
-		//System.out.println("Before reverse: "+Monad.toXMLString(boost, ""));
-		//boost.getWeights().conjugateShirokov(2);											//Shouldn't switch sign on the scalar.
-		//System.out.println("After reverse: "+Monad.toXMLString(boost, ""));
-		
-        //thing1.sandwich(motion, boost);
-		//System.out.println("After: "+Nyad.toXMLString(thing1, ""));
-		//assertTrue(thing1.getMonadAt(0) == motion);
-		//assertTrue(thing1.getMOrder() == 1);
-		//assertTrue(Monad.hasGrade(motion, 1));				                        //Should be grade 1 only
 	}
-
-
-
-
-
-
 
 }

@@ -9,6 +9,7 @@ import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
 import org.interworldtransport.cladosGExceptions.CladosNyadException;
 
@@ -428,7 +429,7 @@ public class CoreGBuilderTest {
         Nyad thing1;
         
         @BeforeEach
-        public void setUp() throws BadSignatureException, CladosMonadException {
+        public void setUp() throws BadSignatureException, CladosException {
             FCache.INSTANCE.clearCardinals();
             FCache.INSTANCE.appendCardinal(tCard);                      //One cardinal in the cache
 
