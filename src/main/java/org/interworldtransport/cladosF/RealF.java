@@ -527,6 +527,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * Set the real numeric value
 	 * <br>
 	 * @param preal float
+	 * @return RealF this number
 	 */
 	public RealF setReal(float preal) {
 		vals[0] = preal;

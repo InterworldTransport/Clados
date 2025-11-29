@@ -605,6 +605,7 @@ public class ComplexD extends ProtoN implements Field, Normalizable {
 	 * Set the imaginary numeric value
 	 * <br>
 	 * @param pimg double
+	 * @return ComplexD this number
 	 */
 	public ComplexD setImg(double pimg) {
 		vals[1] = pimg;
@@ -615,6 +616,7 @@ public class ComplexD extends ProtoN implements Field, Normalizable {
 	 * Set the real numeric value
 	 * <br>
 	 * @param preal double
+	 * @return ComplexD this number
 	 */
 	public ComplexD setReal(double preal) {
 		vals[0] = preal;

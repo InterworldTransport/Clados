@@ -607,6 +607,7 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 * Set the imaginary numeric value
 	 * <br>
 	 * @param pimg float
+	 * @return ComplexF this number
 	 */
 	public ComplexF setImg(float pimg) {
 		vals[1] = pimg;
@@ -617,6 +618,7 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 * Set the real numeric value
 	 * <br>
 	 * @param preal float
+	 * @return ComplexF this number
 	 */
 	public ComplexF setReal(float preal) {
 		vals[0] = preal;
