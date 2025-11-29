@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CoreRealFTest {
@@ -129,7 +128,7 @@ class CoreRealFTest {
 	@Test
 	public void testMultiplyInvertPasses() throws FieldException {
 		RealF testThis = RealF.newONE(Cardinal.generate("not important"));
-		Assertions.assertDoesNotThrow(() -> RealF.isEqual(testThis.invert(), tReal1));
+		assertDoesNotThrow(() -> RealF.isEqual(testThis.invert(), tReal1));
 		assertFalse(RealF.isTypeMatch(testThis, tReal1));				//Type Mismatch expected
 		assertTrue(testThis.invert().getReal() == tReal1.getReal());	//even with real number alignment
 	}
@@ -137,7 +136,7 @@ class CoreRealFTest {
 	@Test
 	public void testMultiplyInvertFails() {
 		RealF testThis = RealF.newZERO(Cardinal.generate("not important"));
-		Assertions.assertThrows(FieldException.class, () -> testThis.invert());
+		assertThrows(FieldException.class, () -> testThis.invert());
 		try {
 			testThis.invert();
 		} catch (FieldException ex) {
@@ -150,68 +149,68 @@ class CoreRealFTest {
 	@Test
 	public void testDivideByZero() {
 		RealF testThis = RealF.copyZERO(tReal1);
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.divide(tReal1, testThis));
-		Assertions.assertThrows(FieldBinaryException.class, () -> tReal1.divide(testThis));
+		assertThrows(FieldBinaryException.class, () -> RealF.divide(tReal1, testThis));
+		assertThrows(FieldBinaryException.class, () -> tReal1.divide(testThis));
 	}
 
 	@Test
 	public void testAddsThatShouldNotWork() {
 		RealF testThis1 = RealF.copyZERO(tReal1);
 		RealF testThis2 = RealF.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(testThis2));			//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(testThis2));			//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, tReal4));		//adding NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, tReal5));		//adding infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, tReal6));		//adding infinity
-		Assertions.assertDoesNotThrow(() -> RealF.add(testThis1, tReal2));	//Nothing stops addition to Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.add(testThis1, tReal8));	//Nothing stops addition to Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, tReal4));		//adding NaN
+		assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, tReal5));		//adding infinity
+		assertThrows(FieldBinaryException.class, () -> RealF.add(testThis1, tReal6));		//adding infinity
+		assertDoesNotThrow(() -> RealF.add(testThis1, tReal2));	//Nothing stops addition to Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> RealF.add(testThis1, tReal8));	//Nothing stops addition to Float.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal4));				//adding NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal5));				//adding infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal6));				//adding infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.add(tReal2));	//Nothing stops addition to Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.add(tReal8));	//Nothing stops addition to Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal4));				//adding NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal5));				//adding infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(tReal6));				//adding infinity
+		assertDoesNotThrow(() -> testThis1.add(tReal2));	//Nothing stops addition to Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.add(tReal8));	//Nothing stops addition to Float.MIN_VALUE right now.
 	}
 
 	@Test
 	public void testSubtractionsThatShouldNotWork() {
 		RealF testThis1 = RealF.copyZERO(tReal1);
 		RealF testThis2 = RealF.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(testThis2));			//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(testThis2));			//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, tReal4));		//subtract NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, tReal5));		//subtract infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, tReal6));		//subtract infinity
-		Assertions.assertDoesNotThrow(() -> RealF.subtract(testThis1, tReal2));	//Nothing stops subtract of Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.subtract(testThis1, tReal8));	//Nothing stops subtract of Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, tReal4));		//subtract NaN
+		assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, tReal5));		//subtract infinity
+		assertThrows(FieldBinaryException.class, () -> RealF.subtract(testThis1, tReal6));		//subtract infinity
+		assertDoesNotThrow(() -> RealF.subtract(testThis1, tReal2));	//Nothing stops subtract of Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> RealF.subtract(testThis1, tReal8));	//Nothing stops subtract of Float.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal4));				//subtract NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal5));				//subtract infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal6));				//subtract infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tReal2));	//Nothing stops subtract of Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tReal8));	//Nothing stops subtract of Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal4));				//subtract NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal5));				//subtract infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tReal6));				//subtract infinity
+		assertDoesNotThrow(() -> testThis1.subtract(tReal2));	//Nothing stops subtract of Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.subtract(tReal8));	//Nothing stops subtract of Float.MIN_VALUE right now.
 	}
 
 	@Test
 	public void testMultipliesThatShouldNotWork() {
 		RealF testThis1 = RealF.copyZERO(tReal1);
 		RealF testThis2 = RealF.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));			//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));			//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, tReal4));		//multiply NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, tReal5));		//multiply infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, tReal6));		//multiply infinity
-		Assertions.assertDoesNotThrow(() -> RealF.multiply(testThis1, tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.multiply(testThis1, tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, tReal4));		//multiply NaN
+		assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, tReal5));		//multiply infinity
+		assertThrows(FieldBinaryException.class, () -> RealF.multiply(testThis1, tReal6));		//multiply infinity
+		assertDoesNotThrow(() -> RealF.multiply(testThis1, tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> RealF.multiply(testThis1, tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal4));				//multiply NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal5));				//multiply infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal6));				//multiply infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal4));				//multiply NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal5));				//multiply infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tReal6));				//multiply infinity
+		assertDoesNotThrow(() -> testThis1.multiply(tReal2));	//Nothing stops multiply with Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.multiply(tReal8));	//Nothing stops multiply with Float.MIN_VALUE right now.
 
 		try {
 			testThis1.multiply(tReal4); //Already known that the exception is thrown.
@@ -225,20 +224,20 @@ class CoreRealFTest {
 	public void testDividesThatShouldNotWork() { //Divide BY zero already tested elsewhere
 		RealF testThis1 = RealF.copyZERO(tReal1);
 		RealF testThis2 = RealF.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));			//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));			//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, tReal4));		//divide by NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, tReal5));		//divide by infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, tReal6));		//divide by infinity
-		Assertions.assertDoesNotThrow(() -> RealF.divide(testThis1, tReal2));	//Nothing stops divide by Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> RealF.divide(testThis1, tReal8));	//Nothing stops divide by Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, tReal4));		//divide by NaN
+		assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, tReal5));		//divide by infinity
+		assertThrows(FieldBinaryException.class, () -> RealF.divide(testThis1, tReal6));		//divide by infinity
+		assertDoesNotThrow(() -> RealF.divide(testThis1, tReal2));	//Nothing stops divide by Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> RealF.divide(testThis1, tReal8));	//Nothing stops divide by Float.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal4));				//divide by NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal5));				//divide by infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal6));				//divide by infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.divide(tReal2));	//Nothing stops divide by Float.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.divide(tReal8));	//Nothing stops divide by Float.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal4));				//divide by NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal5));				//divide by infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(tReal6));				//divide by infinity
+		assertDoesNotThrow(() -> testThis1.divide(tReal2));	//Nothing stops divide by Float.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.divide(tReal8));	//Nothing stops divide by Float.MIN_VALUE right now.
 	}
 
 	@Test
@@ -279,10 +278,10 @@ class CoreRealFTest {
 		tReals[5] = tReal6;
 		tReals[6] = tReal8;
 	
-		Assertions.assertThrows(FieldBinaryException.class, () -> RealF.copySumSQModulus(tReals));
+		assertThrows(FieldBinaryException.class, () -> RealF.copySumSQModulus(tReals));
 	
 		RealF[] whatsThis = (RealF[]) FListBuilder.REALF.create(16);		//Default Cardinal
-		Assertions.assertDoesNotThrow(() -> RealF.copySumSQModulus(whatsThis));
+		assertDoesNotThrow(() -> RealF.copySumSQModulus(whatsThis));
 		assertTrue(RealF.isZero(RealF.copySumSQModulus(whatsThis)));
 
 		RealF[] whatsThis2 = (RealF[]) FListBuilder.REALF.createONE(16);	//Default Cardinal
@@ -302,10 +301,10 @@ class CoreRealFTest {
 		tReals[5] = tReal6;
 		tReals[6] = tReal8;
 
-		Assertions.assertThrows(FieldBinaryException.class, () ->RealF.copySumModulus(tReals));
+		assertThrows(FieldBinaryException.class, () ->RealF.copySumModulus(tReals));
 
 		RealF[] whatsThis = (RealF[]) FListBuilder.REALF.create(16);		//Default Cardinal
-		Assertions.assertDoesNotThrow(() -> RealF.copySumModulus(whatsThis));
+		assertDoesNotThrow(() -> RealF.copySumModulus(whatsThis));
 		assertTrue(RealF.isZero(RealF.copySumModulus(whatsThis)));
 
 		RealF[] whatsThis2 = (RealF[]) FListBuilder.REALF.createONE(16);	//Default Cardinal

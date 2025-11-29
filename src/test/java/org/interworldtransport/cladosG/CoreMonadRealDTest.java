@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -222,8 +221,8 @@ public class CoreMonadRealDTest {
         });
         newScale.zeroAll();
         assertFalse(Monad.isGZero(tM6));
-
-        Assertions.assertDoesNotThrow(() -> tM6.setScale(newScale));
+        assertDoesNotThrow(() -> tM6.setScale(newScale));
+        tM6.setGradeKey();
         assertTrue(Monad.isGZero(tM6));        
     }
 
@@ -432,9 +431,10 @@ public class CoreMonadRealDTest {
                                                                         //Proving Bases get checked
     }
     
-	//@Test
-	//public void testXMLOutputs() {
+	@Test
+	public void testXMLOutputs() {
+        assertNotNull(Monad.toXMLString(tM6, ""));
 		//System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
         //System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
-	//}
+	}
 }

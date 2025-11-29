@@ -10,7 +10,6 @@ import org.interworldtransport.cladosF.ComplexD;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -221,8 +220,8 @@ public class CoreMonadComplexDTest {
         });
         newScale.zeroAll();
         assertFalse(Monad.isGZero(tM6));
-
-        Assertions.assertDoesNotThrow(() -> tM6.setScale(newScale));
+        assertDoesNotThrow(() -> tM6.setScale(newScale));
+        tM6.setGradeKey();
         assertTrue(Monad.isGZero(tM6));        
     }
 

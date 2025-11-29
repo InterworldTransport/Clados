@@ -1,9 +1,6 @@
 package org.interworldtransport.cladosG;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
@@ -38,8 +35,8 @@ public class CoreDegeneracyTest {
             euclidianB = new Blade((byte) 3, g);
             minkowskiB = new Blade((byte) 4, i);
             projectiveB = new Blade((byte) 5, j);
-            Assertions.assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
-            Assertions.assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, projectiveB));
+            assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
+            assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, projectiveB));
         }
 
         /**

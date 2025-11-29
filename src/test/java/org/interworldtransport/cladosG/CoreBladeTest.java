@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CoreBladeTest {
@@ -20,13 +19,13 @@ class CoreBladeTest {
 
 	@Test
 	public void testOutOfRange() {
-		Assertions.assertDoesNotThrow(() ->  Blade.createBlade((byte) 17)); //Range exception gets caught right now. Ugh.
+		assertDoesNotThrow(() ->  Blade.createBlade((byte) 17)); //Range exception gets caught right now. Ugh.
 		assertTrue(Blade.createBlade((byte) 17).maxGenerator() == 0);
 
-		Assertions.assertDoesNotThrow(() -> Blade.createBlade((byte) -2)); //Range exception gets caught right now. Ugh.
+		assertDoesNotThrow(() -> Blade.createBlade((byte) -2)); //Range exception gets caught right now. Ugh.
 		assertTrue(Blade.createBlade((byte) -2).maxGenerator() == 0);
 
-		Assertions.assertDoesNotThrow(() -> Blade.createBlade((byte) 2)); //No range exception. Should work.
+		assertDoesNotThrow(() -> Blade.createBlade((byte) 2)); //No range exception. Should work.
 		assertTrue(Blade.createBlade((byte) 2) != null);
 	}
 
@@ -149,10 +148,10 @@ class CoreBladeTest {
 		testThis.add(Generator.E4);
 		assertFalse(testThis.key() == tB4.key());	//Because E4 was NOT present
 		assertTrue(testThis.rank() == 3);
-		Assertions.assertDoesNotThrow(() -> testThis.add(Generator.EC));
+		assertDoesNotThrow(() -> testThis.add(Generator.EC));
 		assertTrue(testThis.rank() == 3);
 
-		Assertions.assertDoesNotThrow(() -> Blade.augmentBlade(testThis, Generator.E5));
+		assertDoesNotThrow(() -> Blade.augmentBlade(testThis, Generator.E5));
 		Blade testThis2 = Blade.augmentBlade(testThis, Generator.E5);
 		assertTrue(testThis2.rank() == 4); //Augment adds room for one more generator. The next one.
 		assertTrue(testThis2.maxGenerator() == 5);

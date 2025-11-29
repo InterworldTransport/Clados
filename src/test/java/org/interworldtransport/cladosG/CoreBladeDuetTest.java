@@ -3,7 +3,6 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,7 @@ class CoreBladeDuetTest {
 
 	@Test
 	void testBladeMatchFail() {
-		Assertions.assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
+		assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
 	}
 
 	@Test

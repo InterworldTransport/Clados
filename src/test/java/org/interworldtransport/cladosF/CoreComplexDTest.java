@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosFExceptions.FieldBinaryException;
 import org.interworldtransport.cladosFExceptions.FieldException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CoreComplexDTest {
@@ -138,7 +137,7 @@ class CoreComplexDTest {
 	@Test
 	public void testMultiplyInvertPasses() throws FieldException {
 		ComplexD testThis = ComplexD.newONE(Cardinal.generate("not important"));
-		Assertions.assertDoesNotThrow(() -> ComplexD.isEqual(testThis.invert(), tComplex1));
+		assertDoesNotThrow(() -> ComplexD.isEqual(testThis.invert(), tComplex1));
 		assertFalse(ComplexD.isTypeMatch(testThis, tComplex1));				//Type Mismatch expected
 		assertTrue(testThis.invert().getReal() == tComplex1.getReal());		//even with real number alignment
 	}
@@ -146,7 +145,7 @@ class CoreComplexDTest {
 	@Test
 	public void testMultiplyInvertFails() {
 		ComplexD testThis = ComplexD.newZERO(Cardinal.generate("not important"));
-		Assertions.assertThrows(FieldException.class, () -> testThis.invert());
+		assertThrows(FieldException.class, () -> testThis.invert());
 		try {
 			testThis.invert();
 		} catch (FieldException ex) {
@@ -157,48 +156,48 @@ class CoreComplexDTest {
 	@Test
 	public void testDivideByZero() {
 		ComplexD testThis = ComplexD.copyZERO(tComplex1);
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.divide(tComplex1, testThis));
-		Assertions.assertThrows(FieldBinaryException.class, () -> tComplex1.divide(testThis));
+		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(tComplex1, testThis));
+		assertThrows(FieldBinaryException.class, () -> tComplex1.divide(testThis));
 	}
 
 	@Test
 	public void testAddsThatShouldNotWork() {
 		ComplexD testThis1 = ComplexD.copyZERO(tComplex1);
 		ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(testThis2));				//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(testThis2));				//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, tComplex4));		//adding NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, tComplex5));		//adding infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, tComplex6));		//adding infinity
-		Assertions.assertDoesNotThrow(() -> ComplexD.add(testThis1, tComplex2));	//Nothing stops addition to Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> ComplexD.add(testThis1, tComplex8));	//Nothing stops addition to Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, tComplex4));		//adding NaN
+		assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, tComplex5));		//adding infinity
+		assertThrows(FieldBinaryException.class, () -> ComplexD.add(testThis1, tComplex6));		//adding infinity
+		assertDoesNotThrow(() -> ComplexD.add(testThis1, tComplex2));	//Nothing stops addition to Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> ComplexD.add(testThis1, tComplex8));	//Nothing stops addition to Double.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tComplex4));				//adding NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tComplex5));				//adding infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.add(tComplex6));				//adding infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.add(tComplex2));	//Nothing stops addition to Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.add(tComplex8));	//Nothing stops addition to Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(tComplex4));				//adding NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(tComplex5));				//adding infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.add(tComplex6));				//adding infinity
+		assertDoesNotThrow(() -> testThis1.add(tComplex2));	//Nothing stops addition to Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.add(tComplex8));	//Nothing stops addition to Double.MIN_VALUE right now.
 	}
 
 	@Test
 	public void testSubtractionsThatShouldNotWork() {
 		ComplexD testThis1 = ComplexD.copyZERO(tComplex1);
 		ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(testThis2));				//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(testThis2));				//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, tComplex4));		//subtract NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, tComplex5));		//subtract infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, tComplex6));		//subtract infinity
-		Assertions.assertDoesNotThrow(() -> ComplexD.subtract(testThis1, tComplex2));	//Nothing stops subtract of Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> ComplexD.subtract(testThis1, tComplex8));	//Nothing stops subtract of Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, tComplex4));		//subtract NaN
+		assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, tComplex5));		//subtract infinity
+		assertThrows(FieldBinaryException.class, () -> ComplexD.subtract(testThis1, tComplex6));		//subtract infinity
+		assertDoesNotThrow(() -> ComplexD.subtract(testThis1, tComplex2));	//Nothing stops subtract of Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> ComplexD.subtract(testThis1, tComplex8));	//Nothing stops subtract of Double.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex4));				//subtract NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex5));				//subtract infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex6));				//subtract infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tComplex2));	//Nothing stops subtract of Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.subtract(tComplex8));	//Nothing stops subtract of Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex4));				//subtract NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex5));				//subtract infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.subtract(tComplex6));				//subtract infinity
+		assertDoesNotThrow(() -> testThis1.subtract(tComplex2));	//Nothing stops subtract of Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.subtract(tComplex8));	//Nothing stops subtract of Double.MIN_VALUE right now.
 
 		try {
 			testThis1.multiply(tComplex4); //Already known that the exception is thrown.
@@ -212,40 +211,40 @@ class CoreComplexDTest {
 	public void testMultipliesThatShouldNotWork() {
 		ComplexD testThis1 = ComplexD.copyZERO(tComplex1);
 		ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, testThis2)); 	//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));				//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, testThis2)); 	//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));				//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex4));		//multiply NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex5));		//multiply infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex6));		//multiply infinity
-		Assertions.assertDoesNotThrow(() -> ComplexD.multiply(testThis1, tComplex2));	//Nothing stops multiply with Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> ComplexD.multiply(testThis1, tComplex8));	//Nothing stops multiply with Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex4));		//multiply NaN
+		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex5));		//multiply infinity
+		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex6));		//multiply infinity
+		assertDoesNotThrow(() -> ComplexD.multiply(testThis1, tComplex2));	//Nothing stops multiply with Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> ComplexD.multiply(testThis1, tComplex8));	//Nothing stops multiply with Double.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tComplex4));				//multiply NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tComplex5));				//multiply infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tComplex6));				//multiply infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tComplex2));	//Nothing stops multiply with Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.multiply(tComplex8));	//Nothing stops multiply with Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tComplex4));				//multiply NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tComplex5));				//multiply infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(tComplex6));				//multiply infinity
+		assertDoesNotThrow(() -> testThis1.multiply(tComplex2));	//Nothing stops multiply with Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.multiply(tComplex8));	//Nothing stops multiply with Double.MIN_VALUE right now.
 	}
 
 	@Test
 	public void testDividesThatShouldNotWork() { //Divide BY zero already tested elsewhere
 		ComplexD testThis1 = ComplexD.copyZERO(tComplex1);
 		ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, testThis2)); 		//Cardinal mismatch
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));				//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, testThis2)); 		//Cardinal mismatch
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));				//Cardinal mismatch
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex4));		//divide by NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex5));		//divide by infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex6));		//divide by infinity
-		Assertions.assertDoesNotThrow(() -> ComplexD.divide(testThis1, tComplex2));	//Nothing stops divide by Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> ComplexD.divide(testThis1, tComplex8));	//Nothing stops divide by Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex4));		//divide by NaN
+		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex5));		//divide by infinity
+		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex6));		//divide by infinity
+		assertDoesNotThrow(() -> ComplexD.divide(testThis1, tComplex2));	//Nothing stops divide by Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> ComplexD.divide(testThis1, tComplex8));	//Nothing stops divide by Double.MIN_VALUE right now.
 
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tComplex4));				//divide by NaN
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tComplex5));				//divide by infinity
-		Assertions.assertThrows(FieldBinaryException.class, () -> testThis1.divide(tComplex6));				//divide by infinity
-		Assertions.assertDoesNotThrow(() -> testThis1.divide(tComplex2));	//Nothing stops divide by Double.MAX_VALUE right now.
-		Assertions.assertDoesNotThrow(() -> testThis1.divide(tComplex8));	//Nothing stops divide by Double.MIN_VALUE right now.
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(tComplex4));				//divide by NaN
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(tComplex5));				//divide by infinity
+		assertThrows(FieldBinaryException.class, () -> testThis1.divide(tComplex6));				//divide by infinity
+		assertDoesNotThrow(() -> testThis1.divide(tComplex2));	//Nothing stops divide by Double.MAX_VALUE right now.
+		assertDoesNotThrow(() -> testThis1.divide(tComplex8));	//Nothing stops divide by Double.MIN_VALUE right now.
 	}
 
 	@Test
@@ -286,10 +285,10 @@ class CoreComplexDTest {
 		tComplexs[5] = tComplex6;
 		tComplexs[6] = tComplex8;
 	
-		Assertions.assertThrows(FieldBinaryException.class, () -> ComplexD.copySumSQModulus(tComplexs));
+		assertThrows(FieldBinaryException.class, () -> ComplexD.copySumSQModulus(tComplexs));
 	
 		ComplexD[] whatsThis = (ComplexD[]) FListBuilder.COMPLEXD.create(16);		//Default Cardinal
-		Assertions.assertDoesNotThrow(() -> ComplexD.copySumSQModulus(whatsThis));
+		assertDoesNotThrow(() -> ComplexD.copySumSQModulus(whatsThis));
 		assertTrue(ComplexD.isZero(ComplexD.copySumSQModulus(whatsThis)));
 
 		ComplexD[] whatsThis2 = (ComplexD[]) FListBuilder.COMPLEXD.createONE(16);	//Default Cardinal
@@ -309,10 +308,10 @@ class CoreComplexDTest {
 		tComplexs[5] = tComplex6;
 		tComplexs[6] = tComplex8;
 
-		Assertions.assertThrows(FieldBinaryException.class, () ->ComplexD.copySumModulus(tComplexs));
+		assertThrows(FieldBinaryException.class, () ->ComplexD.copySumModulus(tComplexs));
 
 		ComplexD[] whatsThis = (ComplexD[]) FListBuilder.COMPLEXD.create(16);		//Default Cardinal
-		Assertions.assertDoesNotThrow(() -> ComplexD.copySumModulus(whatsThis));
+		assertDoesNotThrow(() -> ComplexD.copySumModulus(whatsThis));
 		assertTrue(ComplexD.isZero(ComplexD.copySumModulus(whatsThis)));
 
 		ComplexD[] whatsThis2 = (ComplexD[]) FListBuilder.COMPLEXD.createONE(16);	//Default Cardinal
