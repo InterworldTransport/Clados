@@ -220,10 +220,10 @@ public class CoreMonadRealDTest {
 			newScale.getMap().put(blade, FBuilder.copyOf(tM6.getWeights().get(blade)));
         });
         newScale.zeroAll();
-        assertFalse(Monad.isGZero(tM6));
-        assertDoesNotThrow(() -> tM6.setScale(newScale));
-        tM6.setGradeKey();
-        assertTrue(Monad.isGZero(tM6));        
+        assertFalse(Monad.isGZero(tM6));                            //Proving the newScale is not in place yet
+        assertDoesNotThrow(() -> tM6.setScale(newScale));           //Putting it in place
+        tM6.setGradeKey();                                          //Telling tM6 we did so
+        assertTrue(Monad.isGZero(tM6));                             //Proof of the update       
     }
 
     @Test
