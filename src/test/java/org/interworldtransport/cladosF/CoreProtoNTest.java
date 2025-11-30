@@ -29,10 +29,10 @@ public class CoreProtoNTest {
         tCard4 = Cardinal.generate(CladosField.COMPLEXD);
         tUA1 = new ProtoN(tCard0);
         tUA2 = new ProtoN(tCard2);
-        tRealF = (RealF) CladosField.createZERO(CladosField.REALF, tCard1);
-        tRealD = (RealD) CladosField.createZERO(CladosField.REALD, tCard2);
-        tComplexF = (ComplexF) CladosField.createZERO(CladosField.COMPLEXF, tCard3);
-        tComplexD = (ComplexD) CladosField.createZERO(CladosField.COMPLEXD, tCard4);
+        tRealF = (RealF) FBuilder.createZERO(CladosField.REALF, tCard1);
+        tRealD = (RealD) FBuilder.createZERO(CladosField.REALD, tCard2);
+        tComplexF = (ComplexF) FBuilder.createZERO(CladosField.COMPLEXF, tCard3);
+        tComplexD = (ComplexD) FBuilder.createZERO(CladosField.COMPLEXD, tCard4);
     }
 
     @Test

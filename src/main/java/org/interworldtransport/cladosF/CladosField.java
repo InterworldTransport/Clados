@@ -25,24 +25,22 @@
 package org.interworldtransport.cladosF;
 
 /**
- * DivFields currently come in four varieties. RealF, RealD, ComplexF, ComplexD
- * To facilitate a Builder class we would give basic information and construct
- * any of them. This would be supported by an enumeration type that can't be
- * ProtoN itself because ProtoN is subclassed to make the four field
- * classes.
+ * ProtoN currently come in four varieties. RealF, RealD, ComplexF, ComplexD. This enumeration
+ * ensures other classes can know what ProtoN children are supported. Adjustments here
+ * (for example... adding in quaternions) will cause all dependent classes to complain at 
+ * compile time that their switch statements are incomplete. This class also facilitates clados 
+ * builder classes in a way that ProtoN children can't do directly. ProtoN children are subclassed 
+ * while builders are also enumerations.
  * <br><br>
- * This enum doubles up a bit as a builder. Each of its instances rely on the
- * shared static methods and have a few instance methods of their own that
- * 'switch' on their identity to determine what gets built and returned.
+ * This enumeration also doubles up as a small builder. Each of its instances can call methods 
+ * for creating ones and zeroes of the right ProtoN child type with the offered input. 
+ * They 'switch' on their identity to determine what gets returned. While these ARE instance
+ * methods, the instances themselves have NO INTERNAL STATE to change unlike some of the other
+ * clados builders.
  * <br><br>
- * This enumeration has non-static methods for each instance, but they don't
- * cause a state change. CladosField HAS NO INTERNAL STATE to change unlike the
- * Builder in the same package.
+ * NOTE the methods capable of creating Cardinals DO CACHE THEM.
  * <br><br>
- * NOTE that the methods capable of creating Cardinals in this enumeration do
- * NOT cache them. Similar methods in FBuilder DO cache them.
- * <br><br>
- * @version 1.0
+ * @version 2.0
  * @author Dr Alfred W Differ
  */
 public enum CladosField {
@@ -70,80 +68,25 @@ public enum CladosField {
 
 	/**
 	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
-	 * child object using the CladosField hint.
-	 * <br>
-	 * Number created has a real value of ONE.
-	 * <br>
-	 * @param pField CladosField enumeration to be used as description of ProtoN
-	 *               child to be created.
-	 * @param pCard  Cardinal to be re-used.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
-	 */
-	public final static ProtoN createONE(CladosField pField, Cardinal pCard) {
-		switch (pField) {
-		case REALF:
-			return new RealF(pCard, 1f);
-		case REALD:
-			return new RealD(pCard, 1d);
-		case COMPLEXF:
-			return new ComplexF(pCard, 1f, 0f);
-		case COMPLEXD:
-			return new ComplexD(pCard, 1d, 0d);
-		default:
-			return new ProtoN(pCard);
-		}
-	}
-
-	/**
-	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
-	 * child object using the CladosField hint.
-	 * <br>
-	 * Number created has a real value of ZERO.
-	 * <br>
-	 * @param pField CladosField enumeration to be used as description of ProtoN
-	 *               child to be created.
-	 * @param pCard  Cardinal to be re-used.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
-	 */
-	public final static ProtoN createZERO(CladosField pField, Cardinal pCard) {
-		switch (pField) {
-		case REALF:
-			return new RealF(pCard, 0f);
-		case REALD:
-			return new RealD(pCard, 0d);
-		case COMPLEXF:
-			return new ComplexF(pCard, 0f, 0f);
-		case COMPLEXD:
-			return new ComplexD(pCard, 0d, 0d);
-		default:
-			return new ProtoN(pCard);
-		}
-	}
-
-	/**
-	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
 	 * <br>
 	 * Number created has a real value of ONE.
 	 * <br>
 	 * @param pCard Cardinal to be re-used.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
+	 * @return D child of ProtoN newly constructed 'one'.
 	 */
-	public final ProtoN createONE(Cardinal pCard) {
+	public final <D extends ProtoN & Field & Normalizable> D createONE(Cardinal pCard) {
 		switch (this) {
 		case REALF:
-			return new RealF(pCard, 1f);
+			return (D) new RealF(pCard, 1f);
 		case REALD:
-			return new RealD(pCard, 1d);
+			return (D) new RealD(pCard, 1d);
 		case COMPLEXF:
-			return new ComplexF(pCard, 1f, 0f);
+			return (D) new ComplexF(pCard, 1f, 0f);
 		case COMPLEXD:
-			return new ComplexD(pCard, 1d, 0d);
+			return (D) new ComplexD(pCard, 1d, 0d);
 		default:
-			return new ProtoN(pCard);
+			return (D) new ProtoN(pCard);
 		}
 	}
 
@@ -153,47 +96,45 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ONE.
 	 * <br>
-	 * @param pDiv Source of the Cardinal to be re-used.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
+	 * @param pNumber Source of the Cardinal to be re-used.
+	 * @return D child of ProtoN newly constructed 'one'.
 	 */
-	public final ProtoN createONE(ProtoN pDiv) {
+	public final <D extends ProtoN & Field & Normalizable> D createONE(ProtoN pNumber) {
 		switch (this) {
 		case REALF:
-			return new RealF(pDiv.getCardinal(), 1f);
+			return (D) new RealF(pNumber.getCardinal(), 1f);
 		case REALD:
-			return new RealD(pDiv.getCardinal(), 1d);
+			return (D) new RealD(pNumber.getCardinal(), 1d);
 		case COMPLEXF:
-			return new ComplexF(pDiv.getCardinal(), 1f, 0f);
+			return (D) new ComplexF(pNumber.getCardinal(), 1f, 0f);
 		case COMPLEXD:
-			return new ComplexD(pDiv.getCardinal(), 1d, 0d);
+			return (D) new ComplexD(pNumber.getCardinal(), 1d, 0d);
 		default:
-			return new ProtoN(pDiv.getCardinal());
+			return (D) new ProtoN(pNumber.getCardinal());
 		}
 	}
 
 	/**
-	 * Method re-uses the incoming cardinal and constructs a particular ProtoN
+	 * Method constructs a cardinal and constructs a particular ProtoN
 	 * child object using this CladosField enumeration as the hint.
 	 * <br>
 	 * Number created has a real value of ONE.
 	 * <br>
 	 * @param pCard String name of the Cardinal to be created.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
+	 * @return D child of ProtoN newly constructed 'one'.
 	 */
-	public final ProtoN createONE(String pCard) {
+	public final <D extends ProtoN & Field & Normalizable> D createONE(String pCard) {
 		switch (this) {
 		case REALF:
-			return new RealF(Cardinal.generate(pCard), 1f);
+			return (D) new RealF(Cardinal.generate(pCard), 1f);
 		case REALD:
-			return new RealD(Cardinal.generate(pCard), 1d);
+			return (D) new RealD(Cardinal.generate(pCard), 1d);
 		case COMPLEXF:
-			return new ComplexF(Cardinal.generate(pCard), 1f, 0f);
+			return (D) new ComplexF(Cardinal.generate(pCard), 1f, 0f);
 		case COMPLEXD:
-			return new ComplexD(Cardinal.generate(pCard), 1d, 0d);
+			return (D) new ComplexD(Cardinal.generate(pCard), 1d, 0d);
 		default:
-			return new ProtoN(Cardinal.generate(pCard));
+			return (D) new ProtoN(Cardinal.generate(pCard));
 		}
 	}
 
@@ -204,21 +145,20 @@ public enum CladosField {
 	 * Number created has a real value of ZERO.
 	 * <br>
 	 * @param pCard Cardinal to be re-used.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
+	 * @return D child of ProtoN newly constructed 'zero'.
 	 */
-	public final ProtoN createZERO(Cardinal pCard) {
+	public final <D extends ProtoN & Field & Normalizable> D createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF:
-			return new RealF(pCard, 0f);
+			return (D) new RealF(pCard, 0f);
 		case REALD:
-			return new RealD(pCard, 0d);
+			return (D) new RealD(pCard, 0d);
 		case COMPLEXF:
-			return new ComplexF(pCard, 0f, 0f);
+			return (D) new ComplexF(pCard, 0f, 0f);
 		case COMPLEXD:
-			return new ComplexD(pCard, 0d, 0d);
+			return (D) new ComplexD(pCard, 0d, 0d);
 		default:
-			return new ProtoN(pCard);
+			return (D) new ProtoN(pCard);
 		}
 	}
 
@@ -229,21 +169,20 @@ public enum CladosField {
 	 * Number created has a real value of ZERO.
 	 * <br>
 	 * @param pDiv Source of the Cardinal to be re-used.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
+	 * @return D child of ProtoN newly constructed 'zero'.
 	 */
-	public final ProtoN createZERO(ProtoN pDiv) {
+	public final <D extends ProtoN & Field & Normalizable> D createZERO(ProtoN pDiv) {
 		switch (this) {
 		case REALF:
-			return new RealF(pDiv.getCardinal(), 0f);
+			return (D) new RealF(pDiv.getCardinal(), 0f);
 		case REALD:
-			return new RealD(pDiv.getCardinal(), 0d);
+			return (D) new RealD(pDiv.getCardinal(), 0d);
 		case COMPLEXF:
-			return new ComplexF(pDiv.getCardinal(), 0f, 0f);
+			return (D) new ComplexF(pDiv.getCardinal(), 0f, 0f);
 		case COMPLEXD:
-			return new ComplexD(pDiv.getCardinal(), 0d, 0d);
+			return (D) new ComplexD(pDiv.getCardinal(), 0d, 0d);
 		default:
-			return new ProtoN(pDiv.getCardinal());
+			return (D) new ProtoN(pDiv.getCardinal());
 		}
 	}
 
@@ -254,21 +193,20 @@ public enum CladosField {
 	 * Number created has a real value of ZERO.
 	 * <br>
 	 * @param pCard String name of the Cardinal to be created.
-	 * @return ProtoN Newly constructed 'zero' number returned as a ProtoN, but
-	 *         it will always be one of the ProtoN children.
+	 * @return D child of ProtoN newly constructed 'zero'.
 	 */
-	public final ProtoN createZERO(String pCard) {
+	public final <D extends ProtoN & Field & Normalizable> D createZERO(String pCard) {
 		switch (this) {
 		case REALF:
-			return new RealF(Cardinal.generate(pCard), 0f);
+			return (D) new RealF(Cardinal.generate(pCard), 0f);
 		case REALD:
-			return new RealD(Cardinal.generate(pCard), 0d);
+			return (D) new RealD(Cardinal.generate(pCard), 0d);
 		case COMPLEXF:
-			return new ComplexF(Cardinal.generate(pCard), 0f, 0f);
+			return (D) new ComplexF(Cardinal.generate(pCard), 0f, 0f);
 		case COMPLEXD:
-			return new ComplexD(Cardinal.generate(pCard), 0d, 0d);
+			return (D) new ComplexD(Cardinal.generate(pCard), 0d, 0d);
 		default:
-			return new ProtoN(Cardinal.generate(pCard));
+			return (D) new ProtoN(Cardinal.generate(pCard));
 		}
 	}
 }

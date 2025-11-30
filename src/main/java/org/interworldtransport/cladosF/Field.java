@@ -41,12 +41,10 @@ import org.interworldtransport.cladosFExceptions.*;
  */
 public interface Field {
 	/**
-	 * This is the self-altering add method. The incoming variable is added to this
-	 * object and this object changes.
+	 * This is the self-altering add method. The incoming variable is added to this object and this object changes.
 	 * <br>
 	 * @param pF Field
-	 * @throws FieldBinaryException This exception is thrown when the fields fail a
-	 *                              match test.
+	 * @throws FieldBinaryException This exception is thrown when the fields fail a match test.
 	 * @return Field
 	 */
 	public abstract Field add(Field pF) throws FieldBinaryException;
@@ -60,13 +58,11 @@ public interface Field {
 	public abstract Field conjugate();
 
 	/**
-	 * This is the self-altering divide method. The incoming variable is divided
-	 * into this object (making the parameter the denominator) and this object
-	 * changes.
+	 * This is the self-altering divide method. The incoming variable is divided into this object 
+	 * (making the parameter the denominator) and this object changes.
 	 * <br>
 	 * @param pF Field
-	 * @throws FieldBinaryException This exception is thrown when the fields fail a
-	 *                              match test.
+	 * @throws FieldBinaryException This exception is thrown when the fields fail a match test.
 	 * @return Field
 	 */
 	public abstract Field divide(Field pF) throws FieldBinaryException;
@@ -83,12 +79,11 @@ public interface Field {
 	public abstract Field invert() throws FieldException;
 
 	/**
-	 * This is the self-altering multiply method. The incoming variable is
-	 * multiplied against this object and this object changes.
+	 * This is the self-altering multiply method. The incoming variable is multiplied against 
+	 * this object and this object changes.
 	 * <br>
 	 * @param pF Field
-	 * @throws FieldBinaryException This exception is thrown when the fields fail a
-	 *                              match test.
+	 * @throws FieldBinaryException This exception is thrown when the fields fail a match test.
 	 * @return Field
 	 */
 	public abstract Field multiply(Field pF) throws FieldBinaryException;
@@ -121,17 +116,16 @@ public interface Field {
 	 * Why? In order to bring Cardinal into a physical model containing geometry.
 	 * <br>
 	 * @param pN Number
-	 * @return Divisable
+	 * @return Field
 	 */
 	public abstract Field scale(Number pN); // Note | No throwing of FieldBinaryException
 
 	/**
-	 * This is the self-altering subtract method. The incoming variable is
-	 * subtracted from this object and this object changes.
+	 * This is the self-altering subtract method. The incoming variable is subtracted 
+	 * from this object and this object changes.
 	 * <br>
 	 * @param pF Field
-	 * @throws FieldBinaryException This exception is thrown when the fields fail a
-	 *                              match test.
+	 * @throws FieldBinaryException This exception is thrown when the fields fail a match test.
 	 * @return Field
 	 */
 	public abstract Field subtract(Field pF) throws FieldBinaryException;

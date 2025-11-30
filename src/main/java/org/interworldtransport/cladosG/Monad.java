@@ -33,6 +33,7 @@ import static org.interworldtransport.cladosG.CladosConstant.*;
 import org.interworldtransport.cladosF.FBuilder;		//Number builder
 import org.interworldtransport.cladosF.FListBuilder;	//List of numbers builder
 import org.interworldtransport.cladosF.CladosField;		//Numeric modes enumerated
+import static org.interworldtransport.cladosF.CladosField.*;
 import org.interworldtransport.cladosF.ComplexD;		//Complex doubles
 import org.interworldtransport.cladosF.ComplexF;		//Complex floats
 import org.interworldtransport.cladosF.RealD;			//Real doubles
@@ -43,10 +44,8 @@ import org.interworldtransport.cladosF.Normalizable;	//Contract for modulus cons
 														//Numbers obeying both contracts
 														//are used as monad weights.
 
-import org.interworldtransport.cladosFExceptions.FieldBinaryException;
-import org.interworldtransport.cladosFExceptions.FieldException;
-import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
+import org.interworldtransport.cladosFExceptions.*;
+import org.interworldtransport.cladosGExceptions.*;
 
 /**
  * A CladosG Monad is better known as a multivector to anyone with experience
@@ -209,7 +208,6 @@ public class Monad implements Modal {
 	 * @throws FieldException This exception is thrown when the method can't copy
 	 *                        the field used by the monad to be checked.
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T extends ProtoN & Field & Normalizable> boolean isScaledIdempotent(Monad pM)
 			throws FieldException {
 		if (isIdempotent(pM))
@@ -414,16 +412,13 @@ public class Monad implements Modal {
 	 * Simple copy constructor of Monad. Passed Monad will be copied in all details.
 	 * This contructor is used most often to get around operations that alter a
 	 * Monad when the developer does not wish it to be altered.
-	 * <br>
-	 * @param <T> CladosF number is a ProtoN child that implemnts Field and
-	 *            Normalizable.
-	 * @param pM  Monad
+	 * <br><br>
+	 * @param pM  Monad to be copied
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends ProtoN & Field & Normalizable> Monad(Monad pM) {
+	public Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
-		scales = new Scale<T>((Scale<T>) pM.getWeights());
+		scales = new Scale<>((Scale<?>) pM.getWeights());
 		setGradeKey();
 	}
 
@@ -431,7 +426,7 @@ public class Monad implements Modal {
 	 * Main copy constructor of Monad. Passed Monad will be copied in all details
 	 * except its name. This constructor is used most often as a starting point to
 	 * generate new Monads based on an old one.
-	 * <br>
+	 * <br><br>
 	 * @param pName String
 	 * @param pM    Monad
 	 */
@@ -443,9 +438,8 @@ public class Monad implements Modal {
 	/**
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create the default 'Zero' Monad.
-	 * <br>
-	 * @param <T>          CladosF number is a ProtoN child that implemnts
-	 *                     Field and Normalizable.
+	 * <br><br>
+	 * @param <T>          CladosF number is a ProtoN child that implemnts Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFootName    String
@@ -475,8 +469,7 @@ public class Monad implements Modal {
 	 * Special constructor of Monad with most information passed in. This one will
 	 * create a default 'Zero' Monad while re-using the Foot of another.
 	 * <br>
-	 * @param <T>          CladosF number is a ProtoN child that implemnts
-	 *                     Field and Normalizable.
+	 * @param <T>          CladosF number is a ProtoN child that implemnts Field and Normalizable.
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFoot        Foot
@@ -500,19 +493,19 @@ public class Monad implements Modal {
 
 		switch (pF.getClass().getCanonicalName()){
 			case "org.interworldtransport.cladosF.RealF" -> {
-				scales = new Scale<RealF>(CladosField.REALF, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<RealF>(REALF, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.RealD" -> {
-				scales = new Scale<RealD>(CladosField.REALD, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<RealD>(REALD, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.ComplexF" -> {
-				scales = new Scale<ComplexF>(CladosField.COMPLEXF, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<ComplexF>(COMPLEXF, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			case "org.interworldtransport.cladosF.ComplexD" -> {
-				scales = new Scale<ComplexD>(CladosField.COMPLEXD, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
+				scales = new Scale<ComplexD>(COMPLEXD, this.getAlgebra().getBasis(), pF.getCardinal()).zeroAll();
 				break;
 			}
 			default -> throw new IllegalArgumentException("Offered Number must be a child of CladosF/ProtoN");
@@ -645,9 +638,7 @@ public class Monad implements Modal {
 
 	/**
 	 * Main constructor of Monad with all information passed in.
-	 * <br>
-	 * @param <T>          CladosF number is a ProtoN child that implemnts
-	 *                     Field and Normalizable.
+	 * <br><br>
 	 * @param pMonadName   String
 	 * @param pAlgebraName String
 	 * @param pFootName    String
@@ -660,12 +651,8 @@ public class Monad implements Modal {
 	 *                                 could involve null coefficients or a
 	 *                                 coefficient array of the wrong size.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
-															String pAlgebraName,
-															String pFootName, 
-															String pSig, 
-															Scale<T> pScale)
-			throws BadSignatureException, CladosMonadException {
+	public Monad(String pMonadName, String pAlgebraName, String pFootName,  String pSig, Scale<?> pScale)
+			throws BadSignatureException, CladosException {
 
 		this(	pMonadName, 
 				GBuilder.createAlgebraWithFootGP(
@@ -678,12 +665,10 @@ public class Monad implements Modal {
 
 	/**
 	 * Main constructor of Monad with pre-constructed objects not already part of another Monad.
-	 * <br>
+	 * <br><br>
 	 * This one is very important to GBuilder for ensuring reference matches occur correctly, but it
 	 * does reject construction if the bases in Algebra and Scale do not match.
-	 * <br>
-	 * @param <T>        CladosF number is a ProtoN child that implemnts Field
-	 *                   and Normalizable.
+	 * <br><br>
 	 * @param pMonadName String
 	 * @param pAlgebra   Algebra
 	 * @param pScale     Scale of CladosF numbers
@@ -692,15 +677,13 @@ public class Monad implements Modal {
 	 *                              involve null coefficients or a coefficient array
 	 *                              of the wrong size.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad(	String pMonadName, 
-															Algebra pAlgebra, 
-															Scale<T> pScale) throws CladosMonadException {
+	public Monad(String pMonadName, Algebra pAlgebra, Scale<?> pScale) throws CladosException {
 		if (pScale.getBasis() != pAlgebra.getBasis())
-			throw new CladosMonadException(this, "Scale basis must match exactly the basis in Algebra.");
+			throw new CladosException("Scale basis must match exactly the basis in Algebra.");
 
 		setName(pMonadName);
 		setAlgebra(pAlgebra);
-		scales = new Scale<T>(pScale);
+		scales = new Scale<>(pScale);
 		setGradeKey();
 	}
 
@@ -749,14 +732,13 @@ public class Monad implements Modal {
 
 	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
-	 * <br>
+	 * <br><br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
 	 * a dual operation.
-	 * <br>
-	 * @param <T> CladosF number is a ProtoN child that implemnts Field and Normalizable.
+	 * <br><br>
 	 * @return Monad after operation.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad multiplyByPSLeft() {	
+	public Monad multiplyByPSLeft() {	
 		this.multiplyLeft(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
@@ -764,14 +746,13 @@ public class Monad implements Modal {
 
 	/**
 	 * The Monad is turned into its Dual with right side multiplication by pscalar.
-	 * <br>
+	 * <br><br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
 	 * a dual operation.
-	 * <br>
-	 * @param <T>  ProtoN child number to create. Includes the Field and Normalizable interfaces too.
+	 * <br><br>
 	 * @return Monad after operation.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad multiplyByPSRight() {
+	public Monad multiplyByPSRight() {
 		this.multiplyRight(GBuilder.pscalarOfMonad(this));
 		setGradeKey();
 		return this;
@@ -806,8 +787,7 @@ public class Monad implements Modal {
 	 * @param <T> ProtoN number from CladosF without the interfaces this time.
 	 * @return ProtoN[]
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends ProtoN> T[] getCoeff() {
+	public <T extends ProtoN & Field & Normalizable> T[] getCoeff() {
 		return (T[]) scales.getNumbers();
 	}
 
@@ -833,9 +813,8 @@ public class Monad implements Modal {
 	 * @param <T> ProtoN number from CladosF without the interfaces this time.
 	 * @return ProtoN
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field & Normalizable> T getCoeff(int i) {
-		if (i >= 0 & i < getAlgebra().getBladeCount())
+		if (getAlgebra().getBasis().validateBladeIndex(i))
 			return (T) scales.getNumbers()[i];
 		return null;
 	}
@@ -875,7 +854,7 @@ public class Monad implements Modal {
 	 * @return Scale of Blades and ProtoN children. This is the 'coefficients'
 	 *         object.
 	 */
-	public Scale<? extends ProtoN> getWeights() {
+	public Scale<?> getWeights() {
 		return scales;
 	}
 
@@ -987,8 +966,7 @@ public class Monad implements Modal {
 	 *            time.
 	 * @return ProtoN but in practice it is always a child of ProtoN
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends ProtoN & Field> T magnitude() {
+	public <T extends ProtoN & Field & Normalizable> T magnitude() {
 		return (T) scales.modulusSum();
 	}
 
@@ -1055,7 +1033,6 @@ public class Monad implements Modal {
 	 * @param <T> ProtoN number from CladosF with all interfaces this time.
 	 * @return Monad
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Left multiply fails reference match.");
@@ -1225,7 +1202,6 @@ public class Monad implements Modal {
 	 * @param <T> ProtoN number from CladosF with all interfaces this time.
 	 * @return Monad
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
 			throw new IllegalArgumentException("Right multiply fails reference match.");
@@ -1505,21 +1481,20 @@ public class Monad implements Modal {
 	 * @param <T>  ProtoN number from CladosF with all interfaces this time.
 	 * @param ppC ProtoN child array for weights
 	 * @return Monad after setting the coefficients to the offered array.
-	 * @throws CladosMonadException This exception is thrown when the array offered
-	 *                              for coordinates is of the wrong length.
+	 * @throws CladosException gets thrown when the coefficient array is not suitable.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosMonadException {
+	public <T extends ProtoN & Field & Normalizable> Monad setCoeff(T[] ppC) throws CladosException {
 		if (ppC.length != getAlgebra().getBladeCount() | ppC.length == 0)
 			throw new CladosMonadException(this, "Coefficient array passed for coefficient copy is wrong length");
 
 		if 	(
-			(ppC[0] instanceof RealF) & (getMode() == CladosField.REALF)
-		| 	(ppC[0] instanceof RealD) & (getMode() == CladosField.REALD)
-		| 	(ppC[0] instanceof ComplexF) & (getMode() == CladosField.COMPLEXF)
-		| 	(ppC[0] instanceof ComplexD) & (getMode() == CladosField.COMPLEXD)
+			(ppC[0] instanceof RealF) & (getMode() == REALF)
+		| 	(ppC[0] instanceof RealD) & (getMode() == REALD)
+		| 	(ppC[0] instanceof ComplexF) & (getMode() == COMPLEXF)
+		| 	(ppC[0] instanceof ComplexD) & (getMode() == COMPLEXD)
 			)
 		{
-			scales.setWeightsArray(FListBuilder.copyOf(getMode(), ppC));
+			scales.setNumbers(FListBuilder.copyOf(getMode(), ppC));
 			setGradeKey();
 		} 
 		else 
@@ -1589,14 +1564,13 @@ public class Monad implements Modal {
 	 * old references might linger enabling unexpected opportunities to edit weights.
 	 * Caution is advised when this method is used while frequent reuse occurs.
 	 * <br>
-	 * @param <T>  ProtoN number from CladosF with all interfaces this time.
 	 * @param pScale The Scale to change to... constructed on the same Basis as the current Scale
 	 * @return Monad after setting the coefficients to the offered array.
 	 * @throws CladosMonadException This exception is thrown when the scale offered
 	 *                              doesn't share exactly the same Basis as the one it replaces.
 	 */
-	public <T extends ProtoN & Field & Normalizable> Monad setScale(Scale<T> pScale) throws CladosMonadException {
-		if (pScale.getBasis() != scales.getBasis() )
+	public Monad setScale(Scale<?> pScale) throws CladosMonadException {
+		if (pScale.getBasis() != scales.getBasis())
 			throw new CladosMonadException(this, "Coefficient array offered uses a different basis ");
 		
 		scales = pScale;
@@ -1624,8 +1598,7 @@ public class Monad implements Modal {
 	 * @param <T> ProtoN number from CladosF without the interfaces this time.
 	 * @return ProtoN but in practice it is always a child of ProtoN
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends ProtoN> T sqMagnitude() {
+	public <T extends ProtoN & Field & Normalizable> T sqMagnitude() {
 		return (T) scales.modulusSQSum();
 	}
 

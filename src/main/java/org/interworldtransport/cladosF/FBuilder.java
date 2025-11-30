@@ -47,11 +47,7 @@ public enum FBuilder {
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
-	COMPLEXD,
-	/**
-	 * The implicit private constructor IS NOT overridden.
-	 */
-	COMPLEXF,
+	REALF,
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
@@ -59,7 +55,11 @@ public enum FBuilder {
 	/**
 	 * The implicit private constructor IS NOT overridden.
 	 */
-	REALF;
+	COMPLEXF,
+	/**
+	 * The implicit private constructor IS NOT overridden.
+	 */
+	COMPLEXD;
 
 	/**
 	 * Method creates a new Cardinal using the string provided IF one by that name
@@ -160,7 +160,6 @@ public enum FBuilder {
 	 *             interfaces too.
 	 * @return ProtoN child number created
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <T extends ProtoN & Field & Normalizable> T copyOf(T pDiv) {
 		if (pDiv instanceof RealF) {
 			return (T) new RealF(pDiv.getCardinal(), ((RealF) pDiv).getReal());
@@ -185,7 +184,6 @@ public enum FBuilder {
 	 * @param pS String name for the associated Cardinal
 	 * @return  ProtoN child number created
 	 */
-	@SuppressWarnings("unchecked")
 	public <D extends ProtoN & Field & Normalizable> D createONE(String pS) {
 		Cardinal toCache = createCardinal(pS);
 		switch (this) {
@@ -207,7 +205,6 @@ public enum FBuilder {
 	 * @param pCard Cardinal to use in construction
 	 * @return ProtoN child number created
 	 */
-	@SuppressWarnings("unchecked")
 	public <D extends ProtoN & Field & Normalizable> D createONE(Cardinal pCard) {
 		switch (this) {
 			case REALF : return (D) RealF.newONE(pCard);
@@ -226,7 +223,6 @@ public enum FBuilder {
 	 * @param <D>  ProtoN child number to create. Includes the Field and Normalizable interfaces too.
 	 * @return ProtoN child number created
 	 */
-	@SuppressWarnings("unchecked")
 	public <D extends ProtoN & Field & Normalizable> D createZERO() {
 		switch (this) {
 		case REALF -> {
@@ -261,7 +257,6 @@ public enum FBuilder {
 	 * @param pCard Cardinal to be re-used.
 	 * @return ProtoN child number created
 	 */
-	@SuppressWarnings("unchecked")
 	public <D extends ProtoN & Field & Normalizable> D createZERO(Cardinal pCard) {
 		switch (this) {
 		case REALF -> {
@@ -296,7 +291,6 @@ public enum FBuilder {
 	 * @param <D> ProtoN child number with the Field interface too.
 	 * @return ProtoN child number created
 	 */
-	@SuppressWarnings("unchecked")
 	public <D extends ProtoN & Field> D createZERO(String pS) {
 		Cardinal toCache = createCardinal(pS);
 		switch (this) {

@@ -75,18 +75,12 @@ public class ProtoN {
 	 * @param pF D extends ProtoN and Field
 	 * @return Optional D which extends ProtoN and Field (A CladosF number)
 	 */
-	@SuppressWarnings("unchecked")
 	public static final <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybe(D pF) {
-		if (pF instanceof RealF)
-			return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
-		else if (pF instanceof RealD)
-			return (Optional<D>) Optional.ofNullable(new RealD((RealD) pF));
-		else if (pF instanceof ComplexF)
-			return (Optional<D>) Optional.ofNullable(new ComplexF((ComplexF) pF));
-		else if (pF instanceof ComplexD)
-			return (Optional<D>) Optional.ofNullable(new ComplexD((ComplexD) pF));
-		else
-			return Optional.empty();
+		if (pF instanceof RealF)	return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
+		if (pF instanceof RealD)	return (Optional<D>) Optional.ofNullable(new RealD((RealD) pF));
+		if (pF instanceof ComplexF)	return (Optional<D>) Optional.ofNullable(new ComplexF((ComplexF) pF));
+		if (pF instanceof ComplexD)	return (Optional<D>) Optional.ofNullable(new ComplexD((ComplexD) pF));
+		return Optional.empty();
 	}
 	
 
@@ -113,18 +107,12 @@ public class ProtoN {
 	 * @param pR D extends ProtoN and Field
 	 * @return D extends ProtoN and Field
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybeONE(D pR) {
-		if (pR instanceof RealF)
-			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
-		else if (pR instanceof RealD)
-			return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 1.0d));
-		else if (pR instanceof ComplexF)
-			return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 1.0f, 0.0f));
-		else if (pR instanceof ComplexD)
-			return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 1.0d, 0.0d));
-		else
-			return Optional.empty();
+		if (pR instanceof RealF)	return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
+		if (pR instanceof RealD)	return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 1.0d));
+		if (pR instanceof ComplexF)	return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 1.0f, 0.0f));
+		if (pR instanceof ComplexD)	return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 1.0d, 0.0d));
+		return Optional.empty();
 	}
 	
 	/**
@@ -150,18 +138,12 @@ public class ProtoN {
 	 * @param <D> ProtoN number from CladosF with all number interfaces.
 	 * @return D extends ProtoN and Field
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybeZERO(D pR) {
-		if (pR instanceof RealF)
-			return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
-		else if (pR instanceof RealD)
-			return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 0.0d));
-		else if (pR instanceof ComplexF)
-			return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 0.0f, 0.0f));
-		else if (pR instanceof ComplexD)
-			return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 0.0d, 0.0d));
-		else
-			return Optional.empty();
+		if (pR instanceof RealF)	return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
+		if (pR instanceof RealD)	return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 0.0d));
+		if (pR instanceof ComplexF)	return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 0.0f, 0.0f));
+		if (pR instanceof ComplexD)	return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 0.0d, 0.0d));
+		return Optional.empty();
 	}
 	
 	/**
@@ -172,12 +154,9 @@ public class ProtoN {
 	 * @return boolean
 	 */
 	public static final boolean isTypeMatch(ProtoN pE, ProtoN pF) {
-		if (pE.card == null && pF.card == null)
-			return true;
-		if (pE.card != null && pF.card == null)
-			return false;
-		if (pE.card == null && pF.card != null)
-			return false;
+		if (pE.card == null && pF.card == null)		return true;
+		if (pE.card != null && pF.card == null)		return false;
+		if (pE.card == null && pF.card != null)		return false;
 		return pE.card.getUnit() == pF.card.getUnit();
 	}
 
@@ -201,26 +180,16 @@ public class ProtoN {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ProtoN other = (ProtoN) obj;
-		if (this.getCardinal() == null) {
-			if (other.getCardinal() == null)
-				return true;
-			else 
-				return false;
+		if (this == obj)								return true;
+		if (obj == null)								return false;
+		if (getClass() != obj.getClass())				return false;
+		if 		(this.getCardinal() == null) {
+			if 	(((ProtoN) obj).getCardinal() == null)	return true;
+			else 										return false;
 		}
-		else { 
-			if (other.getCardinal() == null)
-			return false;
-		}
-		return getCardinal().equals(other.getCardinal());
+		else if (((ProtoN) obj).getCardinal() == null)	return false;
 		
-		
+		return getCardinal().equals(((ProtoN) obj).getCardinal());		
 	}
 
 	/**

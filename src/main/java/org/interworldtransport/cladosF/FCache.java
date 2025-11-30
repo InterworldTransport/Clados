@@ -56,7 +56,7 @@ public enum FCache {
 	 * There is an implicit private constructor for this singleton, but we won't
 	 * override it.
 	 * <br>
-	 * This ensures only one of these is active at a time. All CladosFCache references
+	 * This ensures only one of these is active at a time. All FCache references
 	 * must refer back to this one cache.
 	 */
 	INSTANCE;

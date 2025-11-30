@@ -110,16 +110,11 @@ public final class Cardinal {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Cardinal other = (Cardinal) obj;
-		if (!this.getUnit().equals(other.getUnit()))
-			return false;
-		return true;
+		if (this == obj)										return true;
+		if (obj == null)										return false;
+		if (getClass() != obj.getClass())						return false;
+		if (!this.getUnit().equals(((Cardinal)obj).getUnit()))	return false;
+																return true;
 	}
 
 	/**
@@ -147,8 +142,7 @@ public final class Cardinal {
 	 * @return String XML compatible sub-unit for code relying on export-able Cardinals.
 	 */
 	public final static String toXMLString(Cardinal pCard, String indent) {
-		if (indent == null)
-			indent ="";
+		if (indent == null)			indent ="";
 		return (indent + "<Cardinal unit=\"" + pCard.unit + "\" />\n");
 	}
 }

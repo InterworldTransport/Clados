@@ -33,9 +33,7 @@ import org.interworldtransport.cladosF.FCache;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosF.ProtoN;
-import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.CladosNyadException;
+import org.interworldtransport.cladosGExceptions.*;
 
 /**
  * This builder gets basic information and constructs many Clados Geometry objects.
@@ -382,7 +380,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadSpecial(ProtoN pNumber,
 			String pName, String pAName, String pFoot, String pSig, String pSpecial)
 			throws BadSignatureException, CladosMonadException {
@@ -397,16 +394,12 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
 	 * @param pName   A String for the new monad's name.
 	 * @return Monad (Cast this as the concrete monad to be used)
-	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
-	 * @throws CladosMonadException    Thrown for a general monad constructor error
+	 * @throws CladosException    		Thrown for a general monad constructor error
 	 */
-	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadWithAlgebra(	Scale<T> pNumbers,
-																								Algebra pA, 
-																								String pName)
-			throws BadSignatureException, CladosMonadException{
+	public final static Monad createMonadWithAlgebra(	Scale<?> pNumbers, Algebra pA, String pName)
+			throws CladosException{
 		if (pA.getBasis() != pNumbers.getBasis()) 
-			throw new CladosMonadException(	null, 
-											"Monad construction fails when Scale and Algebra bases aren't identical.");
+			throw new CladosException("Monad construction fails when Scale and Algebra bases aren't identical.");
 		
 		return new Monad(pName, pA, pNumbers);
 	}
@@ -427,7 +420,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadWithCoeffs(Scale<T> pNumbers,
 			String pName, String pAName, String pFoot, String pSig)
-			throws BadSignatureException, CladosMonadException {
+			throws BadSignatureException, CladosException {
 		
 		return new Monad(	pName, 		//A String
 							createAlgebraWithFootGP(createFoot(pFoot, pNumbers.getCardinal().getUnit()), 
@@ -450,7 +443,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @throws BadSignatureException   Thrown if the pSig parameter is malformed
 	 * @throws CladosMonadException    Thrown for a general monad constructor error
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <T extends ProtoN & Field & Normalizable> Monad createMonadWithFoot(	ProtoN pNumber,
 																								Foot pFt, 
 																								String pName, 
@@ -553,12 +545,11 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @param pM Monad to be mostly copied in constructing a pscalar for it.
 	 * @return Monad that is a unit pscalar that otherwise matches the offered Monad.
 	 */
-	@SuppressWarnings("unchecked")
 	public final static <T extends ProtoN & Field & Normalizable> Monad pscalarOfMonad(Monad pM) {
 		Monad returnThis = GBuilder.copyOfMonad(pM, pM.getName()+"-PScalarOf");
 		returnThis.scales = ((Scale<T>) GBuilder.copyOfScale(pM.getWeights()))
 										.zeroAllButGrade((byte) (pM.getAlgebra().getGradeCount() - 1))
-										.setPScalarWeight(FBuilder.createONE(	pM.getMode(), 
+										.setPScalar(FBuilder.createONE(	pM.getMode(), 
 																				pM.getWeights().getCardinal()));
 		return returnThis.setGradeKey();
 	}

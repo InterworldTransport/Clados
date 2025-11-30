@@ -35,9 +35,7 @@ import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.ProtoN;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosGExceptions.BadSignatureException;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
-import org.interworldtransport.cladosGExceptions.CladosNyadException;
+import org.interworldtransport.cladosGExceptions.*;
 
 /**
  * Nyads are for all practical purposes just lists of monads that share a common
@@ -574,7 +572,7 @@ public class Nyad implements Modal {
 	 * @return Nyad
 	 */
 	public Nyad create(String pMonadName, String pAlgebraName, String pSig, String pCard)
-							throws 			BadSignatureException, CladosMonadException, CladosNyadException {
+							throws 			BadSignatureException, CladosException, CladosNyadException {
 																			//Prepare Cardinal. Re-use where possible.
 		Cardinal tCard = (pCard == null) ? Cardinal.generate(getMode()) : FBuilder.createCardinal(pCard);
 																		

@@ -164,7 +164,7 @@ public class CoreScaleTest {
     }
 
     @Nested
-    class testWeightMutators1 {
+    class testWeightMutators1 { 
         @BeforeEach
         void setUp() throws CladosException {
             workScaleRF = new Scale<>(CladosField.REALF, workBasis, workCard);
@@ -451,6 +451,16 @@ public class CoreScaleTest {
             workScaleCF.setNumbers(tCF);
             workScaleCD.setNumbers(tCD);
 
+            RealF[] tRF3 = tRF.clone();
+            tRF3[15] = null;
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRF3));
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(null));
+            RealF[] tRF4 = (RealF[]) FListBuilder.REALF.createONE(workCard, 8); 
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRF4));
+             RealD[] tRD2 = tRD.clone();
+            assertThrows(CladosException.class, () -> workScaleRF.setNumbers(tRD2));
+
+
             assertTrue(workScaleRF.getScalar() == tRF[0]);
             assertTrue(workScaleRF.getScalar() == tRF[0]);
             assertTrue(workScaleRF.getScalar() == tRF[0]);
@@ -467,6 +477,10 @@ public class CoreScaleTest {
             workScaleRD.setNumbersAtGrade((byte) 2, tRD);
             workScaleCF.setNumbersAtGrade((byte) 2, tCF);
             workScaleCD.setNumbersAtGrade((byte) 2, tCD);
+
+            final RealF[] tRF2 = tRF.clone();
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 3, tRF2));
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 5, tRF2));
 
             workBasis.bladeOfGradeStream((byte) 2).forEach(blade -> assertFalse(workScaleRF.isNotZeroAt(blade)));
             workBasis.bladeOfGradeStream((byte) 2).forEach(blade -> assertFalse(workScaleRD.isNotZeroAt(blade)));

@@ -18,44 +18,6 @@ public class CoreCladosFieldTest {
 	public void setUp() throws Exception {
         tCard0 = FBuilder.createCardinal("Howz about this?");
     }
-
-    @Nested
-    class teststaticMethods {
-
-        @Test
-        public void testZEROConstructions() {
-            RealF temp1 = (RealF) CladosField.createZERO(tF1, tCard0);
-            assertTrue(RealF.isZero(temp1));
-            RealD temp2 = (RealD) CladosField.createZERO(tF2, tCard0);
-            assertTrue(RealD.isZero(temp2));
-            ComplexF temp3 = (ComplexF) CladosField.createZERO(tF3, tCard0);
-            assertTrue(ComplexF.isZero(temp3));
-            assertTrue(temp3.getImg() == 0.0F);
-            ComplexD temp4 = (ComplexD) CladosField.createZERO(tF4, tCard0);
-            assertTrue(ComplexD.isZero(temp4));
-            assertTrue(temp4.getImg() == 0.0D);
-            //ProtoN temp99 = CladosField.createZERO(CladosField.NADA, tCard0);
-            //assertTrue(temp99.getCardinal() == tCard0);
-        }
-
-        @Test
-        public void testONEConstructions() {
-            RealF temp1 = (RealF) CladosField.createONE(tF1, tCard0);
-            assertFalse(RealF.isZero(temp1));
-            assertTrue(temp1.getReal() == 1.0F);
-            RealD temp2 = (RealD) CladosField.createONE(tF2, tCard0);
-            assertFalse(RealD.isZero(temp2));
-            assertTrue(temp1.getReal() == 1.0D);
-            ComplexF temp3 = (ComplexF) CladosField.createONE(tF3, tCard0);
-            assertFalse(ComplexF.isZero(temp3));
-            assertTrue(temp3.getReal() == 1.0F);
-            assertTrue(temp3.getImg() == 0.0F);
-            ComplexD temp4 = (ComplexD) CladosField.createONE(tF4, tCard0);
-            assertFalse(ComplexD.isZero(temp4));
-            assertTrue(temp4.getReal() == 1.0D);
-            assertTrue(temp4.getImg() == 0.0D);
-        }
-    }
     
     @Nested
     class testInstanceMethods {
@@ -93,9 +55,9 @@ public class CoreCladosFieldTest {
         }
 
         @Test
-        public void testInstanceZEROProtoNContructions(){
-            //This is a weird one. We can construct a child of ProtoN and then use it
-            //to create a completely different child here. This works because we nab only the Cardinal.
+        public void testInstanceZEROProtoNContructions(){       //This is a weird one. We can construct a child of ProtoN 
+                                                                //and then use it to create a completely different child. 
+                                                                //This works because we nab only the Cardinal.
             RealF tRealF = (RealF) CladosField.REALF.createONE("Make A Cardinal From This");
             RealF temp1 = (RealF) CladosField.REALF.createZERO(tRealF);
             assertTrue(RealF.isZero(temp1));
@@ -164,10 +126,5 @@ public class CoreCladosFieldTest {
             assertTrue(temp4.getImg() == 0.0D);
         }
     }
-
-
-    
-
-    
 
 }

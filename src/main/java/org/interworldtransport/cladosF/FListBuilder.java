@@ -150,7 +150,6 @@ public enum FListBuilder {
 	 * @return List of ProtoN children Newly constructed copies of incoming
 	 *         numbers
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field> List<T> copyListOf(List<T> pDV) {
 		switch (this) {
 		case REALF -> {
@@ -209,7 +208,6 @@ public enum FListBuilder {
 	 * @param <T> ProtoN number from CladosF with all number interfaces.
 	 * @return ProtoN[] Newly constructed copies of incoming numbers
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field & Normalizable> T[] copyOf(T[] pDV) {
 		switch (this) {
 		case REALF -> {
@@ -357,7 +355,6 @@ public enum FListBuilder {
 	 * @param <T> ProtoN number from CladosF with Field interface.
 	 * @return List of ProtoN children set to ZERO using incoming cardinal.
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends ProtoN & Field> List<T> createListOf(Cardinal pCard, int pSize) {
 		if (pCard != null) {
 			FCache.INSTANCE.appendCardinal(pCard); //Just in case.

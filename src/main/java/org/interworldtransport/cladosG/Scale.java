@@ -27,11 +27,13 @@ package org.interworldtransport.cladosG;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.CladosField;
+import static org.interworldtransport.cladosF.CladosField.*;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosF.ProtoN;
@@ -39,8 +41,9 @@ import org.interworldtransport.cladosF.RealF;
 import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosFExceptions.FieldBinaryException;
-import org.interworldtransport.cladosFExceptions.FieldException;
+import org.interworldtransport.cladosFExceptions.*;
+import org.interworldtransport.cladosGExceptions.CladosException;
+import org.interworldtransport.cladosGExceptions.CladosMonadException;
 
 /**
  * This class contains cladosF numbers that act together as the coefficients of
@@ -314,7 +317,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * <br>
 	 * @return an array of ProtoN children.
 	 */
-	@SuppressWarnings("unchecked")
 	public D[] getNumbers() {
 		switch (mode) {
 			case REALF : return (D[]) map.values().toArray(RealF[]::new);
@@ -467,7 +469,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * <br>
 	 * @return D ProtoN child that implements all the number interfaces too.
 	 */
-	@SuppressWarnings("unchecked")
 	public D modulusSQSum() {
 		D tR;
 		switch (mode) {
@@ -548,7 +549,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * <br><br>
 	 * @return D ProtoN child that implements all the number interfaces too.
 	 */
-	@SuppressWarnings("unchecked")
 	public D modulusSum() {
 		D tR;
 		switch (mode) {
@@ -619,7 +619,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @throws FieldException 	This happens when normalizing something that has a zero magnitude. 
 	 * 							The exception is thrown by the number's invert() and passed along.
 	 */
-	@SuppressWarnings("unchecked")
 	public void normalize() throws FieldException {
 		this.scale((D) modulusSum().invert());
 	}
@@ -720,7 +719,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 *            AND Normalizable.
 	 * @return deliver the internal coefficients as the internal map.
 	 */
-	@SuppressWarnings("unchecked")
 	protected <T extends ProtoN & Field & Normalizable> Map<Blade, T> getMap() {
 		return (Map<Blade, T>) map;
 	}
@@ -754,7 +752,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setPScalarWeight(D pIn) {
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setPScalar(D pIn) {
 		if (ProtoN.isTypeMatch(this.getPScalar(), pIn))
 			map.put(gBasis.getPScalarBlade(), pIn);
 		return this;
@@ -770,61 +768,98 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setScalarWeight(T pIn) {
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setScalar(T pIn) {
 		if (ProtoN.isTypeMatch(this.getScalar(), pIn))
 			map.put(gBasis.getScalarBlade(), (D) pIn);
 		return this;
 	}
 
 	/**
-	 * This coefficient settor accepts an array of ProtoN numbers, assumes
-	 * they are in basis index order, and then inserts them into the internal map by
-	 * blade at that index.
+	 * This coefficient settor accepts a single ProtoN child and a Blade and inserts the number into the 
+	 * internal map at the blade index.
+	 * <br><br>
+	 * NOTE | Do NOT use this method if you intend the offered number to be disconnected from this object. 
+	 * IT WON'T BE! If you really must use this method that way, copy your coefficients first.
 	 * <br>
-	 * NOTE | Do NOT use this method if you intend the offered coefficient array to
-	 * be disconnected from this object. It won't be. If you really must use this
-	 * method that way, copy your coefficients first.
-	 * <br>
-	 * @param <T> is a child of ProtoN used as the generic identity of the weights in this object.
+	 * @param <T> is a child of ProtoN used as the generic identity of the number object.
+	 * @param pB Blade where the offered number belongs.
 	 * @param pIn Array of ProtoN children
 	 * @return Scale object. Just this object after modification.
-	 * @throws IllegalArgumentException This happens if the offered array does not
-	 *                                  have the same size as the basis. Good enough
-	 *                                  to ensure all blades are covered.
+	 * @throws CladosMonadException 
+	 * @throws IllegalArgumentException This happens if the offered number is null OR the blade isn't in the basis. 
+	 * 									The blade must be covered. NO NULL numbers.
 	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setWeightsArray(T[] pIn) {
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumber(Blade pB, T pIn) throws CladosException {
+
+		if (pIn != null & gBasis.find(pB)>=0)
+			if  (	(pIn instanceof RealF) & (getMode() == REALF)
+				| 	(pIn instanceof RealD) & (getMode() == REALD)
+				| 	(pIn instanceof ComplexF) & (getMode() == COMPLEXF)
+				| 	(pIn instanceof ComplexD) & (getMode() == COMPLEXD))
+				map.put(pB, (D) pIn);
+			else 	throw new CladosException("Coefficient passed is a different mode.");
+		else		throw new IllegalArgumentException("Offered Blade must be in the basis AND the offered number can't be null.");
+		
+		return this;
+	}
+	/**
+	 * This coefficient settor accepts an array of ProtoN numbers, assumes they are in basis index order, and then 
+	 * inserts them into the internal map by blade at that index.
+	 * <br><br>
+	 * NOTE | Do NOT use this method if you intend the offered coefficient array to be disconnected from this object. 
+	 * IT WON'T BE!. If you really must use this method that way, copy your coefficients first.
+	 * <br><br>
+	 * NOTE | Do NOT try to change the mode for the scale either. Once set, mode is fixed.
+	 * <br><br>
+	 * @param <T> 	is a child of ProtoN used as the generic identity of the numbers.
+	 * @param pIn 	Array of ProtoN children
+	 * @return Scale after this object is modified.
+	 * @throws CladosException 
+	 * @throws IllegalArgumentException This happens if the offered array not suitable to cover the basis.
+	 * 									All blades must be covered. NO NULL numbers.
+	 */
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumbers(T[] pIn) throws CladosException {
+		if (pIn == null)																//Nulls aren't tolerated
+					throw new IllegalArgumentException("Offered array of coefficients MUST NOT be null.");
+
+		IntStream	.range(0, pIn.length)
+					.filter(i -> pIn[i]==null)											//Seriously! Nulls aren't tolerated anywhere
+					.findFirst()
+					.ifPresent(i -> {throw new IllegalArgumentException("Offered array of coefficients MUST NOT contain nulls.");});
+
+		IntStream	.range(0, pIn.length)								//Mixed mode isn't tolerated either.
+					.filter(i ->	!(pIn[i] instanceof RealF & getMode() == REALF)
+								& 	!(pIn[i] instanceof RealD & getMode() == REALD)
+								& 	!(pIn[i] instanceof ComplexF & getMode() == COMPLEXF)
+								& 	!(pIn[i] instanceof ComplexD & getMode() == COMPLEXD) )
+					.findFirst()
+					.ifPresent(i -> {throw new IllegalArgumentException("Coefficients passed are different or mixed modes.");});
+
 		if (pIn.length == gBasis.getBladeCount())
-			gBasis.bladeStream().forEach(blade -> {
-				map.put(blade, (D) pIn[gBasis.find(blade) - 1]);
-				});
-		else	throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
+			gBasis.bladeStream().forEach(blade -> {map.put(blade, (D) pIn[gBasis.find(blade) - 1]);});
+		else		throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
 		return this;
 	}
 
 	/**
-	 * This method sets the coefficients represented by this Scale. It accepts a map
-	 * relating blades in the basis to CladosF.DivField children. It checks to see
-	 * if the map is of the wrong size and throws an IllegalArgumentException if so.
+	 * This method sets the coefficients represented by this Scale. It accepts a map relating blades in the basis to ProtoN children. 
+	 * It checks to see if the map is of the wrong size and throws an IllegalArgumentException if so.
 	 * <br>
-	 * NOTE this method DEEP COPIES the inbound map to disconnect the map's source
-	 * ProtoN children from the ones 'put' here. This is the safest settor method to use 
-	 * when handing in information from other clados sources.
+	 * NOTE this method DEEP COPIES the inbound map to disconnect the map's source ProtoN children from the ones 'put' here. 
+	 * This is the safest settor method to use when handing in information from other clados sources.
 	 * <br>
 	 * @param pInMap Inbound Map relating blades to ProtoN child numbers.
 	 * @return Scale object. Just this object after modification.
-	 * @throws IllegalArgumentException This happens if the offered map does not
-	 *                                  have the same size as the basis. Good enough
-	 *                                  to ensure all blades are covered because Map
-	 *                                  doesn't allow duplicate keys.
+	 * @throws IllegalArgumentException This happens if the offered map does not have the same size as the basis. Good enough
+	 *                                  to ensure all blades are covered because Map doesn't allow duplicate keys.
 	 */
-	protected Scale<D> setWeightsMap(Map<Blade, D> pInMap) {
+	protected Scale<D> setNumbersMap(Map<Blade, D> pInMap) {
 		if (pInMap.size() != gBasis.getBladeCount())
-			throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
+					throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
 
-		Map<Blade, D> mapCopy = pInMap.entrySet().parallelStream()
-				.collect(Collectors.toMap(e -> e.getKey(), e -> FBuilder.copyOf((D) e.getValue())));
+		Map<Blade, D> mapCopy = pInMap	.entrySet()
+										.parallelStream()
+										.collect(Collectors.toMap(e -> e.getKey(), e -> FBuilder.copyOf((D) e.getValue())));
 		map.putAll(mapCopy);
 		return this;
 	}
@@ -843,7 +878,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pIn    Array of ProtoN Children
 	 * @return Scale object. Just this object after modification.
 	 */
-	protected Scale<D> setWeightsAtGrade(byte pGrade, D[] pIn) {
+	protected Scale<D> setNumbersAtGrade(byte pGrade, D[] pIn) {
 		if (!gBasis.validateGradeIndex(pGrade))
 			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
 		if (pIn == null)
