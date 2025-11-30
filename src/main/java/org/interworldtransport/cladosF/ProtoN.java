@@ -24,8 +24,6 @@
  */
 package org.interworldtransport.cladosF;
 
-import java.util.Optional;
-
 /**
  * ProtoN is short for 'proto number'. 
  * This is the parent class supporting the notion of a division field
@@ -50,102 +48,7 @@ import java.util.Optional;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class ProtoN {
-	/**
-	 * Static method that creates a new CladosF number with a copy of the parameter.
-	 * This copy reuses the cardinal to ensure it will pass a type match test.
-	 * <br>
-	 * NOTE about suppressed type cast warnings | This method sifts through the
-	 * possible classes known as descendents of ProtoN. If the object to be
-	 * copied is one of them, the method uses a constructor appropriate to it, but
-	 * then casts the result back to the generic T before returning it.
-	 * <br>
-	 * There is no danger to this with respect to the implementation of this method.
-	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of ProtoN implementing Field and
-	 * Normalizable, this method might not detect it and return null. The type
-	 * casting operation itself cannot fail, but unrecognized child classes do NOT
-	 * get copied.
-	 * <br>
-	 * This can happen if one extends ProtoN creating a new CladosF number.
-	 * This method will not be aware of the new class until its implementation is
-	 * updated.
-	 * <br>
-	 * @param <D> ProtoN number from CladosF with all number interfaces.
-	 * @param pF D extends ProtoN and Field
-	 * @return Optional D which extends ProtoN and Field (A CladosF number)
-	 */
-	public static final <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybe(D pF) {
-		if (pF instanceof RealF)	return (Optional<D>) Optional.ofNullable(new RealF((RealF) pF));
-		if (pF instanceof RealD)	return (Optional<D>) Optional.ofNullable(new RealD((RealD) pF));
-		if (pF instanceof ComplexF)	return (Optional<D>) Optional.ofNullable(new ComplexF((ComplexF) pF));
-		if (pF instanceof ComplexD)	return (Optional<D>) Optional.ofNullable(new ComplexD((ComplexD) pF));
-		return Optional.empty();
-	}
-	
-
-	/**
-	 * Static zero construction method with copied cardinal and real part set to ONE.
-	 * <br>
-	 * NOTE about suppressed type cast warnings | This method sifts through the
-	 * possible classes known as descendents of ProtoN. If the object to be
-	 * copied is one of them, the method uses a constructor appropriate to it, but
-	 * then casts the result back to the generic T before returning it.
-	 * <br>
-	 * There is no danger to this with respect to the implementation of this method.
-	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of ProtoN implementing Field and
-	 * Normalizable, this method might not detect it and return null. The type
-	 * casting operation itself cannot fail, but unrecognized child classes do NOT
-	 * get copied.
-	 * <br>
-	 * This can happen if one extends ProtoN creating a new CladosF number.
-	 * This method will not be aware of the new class until its implementation is
-	 * updated.
-	 * <br>
-	 * @param <D> ProtoN number from CladosF with all number interfaces.
-	 * @param pR D extends ProtoN and Field
-	 * @return D extends ProtoN and Field
-	 */
-	public final static <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybeONE(D pR) {
-		if (pR instanceof RealF)	return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 1.0f));
-		if (pR instanceof RealD)	return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 1.0d));
-		if (pR instanceof ComplexF)	return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 1.0f, 0.0f));
-		if (pR instanceof ComplexD)	return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 1.0d, 0.0d));
-		return Optional.empty();
-	}
-	
-	/**
-	 * Static zero construction method with copied cardinal and real part set to ONE.
-	 * <br>
-	 * NOTE about suppressed type cast warnings | This method sifts through the
-	 * possible classes known as descendents of ProtoN. If the object to be
-	 * copied is one of them, the method uses a constructor appropriate to it, but
-	 * then casts the result back to the generic T before returning it.
-	 * <br>
-	 * There is no danger to this with respect to the implementation of this method.
-	 * The danger comes from mis-use of the method. If one passes a different kind
-	 * of object that passes as a descendent of ProtoN implementing Field and
-	 * Normalizable, this method might not detect it and return null. The type
-	 * casting operation itself cannot fail, but unrecognized child classes do NOT
-	 * get copied.
-	 * <br>
-	 * This can happen if one extends ProtoN creating a new CladosF number.
-	 * This method will not be aware of the new class until its implementation is
-	 * updated.
-	 * <br>
-	 * @param pR D extends ProtoN and Field
-	 * @param <D> ProtoN number from CladosF with all number interfaces.
-	 * @return D extends ProtoN and Field
-	 */
-	public final static <D extends ProtoN & Field & Normalizable> Optional<D> copyMaybeZERO(D pR) {
-		if (pR instanceof RealF)	return (Optional<D>) Optional.ofNullable(new RealF(pR.getCardinal(), 0.0f));
-		if (pR instanceof RealD)	return (Optional<D>) Optional.ofNullable(new RealD(pR.getCardinal(), 0.0d));
-		if (pR instanceof ComplexF)	return (Optional<D>) Optional.ofNullable(new ComplexF(pR.getCardinal(), 0.0f, 0.0f));
-		if (pR instanceof ComplexD)	return (Optional<D>) Optional.ofNullable(new ComplexD(pR.getCardinal(), 0.0d, 0.0d));
-		return Optional.empty();
-	}
-	
+public class ProtoN {	
 	/**
 	 * Check to see if the two argument are of the same cardinal.
 	 * <br>
