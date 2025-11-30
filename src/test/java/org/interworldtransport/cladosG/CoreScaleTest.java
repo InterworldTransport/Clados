@@ -446,41 +446,40 @@ public class CoreScaleTest {
             ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
             ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
 
-            workScaleRF.setNumbers(tRF);
-            workScaleRD.setNumbers(tRD);
-            workScaleCF.setNumbers(tCF);
-            workScaleCD.setNumbers(tCD);
+            workScaleRF.setNumbers(tRF);                    //All weights set to ONE.
+            workScaleRD.setNumbers(tRD);                    //All weights set to ONE.
+            workScaleCF.setNumbers(tCF);                    //All weights set to ONE.
+            workScaleCD.setNumbers(tCD);                    //All weights set to ONE.
 
-            RealF[] tRF3 = tRF.clone();
-            tRF3[15] = null;
-            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRF3));
-            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(null));
-            RealF[] tRF4 = (RealF[]) FListBuilder.REALF.createONE(workCard, 8); 
-            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRF4));
-             RealD[] tRD2 = tRD.clone();
-            assertThrows(CladosException.class, () -> workScaleRF.setNumbers(tRD2));
+            RealF[] tRF3 = tRF.clone();                     //clone tRF in order to mangle the clone and test for exceptions
+            tRF3[15] = null;                                //A null pscalar weight
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRF3));       //rejected for that null
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(null));   //rejected for ALL null
+            RealF[] tRF4 = (RealF[]) FListBuilder.REALF.createONE(workCard, 8);                             //too few weights to cover
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRF4));       //rejected for not covering
+            RealD[] tRD2 = tRD.clone();                      //clone tRD in order to offer wrong mode numbers
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbers(tRD2));       //rejected for not mode matching
 
+            assertTrue(workScaleRF.getScalar() == tRF[0]);  //Prove it got mapped in.
+            assertTrue(workScaleRD.getScalar() == tRD[0]);  //Prove it got mapped in.
+            assertTrue(workScaleCF.getScalar() == tCF[0]);  //Prove it got mapped in.
+            assertTrue(workScaleCD.getScalar() == tCD[0]);  //Prove it got mapped in.
 
-            assertTrue(workScaleRF.getScalar() == tRF[0]);
-            assertTrue(workScaleRF.getScalar() == tRF[0]);
-            assertTrue(workScaleRF.getScalar() == tRF[0]);
-            assertTrue(workScaleRF.getScalar() == tRF[0]);
+            tRF = (RealF[]) FListBuilder.REALF.create(workCard, 6);             //new RealF[6]      for mapping bivector grade;
+            tRD = (RealD[]) FListBuilder.REALD.create(workCard, 6);             //new RealD[6]      for mapping bivector grade;
+            tCF = (ComplexF[]) FListBuilder.COMPLEXF.create(workCard, 6);       //new ComplexF[6]   for mapping bivector grade;
+            tCD = (ComplexD[]) FListBuilder.COMPLEXD.create(workCard, 6);       //new ComplexD[6]   for mapping bivector grade;
 
-            tRF = (RealF[]) FListBuilder.REALF.create(workCard, 6);            //new RealF[6];
-            tRD = (RealD[]) FListBuilder.REALD.create(workCard, 6);            //new RealD[6];
-            tCF = (ComplexF[]) FListBuilder.COMPLEXF.create(workCard, 6);   //new ComplexF[6];
-            tCD = (ComplexD[]) FListBuilder.COMPLEXD.create(workCard, 6);   //new ComplexD[6];
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 2, null)); //rejected for null!
 
-            assertDoesNotThrow(() -> workScaleRF.setNumbersAtGrade((byte) 2, null)); //Do Nothing!
+            workScaleRF.setNumbersAtGrade((byte) 2, tRF);                    //All 2-blade weights set to ONE.
+            workScaleRD.setNumbersAtGrade((byte) 2, tRD);                    //All 2-blade weights set to ONE.
+            workScaleCF.setNumbersAtGrade((byte) 2, tCF);                    //All 2-blade weights set to ONE.
+            workScaleCD.setNumbersAtGrade((byte) 2, tCD);                    //All 2-blade weights set to ONE.
 
-            workScaleRF.setNumbersAtGrade((byte) 2, tRF);
-            workScaleRD.setNumbersAtGrade((byte) 2, tRD);
-            workScaleCF.setNumbersAtGrade((byte) 2, tCF);
-            workScaleCD.setNumbersAtGrade((byte) 2, tCD);
-
-            final RealF[] tRF2 = tRF.clone();
-            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 3, tRF2));
-            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 5, tRF2));
+            final RealF[] tRF2 = tRF.clone();                               //clone tRF in order to mangle the clone and test for exceptions
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 3, tRF2)); //doesn't cover the grade
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setNumbersAtGrade((byte) 5, tRF2)); //no such grade
 
             workBasis.bladeOfGradeStream((byte) 2).forEach(blade -> assertFalse(workScaleRF.isNotZeroAt(blade)));
             workBasis.bladeOfGradeStream((byte) 2).forEach(blade -> assertFalse(workScaleRD.isNotZeroAt(blade)));
@@ -508,11 +507,11 @@ public class CoreScaleTest {
             assertFalse(ComplexF.isZero(workScaleCF.getPScalar()));
             assertFalse(ComplexD.isZero(workScaleCD.getPScalar()));
 
-            workScaleRF.setPScalar(FBuilder.REALF.createZERO(Cardinal.generate("cannotMatch")));
-            assertFalse(RealF.isZero(workScaleRF.getPScalar()));
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setPScalar(FBuilder.REALF.createZERO(Cardinal.generate("cannotMatch"))));
+            //assertFalse(RealF.isZero(workScaleRF.getPScalar()));  //Cardinal mismatches now throw exceptions
 
-            workScaleRF.setScalar(FBuilder.REALF.createONE(Cardinal.generate("cannotMatch")));
-            assertTrue(RealF.isZero(workScaleRF.getScalar()));
+            assertThrows(IllegalArgumentException.class, () -> workScaleRF.setScalar(FBuilder.REALF.createONE(Cardinal.generate("cannotMatch"))));
+            //assertTrue(RealF.isZero(workScaleRF.getScalar()));    //Cardinal mismatches now throw exceptions
 
             workScaleRF.setScalar(FBuilder.REALF.createONE(workScaleRF.getPScalar().getCardinal()));
             workScaleRD.setScalar(FBuilder.REALD.createONE(workScaleRD.getPScalar().getCardinal()));
@@ -544,10 +543,10 @@ public class CoreScaleTest {
                 mapCD.put(blade, tCD[workBasis.find(blade)-1]);
                 });
 
-            workScaleRF.setNumbersMap(mapRF);
-            workScaleRD.setNumbersMap(mapRD);
-            workScaleCF.setNumbersMap(mapCF);
-            workScaleCD.setNumbersMap(mapCD);
+            workScaleRF.setMap(mapRF);
+            workScaleRD.setMap(mapRD);
+            workScaleCF.setMap(mapCF);
+            workScaleCD.setMap(mapCD);
 
             workBasis.bladeStream().forEach(blade -> {
                 assertTrue(workScaleRF.isNotZeroAt(blade));

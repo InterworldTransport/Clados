@@ -176,19 +176,19 @@ class CoreBladeTest {
 		Blade tB8 = new Blade((byte) 8);
 		Generator.stream((byte) 8).forEach(g-> tB8.add(g));
 		assertTrue(tB8.rank() == 8);
-		byte prevSign=tB8.sign();
-		tB8.reverse();
-		assertTrue(prevSign == tB8.sign()); // 8/2 %2 is 0... so reverse() does not flip sign
-		tB8.reverse();
+		//byte prevSign=tB8.sign();
+		//tB8.reverse();
+		//assertTrue(prevSign == tB8.sign()); // 8/2 %2 is 0... so reverse() does not flip sign
+		//tB8.reverse();
 
 		Blade tB10 = new Blade((byte) 10);
 		Generator.stream((byte) 10).forEach(g-> tB10.add(g));
 		assertTrue(tB10.rank() == 10);
 		assertTrue(tB10.compareTo(tB8) == 1);
-		prevSign=tB10.sign();
-		tB10.reverse();
-		assertFalse(prevSign == tB10.sign()); // 10/2 %2 is 1... so reverse() flips the sign
-		tB10.reverse();
+		//prevSign=tB10.sign();
+		//tB10.reverse();
+		//assertFalse(prevSign == tB10.sign()); // 10/2 %2 is 1... so reverse() flips the sign
+		//tB10.reverse();
 
 		Blade tB15 = new Blade((byte) 14);
 		Generator.stream((byte) 14).forEach(g-> tB15.add(g));
@@ -230,10 +230,10 @@ class CoreBladeTest {
 		Generator.stream((byte) 10).forEach(g-> tB10.add(g));
 		Blade newtB10 = new Blade(tB10);
 		newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
-		assertTrue(newtB10.equals(tB10));
-		newtB10.reverse();
-		assertFalse(newtB10.equals(tB10));
-		assertTrue(newtB10.equalsAbs(tB10));
+		//assertTrue(newtB10.equals(tB10));
+		//newtB10.reverse();
+		//assertFalse(newtB10.equals(tB10));
+		//assertTrue(newtB10.equalsAbs(tB10));
 	}
 
 	@Test
@@ -248,26 +248,26 @@ class CoreBladeTest {
 
 		Blade left = Blade.createBlade(Generator.E1).remove(Generator.E1);
 		Blade right = Blade.createBlade(Generator.E2).remove(Generator.E2);
+		//assertFalse(left.equals(right));	//Both scalar blades, but from different sized spaces.
 		assertFalse(left.equals(right));	//Both scalar blades, but from different sized spaces.
-		assertFalse(left.equalsAbs(right));	//Both scalar blades, but from different sized spaces.
-		assertTrue(left.equalsAbs(left));	//Of course
-		assertFalse(left.equalsAbs(null)); //Of course
+		assertTrue(left.equals(left));	//Of course
+		assertFalse(left.equals(null)); //Of course
 		right.add(Generator.E1);
-		assertFalse(left.equalsAbs(right));	//Better not be due to key mismatch AND maxgenerator mismatch
+		assertFalse(left.equals(right));	//Better not be due to key mismatch AND maxgenerator mismatch
 		
 		right.remove(Generator.E1);
 		EnumSet<Generator> tGs = EnumSet.noneOf(Generator.class);
 		Stream.of(g).forEach(gn -> tGs.add(gn));
 		right.remove(tGs);
-		assertFalse(left.equalsAbs(right));	//Both scalar blades, but from different sized spaces.
+		assertFalse(left.equals(right));	//Both scalar blades, but from different sized spaces.
 	}
 
 	@Test
 	public void testXMLOutput() {
 		Blade tB = Blade.createBlade(gMax);
 		Generator.stream(gMax.ord).forEach(g-> tB.add(g));
-		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
-		String ordString = "\t<Blade key=\"81985529216486895\" bitKey=\"0b111111111111111\" sign=\"1\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />\n";
+		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
+		String ordString = "\t<Blade key=\"81985529216486895\" bitKey=\"0b111111111111111\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />\n";
 		String test1 = Blade.toXMLString(tB,"\t");
 		String test2 = Blade.toXMLOrdString(tB,"\t");
 

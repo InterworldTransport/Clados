@@ -389,7 +389,6 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	/**
 	 * Monad Constructor #7 covered with this method
 	 * <br>
-	 * @param <T>     CladosF number is a ProtoN child that implemnts Field and Normalizable.
 	 * @param pNumbers The ProtoN to be re-used. USE A CONCRETE one here or nada.
 	 * @param pA      The Algebra to be re-used. USE A CONCRETE on here or nada.
 	 * @param pName   A String for the new monad's name.

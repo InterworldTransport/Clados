@@ -44,11 +44,9 @@ public class CladosException extends Exception
 /**
  * This method is the main constructor of all Clados Exceptions.
  * It needs only a source Monad and message.
- * @param pSource   Monad
  * @param pMessage	String
  */
-    public CladosException(String pMessage)
-    {
+    public CladosException(String pMessage) {
     	super();
     	SourceMessage=pMessage;
     }
@@ -57,8 +55,7 @@ public class CladosException extends Exception
  * 
  * @return String
  */
-    public String  getSourceMessage() 
-    {
+    public String  getSourceMessage() {
     	return SourceMessage;
     }
 }

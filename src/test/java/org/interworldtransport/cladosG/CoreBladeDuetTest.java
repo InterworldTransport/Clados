@@ -61,7 +61,7 @@ class CoreBladeDuetTest {
 		assertTrue(BladeDuet.toXMLString(bduet).compareTo(regString) == 0); // should match exactly
 		
 		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
-		regString ="<Blade key=\"920735923817967\" bitKey=\"0b111111111111100\" sign=\"-1\" generators=\"E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
+		regString ="<Blade key=\"920735923817967\" bitKey=\"0b111111111111100\" generators=\"E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
 		assertTrue(Blade.toXMLString(together, "").compareTo(regString) == 0); // should match exactly
 	}
 }

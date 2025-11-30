@@ -851,8 +851,7 @@ public class Monad implements Modal {
 	/**
 	 * This method returns the map relating basis blades to coefficients.
 	 * <br>
-	 * @return Scale of Blades and ProtoN children. This is the 'coefficients'
-	 *         object.
+	 * @return Scale of Blades and ProtoN children. This is the 'coefficients' object.
 	 */
 	public Scale<?> getWeights() {
 		return scales;

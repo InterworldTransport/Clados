@@ -208,28 +208,27 @@ public class Blade implements Comparable<Blade> {
 	 * @return String The XML formated String representing the Blade.
 	 */
 	public final static String toXMLOrdString(Blade blade, String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t\t\t\t\t";
-		StringBuilder rB = new StringBuilder();
-		rB.append(indent)
-			.append("<Blade key=\"")
+		if (indent == null)		indent = "\t\t\t\t\t\t\t\t";
+		StringBuilder rB = new StringBuilder(indent);
+		rB	.append("<Blade key=\"")
 			.append(blade.key())
 			.append("\" bitKey=\"0b");
+
 		int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
 		while (pad>0) {
 			rB.append("0");
 			pad--;
 		}
-		rB.append(Integer.toBinaryString(blade.bitKey()))
-			.append("\" sign=\"")
-			.append(blade.sign())
+		rB	.append(Integer.toBinaryString(blade.bitKey()))
 			.append("\" generators=\"");
 
-		blade.getGenerators().stream().forEachOrdered(gen -> rB.append(gen.ord).append(","));
+		blade	.getGenerators()
+				.stream()
+				.forEachOrdered(gen -> rB.append(gen.ord).append(","));
 
 		if (blade.rank() > 0)
 			rB.deleteCharAt(rB.length() - 1);
-		rB.append("\" />\n");
+		rB	.append("\" />\n");
 		return rB.toString();
 	}
 
@@ -246,28 +245,27 @@ public class Blade implements Comparable<Blade> {
 	 * @return String The XML formated String representing the Blade.
 	 */
 	public final static String toXMLString(Blade blade, String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t\t\t\t\t";
-		StringBuilder rB = new StringBuilder();
-		rB.append(indent)
-			.append("<Blade key=\"")
+		if (indent == null)		indent = "\t\t\t\t\t\t\t\t";
+		StringBuilder rB = new StringBuilder(indent);
+		rB	.append("<Blade key=\"")
 			.append(blade.key())
 			.append("\" bitKey=\"0b");
+
 		int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
-			while (pad>0) {
-				rB.append("0");
-				pad--;
-			}
-		rB.append(Integer.toBinaryString(blade.bitKey()))
-			.append("\" sign=\"")
-			.append(blade.sign())
+		while (pad>0) {
+			rB.append("0");
+			pad--;
+		}
+		rB	.append(Integer.toBinaryString(blade.bitKey()))
 			.append("\" generators=\"");
 
-		blade.getGenerators().stream().forEachOrdered(g -> rB.append(g.toString()).append(","));
+		blade	.getGenerators()
+				.stream()
+				.forEachOrdered(g -> rB.append(g.toString()).append(","));
 
 		if (blade.getGenerators().size() > 0)
 			rB.deleteCharAt(rB.length() - 1);
-		rB.append("\" />\n");
+		rB	.append("\" />\n");
 		return rB.toString();
 	}
 
@@ -319,15 +317,22 @@ public class Blade implements Comparable<Blade> {
 	 * anything other than +1 or -1. It represents whether the blade has been
 	 * inverted or not. Blades do NOT have a sense of magnitude, so this inversion
 	 * is ONLY about the order of the generators in the EnumSet.
-	 * <br>
+	 * <br><br>
 	 * When this is +1, the blade is assumed to be in a state where the EnumSet
 	 * represents the natural order of generators OR in a state where an even number
 	 * of transpositions have occurred (after all pairs of transpostions that would
 	 * cancel each other are removed) away from the natural order.
-	 * <br>
+	 * <br><br>
 	 * When this is -1, the blade is assumed to be in a state where the EnumSet
 	 * represents an odd number of transpositions (after canceling pairs are
 	 * removed) away from the natural order of the generators in the set.
+	 * <br><br>
+	 * The ONLY time this sign changes is when a Cayley table in constructed in the
+	 * GProduct class. The BladeDuet class handles generator manipulation and passes
+	 * information back to its consumer through a Blade. If that blade's sign is 
+	 * examined, it informs the consumer whether the generator permutation is even,
+	 * odd, or collapsed to ZERO because of degenerate generator pairs. Beyond this
+	 * short-lived use, a blade's sign is ignored.
 	 */
 	private byte sign = 1;
 
@@ -340,7 +345,7 @@ public class Blade implements Comparable<Blade> {
 		maxGen = pB.maxGenerator();
 		genSet = EnumSet.noneOf(Generator.class);
 		genSet.addAll(pB.getGenerators());
-		sign = pB.sign();
+		//sign = pB.sign();
 		key = pB.key();
 		bitKey = pB.bitKey();
 	}
@@ -363,7 +368,7 @@ public class Blade implements Comparable<Blade> {
 			maxGen = (byte) (pB.maxGenerator() + 1);
 			genSet.add(pGen);
 		} else maxGen = (byte) (pB.maxGenerator());
-		sign = pB.sign();
+		//sign = pB.sign();
 		key = pB.key();
 		bitKey = pB.bitKey();
 	}
@@ -531,43 +536,11 @@ public class Blade implements Comparable<Blade> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Blade other = (Blade) obj;
-		if (key != other.key)
-			return false;
-		if (maxGen != other.maxGen)
-			return false;
-		if (sign != other.sign)
-			return false;
-		return true;
-	}
-
-	/**
-	 * This method is very similar to the base object's equality test. The
-	 * difference is the sign of the blade is not checked. As long as blades are
-	 * being tested, all that is needed to pass this test is for them to have the
-	 * same key and maxGen values.
-	 * <br>
-	 * @param obj The object to test
-	 * @return boolean True implies two blades are equal to within a sign while
-	 *         False implies they aren't equal even when signs are ignored.
-	 */
-	public boolean equalsAbs(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		if (key != ((Blade) obj).key)
-			return false;
-		if (maxGen != ((Blade) obj).maxGen)
-			return false;
+		if (this == obj)					return true;
+		if (obj == null)					return false;
+		if (getClass() != obj.getClass())	return false;
+		if (key != ((Blade) obj).key)		return false;
+		if (maxGen != ((Blade) obj).maxGen)	return false;
 		return true;
 	}
 
@@ -685,11 +658,11 @@ public class Blade implements Comparable<Blade> {
 	 * <br>
 	 * @return Blade This one after the action is complete. Supporting streams.
 	 */
-	public Blade reverse() {
-		if ((genSet.size() / 2) % 2 == 1)
-			sign *= FLIP;
-		return this;
-	}
+	//public Blade reverse() {
+	//	if ((genSet.size() / 2) % 2 == 1)
+	//		sign *= FLIP;
+	//	return this;
+	//}
 
 	/**
 	 * A simple gettor for the sign of the blade

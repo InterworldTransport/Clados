@@ -30,20 +30,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.CladosField;
 import static org.interworldtransport.cladosF.CladosField.*;
-import org.interworldtransport.cladosF.Field;
-import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosF.ProtoN;
-import org.interworldtransport.cladosF.RealF;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.*;
 import org.interworldtransport.cladosFExceptions.*;
-import org.interworldtransport.cladosGExceptions.CladosException;
-import org.interworldtransport.cladosGExceptions.CladosMonadException;
 
 /**
  * This class contains cladosF numbers that act together as the coefficients of
@@ -163,6 +152,71 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * numeric field. It is also WHY Scale implements Modal.
 	 */
 	private final CladosField mode;
+
+	/**
+	 * This method is for detecting cardinal differences in an array of numbers to be used as weights for a monad.
+	 * The Scale might be able to tolerate them, but the monad won't when it is put to use. TypeMatching will fail.
+	 * <br><br>
+	 * return value +1: Incoming numbers perfectly match the standard cardinal.			Suggest using them.
+	 * return value  0: Incoming numbers are a jumbled mess wrt the standard cardinal. 	Suggest tossing them.
+	 * return value -1: Incoming numbers perfectly MISmatch the standard cardinal.		Suggest changing standard.
+	 * <br><br>
+	 * @param <D> 	stands in for a ProtoN child class
+	 * @param pCard Cardinal to be used as the measure for deviations in the offered number array.
+	 * @param pIn 	array of ProtoN children to be tested for nulls
+	 * @return integer offered for decisions about keeping the numbers or the standard cardinal.
+	 */
+	public final static <D extends ProtoN & Field & Normalizable> int testCardinalMatchesIncoming(Cardinal pCard, D[] pIn) {
+		long standardMatch = IntStream	.range(0, pIn.length)								
+										.filter(i -> pIn[i].getCardinal() == pCard )
+										.count();
+		long internalMatch = IntStream	.range(1, pIn.length)								
+										.filter(i -> pIn[i].getCardinal() == pIn[0].getCardinal())
+										.count();				
+
+		//If standardMatch = pIn.length						: Cardinal match is perfect and the incoming numbers can be re-used with no cardinal resets.
+		//If standardMatch is between {0, pIn.length}		: Cardinal match is a mess and the incoming numbers are not typeMatches for each other.
+		//If standardMatch = 0								: Nothing matches and we might need to swap the standard cardinal
+		//	If internalMatch = pIn.length -1				: Cardinals match perfectly within the incoming numbers and we should swap the standard.
+		//	If internalMatch is between {0, pIn.length -1}	: Cardinal match is a mess
+
+		return 	(standardMatch == pIn.length) ? 1								//Standard Match is perfect
+				: (standardMatch == 0 & internalMatch == pIn.length -1) ? -1 	//Standard Match is perfectly wrong... change the standard.
+				: 0;															//Garbage offered. Toss it!
+	}
+
+	/**
+	 * This method is for detecting mode difference in an array of numbers to be used as weights for a monad.
+	 * The Scale might be able to tolerate them, but the monad won't... so they are rejected at Scale.
+	 * <br><br>
+	 * @param <D> 	stands in for a ProtoN child class
+	 * @param pMode CladosField to be used as the measure for deviations in the offered number array.
+	 * @param pIn 	array of ProtoN children to be tested for nulls
+	 * @return boolean True if no mode mismatches are present in the array. False if any are.
+	 */
+	public final static <D extends ProtoN & Field & Normalizable> boolean validateModeIncoming(CladosField pMode, D[] pIn) {
+
+		return IntStream	.range(0, pIn.length)								
+							.filter(i ->	!(pIn[i] instanceof RealF & pMode == REALF)
+										& 	!(pIn[i] instanceof RealD & pMode == REALD)
+										& 	!(pIn[i] instanceof ComplexF & pMode == COMPLEXF)
+										& 	!(pIn[i] instanceof ComplexD & pMode == COMPLEXD) )
+							.count() == 0;
+	}
+
+	/**
+	 * This method is for detecting nulls in an array of numbers to be used as weights for a monad.
+	 * The Scale might be able to tolerate them, but the monad won't... so they are rejected at Scale.
+	 * <br><br>
+	 * @param <D> stands in for a ProtoN child class
+	 * @param pIn array of ProtoN children to be tested for nulls
+	 * @return boolean True if no nulls are present in the array. False if any are.
+	 */
+	public final static <D extends ProtoN & Field & Normalizable> boolean validateNoNullsIncoming(D[] pIn) {
+		 return IntStream	.range(0, pIn.length)
+							.filter(i -> pIn[i]==null)
+							.count() == 0;
+	}
 
 	/**
 	 * This is the constructor to use when one does not have the actual map ready,
@@ -638,9 +692,8 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
-	 * This method scales all values in the internal map by the value offered
-	 * provided there is no typeMatch failure. When there IS a type mismatch the 
-	 * number simply does not get scaled.
+	 * This method scales all values in the internal map by the value offered provided there is no typeMatch failure. 
+	 * When there IS a type mismatch the number simply does not get scaled.
 	 * <br>
 	 * The first stream filters for weights that pass the match test.
 	 * The second stream scales them.
@@ -652,13 +705,21 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @return Scale object. Just this object after modification.
 	 */
 	public <T extends ProtoN & Field & Normalizable> Scale<D> scale(T pIn) {
-		if (this.weightsStream().allMatch(div -> ProtoN.isTypeMatch(div, pIn))) {
-			this.weightsParallelStream().forEach(div -> {
-				try {
-					div.multiply(pIn);
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Can't scale with mismatched cardinal or mode.");
-				}
+		if (	!(pIn instanceof RealF & getMode() == REALF)
+			& 	!(pIn instanceof RealD & getMode() == REALD)
+			& 	!(pIn instanceof ComplexF & getMode() == COMPLEXF)
+			& 	!(pIn instanceof ComplexD & getMode() == COMPLEXD) )
+			throw new IllegalArgumentException("Offered scaling number MUST mode match.");
+
+		if (pIn.getCardinal() == card & weightsStream().allMatch(x -> ProtoN.isTypeMatch(x, pIn))) {
+			weightsParallelStream()
+				.forEach(y -> {	try {y.multiply(pIn);} 
+								catch (FieldBinaryException e) {
+									throw new IllegalArgumentException("Can't scale with NaN or isInfinite.");
+								}	//Field binary exception is also thrown for cardinal mismatches
+									//but those were caught at the top of the conditional causing 
+									//this method to do absolutely nothing. Anything caught down here 
+									//should stop events the same way dividing by ZERO does.
 			});
 		}
 		return this;
@@ -668,13 +729,12 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This is an exporter of internal details to XML. It exists to bypass certain
 	 * security concerns related to Java serialization of objects.
 	 * <br>
-	 * @param <T> Some kind of number extending ProtoN that provides weights in the Scale.
 	 * @param pS The Scale oject to be output as XML
 	 * @param indent String of 'tab' characters to get spacing right for human
 	 *               readable XML output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
-	public final static <T extends ProtoN & Field & Normalizable> String toXMLString(Scale<T> pS, String indent) {
+	public final static String toXMLString(Scale<?> pS, String indent) {
 
 		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\" pans=\"").append(pS.map.size()).append("\">\n");
 
@@ -744,7 +804,8 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 
 	/**
 	 * This method just sets the pscalar weight with a number that should satisfy type matches. If it
-	 * does not get past the type match check, nothing is done to change any weights.
+	 * does not get past the type match check, nothing is done to change any weights. If it fails the mode
+	 * check, an IllegalArgumentException is thrown.
 	 * <br><br>
 	 * The offered number IS USED DIRECTLY. NO COPY IS CREATED!
 	 * <br><br>
@@ -752,15 +813,15 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pIn D is a child of ProtoN to use as the pscalar weight.
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setPScalar(D pIn) {
-		if (ProtoN.isTypeMatch(this.getPScalar(), pIn))
-			map.put(gBasis.getPScalarBlade(), pIn);
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setPScalar(T pIn) {
+		setNumber(gBasis.getPScalarBlade(), pIn);			//Defer to checks made in setNumber()
 		return this;
 	}
 
 	/**
 	 * This method just sets the scalar weight with a number that should satisfy type matches. If it
-	 * does not get past the type match check, nothing is done to change any weights.
+	 * does not get past the type match check, nothing is done to change any weights. If it fails the mode
+	 * check, an IllegalArgumentException is thrown.
 	 * <br><br>
 	 * The offered number IS USED DIRECTLY. NO COPY IS CREATED!
 	 * <br><br>
@@ -769,8 +830,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @return Scale of numbers for use in streaming operations if desired.
 	 */
 	protected <T extends ProtoN & Field & Normalizable> Scale<D> setScalar(T pIn) {
-		if (ProtoN.isTypeMatch(this.getScalar(), pIn))
-			map.put(gBasis.getScalarBlade(), (D) pIn);
+		setNumber(gBasis.getScalarBlade(), pIn);			//Defer to checks made in setNumber()
 		return this;
 	}
 
@@ -785,21 +845,22 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param pB Blade where the offered number belongs.
 	 * @param pIn Array of ProtoN children
 	 * @return Scale object. Just this object after modification.
-	 * @throws CladosMonadException 
 	 * @throws IllegalArgumentException This happens if the offered number is null OR the blade isn't in the basis. 
 	 * 									The blade must be covered. NO NULL numbers.
 	 */
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumber(Blade pB, T pIn) throws CladosException {
-
-		if (pIn != null & gBasis.find(pB)>=0)
-			if  (	(pIn instanceof RealF) & (getMode() == REALF)
-				| 	(pIn instanceof RealD) & (getMode() == REALD)
-				| 	(pIn instanceof ComplexF) & (getMode() == COMPLEXF)
-				| 	(pIn instanceof ComplexD) & (getMode() == COMPLEXD))
-				map.put(pB, (D) pIn);
-			else 	throw new CladosException("Coefficient passed is a different mode.");
-		else		throw new IllegalArgumentException("Offered Blade must be in the basis AND the offered number can't be null.");
-		
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumber(Blade pB, T pIn) {
+		if (pIn == null)																//Nulls aren't tolerated
+					throw new IllegalArgumentException("Offered number MUST NOT be null.");
+		if (!map.containsKey(pB))
+					throw new IllegalArgumentException("Offered Blade MUST be in the basis.");
+		if  (	!(pIn instanceof RealF) & (getMode() == REALF)
+			& 	!(pIn instanceof RealD) & (getMode() == REALD)
+			& 	!(pIn instanceof ComplexF) & (getMode() == COMPLEXF)
+			& 	!(pIn instanceof ComplexD) & (getMode() == COMPLEXD))
+					throw new IllegalArgumentException("Offered number MUST mode match.");
+		if (card != pIn.getCardinal())
+					throw new IllegalArgumentException("Offered number MUST match the Scale cardinal.");
+		map.put(pB, (D) pIn);
 		return this;
 	}
 	/**
@@ -814,65 +875,63 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @param <T> 	is a child of ProtoN used as the generic identity of the numbers.
 	 * @param pIn 	Array of ProtoN children
 	 * @return Scale after this object is modified.
-	 * @throws CladosException 
 	 * @throws IllegalArgumentException This happens if the offered array not suitable to cover the basis.
 	 * 									All blades must be covered. NO NULL numbers.
 	 */
-	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumbers(T[] pIn) throws CladosException {
+	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumbers(T[] pIn) {
 		if (pIn == null)																//Nulls aren't tolerated
 					throw new IllegalArgumentException("Offered array of coefficients MUST NOT be null.");
+		if (!Scale.validateNoNullsIncoming(pIn))										//Seriously! They aren't tolerated.
+					throw new IllegalArgumentException("Offered array of coefficients MUST NOT contain nulls.");
+		if(!Scale.validateModeIncoming(getMode(), pIn))									//Mixed mode isn't tolerated either.
+					throw new IllegalArgumentException("Offered array of coefficients MUST mode match.");
+		if (pIn.length != gBasis.getBladeCount())										//Offered array MUST cover the basis.
+					throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
 
-		IntStream	.range(0, pIn.length)
-					.filter(i -> pIn[i]==null)											//Seriously! Nulls aren't tolerated anywhere
-					.findFirst()
-					.ifPresent(i -> {throw new IllegalArgumentException("Offered array of coefficients MUST NOT contain nulls.");});
-
-		IntStream	.range(0, pIn.length)								//Mixed mode isn't tolerated either.
-					.filter(i ->	!(pIn[i] instanceof RealF & getMode() == REALF)
-								& 	!(pIn[i] instanceof RealD & getMode() == REALD)
-								& 	!(pIn[i] instanceof ComplexF & getMode() == COMPLEXF)
-								& 	!(pIn[i] instanceof ComplexD & getMode() == COMPLEXD) )
-					.findFirst()
-					.ifPresent(i -> {throw new IllegalArgumentException("Coefficients passed are different or mixed modes.");});
-
-		if (pIn.length == gBasis.getBladeCount())
-			gBasis.bladeStream().forEach(blade -> {map.put(blade, (D) pIn[gBasis.find(blade) - 1]);});
-		else		throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the basis.");
+		switch (Scale.testCardinalMatchesIncoming(card, pIn)) {
+			case 0  : throw new IllegalArgumentException("Coefficients passed are a jumbled mess of cardinals.");
+			case -1 : card = pIn[0].getCardinal();										//-1 case ALSO uses +1 action
+			case +1 : gBasis.bladeStream().forEach(blade -> {
+									setNumber(blade, pIn[gBasis.find(blade) - 1]);		//nulls checked again which is okay
+																						//the top level check stops ALL mutation.
+								});
+			default : ;
+		}
 		return this;
 	}
 
 	/**
 	 * This method sets the coefficients represented by this Scale. It accepts a map relating blades in the basis to ProtoN children. 
-	 * It checks to see if the map is of the wrong size and throws an IllegalArgumentException if so.
+	 * It checks to see if the map is of the wrong size and throws an IllegalArgumentException if so. It does NOT check
+	 * for mode consistency and nulls
 	 * <br>
 	 * NOTE this method DEEP COPIES the inbound map to disconnect the map's source ProtoN children from the ones 'put' here. 
-	 * This is the safest settor method to use when handing in information from other clados sources.
+	 * This is the safest settor for ensuring numbers are NOT reused across monads... IF ONE PAYS ATTENTION to nulls and mixed modes.
 	 * <br>
-	 * @param pInMap Inbound Map relating blades to ProtoN child numbers.
-	 * @return Scale object. Just this object after modification.
+	 * @param pInMap Inbound Map relating blades to numbers.
+	 * @return Scale after modification of the map.
 	 * @throws IllegalArgumentException This happens if the offered map does not have the same size as the basis. Good enough
 	 *                                  to ensure all blades are covered because Map doesn't allow duplicate keys.
 	 */
-	protected Scale<D> setNumbersMap(Map<Blade, D> pInMap) {
+	protected Scale<D> setMap(Map<Blade, D> pInMap) {
 		if (pInMap.size() != gBasis.getBladeCount())
 					throw new IllegalArgumentException("Offered map of coefficients MUST cover every blade in the basis.");
 
 		Map<Blade, D> mapCopy = pInMap	.entrySet()
 										.parallelStream()
-										.collect(Collectors.toMap(e -> e.getKey(), e -> FBuilder.copyOf((D) e.getValue())));
+										.collect(Collectors.toMap(	e -> e.getKey(),
+																	e -> FBuilder.copyOf(e.getValue())	)
+												);
 		map.putAll(mapCopy);
 		return this;
 	}
 
 	/**
-	 * This coefficient settor accepts an array of ProtoN children, assumes
-	 * they are in basis index order, and then inserts them into the internal map by
-	 * blade at that index offset in the amount necessary to cover ONLY the grade
-	 * suggested by the byte parameter.
+	 * This settor accepts an array of ProtoN children, assumes they are in basis index order to assign a blade of the specified grade, 
+	 * then inserts them into the map at that blade covering ONLY the grade suggested.
 	 * <br>
-	 * NOTE | Do NOT use this method if you intend the offered coefficient array to
-	 * be disconnected from this object. IT WON'T BE! If you really must use this
-	 * method that way, copy your coefficients first.
+	 * NOTE | Do NOT use this method if you intend the offered coefficient array to be disconnected from this object. IT WON'T BE! 
+	 * If you really must use this method that way, copy your coefficients first.
 	 * <br>
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @param pIn    Array of ProtoN Children
@@ -880,41 +939,39 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	protected Scale<D> setNumbersAtGrade(byte pGrade, D[] pIn) {
 		if (!gBasis.validateGradeIndex(pGrade))
-			throw new IllegalArgumentException("Offered grade must be in range of underlying basis.");
+					throw new IllegalArgumentException("Offered grade must be in range for underlying basis.");
 		if (pIn == null)
-			return this;	//Do absolutely nothing... silently... if no weights are offered.
-
-		long grdRnge = gBasis.bladeOfGradeStream(pGrade).count();
-		if (grdRnge != (long) pIn.length)
-			throw new IllegalArgumentException("Offered array must cover the blades in the suggested grade.");
+					throw new IllegalArgumentException("Offered array of coefficients MUST NOT be null.");
+		if (gBasis.bladeOfGradeStream(pGrade).count() != (long) pIn.length)
+					throw new IllegalArgumentException("Offered array of coefficients MUST cover every blade in the grade range.");
 		
-		int init = gBasis.getGradeStart(pGrade);
-		gBasis.bladeOfGradeStream(pGrade).forEach(blade -> {
-			map.put(blade, (D) pIn[gBasis.find(blade) - init - 1]);
-		});
+		switch (Scale.testCardinalMatchesIncoming(card, pIn)) {
+			case 0  : throw new IllegalArgumentException("Coefficients passed are a jumbled mess of cardinals.");
+			case -1 : throw new IllegalArgumentException("Coefficients passed MUST match the Scale cardinal.");
+			case +1 : {										//The only case we can accept requires perfect cardinal matches.
+				int init = gBasis.getGradeStart(pGrade);	//This is where the pGrade blades start
+				gBasis	.bladeOfGradeStream(pGrade)			//so stream the blades, match them with pIn[] entries,
+						.forEach(blade -> {	map.put(blade, pIn[gBasis.find(blade) - init - 1]);	} );	//and 'put' them in map.
+			}
+			default : ;
+		}
 		return this;
 	}
 
     /**
-	 * This is the compliment of a blade stream involving the scaling factors
-	 * 'multiplied' by blades in the sense of a division field over a vector space.
-	 * When forming a linear combination of blades to make a 'vector', these are the
-	 * 'numbers' that scale each direction.
+	 * This is the compliment of a blade stream involving the scaling factors 'multiplied' by blades in the sense 
+	 * of a linear combination in a vector space. When forming a linear combination of blades to make a 'vector', 
+	 * these are the 'numbers' that scale each blade.
 	 * <br>
-	 * Since the internal map can accept any of the CladosF numbers as values, there
-	 * is a cast to a 'generic' type within this method. This would normally cause
-	 * warnings by the compiler since the generic named in the internal map IS a
-	 * ProtoN child AND casting an unchecked type could fail at runtime.
+	 * Since the internal map can accept any of the CladosF numbers as values, there is a cast to a 'generic' type 
+	 * within this method. This would normally cause warnings by the compiler since the generic named in the internal 
+	 * map IS a ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br>
-	 * That won't happen here when CladosF builders are used. They can't build
-	 * anything that is NOT a ProtoN child. They can't even build a
-	 * ProtoN instance directly. Therefore, only children can arrive as the
-	 * value parameter of the 'put' function. Thus, there is no danger of a failed
-	 * cast operation... until someone creates a new ProtoN child class and
-	 * fails to update all builders.
+	 * That won't happen when CladosF builders are used because they dan't build anything that is NOT a ProtoN child. 
+	 * Scale's internal map only accepts ProtoN child classes, so there is no danger of a failed cast operation... 
+	 * until someone creates a new ProtoN child class and fails to update the builders.
 	 * <br>
-	 * @return Stream of ProtoN children that are the coefficients represented
-	 *         as values in the internal map.
+	 * @return Stream of ProtoN children that are the numbers in the internal map.
 	 */
 	protected Stream<D> weightsStream() {
 		return map.values().stream();
@@ -938,9 +995,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
 	protected Scale<D> zeroAll() {
-		gBasis.bladeStream().forEach(b -> {
-			map.put(b, FBuilder.createZERO(mode, card));
-		});
+		gBasis	.bladeStream()
+				.forEach(b -> {
+								map.put(b, FBuilder.createZERO(mode, card));
+							});
 		return this;
 	}
 
@@ -953,9 +1011,11 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 */
 	protected Scale<D> zeroAllButGrade(byte pGrade) {
 		if (gBasis.validateGradeIndex(pGrade))
-			gBasis.bladeStream().filter(blade -> blade.rank() != pGrade).forEach(blade -> {
-				map.put(blade, FBuilder.createZERO(mode, card));
-		});
+			gBasis	.bladeStream()
+					.filter(blade -> blade.rank() != pGrade)
+					.forEach(blade -> {
+										map.put(blade, FBuilder.createZERO(mode, card));
+									});
 		return this;
 	}
 

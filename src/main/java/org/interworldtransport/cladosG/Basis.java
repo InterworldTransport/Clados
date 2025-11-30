@@ -480,6 +480,11 @@ public final class Basis implements CanonicalBasis {
 	}
 
 	@Override
+	public boolean hasBlade(Blade pB) {
+		return keyIndexMap.containsKey(pB.key());
+	}
+
+	@Override
 	public int hashCode() {
 		return (int) getGradeCount();
 	}

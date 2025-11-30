@@ -72,6 +72,7 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ONE.
 	 * <br>
+	 * @param <D> a ProtoN subclass generic reference
 	 * @param pCard Cardinal to be re-used.
 	 * @return D child of ProtoN newly constructed 'one'.
 	 */
@@ -96,6 +97,7 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ONE.
 	 * <br>
+	 * @param <D> a ProtoN subclass generic reference
 	 * @param pNumber Source of the Cardinal to be re-used.
 	 * @return D child of ProtoN newly constructed 'one'.
 	 */
@@ -120,6 +122,7 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ONE.
 	 * <br>
+	 * @param <D> a ProtoN subclass generic reference
 	 * @param pCard String name of the Cardinal to be created.
 	 * @return D child of ProtoN newly constructed 'one'.
 	 */
@@ -144,6 +147,7 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ZERO.
 	 * <br>
+	 * @param <D> a ProtoN subclass generic reference
 	 * @param pCard Cardinal to be re-used.
 	 * @return D child of ProtoN newly constructed 'zero'.
 	 */
@@ -168,6 +172,7 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ZERO.
 	 * <br>
+	 * @param <D> a ProtoN subclass generic reference
 	 * @param pDiv Source of the Cardinal to be re-used.
 	 * @return D child of ProtoN newly constructed 'zero'.
 	 */
@@ -192,6 +197,7 @@ public enum CladosField {
 	 * <br>
 	 * Number created has a real value of ZERO.
 	 * <br>
+	 * @param <D> a ProtoN subclass generic reference
 	 * @param pCard String name of the Cardinal to be created.
 	 * @return D child of ProtoN newly constructed 'zero'.
 	 */

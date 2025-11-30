@@ -202,6 +202,16 @@ public interface CanonicalBasis {
 	public abstract IntStream gradeStream();
 
 	/**
+	 * This method should answer the question whether the offered blade is in the basis.
+	 * How it does so is up to the concrete class to decide, but the usual way involves
+	 * testing for keys in a list or map containing the blades of the basis.
+	 * <br>
+	 * @param pB	Blade to be checked if it is in the basis.
+	 * @return boolean answering true of false about whether the blade is in the basis
+	 */
+	public abstract boolean hasBlade(Blade pB);
+
+	/**
 	 * Similar to bladestream(), this method returns a stream of boxed long integers
 	 * that represents blade keys.
 	 * <br>
