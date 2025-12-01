@@ -310,7 +310,7 @@ public class Blade implements Comparable<Blade> {
 	 * <br>
 	 * Once set, this value should never change.
 	 */
-	private final byte maxGen; // This should be gradeCount-1 in a related basis
+	protected final byte maxGen; // This should be gradeCount-1 in a related basis
 
 	/**
 	 * This byte integer would be a single bit as it is never expected to be

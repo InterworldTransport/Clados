@@ -10,38 +10,38 @@
 			<Grade number="5" range="31-31" />
 		</Grades>
 		<Blades count="32">
-			<Blade key="0"    bitKey="0b00000" sign="1" generators="" />
-			<Blade key="1"    bitKey="0b00001" sign="1" generators="E1            " />
-			<Blade key="2"    bitKey="0b00010" sign="1" generators="   E2         " />
-			<Blade key="3"    bitKey="0b00100" sign="1" generators="      E3      " />
-			<Blade key="4"    bitKey="0b01000" sign="1" generators="         E4   " />
-			<Blade key="5"    bitKey="0b10000" sign="1" generators="            E5" />
-			<Blade key="8"    bitKey="0b00011" sign="1" generators="E1,E2         " />
-			<Blade key="9"    bitKey="0b00101" sign="1" generators="E1,   E3      " />
-			<Blade key="10"   bitKey="0b01001" sign="1" generators="E1,      E4   " />
-			<Blade key="11"   bitKey="0b10001" sign="1" generators="E1,         E5" />
-			<Blade key="15"   bitKey="0b00110" sign="1" generators="   E2,E3      " />
-			<Blade key="16"   bitKey="0b01010" sign="1" generators="   E2,   E4   " />
-			<Blade key="17"   bitKey="0b10010" sign="1" generators="   E2,      E5" />
-			<Blade key="22"   bitKey="0b01100" sign="1" generators="      E3,E4   " />
-			<Blade key="23"   bitKey="0b10100" sign="1" generators="      E3,   E5" />
-			<Blade key="29"   bitKey="0b11000" sign="1" generators="         E4,E5" />
-			<Blade key="51"   bitKey="0b00111" sign="1" generators="E1,E2,E3      " />
-			<Blade key="52"   bitKey="0b01011" sign="1" generators="E1,E2,   E4   " />
-			<Blade key="53"   bitKey="0b10011" sign="1" generators="E1,E2,      E5" />
-			<Blade key="58"   bitKey="0b01101" sign="1" generators="E1,   E3,E4   " />
-			<Blade key="59"   bitKey="0b10101" sign="1" generators="E1,   E3,   E5" />
-			<Blade key="65"   bitKey="0b11001" sign="1" generators="E1,      E4,E5" />
-			<Blade key="94"   bitKey="0b01110" sign="1" generators="   E2,E3,E4   " />
-			<Blade key="95"   bitKey="0b10110" sign="1" generators="   E2,E3,   E5" />
-			<Blade key="101"  bitKey="0b11010" sign="1" generators="   E2,   E4,E5" />
-			<Blade key="137"  bitKey="0b11100" sign="1" generators="      E3,E4,E5" />
-			<Blade key="310"  bitKey="0b01111" sign="1" generators="E1,E2,E3,E4   " />
-			<Blade key="311"  bitKey="0b10111" sign="1" generators="E1,E2,E3,   E5" />
-			<Blade key="317"  bitKey="0b11011" sign="1" generators="E1,E2,   E4,E5" />
-			<Blade key="353"  bitKey="0b11101" sign="1" generators="E1,   E3,E4,E5" />
-			<Blade key="569"  bitKey="0b11110" sign="1" generators="   E2,E3,E4,E5" />
-			<Blade key="1865" bitKey="0b11111" sign="1" generators="E1,E2,E3,E4,E5" />
+			<Blade key="0"    bitKey="0b00000" generators="" />
+			<Blade key="1"    bitKey="0b00001" generators="E1            " />
+			<Blade key="2"    bitKey="0b00010" generators="   E2         " />
+			<Blade key="3"    bitKey="0b00100" generators="      E3      " />
+			<Blade key="4"    bitKey="0b01000" generators="         E4   " />
+			<Blade key="5"    bitKey="0b10000" generators="            E5" />
+			<Blade key="8"    bitKey="0b00011" generators="E1,E2         " />
+			<Blade key="9"    bitKey="0b00101" generators="E1,   E3      " />
+			<Blade key="10"   bitKey="0b01001" generators="E1,      E4   " />
+			<Blade key="11"   bitKey="0b10001" generators="E1,         E5" />
+			<Blade key="15"   bitKey="0b00110" generators="   E2,E3      " />
+			<Blade key="16"   bitKey="0b01010" generators="   E2,   E4   " />
+			<Blade key="17"   bitKey="0b10010" generators="   E2,      E5" />
+			<Blade key="22"   bitKey="0b01100" generators="      E3,E4   " />
+			<Blade key="23"   bitKey="0b10100" generators="      E3,   E5" />
+			<Blade key="29"   bitKey="0b11000" generators="         E4,E5" />
+			<Blade key="51"   bitKey="0b00111" generators="E1,E2,E3      " />
+			<Blade key="52"   bitKey="0b01011" generators="E1,E2,   E4   " />
+			<Blade key="53"   bitKey="0b10011" generators="E1,E2,      E5" />
+			<Blade key="58"   bitKey="0b01101" generators="E1,   E3,E4   " />
+			<Blade key="59"   bitKey="0b10101" generators="E1,   E3,   E5" />
+			<Blade key="65"   bitKey="0b11001" generators="E1,      E4,E5" />
+			<Blade key="94"   bitKey="0b01110" generators="   E2,E3,E4   " />
+			<Blade key="95"   bitKey="0b10110" generators="   E2,E3,   E5" />
+			<Blade key="101"  bitKey="0b11010" generators="   E2,   E4,E5" />
+			<Blade key="137"  bitKey="0b11100" generators="      E3,E4,E5" />
+			<Blade key="310"  bitKey="0b01111" generators="E1,E2,E3,E4   " />
+			<Blade key="311"  bitKey="0b10111" generators="E1,E2,E3,   E5" />
+			<Blade key="317"  bitKey="0b11011" generators="E1,E2,   E4,E5" />
+			<Blade key="353"  bitKey="0b11101" generators="E1,   E3,E4,E5" />
+			<Blade key="569"  bitKey="0b11110" generators="   E2,E3,E4,E5" />
+			<Blade key="1865" bitKey="0b11111" generators="E1,E2,E3,E4,E5" />
 		</Blades>
 	</Basis>
 	<ProductTable rows="32">

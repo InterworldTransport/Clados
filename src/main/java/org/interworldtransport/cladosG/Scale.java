@@ -726,21 +726,74 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
-	 * This is an exporter of internal details to XML. It exists to bypass certain
-	 * security concerns related to Java serialization of objects.
+	 * This is a short exporter of internal details to XML. It exists to bypass certain security concerns related to Java serialization.
 	 * <br>
 	 * @param pS The Scale oject to be output as XML
-	 * @param indent String of 'tab' characters to get spacing right for human
-	 *               readable XML output.
-	 * @return String formatted as XML containing information about the Algebra
+	 * @param indent String of 'tab' characters to get spacing right for human readable XML output.
+	 * @return String formatted as XML containing information about the Scale
 	 */
 	public final static String toXMLString(Scale<?> pS, String indent) {
-
-		StringBuilder rB = new StringBuilder(indent).append("<Scales mode=\""+pS.getMode()+"\" pans=\"").append(pS.map.size()).append("\">\n");
+		StringBuilder rB = new StringBuilder(indent);		
+		rB	.append("<Scales mode=\""+pS.getMode()+"\" ");
+		rB	.append("pans=\""+pS.map.size()+"\" ")
+			.append("cardinal="+pS.getCardinal().getUnit()+"\">\n");
 
 		pS.gBasis.bladeStream().forEach(blade -> {
-			rB.append(indent).append("\t\t\t<Pair>\n");
-			rB.append(indent).append(Blade.toXMLString(blade, "\t\t\t\t"));
+			rB	.append(indent+"\t")
+				.append("<Pair bitKey=\"0b");
+			int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
+			while (pad>0) {
+				rB.append("0");
+				pad--;
+			}
+			rB	.append(Integer.toBinaryString(blade.bitKey()));
+			//rB	.append("\" cardinal=\""+pS.map.get(blade).getCardinalString());
+			rB	.append("\" ");
+			
+			switch (pS.getMode()){
+				case REALF:
+					rB	.append("realvalue=\""+((RealF)pS.map.get(blade)).getReal());
+					break;
+				case REALD:
+					rB	.append("realvalue=\""+((RealD)pS.map.get(blade)).getReal());
+					break;
+				case COMPLEXF:
+					rB	.append("realvalue=\""+((ComplexF)pS.map.get(blade)).getReal())
+						.append("\" imgvalue=\""+((ComplexF)pS.map.get(blade)).getImg());
+					break;
+				case COMPLEXD:
+					rB	.append("realvalue=\""+((ComplexD)pS.map.get(blade)).getReal())
+						.append("\" imgvalue=\""+((ComplexD)pS.map.get(blade)).getImg());
+					break;
+				default:
+					break;
+				
+			}
+			rB	.append("\" />\n");
+		});
+		rB	.append(indent)
+			.append("</Scales>\n");
+		return rB.toString();
+	}
+
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain security concerns related to Java serialization.
+	 * <br>
+	 * @param pS The Scale oject to be output as XML
+	 * @param indent String of 'tab' characters to get spacing right for human readable XML output.
+	 * @return String formatted as XML containing information about the Scale
+	 */
+	public final static String toXMLFullString(Scale<?> pS, String indent) {
+		StringBuilder rB = new StringBuilder(indent);		
+		rB	.append("<Scales mode=\""+pS.getMode()+"\" pans=\"")
+			.append(pS.map.size())
+			.append("\">\n");
+
+		pS.gBasis.bladeStream().forEach(blade -> {
+			rB	.append(indent)
+				.append("\t\t\t<Pair>\n");
+			rB	.append(indent)
+				.append(Blade.toXMLString(blade, "\t\t\t\t"));
 			switch (pS.getMode()){
 				case COMPLEXD -> {rB.append(indent + "\t\t\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
 				case COMPLEXF -> {rB.append(indent + "\t\t\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
@@ -748,10 +801,9 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 				case REALF -> 	{rB.append(indent + "\t\t\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
 				default -> 		{rB.append(indent + "\t\t\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
 			}	
-			rB.append(indent).append("\t\t\t</Pair>\n");
+			rB	.append(indent).append("\t\t\t</Pair>\n");
 		});
-
-		rB.append(indent).append("\t\t</Scales>\n");
+		rB	.append(indent).append("\t\t</Scales>\n");
 		return rB.toString();
 	}
 

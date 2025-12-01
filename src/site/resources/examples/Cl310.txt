@@ -11,22 +11,22 @@
 				<Grade number="4" range="15-15" />
 			</Grades>
 			<Blades count="16">
-				<Blade key="0" bitKey="0b0000" sign="1" generators="" />
-				<Blade key="1" bitKey="0b0001" sign="1" generators="E1" />
-				<Blade key="2" bitKey="0b0010" sign="1" generators="E2" />
-				<Blade key="3" bitKey="0b0100" sign="1" generators="E3" />
-				<Blade key="4" bitKey="0b1000" sign="1" generators="E4" />
-				<Blade key="7" bitKey="0b0011" sign="1" generators="E1,E2" />
-				<Blade key="8" bitKey="0b0101" sign="1" generators="E1,E3" />
-				<Blade key="9" bitKey="0b1001" sign="1" generators="E1,E4" />
-				<Blade key="13" bitKey="0b0110" sign="1" generators="E2,E3" />
-				<Blade key="14" bitKey="0b1010" sign="1" generators="E2,E4" />
-				<Blade key="19" bitKey="0b1100" sign="1" generators="E3,E4" />
-				<Blade key="38" bitKey="0b0111" sign="1" generators="E1,E2,E3" />
-				<Blade key="39" bitKey="0b1011" sign="1" generators="E1,E2,E4" />
-				<Blade key="44" bitKey="0b1101" sign="1" generators="E1,E3,E4" />
-				<Blade key="69" bitKey="0b1110" sign="1" generators="E2,E3,E4" />
-				<Blade key="194" bitKey="0b1111" sign="1" generators="E1,E2,E3,E4" />
+				<Blade key="0" bitKey="0b0000" generators="" />
+				<Blade key="1" bitKey="0b0001" generators="E1" />
+				<Blade key="2" bitKey="0b0010" generators="E2" />
+				<Blade key="3" bitKey="0b0100" generators="E3" />
+				<Blade key="4" bitKey="0b1000" generators="E4" />
+				<Blade key="7" bitKey="0b0011" generators="E1,E2" />
+				<Blade key="8" bitKey="0b0101" generators="E1,E3" />
+				<Blade key="9" bitKey="0b1001" generators="E1,E4" />
+				<Blade key="13" bitKey="0b0110" generators="E2,E3" />
+				<Blade key="14" bitKey="0b1010" generators="E2,E4" />
+				<Blade key="19" bitKey="0b1100" generators="E3,E4" />
+				<Blade key="38" bitKey="0b0111" generators="E1,E2,E3" />
+				<Blade key="39" bitKey="0b1011" generators="E1,E2,E4" />
+				<Blade key="44" bitKey="0b1101" generators="E1,E3,E4" />
+				<Blade key="69" bitKey="0b1110" generators="E2,E3,E4" />
+				<Blade key="194" bitKey="0b1111" generators="E1,E2,E3,E4" />
 			</Blades>
 		</Basis>
 		<ProductTable rows="16">

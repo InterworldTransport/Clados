@@ -61,7 +61,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>4.0.0-M13</version>
+				<version>3.21.0</version>
 				<executions>
 					<execution>
 						<id>attach-site-jar</id>
@@ -142,7 +142,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.4</version>
 				<configuration>
-					<argLine>-Xmx16G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
+					<argLine>-Xmx20G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
 					<excludes>
 						<exclude>**/Heat*.java</exclude>
 					</excludes>
@@ -153,11 +153,6 @@
 
 	<reporting>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>4.0.0-M13</version>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
@@ -194,5 +189,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
 	
 </project>

@@ -342,7 +342,7 @@ public class Monad implements Modal {
 			.append("\" >\n");
 		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
 		rB.append(indent)
-			.append(Scale.toXMLString(pM.scales, "\t"));
+			.append(Scale.toXMLFullString(pM.scales, "\t"));
 		rB.append(indent + "</Monad>\n");
 		return rB.toString();
 	}
