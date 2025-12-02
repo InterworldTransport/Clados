@@ -31,17 +31,15 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 /**
- * This interface represents the 'contract' obeyed by a canonical basis in
- * cladosG. Most of the interface focuses upon gettor methods that return blade
- * information, but there are a few convenience methods too that support grade
- * information and ranges as detected by the number of generators found in a
- * blade. Finally there are also a few methods for dealing with keys, basis size
- * validation, and XML output.
+ * This interface represents the 'contract' obeyed by a canonical basis in cladosG. 
+ * Most of the interface focuses upon gettor methods that return blade information, 
+ * but there are a few convenience methods too that support grade information and 
+ * ranges as detected by the number of generators found in a blade. Finally there 
+ * are also a few methods for dealing with keys and basis size validation.
  * <br><br>
- * The farther one gets from basic methods dealing with blades and span, the
- * more one is wandering off into conveniences. The various keys matter, but as
- * computational short-cuts for product tables having to deal with very large
- * vector spaces.
+ * The farther one gets from basic methods dealing with blades and span, the more 
+ * one is wandering off into conveniences. The various keys matter, but as computational 
+ * short-cuts for product tables having to deal with very large vector spaces.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ

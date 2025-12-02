@@ -61,7 +61,7 @@ import static org.interworldtransport.cladosG.CladosConstant.*;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class Blade implements Comparable<Blade> {
+public class Blade implements CanonicalBlade, Comparable<Blade> {
 	/**
 	 * Nothing fancy here. Just giving a name to -1 for use when flipping signs when
 	 * generators are transposed. This is to make it clear WHY a sign flip occurs.
@@ -156,18 +156,6 @@ public class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * Simple grade tester. Does the Blade contain 'n' generators?
-	 * <br>
-	 * @param blade Blade to be tested
-	 * @param n     grade value
-	 * @return TRUE if the blade has a number of generators matching the grade value
-	 *         being tested. FALSE otherwise.
-	 */
-	public final static boolean isNBlade(Blade blade, byte n) {
-		return blade.rank() == n;
-	}
-
-	/**
 	 * Simple grade tester. Does the Blade contain ALL generators for the implied
 	 * container basis?
 	 * <br>
@@ -179,7 +167,7 @@ public class Blade implements Comparable<Blade> {
 	 *         FALSE otherwise.
 	 */
 	public final static boolean isPScalar(Blade blade) {
-		return (blade.rank() == blade.maxGenerator());
+		return CanonicalBlade.isNBlade(blade, blade.maxGenerator());
 	}
 
 	/**
@@ -192,7 +180,7 @@ public class Blade implements Comparable<Blade> {
 	 * @return TRUE if the blade has no generators. FALSE otherwise.
 	 */
 	public final static boolean isScalar(Blade blade) {
-		return blade.getGenerators().isEmpty();
+		return CanonicalBlade.isNBlade(blade, (byte) 0);
 	}
 
 	/**
@@ -222,8 +210,7 @@ public class Blade implements Comparable<Blade> {
 		rB	.append(Integer.toBinaryString(blade.bitKey()))
 			.append("\" generators=\"");
 
-		blade	.getGenerators()
-				.stream()
+		blade	.generatorStream()
 				.forEachOrdered(gen -> rB.append(gen.ord).append(","));
 
 		if (blade.rank() > 0)
@@ -259,8 +246,7 @@ public class Blade implements Comparable<Blade> {
 		rB	.append(Integer.toBinaryString(blade.bitKey()))
 			.append("\" generators=\"");
 
-		blade	.getGenerators()
-				.stream()
+		blade	.generatorStream()
 				.forEachOrdered(g -> rB.append(g.toString()).append(","));
 
 		if (blade.getGenerators().size() > 0)
@@ -558,19 +544,30 @@ public class Blade implements Comparable<Blade> {
 	}
 
 	/**
-	 * This is just a getter method named to support calls from within streams.
+	 * This is just a getter method that returns the EnumSet of generators. It gets
+	 * used mostly to populate lists, maps, and in export functions.
 	 * <br>
-	 * @return key Returns the blade's ArrayList of boxed bytes.
+	 * @return key Returns the blade's enumerated set of generators.
 	 */
 	protected EnumSet<Generator> getGenerators() {
 		return genSet;
+	}
+
+	/**
+	 * This is the streaming version of the getGenerators() method. Consumers of a 
+	 * list of the generators often work with streams of them.
+	 * <br>
+	 * @return Stream of generators used in the blade.
+	 */
+	public Stream<Generator> generatorStream() {
+		return genSet.stream();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 67;
 		int result = 1;
-		result = prime * result + (int) (key ^ (key >>> 32));
+		result = prime + (int) (key ^ (key >>> 32));
 		result = prime * result + sign;
 		return result;
 	}

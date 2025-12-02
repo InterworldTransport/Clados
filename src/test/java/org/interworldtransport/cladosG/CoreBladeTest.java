@@ -207,8 +207,8 @@ class CoreBladeTest {
 		tB15.add(Generator.EC);
 		assertTrue(tB15.rank() == 14);
 		assertTrue(tB15.key() == previousKey);
-		assertTrue(Blade.isNBlade(tB15, (byte) 14));
-		assertFalse(Blade.isNBlade(tB10, (byte) 9));
+		assertTrue(CanonicalBlade.isNBlade(tB15, (byte) 14));
+		assertFalse(CanonicalBlade.isNBlade(tB10, (byte) 9));
 	}
 	
 	@Test

@@ -115,10 +115,10 @@ public final class BladeDuet {
 		maxGen = pB1.maxGenerator();
 		// assert (maxGen > 0);
 		bladeDuet = new ArrayList<>(2 * maxGen);
-		pB1.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
+		pB1.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
 		sign = pB1.sign();
 		bitKeyLeft = pB1.bitKey();
-		pB2.getGenerators().stream().forEachOrdered(g -> bladeDuet.add(g));
+		pB2.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
 		sign *= pB2.sign();
 		bitKeyRight = pB2.bitKey();
 	}

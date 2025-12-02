@@ -27,7 +27,7 @@ class CoreBladeDuetTest {
 	@Test
 	void testStatic() throws BadSignatureException {
 		out = BladeDuet.simplify(firstB, secondB, sig);
-		assertTrue(Blade.isNBlade(out, (byte) 1));
+		assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
 		out = BladeDuet.simplify(firstB, firstB, sig);
 		assertTrue(Blade.isScalar(out));
 	}
@@ -48,7 +48,7 @@ class CoreBladeDuetTest {
 		Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
 		assertTrue(together.maxGenerator() == (byte) 15);
 		assertFalse(Blade.isScalar(together));
-		assertTrue(Blade.isNBlade(together, (byte) 1));
+		assertTrue(CanonicalBlade.isNBlade(together, (byte) 1));
 		assertTrue(together.key() == singlet.key());
 	}
 

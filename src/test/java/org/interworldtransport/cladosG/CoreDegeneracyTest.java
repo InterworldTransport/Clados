@@ -58,7 +58,7 @@ public class CoreDegeneracyTest {
             assertTrue(out.sign() == 0);
 
             out = BladeDuet.simplify(firstB, secondB, euclidsig4);
-            assertTrue(Blade.isNBlade(out, (byte) 1));
+            assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
             assertTrue(out.sign() == -1);               //The shared trivector squares to -1
         }
 
@@ -86,7 +86,7 @@ public class CoreDegeneracyTest {
             assertTrue(out.sign() == 0);
 
             out = BladeDuet.simplify(firstB, thirdB, euclidsig5);
-            assertTrue(Blade.isNBlade(out, (byte) 2)); //No degeneracy
+            assertTrue(CanonicalBlade.isNBlade(out, (byte) 2)); //No degeneracy
             assertTrue(out.sign() == -1);
         }
 
@@ -114,7 +114,7 @@ public class CoreDegeneracyTest {
             assertTrue(out.sign() == 0);
 
             out = BladeDuet.simplify(firstB, thirdB, euclidsig5);
-            assertTrue(Blade.isNBlade(out, (byte) 2)); //No degeneracy
+            assertTrue(CanonicalBlade.isNBlade(out, (byte) 2)); //No degeneracy
             assertTrue(out.sign() == -1);
         }
     }
