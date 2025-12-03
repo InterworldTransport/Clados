@@ -659,7 +659,7 @@ public class ComplexD extends ProtoN implements Field, Normalizable {
 	 * @return String
 	 */
 	public final static String toXMLString(ComplexD pN) {
-		return ("<ComplexD cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" imgvalue=\""
+		return ("<ComplexD cardinal=\"" + pN.getCardinalString() + "\" real=\"" + pN.getReal() + "\" img=\""
 				+ pN.getImg() + "\"/>");
 	}
 }

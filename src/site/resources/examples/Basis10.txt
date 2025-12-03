@@ -1,4 +1,4 @@
-<Basis>
+<Basis UUID="cb77eeff-fe96-4645-add3-13c74892e691">
 	<Grades count="11">
 		<Grade number="0" range="0-0" />
 		<Grade number="1" range="1-10" />

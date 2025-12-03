@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -113,7 +114,7 @@ import static org.interworldtransport.cladosG.CladosConstant.*;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public final class Basis implements CanonicalBasis {
+public final class Basis implements CanonicalBasis, Comparable<Basis> {
 
 	/**
 	 * This is just a factory method to help name a particular constructor. It is
@@ -231,6 +232,15 @@ public final class Basis implements CanonicalBasis {
 	private final TreeMap<Long, Integer> keyIndexMap;
 
 	/**
+	 * Unique string (hopefully) that provides a machine readable name more likely
+	 * to be unique. Used by apps that need more than the human readable name to
+	 * avoid duplicating objects unnecessarily.
+	 * <br>
+	 * 
+	 */
+	protected final String uuid;
+
+	/**
 	 * This is the basic constructor. It takes the number of generators as its only
 	 * parameter. It can be instantiated on its own for demonstration purposes, but
 	 * it has no awareness of the addition and multiplication operations in an
@@ -251,6 +261,7 @@ public final class Basis implements CanonicalBasis {
 	 * @param pGen Generator that is the largest one in the set of generators to use to create the basis
 	 */
 	public Basis(Generator pGen) {
+		uuid = UUID.randomUUID().toString();
 		if (pGen != null) {
 			gradeCount = (byte) (pGen.ord + 1);									//Initializing starts here
 			gradeList = new ArrayList<Integer>(gradeCount);						//Exactly as many entries as basis grades
@@ -507,14 +518,16 @@ public final class Basis implements CanonicalBasis {
 	public static String toXMLString(Basis pB, String indent) {
 		if (indent == null)
 			indent = "\t\t\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Basis>\n");
+		StringBuilder rB = new StringBuilder(indent + "<Basis UUID=\"");
+		rB	.append(pB.uuid)
+			.append("\">\n");
 		// ------------------------------------------------------------------
 		rB.append(indent)
 			.append("\t<Grades count=\"")
 			.append(pB.getGradeCount() + "\">\n");
 		for (int k = 0; k <= pB.gradeCount - 2; k++) // loop to get all but the highest grade
-			rB.append(indent)
-				.append("\t\t<Grade number=\"")
+			rB	.append(indent)
+				.append("\t\t<Grade rank=\"")
 				.append(k)
 				.append("\" range=\"")
 				.append(pB.gradeList.get(k))
@@ -522,8 +535,8 @@ public final class Basis implements CanonicalBasis {
 				.append((pB.gradeList.get(k + 1) - 1))
 				.append("\" />\n");
 		// Handle last grade separate. There is no k+1 index for the largest grade
-		rB.append(indent)
-			.append("\t\t<Grade number=\"")
+		rB	.append(indent)
+			.append("\t\t<Grade rank=\"")
 			.append((pB.getGradeCount() - 1))
 			.append("\" range=\"")
 			.append(pB.gradeList.get(pB.gradeCount - 1))
@@ -533,16 +546,16 @@ public final class Basis implements CanonicalBasis {
 		rB.append(indent)
 			.append("\t</Grades>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent)
+		rB	.append(indent)
 			.append("\t<Blades count=\"")
 			.append(pB.getBladeCount())
 			.append("\">\n");
 		for (int k = 0; k < pB.bladeList.size(); k++) // Appending blades
-			rB.append(Blade.toXMLString(pB.bladeList.get(k), indent + "\t\t"));
-		rB.append(indent)
+			rB	.append(Blade.toXMLString(pB.bladeList.get(k), indent + "\t\t"));
+		rB	.append(indent)
 			.append("\t</Blades>\n");
 		// ------------------------------------------------------------------
-		rB.append(indent)
+		rB	.append(indent)
 			.append("</Basis>\n");
 		return rB.toString();
 	}
@@ -573,4 +586,15 @@ public final class Basis implements CanonicalBasis {
 		return (pIn >= SCALARGRADE & pIn < getGradeCount());
 	}
 
+	/**
+	 * This is probably good enough for comparison. If two bases have the same grade count
+	 * they are the same. I'm NOT trying to re-use Basis as a frame afterall.
+	 * <br><br>
+	 * @param pIn Basis the other Basis to compare to this one
+	 * @return int comparison of the two Bases
+	 */
+	@Override
+	public int compareTo(Basis pIn) {
+		return (getGradeCount() < pIn.getGradeCount()) ? -1 : (getGradeCount() > pIn.getGradeCount() ? 1 : 0);
+	}
 }

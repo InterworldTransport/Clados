@@ -570,6 +570,6 @@ public class RealD extends ProtoN implements Field, Normalizable {
 	 * @return String
 	 */
 	public final static String toXMLString(RealD pN) {
-		return ("<RealD cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" />");
+		return ("<RealD cardinal=\"" + pN.getCardinalString() + "\" real=\"" + pN.getReal() + "\" />");
 	}
 }

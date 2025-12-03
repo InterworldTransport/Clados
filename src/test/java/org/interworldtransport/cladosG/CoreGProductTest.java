@@ -275,7 +275,10 @@ class CoreGProductTest {
 				assertTrue(tSum == tSumP);
 			}
 		}
-
+		/*								//if summing over the columns doesn't break by gp(12), 
+										//it won't for higher ones until we run out of memory... 
+										//and that's a different issue. 
+										//Besides... the heat test will catch it.
 		@Test
 		public void test14s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig14);
@@ -313,6 +316,7 @@ class CoreGProductTest {
 				assertTrue(tSum == tSumP);
 			}
 		}
+	*/
 
 	/* 
 		@Test

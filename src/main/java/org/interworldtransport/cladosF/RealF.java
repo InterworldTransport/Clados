@@ -569,6 +569,6 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * @return String
 	 */
 	public final static String toXMLString(RealF pN) {
-		return ("<RealF cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" />");
+		return ("<RealF cardinal=\"" + pN.getCardinalString() + "\" real=\"" + pN.getReal() + "\" />");
 	}
 }

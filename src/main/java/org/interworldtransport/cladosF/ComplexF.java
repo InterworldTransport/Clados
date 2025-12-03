@@ -661,7 +661,7 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 * @return String
 	 */
 	public final static String toXMLString(ComplexF pN) {
-		return ("<ComplexF cardinal=\"" + pN.getCardinalString() + "\" realvalue=\"" + pN.getReal() + "\" imgvalue=\""
+		return ("<ComplexF cardinal=\"" + pN.getCardinalString() + "\" real=\"" + pN.getReal() + "\" img=\""
 				+ pN.getImg() + "\"/>");
 	}
 }

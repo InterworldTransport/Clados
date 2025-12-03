@@ -131,7 +131,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 * <br>
 	 * 
 	 */
-	protected String uuid;
+	protected final String uuid;
 
 	/**
 	 * This is the constructor that assumes a full Algebra has already been

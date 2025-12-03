@@ -1,6 +1,8 @@
 package org.interworldtransport.cladosG;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,14 +108,14 @@ class HeatGProductTest {
 
 	@Test
 	public void testGen15() throws BadSignatureException {
-		a0 = new GProduct("+++-+++-+++-+++");
-		assertNotNull(a0);
+		assertDoesNotThrow(() -> new GProduct("+++-+++-+++-+++"));
+		//a0 = new GProduct("+++-+++-+++-+++");
+		//assertNotNull(a0);
 	}
-/*
+
 	@Test
 	public void testGen16() throws BadSignatureException {
-		a0 = new GProduct("-+++-+++-+++-+++");
-		assertNotNull(a0);
+		assertThrows(BadSignatureException.class, () -> new GProduct("-+++-+++-+++-+++"));
 	}
-*/
+
 }

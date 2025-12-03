@@ -286,5 +286,6 @@ class CoreBasisTest {
 		assertTrue(xml != null);
 		xml = Basis.toXMLString(tBasis4, null);
 		assertTrue(xml != null);
+		//System.out.println(xml);
 	}
 }
