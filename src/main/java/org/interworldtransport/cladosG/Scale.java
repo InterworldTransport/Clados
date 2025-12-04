@@ -35,66 +35,49 @@ import org.interworldtransport.cladosF.*;
 import org.interworldtransport.cladosFExceptions.*;
 
 /**
- * This class contains cladosF numbers that act together as the coefficients of
- * a monad. They are all children of ProtoN and implement Field, so they
- * have both a sense of 'units' and support basic arithmetic operations. Which
- * numbers are contained internally, therefore, is tracked by two private
- * elements. One contains a reference to a Cardinal that all the numbers should
- * share. The other is a reference two one of the CladosField elements so we
- * know whether this Scale is expected to contain real or complex numbers and at
- * what level of floating point precision. Access to the two private elements is
- * managed by their 'get' methods. getCardinal() and getMode(). There are set
- * methods for them too, but they are package protected methods that should not
- * be handled much by developers of physical models.
+ * This class contains cladosF numbers that act together as the coefficients of a monad. They are all children of 
+ * ProtoN and implement Field, so they have both a sense of 'units' and support basic arithmetic operations. Which
+ * numbers are contained internally, therefore, is tracked by two private elements. One contains a reference to a 
+ * Cardinal that all the numbers should share. The other is a reference two one of the CladosField elements so we
+ * know whether this Scale is expected to contain real or complex numbers and at what level of floating point 
+ * precision. Access to the two private elements is managed by their 'get' methods. getCardinal() and getMode(). 
+ * There are set methods for them too, but they are package protected methods that should not be handled much by 
+ * developers of physical models.
  * <br><br>
- * The data structure used to represent 'coefficients' used to be a fixed array
- * that had the same length as the number of blades in a monad's basis. That has
- * been modernized to an IdentityHashMap contained within this class. The basis
- * against which the map is applicable can be referenced by another private
- * element, but shouldn't be manipulated once set. The private element is
- * finalized.
+ * The data structure used to represent 'coefficients' used to be a fixed array that had the same length as the 
+ * number of blades in a monad's basis. That has been modernized to an IdentityHashMap contained within this class. 
+ * The basis against which the map is applicable can be referenced by another private element, but shouldn't be 
+ * manipulated once set. The private element is finalized.
  * <br><br>
- * An IdentityHashMap was used instead of a simpler HashMap in order to get
- * reference equality between map keys instead of object equality. Map Keys are
- * Blades from the basis, so reference equality is the correct expectation when
- * comparing keys. Typical use of keys from the map occurs with streams that
- * effectively iterate through the blades for access to coefficients in the
- * encompassing vector space. The information within a blade is far less
+ * An IdentityHashMap was used instead of a simpler HashMap in order to get reference equality between map keys 
+ * instead of object equality. Map Keys are Blades from the basis, so reference equality is the correct expectation 
+ * when comparing keys. Typical use of keys from the map occurs with streams that effectively iterate through the 
+ * blades for access to coefficients in the encompassing vector space. The information within a blade is far less
  * important than which blade it is, thus reference equality is what is needed.
  * <br><br>
- * Map Values are CladosF numbers like RealF or ComplexD. Because they are
- * objects instead of primitives, they behave much like Java's boxed primitives.
- * In fact, they would BE those boxed primitives if not for the need to track
- * units in physical models. For example, one meter is not one second. No
- * equality test should pass.
+ * Map Values are CladosF numbers like RealF or ComplexD. Because they are objects instead of primitives, they 
+ * behave much like Java's boxed primitives. In fact, they would BE those boxed primitives if not for the need to 
+ * track units in physical models. For example, one meter is not one second. No equality test should pass.
  * <br><br>
- * Because values are objects, care must be taken once one has a reference to
- * them. Any reference to one enables a developer to change it without the Scale
- * or Monad knowing. This is the hydra monster named Mutability. It IS a danger
- * here. Many of Scale's methods copy inbound numbers to avoid altering them,
- * but some do not INTENTIONALLY.
+ * Because values are objects, care must be taken once one has a reference to them. Any reference to one enables a 
+ * developer to change it without the Scale or Monad knowing. This is the hydra monster named Mutability. It IS a 
+ * danger here. Many of Scale's methods copy inbound numbers to avoid altering them, but some do not INTENTIONALLY.
  * <br><br>
- * 1. Coefficient settors that accept arrays do NOT copy values before placing
- * them in the internal map. BEWARE BEWARE BEWARE
+ * 1. Coefficient settors that accept arrays do NOT copy values before placing them in the internal map. BEWARE BEWARE
  * <br><br>
- * 2. Put() does not copy the incoming value before placing it in the internal
- * map. Again... BEWARE.
+ * 2. Put() does not copy the incoming value before placing it in the internal map. Again... BEWARE.
  * <br><br>
- * 3. Coefficient settors that accept maps DO COPY values before placing them in
- * the internal map. Any object from which values are taken to be used here are
- * safe from the hydra.
+ * 3. Coefficient settors that accept maps DO COPY values before placing them in the internal map. Any object 
+ * from which values are taken to be used here are safe from the hydra.
  * <br><br>
- * 4. All gettors for coefficients provide direct references to values in the
- * map. The most common use is INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA.
- * The safest way to use them is within streams / lambdas.
+ * 4. All gettors for coefficients provide direct references to values in the map. The most common use is 
+ * INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA. The safest way to use them is within streams / lambdas.
  * <br><br>
- * GENERAL NOTE | Many of the methods for Scale look a lot like Monad, so one can
- * reasonably wonder why all the extra stuff in Monad when Scale looks enough like 
- * a tuple to represent things. The primary difference is that Scale contains only 
- * the coefficients and references a basis like what we got used to as students. 
- * That's not enough because a basis is only enough to represent linear combinations
- * for a vector space. Other geometric meanings aren't in the basis. They are in the
- * product table. Combining product table and basis into an 'algebra' gives a MUCH 
+ * GENERAL NOTE | Many of the methods for Scale look a lot like Monad, so one can reasonably wonder why all the 
+ * extra stuff in Monad when Scale looks enough like a tuple to represent things. The primary difference is that Scale 
+ * contains only the coefficients and references a basis like what we got used to as students. That's not enough 
+ * because a basis is only enough to represent linear combinations for a vector space. Other geometric meanings aren't 
+ * in the basis. They are in the product table. Combining product table and basis into an 'algebra' gives a MUCH 
  * better description of a 'tuple's' reference frame than a vector space.
  * <br><br>
  * 
@@ -105,49 +88,42 @@ import org.interworldtransport.cladosFExceptions.*;
  */
 public final class Scale<D extends ProtoN & Field & Normalizable> implements Unitized, Modal {
 	/**
-	 * When entries appear in the internal map, they should all share the same
-	 * cardinal. That cardinal is referenced here where it gives meaning to the weights
-	 * in this scale. This is WHY Scale implments Unitized.
+	 * When entries appear in the internal map, they should all share the same cardinal. That cardinal is 
+	 * referenced here where it gives meaning to the weights in this scale. This is WHY Scale implments Unitized.
 	 */
 	private Cardinal card;
 
 	/**
-	 * This basis is the reference against which these scaling weights make sense. 
-	 * For example, a list of 16 real floats is just a tuple. When coupled to a basis, 
-	 * they become weights for a sum of geometry composing a multivector.
-	 * <br>
-	 * Once set, the applicable basis should not change. Scales make sense
-	 * RELATIVE to a basis. Never on their own.
+	 * This basis is the reference against which these scaling weights make sense. For example, a list 
+	 * of 16 real floats is just a tuple. When coupled to a basis, they become weights for a sum of 
+	 * geometry composing a multivector.
+	 * <br><br>
+	 * Once set, the applicable basis should not change. Scales make sense RELATIVE to a basis. Never on their own.
 	 */
 	private final Basis gBasis;
 
 	/**
-	 * This tree map is that actual list of weights mapped by their applicable blade.
-	 * In use, one calls the Scale's get(Blade) to get a generic that happens to be 
-	 * a CladosF.ProtoN child. One can also call a number of specialized 
-	 * gettors to get weights for well named blades.
-	 * <br>
-	 * This feature used to be a simple array of particular children of ProtoN,
-	 * but that made for several different... and mostly related implementations of Scale
-	 * or of burying Scale in Monad and maintaining several mostly related versions 
-	 * of those. Using a map like this reduces the family of objects in CladosG at
-	 * the cost of swapping data structures from an array to a map.
-	 * <br>
-	 * This feature ALSO used to be a hash map (java's IdentityHashMap), but hash maps
-	 * don't ensure the extraction of values arrive in any particular order. That makes
-	 * a mess of the design where streams are used to deliver pieces of geometry or 
-	 * numbers to lambda functions. If the weights storied in this map emerge in 
-	 * unpredictable ways, then all operations must act on blades AND numbers which 
-	 * we are trying to avoid. Getting a predictable order (from a TreeMap) comes 
-	 * at a small performance cost that simply must be paid.
+	 * This tree map is that actual list of weights mapped by their applicable blade. In use, one calls the 
+	 * Scale's get(Blade) to get a generic that happens to be a CladosF.ProtoN child. One can also call a 
+	 * number of specialized gettors to get weights for well named blades.
+	 * <br><br>
+	 * This feature used to be a simple array of particular children of ProtoN, but that made for several 
+	 * different... and mostly related implementations of Scale or of burying Scale in Monad and maintaining 
+	 * several mostly related versions of those. Using a map like this reduces the family of objects in CladosG 
+	 * at the cost of swapping data structures from an array to a map.
+	 * <br><br>
+	 * This feature ALSO used to be a hash map (java's IdentityHashMap), but hash maps don't ensure the 
+	 * extraction of values arrive in any particular order. That makes a mess of the design where streams are 
+	 * used to deliver pieces of geometry or numbers to lambda functions. If the weights storied in this map 
+	 * emerge in unpredictable ways, then all operations must act on blades AND numbers which we are trying to avoid. 
+	 * Getting a predictable order (from a TreeMap) comes at a small performance cost that simply must be paid.
 	 */
 	private TreeMap<Blade, D> map;
 
 	/**
-	 * This is the type of ProtoN that should be present in the list held by
-	 * this class. For example, if mode = CladosField.REALF, then all elements in
-	 * the list will be the RealF child of ProtoN. 
-	 * <br>
+	 * This is the type of ProtoN that should be present in the list held by this class. For example, 
+	 * if mode = CladosField.REALF, then all elements in the list will be the RealF child of ProtoN. 
+	 * <br><br>
 	 * Mode ensures the scale elements all have the same precision and come from the same 
 	 * numeric field. It is also WHY Scale implements Modal.
 	 */
@@ -221,7 +197,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This is the constructor to use when one does not have the actual map ready,
 	 * but will provide it later.
-	 * <br>
+	 * <br><br>
 	 * @param pMode CladosField enumeration so we know what kind of ProtoN to
 	 *              expect from get()
 	 * @param pB    Basis to which the blades used in the internal map belong.
@@ -238,10 +214,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This is the constructor to use when one already has a map built and a
 	 * reference to the basis on which the map relies for keys.
-	 * <br>
+	 * <br><br>
 	 * This is NOT a copy constructor. Use it when you fully intend for the offered map
 	 * to directly provide the weights in this Scale.
-	 * <br>
+	 * <br><br>
 	 * @param pMode  CladosField enumeration so we know what kind of ProtoN to
 	 *               expect from get()
 	 * @param pB     Basis to which the blades offered in the map belong.
@@ -259,7 +235,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 
 	/**
 	 * Straight forward copy constructor. Copies values ONLY. Re-uses keys.
-	 * <br>
+	 * <br><br>
 	 * @param pIn Scale to be imitated.
 	 */
 	public Scale(Scale<D> pIn) {
@@ -272,7 +248,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method conjugates all the values in the internal map, but leaves the
 	 * blades of the algebra untouched.
-	 * <br>
+	 * <br><br>
 	 * @return Scale object. Just this object after modification.
 	 */
 	public Scale<D> conjugateNumbers() {
@@ -320,7 +296,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This method imitates the 'get()' method in a map. Offer a key and receive a
 	 * value in return. In this particular case, keys are blades from the basis and
 	 * values are weights of those blades.
-	 * <br>
+	 * <br><br>
 	 * @param pB Blade to use as key in internal map
 	 * @return A ProtoN child related to this blade
 	 */
@@ -333,7 +309,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * Be aware this basis is finalized, so it won't be changeable to 
 	 * a new basis. What might be possible is altering the internal details
 	 * of the basis, so be careful.
-	 * <br>
+	 * <br><br>
 	 * @return Basis in use in this.
 	 */
 	public Basis getBasis() {
@@ -342,7 +318,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 
 	/**
 	 * Simple gettor method for the Cardinal associated with this object.
-	 * <br>
+	 * <br><br>
 	 * @return Cardinal in use in this.
 	 */
 	@Override
@@ -356,19 +332,19 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * smarter approach, though, is to call the parent class method values() and
 	 * receive a Collection of coefficients instead of an array. Do it that way and
 	 * they are already of a known ProtoN child class.
-	 * <br>
+	 * <br><br>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br>
+	 * <br><br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a ProtoN child. They can't even build a
 	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <br>
+	 * <br><br>
 	 * @return an array of ProtoN children.
 	 */
 	public D[] getNumbers() {
@@ -383,7 +359,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 
 	/**
 	 * Simple gettor method reporting the Scale's internal mode.
-	 * <br>
+	 * <br><br>
 	 * @return CladosField element reporting which ProtoN child is expected in
 	 *         the list of this Scale.
 	 */
@@ -395,19 +371,19 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method imitates the 'get()' method in a map, but specializes in the
 	 * pscalar blade key.
-	 * <br>
+	 * <br><br>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br>
+	 * <br><br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a ProtoN child. They can't even build a
 	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <br>
+	 * <br><br>
 	 * @return A ProtoN child related to the pscalar blade
 	 */
 	public D getPScalar() {
@@ -417,19 +393,19 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method imitates the 'get()' method in a map, but specializes in the
 	 * scalar blade key.
-	 * <br>
+	 * <br><br>
 	 * Since the internal map can accept any of the CladosF numbers as values, there
 	 * is a cast to a 'generic' type within this method. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br>
+	 * <br><br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a ProtoN child. They can't even build a
 	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <br>
+	 * <br><br>
 	 * @return A ProtoN child related to the scalar blade
 	 */
 	public D getScalar() {
@@ -440,12 +416,12 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking the question regarding the value rather than handle all the various
 	 * ProtoN children separately.
-	 * <br>
+	 * <br><br>
 	 * NOTE this tends to get used in filters in streams to minimize the number of
 	 * coefficients processed in arithmetic operations. Non-zero ones contribute
 	 * non-zero results to products, so this especially matters in O(N^2)
 	 * calculations.
-	 * <br>
+	 * <br><br>
 	 * @param pB Blade to use as key to discover if related value is non-zero.
 	 * @return boolean False if the related value evaluates as ZERO in whatever
 	 *         number style it is.
@@ -464,7 +440,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking this one rather than handle all the various ProtoN children
 	 * separately.
-	 * <br>
+	 * <br><br>
 	 * @return boolean True if the pscalar value evaluates as ZERO in whatever
 	 *         number style it is.
 	 */
@@ -482,7 +458,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This is a short hand method to reduce checking in other classes to simply
 	 * asking this one rather than handle all the various ProtoN children
 	 * separately.
-	 * <br>
+	 * <br><br>
 	 * @return boolean True if the scalar value evaluates as ZERO in whatever number
 	 *         style it is.
 	 */
@@ -500,27 +476,27 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This method takes all values in the map and returns one ProtoN child
 	 * that has a real value that is equal to the square root of the sum of the
 	 * SQModulus of each value.
-	 * <br>
+	 * <br><br>
 	 * NOTE about suppressed type cast warnings | This method switches through the
 	 * possible classes known as descendents of ProtoN. If the object to be
 	 * copied is one of them, the method uses a constructor appropriate to it, but
 	 * then casts the result back to the generic T before returning it.
-	 * <br>
+	 * <br><br>
 	 * There is no danger to this with respect to the implementation of this method.
 	 * The danger comes from mis-use of the method. If one passes a different kind
 	 * of object that passes as a descendent of ProtoN implementing Field and
 	 * Normalizable, this method might not detect it and return null. The type
 	 * casting operation itself cannot fail, but unrecognized child classes do NOT
 	 * get copied.
-	 * <br>
+	 * <br><br>
 	 * This can happen if one extends ProtoN creating a new CladosF number.
 	 * This method will not be aware of the new class until its implementation is
 	 * updated.
-	 * <br>
+	 * <br><br>
 	 * Because these are real numbers, though, we get away with simply summing the
 	 * moduli instead. It does not perform a cardinal safety check and will throw
 	 * the exception if that test fails.
-	 * <br>
+	 * <br><br>
 	 * @return D ProtoN child that implements all the number interfaces too.
 	 */
 	public D modulusSQSum() {
@@ -686,11 +662,11 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method scales all values in the internal map by the value offered provided there is no typeMatch failure. 
 	 * When there IS a type mismatch the number simply does not get scaled.
-	 * <br>
+	 * <br><br>
 	 * The first stream filters for weights that pass the match test.
 	 * The second stream scales them.
 	 * That means the embedded IllegalARgumentException will never be thrown.
-	 * <br>
+	 * <br><br>
 	 * @param pIn ProtoN child to use as a scaling element. 
 	 * 				Mode and cardinal MUST match values in map.
 	 * @param <T> ProtoN child generic type support. Must also implement Field.
@@ -719,7 +695,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 
 	/**
 	 * This is a short exporter of internal details to XML. It exists to bypass certain security concerns related to Java serialization.
-	 * <br>
+	 * <br><br>
 	 * @param pS The Scale oject to be output as XML
 	 * @param indent String of 'tab' characters to get spacing right for human readable XML output.
 	 * @return String formatted as XML containing information about the Scale
@@ -770,7 +746,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 
 	/**
 	 * This is an exporter of internal details to XML. It exists to bypass certain security concerns related to Java serialization.
-	 * <br>
+	 * <br><br>
 	 * @param pS The Scale oject to be output as XML
 	 * @param indent String of 'tab' characters to get spacing right for human readable XML output.
 	 * @return String formatted as XML containing information about the Scale
@@ -805,20 +781,20 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * map's keys are all blades from the object's basis. The map won't contain just
 	 * a few blades as keys, though. It will contain every blade as a key paired to
 	 * some unique CladosF number.
-	 * <br>
+	 * <br><br>
 	 * Since the internal map can accept any of the CladosF numbers (and
 	 * ProtoN itself though that would be useless) there is a cast to a
 	 * 'generic' type before insertion into the map. This would normally cause
 	 * warnings by the compiler since the generic named in the internal map IS a
 	 * ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br>
+	 * <br><br>
 	 * That won't happen here when CladosF builders are used. They can't build
 	 * anything that is NOT a ProtoN child. They can't even build a
 	 * ProtoN instance directly. Therefore, only children can arrive as the
 	 * value parameter of the 'put' function. Thus, there is no danger of a failed
 	 * cast operation... until someone creates a new ProtoN child class and
 	 * fails to update all builders.
-	 * <br>
+	 * <br><br>
 	 * @param <T> ProtoN child generic type support. Must also implement Field
 	 *            AND Normalizable.
 	 * @return deliver the internal coefficients as the internal map.
@@ -832,9 +808,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * interface. If the cardinal to be set is different from the one already present,
 	 * the weights are cleared out and set to zero. If the cardinal is the same one,
 	 * nothing is done and this Scale is returned.
-	 * <br>
+	 * <br><br>
 	 * Once a Cardinal is set, it basically can't be removed. It can be changed, but
 	 * not eliminated entirely.
+	 * <br><br>
 	 * @param pCard CladosField element to set as the mode.
 	 * @return Scale object. Just this object after modification.
 	 */
@@ -884,7 +861,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * <br><br>
 	 * NOTE | Do NOT use this method if you intend the offered number to be disconnected from this object. 
 	 * IT WON'T BE! If you really must use this method that way, copy your coefficients first.
-	 * <br>
+	 * <br><br>
 	 * @param <T> is a child of ProtoN used as the generic identity of the number object.
 	 * @param pB Blade where the offered number belongs.
 	 * @param pIn Array of ProtoN children
@@ -948,10 +925,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This method sets the coefficients represented by this Scale. It accepts a map relating blades in the basis to ProtoN children. 
 	 * It checks to see if the map is of the wrong size and throws an IllegalArgumentException if so. It does NOT check
 	 * for mode consistency and nulls
-	 * <br>
+	 * <br><br>
 	 * NOTE this method DEEP COPIES the inbound map to disconnect the map's source ProtoN children from the ones 'put' here. 
 	 * This is the safest settor for ensuring numbers are NOT reused across monads... IF ONE PAYS ATTENTION to nulls and mixed modes.
-	 * <br>
+	 * <br><br>
 	 * @param pInMap Inbound Map relating blades to numbers.
 	 * @return Scale after modification of the map.
 	 * @throws IllegalArgumentException This happens if the offered map does not have the same size as the basis. Good enough
@@ -973,10 +950,10 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This settor accepts an array of ProtoN children, assumes they are in basis index order to assign a blade of the specified grade, 
 	 * then inserts them into the map at that blade covering ONLY the grade suggested.
-	 * <br>
+	 * <br><br>
 	 * NOTE | Do NOT use this method if you intend the offered coefficient array to be disconnected from this object. IT WON'T BE! 
 	 * If you really must use this method that way, copy your coefficients first.
-	 * <br>
+	 * <br><br>
 	 * @param pGrade byte integer naming the grade to be overwritten
 	 * @param pIn    Array of ProtoN Children
 	 * @return Scale object. Just this object after modification.
@@ -1006,15 +983,15 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This is the compliment of a blade stream involving the scaling factors 'multiplied' by blades in the sense 
 	 * of a linear combination in a vector space. When forming a linear combination of blades to make a 'vector', 
 	 * these are the 'numbers' that scale each blade.
-	 * <br>
+	 * <br><br>
 	 * Since the internal map can accept any of the CladosF numbers as values, there is a cast to a 'generic' type 
 	 * within this method. This would normally cause warnings by the compiler since the generic named in the internal 
 	 * map IS a ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br>
+	 * <br><br>
 	 * That won't happen when CladosF builders are used because they dan't build anything that is NOT a ProtoN child. 
 	 * Scale's internal map only accepts ProtoN child classes, so there is no danger of a failed cast operation... 
 	 * until someone creates a new ProtoN child class and fails to update the builders.
-	 * <br>
+	 * <br><br>
 	 * @return Stream of ProtoN children that are the numbers in the internal map.
 	 */
 	protected Stream<D> weightsStream() {
@@ -1025,7 +1002,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * This method returns a parallelizable stream of the weights in this scale. 
 	 * It is intended for wholesale operations on the weights that may be done
 	 * in any order. It is mostly for use by the owning object of this Scale.
-	 * <br>
+	 * <br><br>
 	 * @return A stream of weights as children of ProtoN.
 	 */
 	protected Stream<D> weightsParallelStream() {
@@ -1035,7 +1012,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	/**
 	 * This method causes all coefficients to be set to zero using the offered
 	 * cardinal.
-	 * <br>
+	 * <br><br>
 	 * @return This Scale instance after coefficients are zero'd out.
 	 */
 	protected Scale<D> zeroAll() {
