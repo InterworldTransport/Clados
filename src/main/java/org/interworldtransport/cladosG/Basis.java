@@ -374,28 +374,6 @@ public final class Basis implements CanonicalBasis, Comparable<Basis> {
 	}
 
 	/**
-	 * There is a similar sounding method in the old basis that isn't being used, so
-	 * it is replaced by this one that returns the enumerated set of generators in
-	 * the requested blade.
-	 * <br>
-	 * BEWARE | This method used to throw an exception when the parameter was out of
-	 * range. Now it just returns an empty set of generators which will look like a
-	 * scalar blade to the unwary. This change allows for a possible silent fail
-	 * someone's code, but it also allows for non-exception handling approaches to
-	 * termination of loops and streams.
-	 * <br>
-	 * @param p1 integer pointing to the blade in the internal list
-	 * @return EnumSet of Generator representing the blade without the context
-	 *         necessary for knowing much about the enclosing space for the blade.
-	 */
-	@Override
-	public EnumSet<Generator> getBladeSet(int p1) {
-		if (this.validateBladeIndex(p1))
-			return bladeList.get(p1).getGenerators();
-		return EnumSet.noneOf(Generator.class);
-	}
-
-	/**
 	 * Return the number of grades in the basis. Since there is no geometry in the
 	 * basis this is a measure of the number of distinct generator subset types that
 	 * can be formed where the element count determines the type. Because the empty

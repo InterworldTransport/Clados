@@ -25,7 +25,6 @@
 package org.interworldtransport.cladosG;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -110,17 +109,6 @@ public interface CanonicalBasis {
 	 * @return int
 	 */
 	public abstract int getBladeCount();
-
-	/**
-	 * There is a similar sounding method in the old basis that isn't being used, so
-	 * it is replaced by this one that returns the enumerated set of generators in
-	 * the requested blade.
-	 * <br>
-	 * @param p1 integer pointing to the blade in the internal list
-	 * @return EnumSet of Generator representing the blade without the context
-	 *         necessary for knowing much about the enclosing space for the blade.
-	 */
-	public abstract EnumSet<Generator> getBladeSet(int p1);
 
 	/**
 	 * Return the number of grades in the basis. Since there is no geometry in the

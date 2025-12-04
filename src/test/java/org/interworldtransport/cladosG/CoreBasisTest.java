@@ -263,13 +263,9 @@ class CoreBasisTest {
 		assertTrue(tBasis8.getKey(255) > 0);
 		assertTrue(tBasis8.getKey(256) < 0);
 
-		EnumSet<Generator> testSet = tBasis8.getBladeSet(255);
+		EnumSet<Generator> testSet = tBasis8.getPScalarBlade().getGenerators();				//.getBladeSet(255);
 		assertTrue(testSet instanceof EnumSet<Generator>);
 		assertTrue(testSet.size() == 8);
-
-		testSet = tBasis8.getBladeSet(256);
-		assertTrue(testSet instanceof EnumSet<Generator>);
-		assertTrue(testSet.size() == 0); 								//Out of range produces empty generator sets.
 
 		assertTrue(tBasis8.getGradeStart((byte) 8) == 255);
 		assertTrue(tBasis8.getGradeStart((byte) 9) < 0);
