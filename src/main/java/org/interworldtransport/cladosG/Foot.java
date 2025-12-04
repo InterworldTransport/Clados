@@ -24,10 +24,6 @@
  */
 package org.interworldtransport.cladosG;
 
-//import java.util.ArrayList;
-//import java.util.Optional;
-
-//import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.FCache;
 import org.interworldtransport.cladosF.ProtoN;
