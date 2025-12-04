@@ -11,6 +11,7 @@ import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.ComplexF;
+import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosException;
 import org.interworldtransport.cladosGExceptions.CladosMonadException;
@@ -40,7 +41,7 @@ public class CoreNyadComplexFTest {
 	 * @throws CladosMonadException
 	 */
 	@BeforeEach
-	void setUp() throws BadSignatureException, CladosMonadException {
+	public void setUp() throws BadSignatureException, CladosException, CladosMonadException {
 		Foot here = GBuilder.createFootLike(footName, speed);
 
 		motion = GBuilder.createMonadWithFoot(	FBuilder.COMPLEXF.createZERO(speed), 
@@ -212,7 +213,7 @@ public class CoreNyadComplexFTest {
 		void testPScalarAt() throws CladosNyadException {
 			thing1.append(property);											//two monads. Both = ZERO by construction
 
-			((ComplexF) property.getWeights().getScalar()).setReal(1.0f);	//Now property is scalar = 1.
+			((ComplexF) property.getWeights().getScalar()).setReal(1.0f).setImg(0f);	//Now property is scalar = 1.
 			assertTrue(thing1.isScalarAt(property.getAlgebra()));				//Still passes for isScalarAt
 
 			property.multiplyByPSLeft();										//Take the left dual of property
@@ -396,13 +397,13 @@ public class CoreNyadComplexFTest {
 		void setUp() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 			thing1.append(property);																//Motion,Property juxtaposition
-			((ComplexF) property.getWeights().getScalar()).setReal(2.0f);						//Now property is scalar = 2.
-			((ComplexF) motion.getWeights().getScalar()).setReal(1.0f);							//Now motion is scalar = 1.
+			((ComplexF) property.getWeights().getScalar()).setReal(2.0f).setImg(0f);	//Now property is scalar = 2.
+			((ComplexF) motion.getWeights().getScalar()).setReal(1.0f).setImg(0f);		//Now motion is scalar = 1.
 		}
 
 		@Test
 		void testDualLeft() {
-			((ComplexF) property.getWeights().getPScalar()).setReal(2.0f);						//Property's scale is Scalar+PScalar
+			((ComplexF) property.getWeights().getPScalar()).setReal(2.0f).setImg(0f);	//Property's scale is Scalar+PScalar
 			property.setGradeKey();																	//Now property knows.
 			thing1.dualLeft();
 
@@ -416,7 +417,7 @@ public class CoreNyadComplexFTest {
 
 		@Test
 		void testDualRight() {
-			((ComplexF) property.getWeights().getPScalar()).setReal(2.0f);						//Property's scale is Scalar+PScalar
+			((ComplexF) property.getWeights().getPScalar()).setReal(2.0f).setImg(0f);	//Property's scale is Scalar+PScalar
 			property.setGradeKey();																	//Now property knows.
 			thing1.dualRight();
 
@@ -515,8 +516,8 @@ public class CoreNyadComplexFTest {
 		void setUp() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 			thing1.append(property);																//Motion,Property juxtaposition
-			((ComplexF) property.getWeights().getScalar()).setReal(2.0f);						//Now property is scalar = 2.
-			((ComplexF) motion.getWeights().getScalar()).setReal(1.0f);							//Now motion is scalar = 1.
+			((ComplexF) property.getWeights().getScalar()).setReal(2.0f).setImg(0f);	//Now property is scalar = 2.
+			((ComplexF) motion.getWeights().getScalar()).setReal(1.0f).setImg(0f);		//Now motion is scalar = 1.
 		}
 
 		@Test
@@ -595,13 +596,22 @@ public class CoreNyadComplexFTest {
 
 		@Test
 		void testXMLFullOutput() throws CladosNyadException {
-			String printIt = Nyad.toXMLFullString(thing1, "");
+			String printIt = Nyad.toXMLString(thing1, "");
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLFullString(thing1, "");
 			assertTrue(printIt != null);
 
 			printIt = Nyad.toXMLFullString(thing1, null);
 			assertTrue(printIt != null);
 
+			printIt = Nyad.toXMLString(thing1, null);
+			assertTrue(printIt != null);
+
 			printIt = Nyad.toXMLFullString(thing1, "\t\t\t");
+			assertTrue(printIt != null);
+
+			printIt = Nyad.toXMLString(thing1, "\t\t\t");
 			assertTrue(printIt != null);
 		}
 
@@ -618,14 +628,216 @@ public class CoreNyadComplexFTest {
 		}
 	}
 
+@Nested
+	class testCompositionBinaryOps {
+		Monad reflect, boost;
+		Blade time, spaceX, planeTX;
+
+		@BeforeEach
+		void setUp() throws CladosNyadException, CladosException, FieldException {
+			ComplexF by1 = (ComplexF) FBuilder.COMPLEXF.createONE(speed);
+			ComplexF by2 = (ComplexF) FBuilder.COMPLEXF.createONE(speed).scale(CladosConstant.BY2_F);
+
+			reflect = GBuilder.copyOfMonad(motion,"Reflector");
+			boost = GBuilder.copyOfMonad(motion, "Booster");
+
+			time = motion.getAlgebra().getBasis().getSingleBlade(motion.getAlgebra().getGradeRange((byte) 1)[0]);
+			motion.getWeights().setNumber(time, ComplexF.copyOf(by1));
+			motion.getWeights().getMap().put(time, ComplexF.copyOf(by1));	//motion is time-like 1-blade
+			motion.setGradeKey();
+
+			spaceX = motion.getAlgebra().getBasis().getSingleBlade(motion.getAlgebra().getGradeRange((byte) 1)[0]+1);
+			reflect.getWeights().getMap().put(spaceX, ComplexF.copyOf(by1));	//reflect is space-like 1-blade
+			reflect.setGradeKey();
+
+			planeTX = motion.getAlgebra().getGP().getResult(spaceX, time);
+			boost.getWeights().setScalar(ComplexF.copyOf(by2));
+			boost.getWeights().getMap().put(planeTX, ComplexF.copyOf(by2));
+			boost.setGradeKey();											//setGradeKey() needed because I intruded in the weight map
+
+			thing1 = GBuilder.createNyadUsingMonad(motion, "");
+			thing1.append(reflect);
+			thing1.append(boost);
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both direct reference of the monads.
+		 */
+		@Test
+		void testMultiplyLeftward() throws CladosMonadException, CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == reflect);
+			assertTrue(thing1.getMonadAt(2) == boost);
+
+			thing1.multiplyLeftward(motion, boost);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+
+			thing1.multiplyLeftward(motion, reflect);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test indexed reference of the monads.
+		 */
+		@Test
+		void testMultiplyLeftwardIndexed() throws CladosMonadException, CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == reflect);
+			assertTrue(thing1.getMonadAt(2) == boost);
+
+			thing1.multiplyLeftward(0, 2);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+
+			thing1.multiplyLeftward(0, 1);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both direct reference of the monads.
+		 */
+		@Test
+		void testMultiplyRightward() throws CladosMonadException, CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == reflect);
+			assertTrue(thing1.getMonadAt(2) == boost);
+
+			thing1.multiplyRightward(boost, motion);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+
+			thing1.multiplyRightward(reflect, motion);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both indexed reference of the monads.
+		 */
+		@Test
+		void testMultiplyRightwardIndexed() throws CladosMonadException, CladosNyadException {
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMonadAt(1) == reflect);
+			assertTrue(thing1.getMonadAt(2) == boost);
+
+			thing1.multiplyRightward(0, 2);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+
+			thing1.multiplyRightward(0, 1);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both direct reference of the monads.
+		 */
+		@Test
+		void testSandwichInside() throws CladosMonadException, CladosNyadException {
+			thing1.sandwich(motion, reflect);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+			assertTrue(((ComplexF) motion.getWeights().getMap().get(time)).getReal() < 0 );
+
+			thing1.sandwich(motion, boost);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+		}
+
+		/*
+		 * The 'use' monad is in the same nyad as the keep monad.
+		 * Test both indexed reference of the monads.
+		 */
+		@Test
+		void testSandwichInsideIndexed() throws CladosMonadException, CladosNyadException {
+			thing1.sandwich(0, 1);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing1.getMonadAt(2) == boost);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+			assertTrue(((ComplexF) motion.getWeights().getMap().get(time)).getReal() < 0 );
+
+			thing1.sandwich(0, 1);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+		}
+
+		/*
+		 * Similar to SandwichInside except the 'use' monad is in a different nyad.
+		 * Test both direct reference of the monads.
+		 */
+		@Test
+		void testSandwichOutside() throws CladosNyadException, CladosMonadException {
+			//Reproduce the sandwichInside test but create thing2 with the reflector and boost monads
+			//This should because reflect and boost re-use motion's algebra.
+			thing1.remove(reflect);
+			thing1.remove(boost);
+			thing2 = GBuilder.createNyadUsingMonad(reflect, "");
+			thing2.append(boost);
+
+			thing1.sandwich(motion, reflect, thing2);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing2.getMonadAt(0) == reflect);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+			assertTrue(((ComplexF) motion.getWeights().getMap().get(time)).getReal() < 0 );
+
+			thing1.sandwich(motion, boost, thing2);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing2.getMOrder() == 0);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+		}
+
+		/*
+		 * Similar to SandwichInside except the 'use' monad is in a different nyad.
+		 * Test both indexed reference of the monads.
+		 */
+		@Test
+		void testSandwichOutsideIndexed() throws CladosNyadException, CladosMonadException {
+			thing1.remove(reflect);
+			thing1.remove(boost);
+			thing2 = GBuilder.createNyadUsingMonad(reflect, "");
+			thing2.append(boost);
+
+			thing1.sandwich(0, 0, thing2);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertFalse(thing2.getMonadAt(0) == reflect);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+			assertTrue(((ComplexF) motion.getWeights().getMap().get(time)).getReal() < 0 );
+
+			thing1.sandwich(0, 0, thing2);
+			assertTrue(thing1.getMonadAt(0) == motion);
+			assertTrue(thing2.getMOrder() == 0);
+			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
+		}
+
+	}
+
 	@Nested
-	class testBinaryOps {
+	class testJuxtapositionBinaryOps {
 		@BeforeEach
 		void setUp() throws CladosNyadException, CladosMonadException {
 			thing1 = GBuilder.createNyadUsingMonad(motion, "");
 			thing1.append(property);
-			((ComplexF) property.getWeights().getScalar()).setReal(2.0f);		//Now property is scalar = 2.
-			((ComplexF) motion.getWeights().getScalar()).setReal(1.0f);			//Now motion is scalar = 1.
+			((ComplexF) property.getWeights().getScalar()).setReal(2.0f).setImg(0f);		//Now property is scalar = 2.
+			((ComplexF) motion.getWeights().getScalar()).setReal(1.0f).setImg(0f);			//Now motion is scalar = 1.
 			newMotion = GBuilder.copyOfMonad(motion, "CopyMotion");
 			newMotion2 = GBuilder.copyOfMonad(motion, "Copy2Motion");
 			newProperty = GBuilder.copyOfMonad(property, "CopyProperty");
@@ -674,14 +886,14 @@ public class CoreNyadComplexFTest {
 			assertTrue(((ComplexF) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 0.0f);	//Because anti-symmetric
 			
 			thing1.append(newMotion).pop(newMotion);								//Back to a juxtaposition
-			((ComplexF) property.getWeights().getScalar()).setReal(2.0f);		//Now property is back to scalar = 2.
+			((ComplexF) property.getWeights().getScalar()).setReal(2.0f).setImg(0f);		//Now property is back to scalar = 2.
 			
 			thing1.compressAntiSymm(newMotion, property);							//property gets newMotion's algebra and cardinal
 			assertTrue(thing1.getMOrder() == 1);									//One left
 			assertTrue(((ComplexF) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 0.0f);
 			
 			thing1.append(newProperty);
-			((ComplexF) newMotion.getWeights().getScalar()).setReal(1.0f);		//Now newMotion is back to scalar = 1.
+			((ComplexF) newMotion.getWeights().getScalar()).setReal(1.0f).setImg(0f);		//Now newMotion is back to scalar = 1.
 			
 			assertDoesNotThrow(() -> thing1.compressAntiSymm(0, 1));	//NewPproperty winds up with NewMotion's algebra and cardinal
 			assertTrue(thing1.getMOrder() == 1);									//Test caused mutation of thing1.
@@ -689,7 +901,7 @@ public class CoreNyadComplexFTest {
 			assertThrows(IndexOutOfBoundsException.class, () -> thing1.compressAntiSymm(0, 1));
 			
 			thing1.append(newProperty2);											//Back to juxtaposition with newMotion
-			((ComplexF) newProperty2.getWeights().getScalar()).setReal(2.0f);	//Now property is back to scalar = 2.
+			((ComplexF) newProperty2.getWeights().getScalar()).setReal(2.0f).setImg(0f);	//Now property is back to scalar = 2.
 			
 			assertThrows(CladosNyadException.class, () -> thing1.compressAntiSymm(newMotion, newMotion2));
 																					//Should bark because newMotion2 not in list
