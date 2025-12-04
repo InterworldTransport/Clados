@@ -90,7 +90,7 @@ public interface CliffordProduct {
 	 * <br>
 	 * @return Basis
 	 */
-	public abstract Basis getBasis();
+	public abstract CanonicalBasis getBasis();
 
 	/**
 	 * Get the linear dimension of the vector space that uses the associated Basis.

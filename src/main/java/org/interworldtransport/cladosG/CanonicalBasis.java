@@ -187,7 +187,7 @@ public interface CanonicalBasis {
 	 * @param p1 integer index
 	 * @return Blade at the indexed position.
 	 */
-	public abstract Blade getSingleBlade(int p1);
+	public abstract CanonicalBlade getSingleBlade(int p1);
 
 	/**
 	 * This should essentially be an integer stream, but grades are very small. The
