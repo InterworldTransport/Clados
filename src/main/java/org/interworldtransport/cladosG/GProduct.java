@@ -266,11 +266,11 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	 * @return Blade representing the result found in the Cayley table. If none found, null is returned.
 	 */
 	public final Blade getResult(Blade pRow, Blade pCol) {
-		int tRow = canonBasis.find(pRow) - 1;
-		int tCol = canonBasis.find(pCol) - 1;
-		
-		if (canonBasis.validateBladeIndex(tRow) & canonBasis.validateBladeIndex(tCol))
-			return canonBasis.getSingleBlade(Math.abs(getResult(tRow, tCol))-1);			
+		if (canonBasis.hasBlade(pRow) & canonBasis.hasBlade(pCol)) {
+			int p = canonBasis.find(pRow) - 1;
+			int q = canonBasis.find(pCol) - 1;	
+			return canonBasis.getSingleBlade(	(getResult(p, q)==0) ? 0 : Math.abs(getResult(p, q)) - 1	);	
+		}		
 		return null;
 	}
 
@@ -285,6 +285,25 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	public final int getSign(int pRow, int pCol) {
 		return (result[pRow][pCol] < 0) ? -1 : (result[pRow][pCol] > 0) ? 1 : 0;
 	}
+
+	/**
+	 * This method takes two blades, finds their index values in the basis, and then retrieves
+	 * the sign variation at that location in the Cayley table. 
+	 * <br><br>
+	 * @param pRow 	Blade acting as the row entry for the Cayley table result
+	 * @param pCol	Blade acting as the column entry for the Cayley table result
+	 * @return int representing the sign of the result found in the Cayley table. If none found, 0 is returned.
+	 */
+	public final int getSign(Blade pRow, Blade pCol) {
+		if (canonBasis.hasBlade(pRow) & canonBasis.hasBlade(pCol)) {
+			int p = canonBasis.find(pRow) - 1;
+			int q = canonBasis.find(pCol) - 1;	
+			return getSign(p, q);
+			//return canonBasis.getSingleBlade(	(getResult(p, q)==0) ? 0 : Math.abs(getResult(p, q)) - 1	);	
+		}		
+		return 0;
+	}
+
 
 	/**
 	 * Return the signature of the generating geometry. This lists the squares of the

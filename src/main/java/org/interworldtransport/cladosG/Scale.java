@@ -606,54 +606,46 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	public D modulusSum() {
 		D tR;
 		switch (mode) {
-		case REALF -> {
-			tR = FBuilder.REALF.createZERO(this.getCardinal());
-			weightsStream().forEach(div -> {  //Do not go parallel in this stream
-				try {
-					tR.add(RealF.newONE(this.getCardinal()).scale(div.modulus()));
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
-				}
-			});
-			return (D) tR;
+			case REALF -> {
+				tR = (D) RealF.newZERO(getCardinal());
+				weightsStream().forEach(x -> {  //Do not go parallel in this stream
+					try {	tR.add(RealF.newONE(getCardinal()).scale(x.modulus()));
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch in addition.");
+					}
+				});
+			}
+			case REALD -> {
+				tR = (D) RealD.newZERO(getCardinal());
+				weightsStream().forEach(x -> {  //Do not go parallel in this stream
+					try {	tR.add(RealD.newONE(getCardinal()).scale(x.modulus()));
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch in addition.");
+					}
+				});
+			}
+			case COMPLEXF -> {
+				tR = (D) ComplexF.newZERO(getCardinal());
+				weightsStream().forEach(x -> {  //Do not go parallel in this stream
+					try {	tR.add(ComplexF.newONE(getCardinal()).scale(x.modulus()));	 //Conjugate built in
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch in addition.");
+					}
+				});
+			}
+			case COMPLEXD -> {
+				tR = (D) ComplexD.newZERO(getCardinal());
+				weightsStream().forEach(x -> {  //Do not go parallel in this stream
+					try {	tR.add(ComplexD.newONE(getCardinal()).scale(x.modulus()));	 //Conjugate built in
+					} catch (FieldBinaryException e) {
+						throw new IllegalArgumentException("Cardinal mismatch in addition.");
+					}
+				});
+			}
+			default -> tR = ((D) new ProtoN(this.getCardinal()));
+			
 		}
-		case REALD -> {
-			tR = FBuilder.REALD.createZERO(this.getCardinal());
-			weightsStream().forEach(div -> {  //Do not go parallel in this stream
-				try {
-					tR.add(RealD.newONE(this.getCardinal()).scale(div.modulus()));
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
-				}
-			});
-			return (D) tR;
-		}
-		case COMPLEXF -> {
-			tR = FBuilder.COMPLEXF.createZERO(this.getCardinal());
-			weightsStream().forEach(div -> {  //Do not go parallel in this stream
-				try {
-					tR.add(ComplexF.newONE(this.getCardinal()).scale(div.modulus()));	 //Conjugate built in
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
-				}
-			});
-			return (D) tR;
-		}
-		case COMPLEXD -> {
-			tR = FBuilder.COMPLEXD.createZERO(this.getCardinal());
-			weightsStream().forEach(div -> {  //Do not go parallel in this stream
-				try {
-					tR.add(ComplexD.newONE(this.getCardinal()).scale(div.modulus()));	 //Conjugate built in
-				} catch (FieldBinaryException e) {
-					throw new IllegalArgumentException("Cardinal mismatch in addition while forming modulus sum.");
-				}
-			});
-			return (D) tR;
-		}
-		default -> {
-			return (D) new ProtoN(this.getCardinal());
-		}
-		}
+		return tR;
 	}
 
 	/**

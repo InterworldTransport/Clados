@@ -977,28 +977,15 @@ public class Monad implements Modal {
 	 * @param pM Monad
 	 * @return Monad
 	 */
-	public Monad multiplyAntisymm(Monad pM) {
-		if (!isReferenceMatch(this, pM))
-			throw new IllegalArgumentException("Symm multiply fails reference match.");
-		Monad halfTwoRight = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
-		(this.multiplyLeft(pM)).subtract(halfTwoRight);
+	public Monad multiplyAntisymm(Monad pM) {			
+		if (!isReferenceMatch(this, pM))		throw new IllegalArgumentException("Symm multiply fails reference match.");
+		Monad rightSide = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
+		(this.multiplyLeft(pM)).subtract(rightSide);
 		switch (getMode()) {
-			case COMPLEXD -> {
-				scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
-				break;
-			}
-			case COMPLEXF -> {
-				scale( ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
-				break;
-			}
-			case REALD -> {
-				scale((RealD.newONE(scales.getCardinal()).scale(BY2_D)));
-				break;
-			}
-			case REALF -> {
-				scale((RealF.newONE(scales.getCardinal()).scale(BY2_F)));
-				break;
-			}
+			case COMPLEXD -> scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
+			case COMPLEXF -> scale( ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
+			case REALD -> scale((RealD.newONE(scales.getCardinal()).scale(BY2_D)));
+			case REALF -> scale((RealF.newONE(scales.getCardinal()).scale(BY2_F)));
 		}
 		setGradeKey();
 		return this;
@@ -1033,312 +1020,140 @@ public class Monad implements Modal {
 	 * @return Monad
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyLeft(Monad pM) {
-		if (!Monad.isReferenceMatch(this, pM))
-			throw new IllegalArgumentException("Left multiply fails reference match.");
-		GProduct tProd = getAlgebra().getGP();
-		Basis tBasis = getAlgebra().getBasis();
+		if (!Monad.isReferenceMatch(this, pM))		throw new IllegalArgumentException("Left multiply fails reference match.");
+		GProduct GP = getAlgebra().getGP();
+		Basis basis = getAlgebra().getBasis();
 
-		Scale<T> newScales = new Scale<T>(getMode(), tBasis, scales.getCardinal()).zeroAll();
-		if (sparseFlag) {
-			long slideKey = gradeKey;
-			byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
-			while (logKey >= 0) {
-				tBasis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
-					int col = tBasis.find(blade) - 1;
-					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
-						int row = tBasis.find(blade2) - 1;
-						int treturnBlade = Math.abs(tProd.getResult(row, col)) - 1;		//Recover Cayley table entry as index
-						if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
-						Blade bMult = tBasis.getSingleBlade(treturnBlade);
-						switch (getMode()) {
-						case COMPLEXD -> {
-							try {
-								ComplexD tAgg = ComplexD
-										.multiply((ComplexD) getWeights().get(blade), (ComplexD) pM.getWeights().get(blade2))
-										.scale(Double.valueOf(tProd.getSign(row, col)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
+		Scale<T> newScales = new Scale<T>(getMode(), basis, scales.getCardinal()).zeroAll();
+		if (sparseFlag) {										//If grade coverage is sparse, multiply blades BY grades present
+			long slideKey = gradeKey;							//The trick involves picking off powers of 10 from gradeKey
+			byte logKey = (byte) Math.log10(slideKey); 			//logKey has the highest grade with non-zero blades
+			while (logKey >= 0) {								//A grade remains unprocessed
+				basis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> { 		//blade0's are in a single grade of THIS monad
+					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {	//blade2's are in ANY grade of the OTHER monad
+						Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
+						try {
+							switch (getMode()) {				//get the number at the result blade and +/- it with the product of numbers at the two blades.
+								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+								case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 							}
-							break;
-						}
-						case COMPLEXF -> {
-							try {
-								ComplexF tAgg = ComplexF
-										.multiply((ComplexF) getWeights().get(blade), (ComplexF) pM.getWeights().get(blade2))
-										.scale(Float.valueOf(tProd.getSign(row, col)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-							}
-							break;
-						}
-						case REALD -> {
-							try {
-								RealD tAgg = RealD
-										.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
-										.scale(Double.valueOf(tProd.getSign(row, col)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-							}
-							break;
-						}
-						case REALF -> {
-							try {
-								RealF tAgg = RealF
-										.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
-										.scale(Float.valueOf(tProd.getSign(row, col)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-							}
-							break;
-						}
+						} catch (FieldBinaryException e) {		//Number reference match failures for multiply and add are caught here.
+							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 						}
 					});
 				});
-				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
-				if (slideKey == 0)
-					break; // we've processed all grades including scalar.
-				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
-			} // while loop completion -> all grades in 'this' processed
-		} else {
-			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
-				int col = tBasis.find(blade) - 1;
-				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
-					int row = tBasis.find(blade2) - 1;
-					int treturnBlade = Math.abs(tProd.getResult(row, col)) - 1;		//Recover Cayley table entry as index
-					if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
-					Blade bMult = tBasis.getSingleBlade(treturnBlade);
-					switch (getMode()) {
-					case COMPLEXD -> {
-						try {
-							ComplexD tAgg = ComplexD
-									.multiply((ComplexD) getWeights().get(blade), (ComplexD) pM.getWeights().get(blade2))
-									.scale(Double.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
+				slideKey -= Math.pow(10, logKey); 			//Subtracting 10^logKey means that grade as done.
+				if (slideKey == 0)		break; 					//All grades are done if true.
+				logKey = (byte) Math.log10(slideKey); 			//Reset logKey for the loop condition. If zero it will be the last time through.
+			} 													//While loop complete -> all non-zero grades in THIS monad processed against all blades in OTHER monad.
+		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
+			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> { 								//blade0's are in ANY grade of THIS monad
+				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {		//blade2's are in ANY grade of the OTHER monad
+					Blade bMult = GP.getResult(blade2, blade0);																//the two blades determine the result blade
+					try {
+						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
 						}
-						break;
-					}
-					case COMPLEXF -> {
-						try {
-							ComplexF tAgg = ComplexF
-									.multiply((ComplexF) getWeights().get(blade), (ComplexF) pM.getWeights().get(blade2))
-									.scale(Float.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-						break;
-					}
-					case REALD -> {
-						try {
-							RealD tAgg = RealD
-									.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
-									.scale(Double.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-						break;
-					}
-					case REALF -> {
-						try {
-							RealF tAgg = RealF
-									.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
-									.scale(Float.valueOf(tProd.getSign(row, col)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-						break;
-					}
+					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
+						throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
 					}
 				});
 			});
 		}
-		scales = newScales;
-		setGradeKey();
+		scales = newScales;										//newScales has the correct map between blades and numbers to be the multiplication result
+		setGradeKey();											//Let the monad sift through its numbers to reset the keys.
 		return this;
 	}
 
 	/**
-	 * Monad rightside multiplication: (this pM) This operation is allowed when the
-	 * two monads use the same field and satisfy the Reference Match test.
-	 * <br>
-	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to
-	 * find the non-zero grades. For example: gradeKey=101 means the monad is a sum
-	 * of bivector and scalar because 10^2+10^0 = 101.
-	 * <br>
-	 * In a sparse monad, the gradeKey will have few 1's, making looping on all
-	 * blades less optimal. Instead, we parse gradeKey and loop through the blades
-	 * for grades that could be non-ZERO.
-	 * <br>
-	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd
-	 * behavior if one sends in a complex numbers expecting against real numbers.
-	 * What IS checked is the cardinal and that likely traps most errors that can be
-	 * made. It's not perfect, though. If someone intentionally builds different
-	 * number types using the same cardinal, they will get around the detection in
-	 * place here.
-	 * <br>
-	 * What will happen in that case? The inbound numbers will be multiplied against
-	 * coefficients as THEY understand multiplication. The inbound numbers gets cast
-	 * to the other, so imaginary components won't get used in real number
-	 * multiplication.
-	 * <br>
-	 * @param pM  Monad
+	 * Monad rightside multiplication: (this pM) This operation is allowed when the two monads use the same field and satisfy the Reference Match test.
+	 * <br><br>
+	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to find the non-zero grades. For example: gradeKey=101 means the monad 
+	 * is a sum of bivector and scalar because 10^2+10^0 = 101.
+	 * <br><br>
+	 * In a sparse monad, the gradeKey will have few 1's, making looping on all blades less optimal. Instead, we parse gradeKey and loop through the 
+	 * blades for grades that could be non-ZERO.
+	 * <br><br>
+	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd behavior if one sends in a complex numbers expecting against 
+	 * real numbers. What IS checked is the cardinal and that likely traps most errors that can be made. It's not perfect, though. If someone 
+	 * intentionally builds different number types using the same cardinal, they will get around the detection in place here.
+	 * <br><br>
+	 * What will happen in that case? The inbound numbers will be multiplied against coefficients as THEY understand multiplication. 
+	 * The inbound numbers gets cast to the other, so imaginary components won't get used in real number multiplication.
+	 * <br><br>
+	 * @param pM  Monad to be right multiplied with this one
 	 * @param <T> ProtoN number from CladosF with all interfaces this time.
-	 * @return Monad
+	 * @return Monad result after this monad is multiplied by the other.
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyRight(Monad pM) {
-		if (!isReferenceMatch(this, pM)) // Don't try if not a reference match
-			throw new IllegalArgumentException("Right multiply fails reference match.");
-		GProduct tProd = getAlgebra().getGP();
-		Basis tBasis = getAlgebra().getBasis();
+		if (!isReferenceMatch(this, pM)) 			throw new IllegalArgumentException("Right multiply fails reference match.");
+		GProduct GP = getAlgebra().getGP();
+		Basis basis = getAlgebra().getBasis();
 
-		Scale<T> newScales = new Scale<T>(getMode(), tBasis, scales.getCardinal()).zeroAll();
-		if (sparseFlag) {
-			long slideKey = gradeKey;
-			byte logKey = (byte) Math.log10(slideKey); // logKey is the highest grade with non-zero blades
-			while (logKey >= 0) {
-				tBasis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
-					int col = tBasis.find(blade) - 1;
-					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
-						int row = tBasis.find(blade2) - 1;
-						int treturnBlade = Math.abs(tProd.getResult(col, row)) - 1;		//Recover Cayley table entry as index
-						if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
-						Blade bMult = tBasis.getSingleBlade(treturnBlade);
-						switch (getMode()) {
-						case COMPLEXD -> {
-							try {
-								ComplexD tAgg = ComplexD
-										.multiply((ComplexD) getWeights().get(blade), (ComplexD) pM.getWeights().get(blade2))
-										.scale(Double.valueOf(tProd.getSign(col, row)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
+		Scale<T> newScales = new Scale<T>(getMode(), basis, scales.getCardinal()).zeroAll();
+		if (sparseFlag) {										//If grade coverage is sparse, multiply blades BY grades present
+			long slideKey = gradeKey;							//The trick involves picking off powers of 10 from gradeKey
+			byte logKey = (byte) Math.log10(slideKey); 			//logKey has the highest grade with non-zero blades
+			while (logKey >= 0) {								//A grade remains unprocessed
+				basis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> { 		//blade0's are in a single grade of THIS monad
+					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {	//blade2's are in ANY grade of the OTHER monad
+						Blade bMult = GP.getResult(blade0, blade2);		// NOTE the reversal from left multiplication		//the two blades determine the result blade
+						try {
+							switch (getMode()) {				//get the number at the result blade and +/- it with the product of numbers at the two blades.
+								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+								case REALF ->	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 							}
-							break;
-						}
-						case COMPLEXF -> {
-							try {
-								ComplexF tAgg = ComplexF
-										.multiply((ComplexF) getWeights().get(blade), (ComplexF) pM.getWeights().get(blade2))
-										.scale(Float.valueOf(tProd.getSign(col, row)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-							}
-							break;
-						}
-						case REALD -> {
-							try {
-								RealD tAgg = RealD
-										.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
-										.scale(Double.valueOf(tProd.getSign(col, row)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-							}
-							break;
-						}
-						case REALF -> {
-							try {
-								RealF tAgg = RealF
-										.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
-										.scale(Float.valueOf(tProd.getSign(col, row)))
-										.add(newScales.get(bMult));
-								newScales.put(bMult, (T) tAgg);
-							} catch (FieldBinaryException e) {
-								throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-							}
-							break;
-						}
+						} catch (FieldBinaryException e) {		//Number reference match failures for multiply and add are caught here.
+							throw new IllegalArgumentException("Right multiply fails ProtoN reference match.");
 						}
 					});
 				});
-				slideKey -= Math.pow(10, logKey); // Subtract 10^logKey marking grade as done.
-				if (slideKey == 0)
-					break; // we've processed all grades including scalar.
-				logKey = (byte) Math.log10(slideKey); // if zero it will be the last in loop
-			} // while loop completion -> all grades in 'this' processed
-		} else {
-			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade -> {
-				int col = tBasis.find(blade) - 1;
-				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {
-					int row = tBasis.find(blade2) - 1;
-					int treturnBlade = Math.abs(tProd.getResult(col, row)) - 1;		//Recover Cayley table entry as index
-					if (treturnBlade == -1) treturnBlade = 0;						//If it is -1 set it to scalar
-					Blade bMult = tBasis.getSingleBlade(treturnBlade);
-					switch (getMode()) {
-					case COMPLEXD -> {
-						try {
-							ComplexD tAgg = ComplexD
-									.multiply((ComplexD) getWeights().get(blade), (ComplexD) pM.getWeights().get(blade2))
-									.scale(Double.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
+				slideKey -= Math.pow(10, logKey); 			//Subtracting 10^logKey means that grade as done.
+				if (slideKey == 0)		break; 					//All grades are done if true.
+				logKey = (byte) Math.log10(slideKey); 			//Reset logKey for the loop condition. If zero it will be the last time through.
+			} 													//While loop complete -> all non-zero grades in THIS monad processed against all blades in OTHER monad.
+		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
+			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> {								//blade0's are in ANY grade of THIS monad
+				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {		//blade2's are in ANY grade of the OTHER monad
+					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication				//the two blades determine the result blade
+					try {
+						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
 						}
-						break;
-					}
-					case COMPLEXF -> {
-						try {
-							ComplexF tAgg = ComplexF
-									.multiply((ComplexF) getWeights().get(blade), (ComplexF) pM.getWeights().get(blade2))
-									.scale(Float.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-						break;
-					}
-					case REALD -> {
-						try {
-							RealD tAgg = RealD
-									.multiply((RealD) getWeights().get(blade), (RealD) pM.getWeights().get(blade2))
-									.scale(Double.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-						break;
-					}
-					case REALF -> {
-						try {
-							RealF tAgg = RealF
-									.multiply((RealF) getWeights().get(blade), (RealF) pM.getWeights().get(blade2))
-									.scale(Float.valueOf(tProd.getSign(col, row)))
-									.add(newScales.get(bMult));
-							newScales.put(bMult, (T) tAgg);
-						} catch (FieldBinaryException ex) {
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-						break;
-					}
+					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
+						throw new IllegalArgumentException("Right multiply fails ProtoN reference match.");
 					}
 				});
 			});
 		}
-		scales = newScales;
-		setGradeKey();
+		scales = newScales;										//newScales has the correct map between blades and numbers to be the multiplication result
+		setGradeKey();											//Let the monad sift through its numbers to reset the keys.
 		return this;
 	}
 
@@ -1351,28 +1166,14 @@ public class Monad implements Modal {
 	 * @return Monad
 	 */
 	public Monad multiplySymm(Monad pM) {
-		if (!isReferenceMatch(this, pM))
-			throw new IllegalArgumentException("Symm multiply fails reference match.");
-		Monad halfTwoRight = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
-		(this.multiplyLeft(pM)).add(halfTwoRight);
-
+		if (!isReferenceMatch(this, pM))		throw new IllegalArgumentException("Symm multiply fails reference match.");
+		Monad rightSide = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
+		(this.multiplyLeft(pM)).add(rightSide);
 		switch (getMode()) {
-			case COMPLEXD -> {
-				scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
-				break;
-			}
-			case COMPLEXF -> {
-				scale(ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
-				break;
-			}
-			case REALD -> {
-				scale(RealD.newONE(scales.getCardinal()).scale(BY2_D));
-				break;
-			}
-			case REALF -> {
-				scale(RealF.newONE(scales.getCardinal()).scale(BY2_F));
-				break;
-			}
+			case COMPLEXD -> scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
+			case COMPLEXF -> scale( ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
+			case REALD -> scale((RealD.newONE(scales.getCardinal()).scale(BY2_D)));
+			case REALF -> scale((RealF.newONE(scales.getCardinal()).scale(BY2_F)));
 		}
 		setGradeKey();
 		return this;
