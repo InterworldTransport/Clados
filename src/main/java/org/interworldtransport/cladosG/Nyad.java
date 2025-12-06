@@ -484,16 +484,14 @@ public class Nyad implements Modal {
 		if (pKeep.getAlgebra().getBasis() != pUse.getAlgebra().getBasis()) 	// Proceed only if Basis is exact match
 						throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
 		
-		if (!this.has(pKeep) || !this.has(pUse))								// Proceed only if both monads in nyad.
+		if (!this.has(pKeep) || !this.has(pUse))							// Proceed only if both monads in nyad.
 						throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
 
-		pUse = Nyad.projectReference(pKeep, pUse);								// Right Monad is ALTERED HERE!
-		pKeep.multiplyAntisymm(pUse);											// Only now can we do the deed.
-
-		monadList.remove(pUse);													// Right Monad is REMOVED HERE!
+		pUse = Nyad.projectReference(pKeep, pUse);							// Right Monad is ALTERED HERE!
+		pKeep.commutator(pUse).scale(0.5);								// Now do the deed. (Precision doesn't matter)
+		monadList.remove(pUse);												// Right Monad is REMOVED HERE!
 		monadList.trimToSize();
-		resetFlags();															// Work out consequences
-		 
+		resetFlags();														// Work out consequences
 		return this;
 	}
 
@@ -534,25 +532,23 @@ public class Nyad implements Modal {
 	 * This happens, though, for cases where algebras are kept as book-keeping devices preventing simplification of operations.
 	 * This is exactly the case for using nyads as juxtapositions.
 	 * <br><br>
-	 * @param pLeft Monad in the left multiplication role. (This is the one with the algebra that is kept.)
-	 * @param pRight Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
+	 * @param pKeep Monad in the left multiplication role. (This is the one with the algebra that is kept.)
+	 * @param pUse Monad in the right multiplication role. (This one looses its algebra reference and gets REMOVED FROM NYAD)
 	 * @throws CladosNyadException 	This happens with an edge case involving a basis mis-match in the two algebras.
 	 * @return Nyad this nyad after the alteration.
 	 */
-	public Nyad compressSymm(Monad pLeft, Monad pRight) throws CladosNyadException {
-		if (pLeft.getAlgebra().getBasis() != pRight.getAlgebra().getBasis()) 	// Proceed only if Basis is exact match
+	public Nyad compressSymm(Monad pKeep, Monad pUse) throws CladosNyadException {
+		if (pKeep.getAlgebra().getBasis() != pUse.getAlgebra().getBasis()) 	// Proceed only if Basis is exact match
 						throw new CladosNyadException(this, "Symmetric Compression requires exact Basis match.");
 		
-		if (!this.has(pLeft) || !this.has(pRight))								// Proceed only if both monads in nyad.
+		if (!this.has(pKeep) || !this.has(pUse))							// Proceed only if both monads in nyad.
 						throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
 
-		pRight = Nyad.projectReference(pLeft, pRight);							// Right Monad is ALTERED HERE!
-		pLeft.multiplySymm(pRight);												// Only now can we do the deed.
-
-		monadList.remove(pRight);												// Right Monad is REMOVED HERE!
+		pUse = Nyad.projectReference(pKeep, pUse);							// Right Monad is ALTERED HERE!
+		pKeep.anticommutator(pUse).scale(0.5);							// Now do the deed. (Precision doesn't matter)
+		monadList.remove(pUse);												// Right Monad is REMOVED HERE!
 		monadList.trimToSize();
-		resetFlags();															// Work out consequences
-		 
+		resetFlags();														// Work out consequences
 		return this;
 	}
 

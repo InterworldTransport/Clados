@@ -250,22 +250,22 @@ public class DegenerateComplexMonadTests {
 
         assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM0)));
 		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM0)));
-        assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplySymm(tM0)));
-		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyAntisymm(tM0)));
+        assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).anticommutator(tM0)));
+		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).commutator(tM0)));
 
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM1))); //different feet and algebras
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyLeft(tM0))); //different feet and algebras
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM1))); //different feet and algebras
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyRight(tM0))); //different feet and algebras
-        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplySymm(tM0))); //different feet and algebras
-        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyAntisymm(tM0))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).anticommutator(tM0))); //different feet and algebras
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).commutator(tM0))); //different feet and algebras
 
         assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM5)));   //reference match succeeds
         assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyLeft(tM0)));   //reference match succeeds
         assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM5)));  //reference match succeeds
         assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyRight(tM0)));  //reference match succeeds
-        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplySymm(tM5)));   //reference match succeeds
-        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyAntisymm(tM0))); //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM0).anticommutator(tM5)));   //reference match succeeds
+        assertDoesNotThrow(() -> Monad.isGZero(GBuilder.copyOfMonad(tM5).commutator(tM0))); //reference match succeeds
 
         tM8 = new Monad(tM6);                                               // Another fake nilpotent.
         assertDoesNotThrow(() -> tM8.multiplyRight(tM6));                   // Not sparse multiply
@@ -273,13 +273,13 @@ public class DegenerateComplexMonadTests {
         assertTrue(Monad.isGrade(tM8, 0));                           // Proves that E14*E14=0
 
         tM8 = new Monad( tM6);                                              // Another fake nilpotent.
-        assertDoesNotThrow(() -> tM8.multiplySymm(tM6));                    //Not sparse multiply. Also tests addition.
-        assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == 1.0f);
+        assertDoesNotThrow(() -> tM8.anticommutator(tM6));                    //Not sparse multiply. Also tests addition.
+        assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == 2.0f);
         assertTrue(Monad.isGrade(tM8, 0));                           // Proves that E14*E14=0
         //System.out.println(Monad.toXMLFullString(tM8, ""));
 
         tM8 = new Monad(tM6);
-        assertDoesNotThrow(() -> tM8.multiplyAntisymm(tM6));                //Not sparse multiply. Also tests subtraction.
+        assertDoesNotThrow(() -> tM8.commutator(tM6));                //Not sparse multiply. Also tests subtraction.
         assertTrue(((ComplexF) tM8.scales.getScalar()).getReal() == 0.0f);
         assertTrue(Monad.isGrade(tM8, 0)); 
  

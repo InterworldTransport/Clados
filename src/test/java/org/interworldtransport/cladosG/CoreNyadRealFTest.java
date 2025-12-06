@@ -848,7 +848,6 @@ public class CoreNyadRealFTest {
 		void testSymmetricCompression() throws CladosNyadException {
 			assertTrue(thing1.getMonadAt(0) == motion);
 			assertTrue(thing1.getMonadAt(1) == property);
-	
 			thing1.compressSymm(property, motion);									//motion gets property's algebra and cardinal
 			assertTrue(thing1.getMonadAt(0) == property);
 	

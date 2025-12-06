@@ -221,7 +221,7 @@ public class Monad implements Modal {
 									check1.getWeights().isNotZeroAt(blade)).sequential().findFirst();
 		if (first.isPresent())
 			return isIdempotent(GBuilder.copyOfMonad(pM)
-									.scale((T) FBuilder.copyOf(check1.getWeights().get(first.get()))
+									.scale((T) FBuilder.copyOf(check1.get(first.get()))
 										.invert()));
 		return false;
 	}
@@ -810,12 +810,35 @@ public class Monad implements Modal {
 	 * <br>
 	 * @param i   int This points at the coefficient at the equivalent tuple
 	 *            location.
-	 * @param <T> ProtoN number from CladosF without the interfaces this time.
+	 * @param <T> ProtoN number from CladosF.
 	 * @return ProtoN
 	 */
 	public <T extends ProtoN & Field & Normalizable> T getCoeff(int i) {
 		if (getAlgebra().getBasis().validateBladeIndex(i))
 			return (T) scales.getNumbers()[i];
+		return null;
+	}
+
+	/**
+	 * Return a field Coefficient for this Monad. These coefficients are the weights making linear combinations 
+	 * of basis elements. Use this method to get a weight at a particular blade.
+	 * <br><br>
+	 * The map internal to Scale can accept any of the CladosF numbers as values, there is a cast to a 'generic' 
+	 * type within this method. This would normally cause warnings by the compiler since the generic named in the
+	 * internal map IS a ProtoN child AND casting an unchecked type could fail at runtime.
+	 * <br><br>
+	 * That won't happen here when CladosF builders are used. They can't build anything that is NOT a ProtoN child. 
+	 * They can't even build a ProtoN instance directly. Therefore, only children can arrive as the value parameter 
+	 * of the 'put' function. Thus, there is no danger of a failed cast operation... until someone creates a 
+	 * new ProtoN child class and fails to update all builders.
+	 * <br><br>
+	 * @param pB	Blade that points at the coefficient in the equivalent tuple location.
+	 * @param <T> 	ProtoN number from CladosF.
+	 * @return ProtoN child number acting as a weight at the blade.
+	 */
+	public <T extends ProtoN & Field & Normalizable> T get(Blade pB) {
+		if (getAlgebra().getBasis().hasBlade(pB))
+			return (T) scales.get(pB);
 		return null;
 	}
 
@@ -850,7 +873,7 @@ public class Monad implements Modal {
 
 	/**
 	 * This method returns the map relating basis blades to coefficients.
-	 * <br>
+	 * <br><br>
 	 * @return Scale of Blades and ProtoN children. This is the 'coefficients' object.
 	 */
 	public Scale<?> getWeights() {
@@ -932,16 +955,15 @@ public class Monad implements Modal {
 		if (!Monad.isReferenceMatch(this, pM))
 			return false;
 		switch (getMode()) {
-			case COMPLEXD : return bladeStream().allMatch(blade -> 
-							ComplexD.isEqual((ComplexD) scales.get(blade), (ComplexD) pM.scales.get(blade)));
-			case COMPLEXF : return bladeStream().allMatch(blade -> 
-							ComplexF.isEqual((ComplexF) scales.get(blade), (ComplexF) pM.scales.get(blade)));
-			case REALD : return bladeStream().allMatch(blade -> 
-							RealD.isEqual((RealD) scales.get(blade), (RealD) pM.scales.get(blade)));
-			case REALF : return bladeStream().allMatch(blade -> 
-							RealF.isEqual((RealF) scales.get(blade), (RealF) pM.scales.get(blade)));
-			default : return false;
-		
+			case COMPLEXD -> {return bladeStream().allMatch(blade -> 
+							ComplexD.isEqual((ComplexD) scales.get(blade), (ComplexD) pM.scales.get(blade)));}
+			case COMPLEXF -> {return bladeStream().allMatch(blade -> 
+							ComplexF.isEqual((ComplexF) scales.get(blade), (ComplexF) pM.scales.get(blade)));}
+			case REALD -> {return bladeStream().allMatch(blade -> 
+							RealD.isEqual((RealD) scales.get(blade), (RealD) pM.scales.get(blade)));}
+			case REALF -> {return bladeStream().allMatch(blade -> 
+							RealF.isEqual((RealF) scales.get(blade), (RealF) pM.scales.get(blade)));}
+			default -> {return false;}
 		}
 	}
 
@@ -970,50 +992,36 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Monad antisymmetric multiplication: 1/2(pM this - this pM) This operation is
-	 * allowed when the two monads use the same field and satisfy the Reference
-	 * Matching test.
-	 * <br>
-	 * @param pM Monad
-	 * @return Monad
+	 * Monad antisymmetric multiplication: (pM this - this pM) 
+	 * This operation is allowed when the two monads use the same field and satisfy the Reference Matching test.
+	 * <br><br>
+	 * @param pM Monad brought in to the commutator product
+	 * @return Monad (this one) returned after the operation
 	 */
-	public Monad multiplyAntisymm(Monad pM) {			
-		if (!isReferenceMatch(this, pM))		throw new IllegalArgumentException("Symm multiply fails reference match.");
+	public Monad commutator(Monad pM) {			
+		if (!isReferenceMatch(this, pM))		throw new IllegalArgumentException("Commutator fails reference match.");
 		Monad rightSide = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
 		(this.multiplyLeft(pM)).subtract(rightSide);
-		switch (getMode()) {
-			case COMPLEXD -> scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
-			case COMPLEXF -> scale( ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
-			case REALD -> scale((RealD.newONE(scales.getCardinal()).scale(BY2_D)));
-			case REALF -> scale((RealF.newONE(scales.getCardinal()).scale(BY2_F)));
-		}
 		setGradeKey();
 		return this;
 	}
 
 	/**
-	 * Monad leftside multiplication: (pM this) This operation is allowed when the
-	 * two monads use the same field and satisfy the Reference Match test.
+	 * Monad leftside multiplication: (pM this) This operation is allowed when the two monads use the same field and satisfy the Reference Match test.
 	 * <br>
-	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to
-	 * find the non-zero grades. For example: gradeKey=101 means the monad is a sum
-	 * of bivector and scalar because 10^2+10^0 = 101.
+	 * WHEN SPARSE | Use gradeKey (a base 10 representation of grades present) to  find the non-zero grades. For example: gradeKey=101 means the monad 
+	 * is a sum  of bivector and scalar because 10^2+10^0 = 101.
 	 * <br>
-	 * In a sparse monad, the gradeKey will have few 1's, making looping on all
-	 * blades less optimal. Instead, we parse gradeKey and loop through the blades
-	 * for grades that could be non-ZERO.
+	 * In a sparse monad, the gradeKey will have few 1's, making looping on all blades less optimal. Instead, we parse gradeKey and loop through the 
+	 * blades for grades that could be non-ZERO.
 	 * <br>
-	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd
-	 * behavior if one sends in a complex numbers expecting against real numbers.
-	 * What IS checked is the cardinal and that likely traps most errors that can be
-	 * made. It's not perfect, though. If someone intentionally builds different
-	 * number types using the same cardinal, they will get around the detection in
+	 * NOTE that the mode of the inbound monad is NOT checked. That can lead to odd behavior if one sends in a complex numbers expecting against real 
+	 * numbers. What IS checked is the cardinal and that likely traps most errors that can be made. It's not perfect, though. If someone intentionally 
+	 * builds different number types using the same cardinal, they will get around the detection in
 	 * place here.
 	 * <br>
-	 * What will happen in that case? The inbound numbers will be multiplied against
-	 * coefficients as THEY understand multiplication. The inbound numbers gets cast
-	 * to the other, so imaginary components won't get used in real number
-	 * multiplication.
+	 * What will happen in that case? The inbound numbers will be multiplied against coefficients as THEY understand multiplication. The inbound numbers 
+	 * get cast to the other, so imaginary components won't get used in real number multiplication.
 	 * <br>
 	 * @param pM  Monad
 	 * @param <T> ProtoN number from CladosF with all interfaces this time.
@@ -1034,13 +1042,13 @@ public class Monad implements Modal {
 						Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
 						try {
 							switch (getMode()) {				//get the number at the result blade and +/- it with the product of numbers at the two blades.
-								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
 																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
 																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
 																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-								case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+								case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
 																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 							}
 						} catch (FieldBinaryException e) {		//Number reference match failures for multiply and add are caught here.
@@ -1058,13 +1066,13 @@ public class Monad implements Modal {
 					Blade bMult = GP.getResult(blade2, blade0);																//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
-							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
-							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
-							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
-							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
@@ -1113,13 +1121,13 @@ public class Monad implements Modal {
 						Blade bMult = GP.getResult(blade0, blade2);		// NOTE the reversal from left multiplication		//the two blades determine the result blade
 						try {
 							switch (getMode()) {				//get the number at the result blade and +/- it with the product of numbers at the two blades.
-								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
 																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
 																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
 																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-								case REALF ->	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+								case REALF ->	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
 																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 							}
 						} catch (FieldBinaryException e) {		//Number reference match failures for multiply and add are caught here.
@@ -1137,13 +1145,13 @@ public class Monad implements Modal {
 					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication				//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
-							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) getWeights().get(blade0), (ComplexD) pM.getWeights().get(blade2))
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
-							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) getWeights().get(blade0), (ComplexF) pM.getWeights().get(blade2))
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
-							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) getWeights().get(blade0), (RealD) pM.getWeights().get(blade2))
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
-							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) getWeights().get(blade0), (RealF) pM.getWeights().get(blade2))
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
@@ -1158,23 +1166,16 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Monad symmetric multiplication: 1/2(pM this + this pM) This operation is
-	 * allowed when the two monads use the same field and satisfy the Reference
-	 * Matching test.
+	 * Monad symmetric multiplication: (pM this + this pM) 
+	 * This operation is allowed when the two monads use the same field and satisfy the Reference Matching test.
 	 * <br>
-	 * @param pM Monad
-	 * @return Monad
+	 * @param pM Monad brought in to the anticommutator product
+	 * @return Monad (this one) returned after the operation
 	 */
-	public Monad multiplySymm(Monad pM) {
-		if (!isReferenceMatch(this, pM))		throw new IllegalArgumentException("Symm multiply fails reference match.");
+	public Monad anticommutator(Monad pM) {
+		if (!isReferenceMatch(this, pM))		throw new IllegalArgumentException("Anticommutator fails reference match.");
 		Monad rightSide = (GBuilder.copyOfMonad(this)).multiplyRight(pM);
 		(this.multiplyLeft(pM)).add(rightSide);
-		switch (getMode()) {
-			case COMPLEXD -> scale(ComplexD.newONE(scales.getCardinal()).scale(BY2_D));
-			case COMPLEXF -> scale( ComplexF.newONE(scales.getCardinal()).scale(BY2_F));
-			case REALD -> scale((RealD.newONE(scales.getCardinal()).scale(BY2_D)));
-			case REALF -> scale((RealF.newONE(scales.getCardinal()).scale(BY2_F)));
-		}
 		setGradeKey();
 		return this;
 	}
@@ -1245,25 +1246,42 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * Monad Scaling: (this * real number) Only the Monad coefficients are scaled by
-	 * the real number.
-	 * <br>
-	 * NOTE that the mode of the inbound scaling number is NOT checked. That can
-	 * lead to odd behavior if one sends in a complex number expecting to scale a
-	 * real number. What IS checked is the cardinal and that likely traps most
-	 * errors that can be made. It's not perfect, though. If someone intentionally
-	 * builds different number types using the same cardinal, they will get around
-	 * the detection in place here. What will happen in that case? The inbound
-	 * number will be multiplied against coefficients as THEY understand
-	 * multiplication. The inbound number gets cast to the other, so imaginary
-	 * components won't get used in real number multiplication.
-	 * <br>
+	 * Monad Scaling: (this * CladosF number) 
+	 * The monad's weight are scaled by the unitized number.
+	 * <br><br>
+	 * NOTE that the mode of the inbound scaling number is NOT checked. That can lead to odd behavior if 
+	 * one sends in a complex number expecting to scale a real number. What IS checked is the cardinal 
+	 * and that likely traps most errors that can be made. It's not perfect, though. If someone intentionally
+	 * builds different number types using the same cardinal, they will get around the detection in place 
+	 * here. What will happen in that case? The inbound number will be multiplied against coefficients as 
+	 * THEY understand multiplication. The inbound number gets cast to the other, so imaginary components 
+	 * won't get used in real number multiplication.
+	 * <br><br>
 	 * @param pScale ProtoN to use for scaling the monad
 	 * @param <T>    ProtoN number from CladosF with the Field interface.
 	 * @return Monad after the scaling is complete.
 	 */
 	public <T extends ProtoN & Field & Normalizable> Monad scale(T pScale) {
 		scales.scale(pScale);
+		setGradeKey();
+		return this;
+	}
+
+	/**
+	 * Monad Scaling: (this * Number)
+	 * The monad's weights are scaled by the non-unitized number.
+	 * <br><br>
+	 * NOTE there is no unit protection needed here.<br>
+	 * ALSO there is a risk of precision errors creeping in here since the
+	 * monad's mode might be single precision while the incoming parameter
+	 * might be double precision. No check is made or enforced as the typical
+	 * use for this method should involve integer inputs and their inverses.
+	 * <br><br>
+	 * @param pN 	Number (a Java superclass) to use for scaling the monad
+	 * @return Monad after the scaling is complete.
+	 */
+	protected Monad scale(Number pN) {
+		scales.weightsStream().forEach(x -> x.scale(pN));
 		setGradeKey();
 		return this;
 	}

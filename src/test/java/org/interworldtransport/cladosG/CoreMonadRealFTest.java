@@ -336,22 +336,22 @@ public class CoreMonadRealFTest {
 		
 		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM0)));
 		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM0)));
-        assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplySymm(tM0)));
-		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyAntisymm(tM0)));
+        assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).anticommutator(tM0)));
+		assertTrue(Monad.isGZero(GBuilder.copyOfMonad(tM0).commutator(tM0)));
         
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM1)));
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyLeft(tM0)));
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM1)));
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyRight(tM0)));
-        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplySymm(tM0)));
-        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).multiplyAntisymm(tM0)));
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).anticommutator(tM0)));
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM1).commutator(tM0)));
 
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyLeft(tM5)));
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyLeft(tM0)));
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplyRight(tM5)));
         assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyRight(tM0)));
-        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).multiplySymm(tM5)));
-        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM5).multiplyAntisymm(tM0)));
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM0).anticommutator(tM5)));
+        assertThrows(IllegalArgumentException.class, () -> Monad.isGZero(GBuilder.copyOfMonad(tM5).commutator(tM0)));
 
         tM7.gradePart((byte) 4).setName("PScalar");    //Like tm6 except it is now a unit pscalar
         assertDoesNotThrow(() -> tM8.multiplyLeft(tM7));                    //Not sparse multiply
@@ -364,12 +364,12 @@ public class CoreMonadRealFTest {
         assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 1.0f);
 
         tM8 = new Monad( tM6);
-        assertDoesNotThrow(() -> tM8.multiplySymm(tM7));                    //Not sparse multiply. Also tests addition.
-        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == -1.0f);
-        assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 1.0f);
+        assertDoesNotThrow(() -> tM8.anticommutator(tM7));                    //Not sparse multiply. Also tests addition.
+        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == -2.0f);
+        assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 2.0f);
 
         tM8 = new Monad(tM6);
-        assertDoesNotThrow(() -> tM8.multiplyAntisymm(tM7));                //Not sparse multiply. Also tests subtraction.
+        assertDoesNotThrow(() -> tM8.commutator(tM7));                //Not sparse multiply. Also tests subtraction.
         assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 0.0f);
         assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 0.0f);
 
@@ -386,12 +386,12 @@ public class CoreMonadRealFTest {
         assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 1.0f);
 
         tM8 = (new Monad(tM6)).gradePart((byte) 4).setName("BunchOfOnes");    //Like tm6 except it is now a unit pscalar
-        assertDoesNotThrow(() -> tM8.multiplySymm(tM7));                    //sparse multiply. Also tests addition.
-        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == -1.0f);
-        assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 1.0f);
+        assertDoesNotThrow(() -> tM8.anticommutator(tM7));                    //sparse multiply. Also tests addition.
+        assertTrue(((RealF) tM8.scales.getScalar()).getReal() == -2.0f);
+        assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 2.0f);
 
         tM8 = (new Monad(tM6)).gradePart((byte) 4).setName("BunchOfOnes");    //Like tm6 except it is now a unit pscalar
-        assertDoesNotThrow(() -> tM8.multiplyAntisymm(tM7));                //sparse multiply. Also tests subtraction.
+        assertDoesNotThrow(() -> tM8.commutator(tM7));                //sparse multiply. Also tests subtraction.
         assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 0.0f);
         assertTrue(((RealF) tM8.scales.getPScalar()).getReal() == 0.0f);
 	}
