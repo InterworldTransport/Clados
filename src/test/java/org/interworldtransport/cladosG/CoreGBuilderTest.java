@@ -474,19 +474,19 @@ public class CoreGBuilderTest {
         @Test
         public void testNyadConstructs() throws CladosMonadException, CladosNyadException {
             thing1 = GBuilder.createNyadWithMonadCopy(motion, "thing1");
-            assertTrue(thing1.getMOrder() == 1);
+            assertTrue(thing1.arity() == 1);
             thing1.append(property);
 
             Nyad thing2 = GBuilder.copyOfNyad(thing1);
-            assertTrue(thing2.getMOrder() == 2);
+            assertTrue(thing2.arity() == 2);
             assertTrue(thing2.isJuxtaposition());
 
             Nyad thing3 = GBuilder.copyOfNyad(thing1, "Copy of thing1");
-            assertTrue(thing3.getMOrder() == 2);
+            assertTrue(thing3.arity() == 2);
             assertTrue(thing3.isJuxtaposition());
 
             Nyad thing4 = GBuilder.duplicateNyadReference(thing1, "Copy of thing1 that REUSES thing1s monads");
-            assertTrue(thing3.getMOrder() == 2);
+            assertTrue(thing3.arity() == 2);
             assertTrue(thing3.isJuxtaposition());
             assertTrue(thing1.getMonadAt(0) == thing4.getMonadAt(0));
 

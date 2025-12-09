@@ -38,27 +38,63 @@ import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosGExceptions.*;
 
 /**
- * Nyads are for all practical purposes just lists of monads that share a common
- * Foot, but not necessarily common or unique algebras. They can be used as mere
- * lists, but they are intended to act more like transformations. For example, a
- * nyad of order two contains two monads. If they are of different algebras,
- * there is no path to simplifying them. No product or addition operation exists
- * between the monads even though they share the same Foot. However, if one of
- * the monads is multiplied against a different monad resulting in a scalar, the
- * nyad can be contracted to one monad. There are other ways to accomplish this
- * contraction as well and all of them imitate operations upon an operand.
+ * Nyads are technically lists of monads that share a common foot, but do not necessarily share the same algebra.
+ * In use they are the cladosG representation of an 'extensor'. While monads can directly represent geometry, 
+ * nyads are maps using monads as operators where more than one monad is required. Monads are also operators by 
+ * themselves, so nyads are extensions on the range of transformations represented.
  * <br><br>
- * The Nyad class in it's current form is immature. The list capability works,
- * but the operation behaviors are yet to be written. This will most likely be
- * done as the library gets used in physical models for field theories that
- * require multi-algebra currents and potentials. The expected physical behavior
- * of a 'classical' field theory from physics will inform the behaviors expected
- * of CladosG Nyads.
+ * Examples<br>
+ * Nyad arity = 0: Multivector Q	: No operand. It is what it is... but it can be composed with others.<br>
+ * Nyad arity = 1: Mirror M 		: Reflection of an operand (Inverse mirror is computed then used.)<br>
+ * Nyad arity = 1: Rotor R 			: Rotation of an operand (Inverse rotor is computed then used.)<br>
+ * Nyad arity = 2: Mirrors M1, M2 	: Rotation as a double reflection of an operand.<br>
+ * Nyad arity = n: Mirrors M1...Mn	: N-fold composition of reflections covers a lot of transformations.<br>
+ * Nyad arity = p+q+r	: Single blade monads m1...m_p+q+r : Basis transformations not reached by reflections.<br>
+ * Nyad arity = 2(p+q+r): Single blade monds for two distinct p+q+r algebras : Ken Greider's 'Connector' idea which
+ * is like a basis transformation but between two distinct algebras.
  * <br><br>
- * Nyads ARE Modal because they contain modal objects. Nothing in the List
- * nature of Nyads requires Modal, but specific Monad handling behavior does.
+ * If the monads involved are of different algebras, there is no path to simplifying them. The nyad is essentially
+ * a juxtapostion of monads that might be related through other objects, but not in the nyad. The juxtapostion
+ * flag signals when there are no shared algebras.
+ * <br><br> 
+ * If the monad are of the same algebra, this is a path to simplyfying them but it could be through multiplication 
+ * or addition which isn't specified in the nyad. If it is through multiplication, then composition is possible. 
+ * If it is through  addition, then summation is possible. Since only one flag is needed to signal summation and 
+ * composition are possible, the composition flag suffices.
  * <br><br>
- * (Single monad nyads are essentially monads, but can be expanded.)
+ * Unary Operations :<br>
+ * 1) Nyad Weight	: Monads that share an algebra are added.<br>
+ * 2) Nyad Compose	: Moads that share an algebra are multiplied where left -> right is stack top -> bottom.<br> 
+ * Binary Operations:<br>
+ * 3) Nyad Add		: Monad list of one is appended to the other.<br>
+ * 4) Nyad Multiply	: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.<br>
+ * Each of these pairs connects to the concepts of addition and multiplication and might easily be recognized by
+ * other names. For example, nyad's 'compose' is both multiplication and simplification. A nyad with two mirrors
+ * from the same algebra can be used to rotate operands in the algebra, but the two mirrors can be kept separate
+ * or simplified to create a rotor without changing what they nyad can do.
+ * <br><br>
+ * Compression Operations:<br>
+ * 1) Projection	: A monad in one algebra is simply expressed in another algebra re-using weights.<br>
+ * Projection involves reassigning equivalent blades in the basis for a monad. Weights are preserved. The simplest
+ * projection involves taking a scalar from one algebra and treating it like a scalar from another one. Another 
+ * involves taking a k-blade in one algebra as the pscalar in a smaller algebra. It is assumed that a generator 
+ * e_i in one algebra means the same thing in the other algebra, so transformations might have to occur before
+ * projection in order to make this true.<br>
+ * 2) Compression	: A monad in one algebra is projected to another and then composed with another.<br>
+ * Compression can be left or right sided or symmetric or antisymmetric versions. Projection then Composition.<br>
+ * Examples of this operation can be found in the work of Ken Greider and his students in support of classical
+ * and quantum field theories using Clifford algebras.
+ * <br><br>
+ * The Nyad is an evolving class. It is meant to encompass extensors as Hestenes described them. Nyad's methods
+ * will likely change in the near future as it is adapted to current uses that might not make use of 'extensor' 
+ * as a term yet. If the operations become complicated enough, Nyad will be subclassed and specialized at the 
+ * child class level instead of being turned into a hairball.
+ * <br><br>
+ * NOTE: Nyads are Modal because they contain modal objects. Nyad does not directly refer to modal numbers, but 
+ * mode protections are required to ensure Nyad does not mix representations of precision or complexity. Monads
+ * are modal, so methods handling them must be also.
+ * <br><br>
+ * ALSO NOTE: While Nyads are modal, they may not be Unitized. Nyads are the maps of things that may be unitized.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -78,10 +114,10 @@ public class Nyad implements Modal {
 	 * @return boolean
 	 */
 	public static final boolean isNEqual(Nyad pT, Nyad pN) {
-		if (pT.getMOrder() != pN.getMOrder())		// Check if the Nyads are of the same order
+		if (pT.arity() != pN.arity())				// Check if the Nyads are of the same order
 			return false;							// Return false if they are not
 
-		if (pT.getAOrder() != pN.getAOrder())		// Check if the nyads algebra orders are the same
+		if (pT.algrity() != pN.algrity())			// Check if the nyads algebra orders are the same
 			return false;							// Return false if they are not
 		
 		if (pT.getFoot() != pN.getFoot())			// Check if the feet match
@@ -107,10 +143,10 @@ public class Nyad implements Modal {
 	 * @return boolean
 	 */
 	public static final boolean isStrongReferenceMatch(Nyad pT, Nyad pN) {
-		if (pT.getMOrder() != pN.getMOrder())		// Check if the Nyads are of the same order
+		if (pT.arity() != pN.arity())				// Check if the Nyads are of the same order
 			return false;							// Return false if they are not
 		
-		if (pT.getAOrder() != pN.getAOrder())		// Check if the nyads algebra orders are the same
+		if (pT.algrity() != pN.algrity())			// Check if the nyads algebra orders are the same
 			return false;							// Return false if they are not
 
 		if (pT.getFoot() != pN.getFoot())			// Check if the feet match
@@ -139,7 +175,7 @@ public class Nyad implements Modal {
 		if (pT.getFoot() != pN.getFoot())			// Check to see if the Feet match
 			return false;							// Return false if they do not	
 
-		if (pT.getAOrder() == 0 | pN.getAOrder() == 0)
+		if (pT.algrity() == 0 | pN.algrity() == 0)
 			return true;							// Edge case: AT LEAST one nyad is empty... so the other has danglers and passes.
 
 		if (!pT.algebraStream().anyMatch(y -> pN.algebraStream().anyMatch(x -> x.equals(y)))) 										
@@ -204,9 +240,9 @@ public class Nyad implements Modal {
 		StringBuilder rB = new StringBuilder(indent+"<Nyad name=\"");
 		rB	.append(pN.getName())
 			.append("\" order=\"")
-			.append(pN.getMOrder())
+			.append(pN.arity())
 			.append("\" algorder=\"")
-			.append(pN.getAOrder())
+			.append(pN.algrity())
 			.append("\" >\n");
 		
 		rB	.append(Foot.toXMLString(pN.getFoot(), indent + "\t"));
@@ -245,9 +281,9 @@ public class Nyad implements Modal {
 		StringBuilder rB = new StringBuilder(indent+"<Nyad name=\"");
 		rB	.append(pN.getName())
 			.append("\" order=\"")
-			.append(pN.getMOrder())
+			.append(pN.arity())
 			.append("\" algorder=\"");
-		rB	.append(pN.getAOrder())
+		rB	.append(pN.algrity())
 			.append("\" >\n");
 				
 		rB	.append(Foot.toXMLString(pN.getFoot(), indent + "\t"));
@@ -358,7 +394,7 @@ public class Nyad implements Modal {
 	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException {
 		if (pN == null) 			throw new CladosNyadException(null, "This nyad constructor requires initializing monad.");
 
-		if (pN.getMOrder() == 0) 	throw new IllegalArgumentException("Offered Nyad to copy is empty.");
+		if (pN.arity() == 0) 	throw new IllegalArgumentException("Offered Nyad to copy is empty.");
 
 		setName(pName);
 		setFoot(pN.getFoot());
@@ -385,6 +421,16 @@ public class Nyad implements Modal {
 	 */
 	public Stream<Algebra> algebraStream() {
 		return algebraList.stream();
+	}
+
+
+	/**
+	 * Return the algebra order of this Nyad
+	 * <br>
+	 * @return short
+	 */
+	public int algrity() {
+		return algebraList.size();
 	}
 
 	/**
@@ -436,6 +482,15 @@ public class Nyad implements Modal {
 		monadList.add(GBuilder.copyOfMonad(pM));		// Add Monad to the ArrayList
 		resetFlags();
 		return this;
+	}
+
+	/**
+	 * Return the number of monads in this Nyad
+	 * <br><br>
+	 * @return int
+	 */
+	public int arity() {
+		return monadList.size();
 	}
 
 	/**
@@ -607,6 +662,16 @@ public class Nyad implements Modal {
 	}
 
 	/**
+	 * Overridden Equals method from Object.
+	 * This ensures reference equality is the standard. They must literally be the same object to be equal.
+	 * @return boolean check for reference equality
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return (this == obj);
+	}
+
+	/**
 	 * Return an integer pointing to a monad that uses the algebra referenced. If more than
 	 * one monad uses the algebra, the returned integer will point at the first one in the list.
 	 * <br>
@@ -682,6 +747,12 @@ public class Nyad implements Modal {
 		return sharedFoot;
 	}
 
+	/**
+	 * This answers a question concerning which type of ProtoN children are used. The nyad itself
+	 * isn't modal, but its monads have an implicit dependence.
+	 * <br><br>
+	 * @return CladosField mode for this monad
+	 */
 	@Override
 	public CladosField getMode() {
 		return mode;
@@ -706,24 +777,6 @@ public class Nyad implements Modal {
 	 */
 	public String getName() {
 		return Name;
-	}
-
-	/**
-	 * Return the algebra order of this Nyad
-	 * <br>
-	 * @return short
-	 */
-	public int getAOrder() {
-		return algebraList.size();
-	}
-
-	/**
-	 * Return the order of this Nyad
-	 * <br>
-	 * @return int
-	 */
-	public int getMOrder() {
-		return monadList.size();
 	}
 
 	/**

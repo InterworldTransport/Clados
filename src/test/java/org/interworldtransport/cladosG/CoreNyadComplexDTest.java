@@ -94,7 +94,7 @@ public class CoreNyadComplexDTest {
 		@Test
 		void testShouldntHappens() {
 			thing1.remove(motion);
-			assertTrue(thing1.getMOrder() == 0);
+			assertTrue(thing1.arity() == 0);
 			assertThrows(IllegalArgumentException.class, () -> new Nyad("", thing1, false));
 			assertThrows(IllegalArgumentException.class, () -> new Nyad("", thing1, true));
 		}
@@ -109,28 +109,28 @@ public class CoreNyadComplexDTest {
 			String newCard = "iso";
 
 			thing1.create(newMName, newAName, newSig, newCard);
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 			thing1.remove(1);
 
 			thing1.create(newMName, newAName, newSig, null);
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 			thing1.remove(1);
 
 			thing1.create(newMName, newAName, newSig, null);
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 			thing1.remove(1);
 
 			thing1.create(newMName, newAName, newSig, null);
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 			thing1.remove(1);
 
 			Cardinal testCard = Cardinal.generate(newCard);
 			thing1.create(newMName, newAName, newSig, testCard.getUnit());
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 			thing1.remove(1);
 
 			thing1.create(newMName, aName, newSig, newCard);
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 			assertTrue(thing1.isComposition());								//aName algebra got re-used and newSig IGNORED!
 			thing1.remove(1);
 		}
@@ -155,17 +155,17 @@ public class CoreNyadComplexDTest {
 			thing2.setMonadList(new ArrayList<>(thing1.monadList));					//Copy thing1's monadList into thing2
 			assertTrue(Nyad.isNEqual(thing2, thing1));								//Now they are the same
 			thing2.setMonadList(null);											//Reinitiates the monadList
-			assertTrue(thing2.getMOrder() == 0);									//THIS is how we get empty nyads easily.
+			assertTrue(thing2.arity() == 0);									//THIS is how we get empty nyads easily.
 		}
 
 		@Test
 		void testJuxtaposition() throws CladosNyadException {
-			assertTrue(thing1.getMOrder() == 1);
-			assertTrue(thing1.getAOrder() == 1);
+			assertTrue(thing1.arity() == 1);
+			assertTrue(thing1.algrity() == 1);
 			
 			thing1.append(property);
-			assertTrue(thing1.getMOrder() == 2);
-			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.arity() == 2);
+			assertTrue(thing1.algrity() == 2);
 			assertTrue(thing1.isJuxtaposition());
 		}
 
@@ -174,7 +174,7 @@ public class CoreNyadComplexDTest {
 			thing1.appendACopy(motion);
 			thing1.appendACopy(motion);
 			thing1.appendACopy(motion);
-			assertTrue(thing1.getMOrder() == 4);
+			assertTrue(thing1.arity() == 4);
 			assertTrue(thing1.isComposition());
 			thing1.appendACopy(property);
 			assertFalse(thing1.isComposition());
@@ -185,8 +185,8 @@ public class CoreNyadComplexDTest {
 			thing1.appendACopy(motion);											//two copies of same monad
 			thing1.append(property);											//appended distinct monad with new algebra
 			thing1.appendACopy(property);										//two copies of each monad (total 4)
-			assertTrue(thing1.getMOrder() == 4);
-			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.arity() == 4);
+			assertTrue(thing1.algrity() == 2);
 			assertTrue(thing1.isMixed());										//Mixed because MOrder>AOrder and counts>1
 
 			thing1.remove(property);											//MOrder = 3, AOrder = 2
@@ -227,8 +227,8 @@ public class CoreNyadComplexDTest {
 		@Test
 		void testAlgebraProjection() throws CladosNyadException {	//Part of the compression concept for juxtapositions.
 			thing1.append(property);											//two monads. Both = ZERO by construction
-			assertTrue(thing1.getMOrder() == 2);
-			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.arity() == 2);
+			assertTrue(thing1.algrity() == 2);
 			assertTrue(thing1.isJuxtaposition());
 
 			Nyad.projectReference(property, motion);
@@ -289,7 +289,7 @@ public class CoreNyadComplexDTest {
 			assertFalse(Nyad.isStrongReferenceMatch(thing3, thing1));								//Foot mismatch
 
 			thing2.remove(property);																//empty nyad
-			assertTrue(thing2.getMOrder() == 0);
+			assertTrue(thing2.arity() == 0);
 			assertFalse(Nyad.isStrongReferenceMatch(thing1, thing2));								//thing1 is ALL danglers
 
 			thing2.appendACopy(motion);
@@ -445,8 +445,8 @@ public class CoreNyadComplexDTest {
 		@Test
 		void testScaleIn() throws CladosNyadException {
 			thing1.appendACopy(property);
-			assertTrue(thing1.getMOrder() == 3);
-			assertTrue(thing1.getAOrder() == 2);
+			assertTrue(thing1.arity() == 3);
+			assertTrue(thing1.algrity() == 2);
 			thing1.scaleUsing(property.getAlgebra(), ComplexD.newONE(charge).scale(3.0f));			//now property is scalar = 6.
 			assertTrue(thing1.monadInAlgebraStream(property.getAlgebra()).allMatch(x -> ((ComplexD) x.getWeights().getScalar()).getReal() == 6.0f));
 																									//scaled EVERY monad in the property algebra
@@ -459,33 +459,33 @@ public class CoreNyadComplexDTest {
 			assertTrue(thing1.isMixed());
 			thing1.remove(property);
 			assertTrue(thing1.isJuxtaposition());
-			assertTrue(thing1.getMOrder() == 2);
+			assertTrue(thing1.arity() == 2);
 
 			thing1.remove(thing1.find(property.getAlgebra()));										//only removes one
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 
 			thing1.append(property);																//back to juxtaposition
 			thing1.append(property);																//won't get appended because it is there!
 			assertFalse(thing1.isMixed());															//would be true if append didn't check for dupes.
 			thing1.appendACopy(property);
 			thing1.appendACopy(property);															//MOrder = 4
-			assertTrue(thing1.getMOrder() == 4);
+			assertTrue(thing1.arity() == 4);
 			assertTrue(thing1.isMixed());															//is true because appendACopy doesn't append a dupe.
 			
 			thing1.remove(thing1.findNext(property.getAlgebra(), 2));						//only removes one copy
-			assertTrue(thing1.getMOrder() == 3);
+			assertTrue(thing1.arity() == 3);
 			thing1.remove(property);																//removes the monad at 'property' reference
-			assertTrue(thing1.getMOrder() == 2);													//property algebra still in use, but we have
+			assertTrue(thing1.arity() == 2);													//property algebra still in use, but we have
 																									//no reference to the monad using it.
 			assertTrue(thing1.findNext(property.getAlgebra(), 2) == -1);					//Nothing out there. List is smaller.
 			assertTrue(thing1.findNext(motion.getAlgebra(), 1) == -1);						//motion happens to be in the 0 position.
 
 			thing1.remove(property);																//Try to remove it using old reference.
-			assertTrue(thing1.getMOrder() == 2);													//Proof we didn't succeed. Shows appendACopy works.
+			assertTrue(thing1.arity() == 2);													//Proof we didn't succeed. Shows appendACopy works.
 			assertTrue(thing1.isJuxtaposition());
 
 			thing1.remove(10);															//Out of bounds index should do nothing
-			assertTrue(thing1.getMOrder() == 2);													//Proof nothing happened.
+			assertTrue(thing1.arity() == 2);													//Proof nothing happened.
 		}
 
 		@Test 
@@ -493,10 +493,10 @@ public class CoreNyadComplexDTest {
 			thing1.appendACopy(property);
 			thing1.appendACopy(property);
 			thing1.appendACopy(property);
-			assertTrue(thing1.getMOrder() == 5);													//One motion monad. Four property monads.
+			assertTrue(thing1.arity() == 5);													//One motion monad. Four property monads.
 
 			thing1.removeAt(property.getAlgebra());													//remove all monads using property's algebra
-			assertTrue(thing1.getMOrder() == 1);													//just one left.
+			assertTrue(thing1.arity() == 1);													//just one left.
 		}
 
 		@Test
@@ -562,7 +562,7 @@ public class CoreNyadComplexDTest {
 			thing1.push(-1);
 			assertTrue(thing1.find(motion) == 1);
 			assertTrue(thing1.find(property) == 0);
-			thing1.push(thing1.getMOrder());
+			thing1.push(thing1.arity());
 			assertTrue(thing1.find(motion) == 1);
 			assertTrue(thing1.find(property) == 0);
 		}
@@ -677,7 +677,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.multiplyLeftward(motion, reflect);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
 		}
 
@@ -698,7 +698,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.multiplyLeftward(0, 1);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
 		}
 
@@ -719,7 +719,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.multiplyRightward(reflect, motion);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
 		}
 
@@ -740,7 +740,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.multiplyRightward(0, 1);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 			assertTrue(Monad.hasGrade(motion, 2));				//Should be grade 0 and 2
 		}
 
@@ -758,7 +758,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.sandwich(motion, boost);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
 		}
 
@@ -776,7 +776,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.sandwich(0, 1);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing1.getMOrder() == 1);
+			assertTrue(thing1.arity() == 1);
 			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
 		}
 
@@ -801,7 +801,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.sandwich(motion, boost, thing2);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing2.getMOrder() == 0);
+			assertTrue(thing2.arity() == 0);
 			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
 		}
 
@@ -824,7 +824,7 @@ public class CoreNyadComplexDTest {
 
 			thing1.sandwich(0, 0, thing2);
 			assertTrue(thing1.getMonadAt(0) == motion);
-			assertTrue(thing2.getMOrder() == 0);
+			assertTrue(thing2.arity() == 0);
 			assertTrue(Monad.isGrade(motion, 1));				//Should be grade 1 only
 		}
 
@@ -852,19 +852,19 @@ public class CoreNyadComplexDTest {
 			thing1.compressSymm(property, motion);									//motion gets property's algebra and cardinal
 			assertTrue(thing1.getMonadAt(0) == property);
 	
-			assertTrue(thing1.getMOrder() == 1);									
-			assertTrue(thing1.getAOrder() == 1);									//(It happens with only one monad)
+			assertTrue(thing1.arity() == 1);									
+			assertTrue(thing1.algrity() == 1);									//(It happens with only one monad)
 			assertTrue(((ComplexD) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 2.0f);
 			
 			thing1.append(newMotion).pop(newMotion);								//Back to a juxtaposition
 			thing1.compressSymm(newMotion, property);								//property gets newMotion's algebra and cardinal
-			assertTrue(thing1.getMOrder() == 1);									
-			assertTrue(thing1.getAOrder() == 1);									//(It happens with only one monad)
+			assertTrue(thing1.arity() == 1);									
+			assertTrue(thing1.algrity() == 1);									//(It happens with only one monad)
 			assertTrue(((ComplexD) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 2.0f);
 
 			thing1.append(newProperty);
 			assertDoesNotThrow(() -> thing1.compressSymm(0, 1));	//property winds up with motion's algebra and cardinal
-			assertTrue(thing1.getMOrder() == 1);									//Test caused mutation of thing1.
+			assertTrue(thing1.arity() == 1);									//Test caused mutation of thing1.
 																					//So doing it again should causes out of bounds
 			assertThrows(IndexOutOfBoundsException.class, () -> thing1.compressSymm(0, 1));
 
@@ -882,21 +882,21 @@ public class CoreNyadComplexDTest {
 			
 			thing1.compressAntiSymm(property, motion);								//motion gets property's algebra and cardinal
 			assertTrue(thing1.getMonadAt(0) == property);
-			assertTrue(thing1.getMOrder() == 1);									//One left
+			assertTrue(thing1.arity() == 1);									//One left
 			assertTrue(((ComplexD) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 0.0f);	//Because anti-symmetric
 			
 			thing1.append(newMotion).pop(newMotion);								//Back to a juxtaposition
 			((ComplexD) property.getWeights().getScalar()).setReal(2.0f).setImg(0f);		//Now property is back to scalar = 2.
 			
 			thing1.compressAntiSymm(newMotion, property);							//property gets newMotion's algebra and cardinal
-			assertTrue(thing1.getMOrder() == 1);									//One left
+			assertTrue(thing1.arity() == 1);									//One left
 			assertTrue(((ComplexD) thing1.getMonadAt(0).getWeights().getScalar()).getReal() == 0.0f);
 			
 			thing1.append(newProperty);
 			((ComplexD) newMotion.getWeights().getScalar()).setReal(1.0f).setImg(0f);		//Now newMotion is back to scalar = 1.
 			
 			assertDoesNotThrow(() -> thing1.compressAntiSymm(0, 1));	//NewPproperty winds up with NewMotion's algebra and cardinal
-			assertTrue(thing1.getMOrder() == 1);									//Test caused mutation of thing1.
+			assertTrue(thing1.arity() == 1);									//Test caused mutation of thing1.
 																					//So doing it again should causes out of bounds
 			assertThrows(IndexOutOfBoundsException.class, () -> thing1.compressAntiSymm(0, 1));
 			
