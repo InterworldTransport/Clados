@@ -194,9 +194,9 @@ class CoreRealDTest {
 	@Test
 	public void testMultipliesThatShouldNotWork() {
 		RealD testThis1 = RealD.copyZERO(tReal1);
-		RealD testThis2 = RealD.newONE(Cardinal.generate("PurposelyDifferent"));
-		assertThrows(FieldBinaryException.class, () -> RealD.multiply(testThis1, testThis2)); 	//Cardinal mismatch
-		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));			//Cardinal mismatch
+		//RealD testThis2 = RealD.newONE(Cardinal.generate("PurposelyDifferent"));
+		//assertThrows(FieldBinaryException.class, () -> RealD.multiply(testThis1, testThis2)); 	//Cardinal mismatch
+		//assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));			//Cardinal mismatch
 
 		assertThrows(FieldBinaryException.class, () -> RealD.multiply(testThis1, tReal4));		//multiply NaN
 		assertThrows(FieldBinaryException.class, () -> RealD.multiply(testThis1, tReal5));		//multiply infinity
@@ -221,9 +221,9 @@ class CoreRealDTest {
 	@Test
 	public void testDividesThatShouldNotWork() { //Divide BY zero already tested elsewhere
 		RealD testThis1 = RealD.copyZERO(tReal1);
-		RealD testThis2 = RealD.newONE(Cardinal.generate("PurposelyDifferent"));
-		assertThrows(FieldBinaryException.class, () -> RealD.divide(testThis1, testThis2)); 	//Cardinal mismatch
-		assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));			//Cardinal mismatch
+		//RealD testThis2 = RealD.newONE(Cardinal.generate("PurposelyDifferent"));
+		//assertThrows(FieldBinaryException.class, () -> RealD.divide(testThis1, testThis2)); 	//Cardinal mismatch
+		//assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));			//Cardinal mismatch
 
 		assertThrows(FieldBinaryException.class, () -> RealD.divide(testThis1, tReal4));		//divide by NaN
 		assertThrows(FieldBinaryException.class, () -> RealD.divide(testThis1, tReal5));		//divide by infinity

@@ -210,9 +210,9 @@ class CoreComplexDTest {
 	@Test
 	public void testMultipliesThatShouldNotWork() {
 		ComplexD testThis1 = ComplexD.copyZERO(tComplex1);
-		ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
-		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, testThis2)); 	//Cardinal mismatch
-		assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));				//Cardinal mismatch
+		//ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
+		//assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, testThis2)); 	//Cardinal mismatch
+		//assertThrows(FieldBinaryException.class, () -> testThis1.multiply(testThis2));				//Cardinal mismatch
 
 		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex4));		//multiply NaN
 		assertThrows(FieldBinaryException.class, () -> ComplexD.multiply(testThis1, tComplex5));		//multiply infinity
@@ -230,9 +230,9 @@ class CoreComplexDTest {
 	@Test
 	public void testDividesThatShouldNotWork() { //Divide BY zero already tested elsewhere
 		ComplexD testThis1 = ComplexD.copyZERO(tComplex1);
-		ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
-		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, testThis2)); 		//Cardinal mismatch
-		assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));				//Cardinal mismatch
+		//ComplexD testThis2 = ComplexD.newONE(Cardinal.generate("PurposelyDifferent"));
+		//assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, testThis2)); 		//Cardinal mismatch
+		//assertThrows(FieldBinaryException.class, () -> testThis1.divide(testThis2));				//Cardinal mismatch
 
 		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex4));		//divide by NaN
 		assertThrows(FieldBinaryException.class, () -> ComplexD.divide(testThis1, tComplex5));		//divide by infinity

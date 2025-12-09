@@ -59,8 +59,9 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * @return RealF
 	 */
 	public static RealF add(RealF pF1, RealF pF2) throws FieldBinaryException {
-		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2) && !RealF.isInfinite(pF1)
-				&& !RealF.isInfinite(pF2))
+		if (RealF.isTypeMatch(pF1, pF2) 
+				&& !RealF.isNaN(pF1) 		&& !RealF.isNaN(pF2) 
+				&& !RealF.isInfinite(pF1)	&& !RealF.isInfinite(pF2))
 			return RealF.create(pF1.getCardinal(), pF1.getReal() + pF2.getReal());
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
@@ -176,6 +177,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * Static divide method that creates a new RealF with the product pF1 / pF2.
+	 * Note that type matching is not done.
 	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
@@ -184,8 +186,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * @return RealF
 	 */
 	public static RealF divide(RealF pF1, RealF pF2) throws FieldBinaryException {
-		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isZero(pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2)
-				&& !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
+		if (!RealF.isZero(pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2) && !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
 			return RealF.create(pF1.getCardinal(), pF1.getReal() / pF2.getReal());
 
 		throw (new FieldBinaryException(pF1, "Static Division error found", pF2));
@@ -239,7 +240,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * Static multiply method that creates a new RealF with the product pF1 * pF2.
-	 * product.
+	 * product. Note that type matching is not done.
 	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
@@ -248,8 +249,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * @return RealF
 	 */
 	public static RealF multiply(RealF pF1, RealF pF2) throws FieldBinaryException {
-		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2) && !RealF.isInfinite(pF1)
-				&& !RealF.isInfinite(pF2))
+		if (!RealF.isNaN(pF1) && !RealF.isNaN(pF2) && !RealF.isInfinite(pF1) && !RealF.isInfinite(pF2))
 			return RealF.create(pF1.getCardinal(), pF1.getReal() * pF2.getReal());
 
 		throw (new FieldBinaryException(pF1, "Static Multiplication error found", pF2));
@@ -305,8 +305,9 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * @return RealF
 	 */
 	public static RealF subtract(RealF pF1, RealF pF2) throws FieldBinaryException {
-		if (RealF.isTypeMatch(pF1, pF2) && !RealF.isNaN(pF1) && !RealF.isNaN(pF2) && !RealF.isInfinite(pF1)
-				&& !RealF.isInfinite(pF2))
+		if (RealF.isTypeMatch(pF1, pF2) 
+				&& !RealF.isNaN(pF1) 		&& !RealF.isNaN(pF2) 
+				&& !RealF.isInfinite(pF1)	&& !RealF.isInfinite(pF2))
 			return RealF.create(pF1.getCardinal(), pF1.getReal() - pF2.getReal());
 
 		throw (new FieldBinaryException(pF1, "Static Subtraction error found", pF2));
@@ -402,8 +403,9 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public RealF add(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
-				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) 
+				|| RealF.isNaN(this) 		|| RealF.isNaN((RealF) pF)
+				|| RealF.isInfinite(this) 	|| RealF.isInfinite((RealF) pF))
 			throw (new FieldBinaryException(this, "Addition failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() + ((RealF) pF).getReal());
@@ -424,6 +426,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * This method divides real numbers and changes this object to be the result.
+	 * Note that type matching is not done.
 	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
@@ -432,8 +435,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public RealF divide(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
-				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
+		if (RealF.isNaN(this) || RealF.isNaN((RealF) pF) || RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
 			throw (new FieldBinaryException(this, "Divide failed type match or size test", (ProtoN) pF));
 		if (RealF.isZero((RealF) pF))
 			throw (new FieldBinaryException(this, "Divide by Zero detected", (ProtoN) pF));
@@ -495,6 +497,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
+	 * Note that type matching is not done.
 	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches happen
@@ -502,8 +505,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public RealF multiply(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
-				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
+		if (RealF.isNaN(this) || RealF.isNaN((RealF) pF) || RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
 			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() * ((RealF) pF).getReal());
@@ -544,8 +546,9 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public RealF subtract(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || RealF.isNaN(this) || RealF.isNaN((RealF) pF)
-				|| RealF.isInfinite(this) || RealF.isInfinite((RealF) pF))
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) 
+				|| RealF.isNaN(this) 		|| RealF.isNaN((RealF) pF)
+				|| RealF.isInfinite(this) 	|| RealF.isInfinite((RealF) pF))
 			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (ProtoN) pF));
 
 		setReal(getReal() - ((RealF) pF).getReal());

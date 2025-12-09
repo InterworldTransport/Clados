@@ -27,13 +27,11 @@ package org.interworldtransport.cladosF;
 import org.interworldtransport.cladosFExceptions.*;
 
 /**
- * This interface establishes the primary operations of a division field from 
- * mathematics. Field objects within clados packages are used as 'numbers' 
- * in the definition of an algebra.
+ * This interface establishes the primary operations of a division field from mathematics. Field objects within clados 
+ * packages are used as 'numbers' in the definition of an algebra.
  * <br><br>
- * Field's are not named. Fields are not Unitized. <br>
- * They do not have any geometric properties. <br>
- * Fields have the behaviors you would expect of numbers in a simple calculator.
+ * Field's are not named. Fields are not Unitized. They do not have any geometric properties. Fields have behaviors 
+ * you would expect of numbers in a simple calculator.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ

@@ -59,8 +59,9 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF add(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
-				&& !ComplexF.isInfinite(pF2))
+		if (ProtoN.isTypeMatch(pF1, pF2) 
+			&& !ComplexF.isNaN(pF1) 		&& !ComplexF.isNaN(pF2) 
+			&& !ComplexF.isInfinite(pF1)	&& !ComplexF.isInfinite(pF2))
 			return ComplexF.create(pF1.getCardinal(), pF1.getReal() + pF2.getReal(), pF1.getImg() + pF2.getImg());
 		throw (new FieldBinaryException(pF1, "Static Addition error found", pF2));
 	}
@@ -181,6 +182,7 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * Static divide method that creates a new ComplexF with the product pF1 / pF2.
+	 * Note that type matching is not done.
 	 * <br>
 	 * @param pF1 ComplexF
 	 * @param pF2 ComplexF
@@ -189,8 +191,9 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 * @return ComplexF
 	 */
 	public static ComplexF divide(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isZero(pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2)
-				&& !ComplexF.isInfinite(pF1) && !ComplexF.isInfinite(pF2)) {
+		if (!ComplexF.isZero(pF2) 
+				&& !ComplexF.isNaN(pF1) 		&& !ComplexF.isNaN(pF2)
+				&& !ComplexF.isInfinite(pF1) 	&& !ComplexF.isInfinite(pF2)) {
 			ComplexF tZ = ComplexF.copyOf(pF1);
 			ComplexF tZ2 = ComplexF.copyOf(pF2);
 			tZ2.conjugate();
@@ -267,8 +270,8 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	}
 
 	/**
-	 * Static multiply method that creates a new ComplexF with the product pF1 *
-	 * pF2.
+	 * Static multiply method that creates a new ComplexF with the product pF1 * pF2.
+	 * Note that type matching is not done.Note that type matching is not done.
 	 * <br>
 	 * @param pF1 ComplexF
 	 * @param pF2 ComplexF
@@ -277,8 +280,8 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 * @return complexF
 	 */
 	public static ComplexF multiply(ComplexF pF1, ComplexF pF2) throws FieldBinaryException {
-		if (ProtoN.isTypeMatch(pF1, pF2) && !ComplexF.isNaN(pF1) && !ComplexF.isNaN(pF2) && !ComplexF.isInfinite(pF1)
-				&& !ComplexF.isInfinite(pF2)) {
+		if (!ComplexF.isNaN(pF1) 				&& !ComplexF.isNaN(pF2) 
+				&& !ComplexF.isInfinite(pF1)	&& !ComplexF.isInfinite(pF2)) {
 			float tempR = pF1.getReal() * pF2.getReal() - pF1.getImg() * pF2.getImg();
 			float tempI = pF1.getReal() * pF2.getImg() + pF1.getImg() * pF2.getReal();
 			return ComplexF.create(pF1.getCardinal(), tempR, tempI);
@@ -451,8 +454,9 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF add(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
-				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) 
+				|| ComplexF.isNaN(this) 		|| ComplexF.isNaN((ComplexF) pF)
+				|| ComplexF.isInfinite(this) 	|| ComplexF.isInfinite((ComplexF) pF))
 			throw (new FieldBinaryException(this, "Addition failed type match or size test", (ProtoN) pF));
 		setReal(getReal() + ((ComplexF) pF).getReal());
 		setImg(getImg() + ((ComplexF) pF).getImg());
@@ -473,6 +477,7 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * This method divides real numbers and changes this object to be the result.
+	 * Note that type matching is not done.
 	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches or
@@ -481,8 +486,8 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF divide(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
-				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
+		if (ComplexF.isNaN(this) 				|| ComplexF.isNaN((ComplexF) pF)
+				|| ComplexF.isInfinite(this) 	|| ComplexF.isInfinite((ComplexF) pF))
 			throw (new FieldBinaryException(this, "Divide failed type match or size test", (ProtoN) pF));
 		if (ComplexF.isZero((ComplexF) pF))
 			throw (new FieldBinaryException(this, "Divide by Zero detected", (ProtoN) pF));
@@ -573,6 +578,7 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * This method multiplies real numbers and changes this object to be the result.
+	 * Note that type matching is not done.
 	 * <br>
 	 * @param pF Field
 	 * @throws FieldBinaryException This exception occurs when field mismatches
@@ -581,8 +587,8 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF multiply(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
-				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
+		if (ComplexF.isNaN(this) 				|| ComplexF.isNaN((ComplexF) pF)
+				|| ComplexF.isInfinite(this) 	|| ComplexF.isInfinite((ComplexF) pF))
 			throw (new FieldBinaryException(this, "Multiply failed type match or size test", (ProtoN) pF));
 		ComplexF tempZ = (ComplexF) pF;
 		setReal(getReal() * tempZ.getReal() - getImg() * tempZ.getImg());
@@ -635,8 +641,9 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	 */
 	@Override
 	public ComplexF subtract(Field pF) throws FieldBinaryException {
-		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) || ComplexF.isNaN(this) || ComplexF.isNaN((ComplexF) pF)
-				|| ComplexF.isInfinite(this) || ComplexF.isInfinite((ComplexF) pF))
+		if (!ProtoN.isTypeMatch(this, (ProtoN) pF) 
+				|| ComplexF.isNaN(this) 		|| ComplexF.isNaN((ComplexF) pF)
+				|| ComplexF.isInfinite(this) 	|| ComplexF.isInfinite((ComplexF) pF))
 			throw (new FieldBinaryException(this, "Subtraction failed type match or size test", (ProtoN) pF));
 		
 		setReal(getReal() - ((ComplexF) pF).getReal());

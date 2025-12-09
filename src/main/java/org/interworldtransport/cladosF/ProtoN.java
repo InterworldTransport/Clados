@@ -57,10 +57,10 @@ public class ProtoN {
 	 * @return boolean
 	 */
 	public static final boolean isTypeMatch(ProtoN pE, ProtoN pF) {
-		if (pE.card == null && pF.card == null)		return true;
-		if (pE.card != null && pF.card == null)		return false;
-		if (pE.card == null && pF.card != null)		return false;
-		return pE.card.getUnit() == pF.card.getUnit();
+		if (pE == null | pF == null)	return false;
+		if (pE.card != null)			return pE.equals(pF);
+		if (pF.card != null)			return pF.equals(pE);
+		return true;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class ProtoN {
 		if (this == obj)								return true;
 		if (obj == null)								return false;
 		if (getClass() != obj.getClass())				return false;
-		if 		(this.getCardinal() == null) {
+		if 		(getCardinal() == null) {
 			if 	(((ProtoN) obj).getCardinal() == null)	return true;
 			else 										return false;
 		}
