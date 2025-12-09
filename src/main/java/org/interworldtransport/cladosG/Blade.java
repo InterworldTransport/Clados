@@ -32,31 +32,24 @@ import java.util.stream.Stream;
 import static org.interworldtransport.cladosG.CladosConstant.*;
 
 /**
- * A Blade is essentially an outer product space built from 0 to many vectors.
- * If the vectors aren't parallel, the blade is of higher rank than a vector. At
- * this low level, though, there is no concept of an inner product, thus no
- * sense of 'parallel'. That leaves a blade as an ordered 'set' of distinct
- * directions and a few supporting elements including a long integer key useful
- * for comparisons and byte integer necessary for knowing how many possible
+ * A (@code Blade) is essentially an outer product space built from 0 to many vectors.If the vectors aren't parallel, 
+ * the blade is of higher rank than a vector. At this low level, though, there is no concept of an inner product, thus no
+ * sense of 'parallel'. That leaves a blade as an ordered 'set' of distinct directions and a few supporting elements 
+ * including a long integer key useful for comparisons and byte integer necessary for knowing how many possible 
  * directions might ever be added to this blade.
  * <br><br>
- * The directions are simply Generators from an enumeration class. They are kept
- * in an EnumSet which uses as its sense of order the same order generators are
- * enumerated in their class. At present, the supported number of 'directions'
+ * The directions are simply Generators from an enumeration class. They are kept in an EnumSet which uses as its sense of
+ * order the same order generators are enumerated in their class. At present, the supported number of 'directions' 
  * is 0 to 15, so the enumeration class lists 15 possible generators.
  * <br><br>
- * The EnumSet keeps Generators in their natural order. If a new direction is
- * added, the EnumSet will handle it 'late' in the computational sense. In other
- * words, it doesn't matter where the new generator gets added. It matters ONLY
- * when generators are iterated later when establishing a product table or
- * generating a blade key. Iterators will always deliver directions in the same
- * order.
+ * The EnumSet keeps Generators in their natural order. If a new direction is added, the EnumSet will handle it 'late' in 
+ * the computational sense. In other words, it doesn't matter where the new generator gets added. It matters ONLY when 
+ * generators are iterated later when establishing a product table or generating a blade key. Iterators will always 
+ * deliver directions in the same order.
  * <br><br>
- * For example, if a sub-manifold has six possible directions from a point, a
- * Blade will contain zero to six of them represented as generators E1 through
- * E6. If only 3 are in the Blade (making it a 3-blade) then ANY three will be
- * in the EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions
- * are contained and the blade represents a scalar.
+ * For example, if a sub-manifold has six possible directions from a point, a Blade will contain zero to six of them 
+ * represented as generators E1 through E6. If only 3 are in the Blade (making it a 3-blade) then ANY three will be in the 
+ * EnumSet. Perhaps E2, E3, E5. If the EnumSet is empty, zero directions are contained and the blade represents a scalar.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -692,7 +685,6 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 		while (cursor.hasNext()) {
 			g = cursor.next();
 			key += g.ord * pow((byte)(maxGen+1), (genSet.size() - 1 - counter)).longValue();
-			//key += (long) g.ord * (long) Math.pow((maxGen + 1), (blade.size() - 1 - counter));
 			bitKey += (1 << (g.ord - 1));
 			counter++;
 		}

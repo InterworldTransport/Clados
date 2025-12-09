@@ -47,7 +47,7 @@ public interface Unitized {
 
 	/**
 	 * This is just a gettor, but it returns the protoNumber's Cardinal.
-	 * <br>
+	 * <br><br>
 	 * @return Cardinal of the protoNumber
 	 */
 	public abstract Cardinal getCardinal();

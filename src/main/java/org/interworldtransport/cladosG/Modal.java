@@ -27,16 +27,14 @@ package org.interworldtransport.cladosG;
 import org.interworldtransport.cladosF.CladosField;
 
 /**
- * Anything implementing this interface has CladosF numbers that are expected 
- * to be descendents of ProtoN.
+ * Anything implementing this interface has CladosF numbers that are expected to be descendents of ProtoN.
  * <br><br>
- * Nothing about Clifford Algebras requires this interface. It is about computation 
- * models where one expects type consistency to avoid loss of precision.
+ * Nothing about Clifford Algebras requires this interface. It is about computation models where one expects 
+ * type consistency to avoid loss of precision.
  * <br><br>
- * NOTE | The primary point for this interface is to mark objects that are at
- * risk if new CladosF numbers are created. Objects implementing Modal likely
- * have methods that internally switch on CladosF.CladosField or examine number
- * objects using the 'instanceof' operator.
+ * NOTE | The primary point for this interface is to mark objects that are at risk if new CladosF numbers 
+ * are created. Objects implementing Modal likely have methods that internally switch on CladosField or 
+ * examine number objects using the 'instanceof' operator.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
