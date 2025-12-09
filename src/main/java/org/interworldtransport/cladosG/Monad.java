@@ -32,6 +32,7 @@ import static org.interworldtransport.cladosG.CladosConstant.*;
 
 import org.interworldtransport.cladosF.FBuilder;		//Number builder
 import org.interworldtransport.cladosF.FListBuilder;	//List of numbers builder
+import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;		//Numeric modes enumerated
 import static org.interworldtransport.cladosF.CladosField.*;
 import org.interworldtransport.cladosF.ComplexD;		//Complex doubles
@@ -48,76 +49,57 @@ import org.interworldtransport.cladosFExceptions.*;
 import org.interworldtransport.cladosGExceptions.*;
 
 /**
- * A CladosG Monad is better known as a multivector to anyone with experience
- * with geometric algebras. Think of them as vectors, but with higher ranked
- * elements also represented. There is more to it than that, but that is the
- * nutshell version.
+ * A CladosG Monad is better known as a multivector to anyone with experience with geometric algebras. 
+ * Think of them as vectors, but with higher ranked elements also represented. There is more to it than that, 
+ * but that is the nutshell version.
  * <br><br>
- * Caution | To the software community, 'vector' is generally understood to be a
- * dynamic array data structure. To a physicist, it is a thing that belongs to a
- * vector space and follows extra rules regarding allowed transformations. It's
- * 'thing' nature is much more important than how it acts as a data structure.
+ * Caution | To the software community, 'vector' is generally understood to be a dynamic array data structure. 
+ * To a physicist, it is a thing that belongs to a vector space and follows extra rules regarding allowed 
+ * transformations. It's 'thing' nature is much more important than how it acts as a data structure.
  * <br><br>
- * The 'allowed' transformations are operations that do not change the 'thing'
- * nature of the object represented. For example, a meter stick is what it is no
- * matter how a coordinate system used to represent it is rotated. A
- * representation of the meter stick would have to be identifiable as the same
- * thing after a rotation, meaning many apparently different sets of data in the
- * structure are actually the same thing.
+ * The 'allowed' transformations are operations that do not change the 'thing' nature of the object represented. 
+ * For example, a meter stick is what it is no matter how a coordinate system used to represent it is rotated. A
+ * representation of the meter stick would have to be identifiable as the same thing after a rotation, meaning 
+ * many apparently different sets of data in the structure are actually the same thing.
  * <br><br>
- * A 'multivector' can represent 'things' that are of higher geometric rank than
- * lines. A monad has a data structure inside to support both coordinates and
- * reference information. 'Allowed' transformations on the reference frame
- * should cause the coefficients to shift the correct way leaving the monad as
- * it was from an external perspective. That's HOW a monad represents a thing.
- * It is expected to be invariant under 'allowed' transformations of the
- * contained data.
+ * A 'multivector' can represent 'things' that are of higher geometric rank than lines. A monad has a data 
+ * structure inside to support both coordinates and reference information. 'Allowed' transformations on the 
+ * reference frame should cause the coefficients to shift the correct way leaving the monad as it was from an 
+ * external perspective. That's HOW a monad represents a thing. It is expected to be invariant under 'allowed' 
+ * transformations of the contained data.
  * <br><br>
- * Why 'monad' instead of 'multivector'? Try typing it yourself a few thousand
- * times and you'll understand. The name doesn't actually matter, but it is from
- * an old tradition when physicists wrote linear transformations as dyads. Two
- * vectors were written side by side, but no simplifying action could be taken.
- * The dyad was described as an operator, so the vectors were applied to another
- * operand rather than each other. Few textbooks do that anymore (we have matrix
- * algebra now) and the name has fallen into dis-use. It is revived here because
- * we need something short and useful. A 'dyad' will be two monads in a list
- * which is generalized in another CladosG class called nyad.
+ * Why 'monad' instead of 'multivector'? Try typing it yourself a few thousand times and you'll understand. The name 
+ * doesn't actually matter, but it is from an old tradition when physicists wrote linear transformations as dyads. 
+ * Two vectors were written side by side, but no simplifying action could be taken. The dyad was described as an 
+ * operator, so the vectors were applied to another operand rather than each other. Few textbooks do that anymore 
+ * (we have matrix algebra now) and the name has fallen into dis-use. It is revived here because we need something 
+ * short and useful. A 'dyad' will be two monads in a list which is generalized in another CladosG class called nyad.
  * <br><br>
- * Doesn't 'monad' conflict with mathemetician's usage in Category Theory and
- * with Functional Programming advocates bringing that mathematics to the real
- * world? Yes. What the functional programmers are doing is terribly important,
- * so don't confuse their monad with what a physicist needs. This shouldn't be
- * too hard. Y'all have been doing it for 'vector' for a few decades. You'd
- * rather something else? 'Unad'? Make your case by helping out.
+ * Doesn't 'monad' conflict with mathemetician's usage in Category Theory and with Functional Programming advocates
+ * bringing that mathematics to the real world? Yes. What the functional programmers are doing is terribly important,
+ * so don't confuse their monad with what a physicist needs. This shouldn't be too hard. Y'all have been doing it 
+ * for 'vector' for a few decades. You'd rather something else? 'Unad'? Make your case by helping out.
  * <br><br>
- * NOTE | Regarding suppressed unchecked type casting warnings, they are
- * restricted to the casting that happens in FBuilder and
- * CladosFListBuilder classes mostly. This happens when we copy number objects
- * to avoid mutability using a generic copyOf() method. As long as the
- * coefficients in a monad are valid ProtoN children implementing Field
- * and Normalizable, the copyOf() functions will work fine. There are two cases
- * where things can go awry, though.
+ * NOTE | Regarding suppressed unchecked type casting warnings, they are restricted to the casting that happens in 
+ * FBuilder and CladosFListBuilder classes mostly. This happens when we copy number objects to avoid mutability 
+ * using a generic copyOf() method. As long as the coefficients in a monad are valid ProtoN children implementing 
+ * Field and Normalizable, the copyOf() functions will work fine. There are two cases where things can go awry.
  * <br><br>
- * 1. It is probably possible for someone to mix ProtoN children in a
- * Scale object containing a mondad's coefficients. The copyOf() functions will
- * faithfully copy them as they are. The scale() methods and others will
- * faithfully pass them to a Scale object to be used as appropriate there. For
- * example, Scale's scale() method will try to use them as given. What
- * happens, though, is the inbound number gets multiplied against others AS THEY
- * UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right
- * unless one thought the scaling was between two complex numbers. THAT'S why
- * Scale AND Monad implement Modal, but nothing is enforced yet.
+ * 1. It is probably possible for someone to mix ProtoN children in a Scale object containing a mondad's 
+ * coefficients. The copyOf() functions will faithfully copy them as they are. The scale() methods and others will 
+ * faithfully pass them to a Scale object to be used as appropriate there. For example, Scale's scale() method will 
+ * try to use them as given. What happens, though, is the inbound number gets multiplied against others 
+ * AS THEY UNDERSTAND MULTIPLICATION. Scaling a complex by a real will work all right unless one thought the 
+ * scaling was between two complex numbers. THAT'S why Scale AND Monad implement Modal, but nothing is enforced yet.
  * <br><br>
- * 2. If someone invents a new ProtoN child, there is a ton of work to do
- * as the builders and other enumerations have to be adapted. Any class
- * implementing Modal might have methods that switch on CladosField values.
- * So... be cautious about inventing new CladosF numbers. Lots of work will have
- * to be done.
+ * 2. If someone invents a new ProtoN child, there is a ton of work to do as the builders and other enumerations 
+ * have to be adapted. Any class implementing Modal might have methods that switch on CladosField values. 
+ * So... be cautious about inventing new CladosF numbers. Lots of work will have to be done.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public class Monad implements Modal {
+public class Monad implements Modal, Unitized {
 	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
 	 * <br>
@@ -731,6 +713,16 @@ public class Monad implements Modal {
 	}
 
 	/**
+	 * Overridden Equals method from Object.
+	 * This ensures reference equality is the standard. They must literally be the same object to be equal.
+	 * @return boolean check for reference equality
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return (this == obj);
+	}
+
+	/**
 	 * The Monad is turned into its Dual with left side multiplication by pscalar.
 	 * <br><br>
 	 * In metrics where one or more of the generators squares to zero, this isn't really
@@ -765,6 +757,16 @@ public class Monad implements Modal {
 	 */
 	public Algebra getAlgebra() {
 		return algebra;
+	}
+
+	/**
+	 * Simple gettor method for the Cardinal associated with this object.
+	 * <br><br>
+	 * @return Cardinal in use in this.
+	 */
+	@Override
+	public Cardinal getCardinal() {
+		return scales.getCardinal();
 	}
 
 	/**
@@ -852,9 +854,9 @@ public class Monad implements Modal {
 	}
 
 	/**
-	 * This answers a question concerning which type of ProtoN children are
-	 * used.
-	 * <br>
+	 * This answers a question concerning which type of ProtoN children are used. The monad itself
+	 * isn't modal, but its weights are so the monad has an implicit dependence.
+	 * <br><br>
 	 * @return CladosField mode for this monad
 	 */
 	@Override

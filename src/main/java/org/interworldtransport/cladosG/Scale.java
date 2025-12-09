@@ -293,6 +293,16 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
+	 * Overridden Equals method from Object.
+	 * This ensures reference equality is the standard. They must literally be the same object to be equal.
+	 * @return boolean check for reference equality
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return (this == obj);
+	}
+
+	/**
 	 * This method imitates the 'get()' method in a map. Offer a key and receive a
 	 * value in return. In this particular case, keys are blades from the basis and
 	 * values are weights of those blades.
@@ -804,18 +814,12 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
-	 * The settor method supporting Unitized interface that isn't actually in the
-	 * interface. If the cardinal to be set is different from the one already present,
-	 * the weights are cleared out and set to zero. If the cardinal is the same one,
-	 * nothing is done and this Scale is returned.
-	 * <br><br>
-	 * Once a Cardinal is set, it basically can't be removed. It can be changed, but
-	 * not eliminated entirely.
+	 * There are times when the cardinals on the weights must be changed. This is the method to do it.
 	 * <br><br>
 	 * @param pCard CladosField element to set as the mode.
 	 * @return Scale object. Just this object after modification.
 	 */
-	protected Scale<D> setCardinal(Cardinal pCard) {
+	public Scale<D> setCardinal(Cardinal pCard) {
 		if (card != pCard & pCard != null) {
 			weightsParallelStream().forEach(x -> x.setCardinal(pCard));
 			card = pCard;

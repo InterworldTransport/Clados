@@ -148,6 +148,16 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 		});
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)					return true;
+		if (obj == null)					return false;
+		if (getClass() != obj.getClass())	return false;
+		if (!canonBasis.equals(((GProduct) obj).getBasis()))	return false;
+		if (!signature.equals(((GProduct) obj).signature))		return false;		
+		return true;
+	}
+
 	/**
 	 * Return a measure of whether blades pj and pk anticommute. Return a 1 if they
 	 * anticommute. Return a 0 otherwise.

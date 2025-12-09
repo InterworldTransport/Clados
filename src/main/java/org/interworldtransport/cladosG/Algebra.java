@@ -281,7 +281,7 @@ public final class Algebra implements Comparable<Algebra> {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		return (this == obj) ? true : false;
+		return (this == obj);
 	}
 
 	/**
