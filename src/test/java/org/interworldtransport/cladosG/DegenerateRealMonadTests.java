@@ -60,52 +60,6 @@ public class DegenerateRealMonadTests {
                                                 //when it really isn't because E4 is degenerate.
     }
 
-   // @Test
-   // public void testPrintIt(){
-    //    System.out.println(Monad.toXMLFullString(tM0, ""));
-   // }
-    
-    //@Test
-    //public void testMode() {          // This test isn't needed because mode is independent of degeneracy in the signature.
-    //}
-
-    //@Test
-	//public void testReferenceMatches() {  // This test isn't needed because reference matching is 
-                                            // independent of degeneracy in the signature.
-    //}
-
-    //@Test
-    //public void testhasGrade() {      // This test isn't needed because grade detection is 
-                                        // independent of degeneracy in the signature. 
-    //}
-
-    //@Test
-	//public void testisGrade() {       // This test isn't needed because grade detection is 
-                                        // independent of degeneracy in the signature.
-    //}
-
-    //@Test
-	//public void testisMultiGrade() {  // This test isn't needed because multigrade detection is 
-                                        // independent of degeneracy in the signature.
-    //}
-
-    //@Test
-	//public void testisUniGrade() {    // This test isn't needed because unigrade detection is
-                                        // independent of degeneracy in the signature.
-    //}
-
-    //@Test
-	//public void testIsGEqual() {      // This test isn't needed because geometric equality is 
-                                        // independent of degeneracy in the signature. 
-                                        // Only reference match and weight match is checked.
-    //}
-
-    //@Test
-    //public void testIsGZero(){        // This test isn't needed because geometric zero is 
-                                        // independent of degeneracy in the signature.
-                                        // Weight match is checked and the grade key. That's all.
-    //}
-
     @Test
     public void testIsNilpotent(){
 		assertTrue(Monad.isNilpotent(tM2, 2));   // Because it is ZERO.
@@ -124,7 +78,6 @@ public class DegenerateRealMonadTests {
         assertFalse(Monad.isGZero(tM3));		        //Prove we altered it.
 
 		assertTrue(Monad.isIdempotent(tM4));            //Prove it squares to itself.
-        //System.out.println(Monad.toXMLFullString(tM4, ""));
         RealF[] tFix = (RealF[]) FListBuilder.REALF.create(tM4.getWeights().getCardinal(), 16);
 		tFix[0] = (RealF) FBuilder.REALF.createONE(tM4.getWeights().getCardinal()).scale(CladosConstant.BY2_F);
 		tFix[4] = RealF.copyOf(tFix[0]);
@@ -132,12 +85,6 @@ public class DegenerateRealMonadTests {
         
         assertFalse(Monad.isIdempotent(tM4));           //Prove it does NOT square to itself.
     }
-
-    //@Test
-    //public void testIsScaledIdempotent() throws FieldException{   // This test isn't needed because scaled idempotency is
-                                                                    // independent of degeneracy in the signature.
-                                                                    // Only nilpotent and idempotent checks are made.    
-    //}
 
     @Test
     public void testNorms1() throws CladosException{
@@ -244,7 +191,6 @@ public class DegenerateRealMonadTests {
         assertTrue(tM2.getSparseFlag());    //ZERO
         assertFalse(tM3.getSparseFlag());   //ONE
 
-        //System.out.println(Monad.toXMLFullString(tM4, ""));
         assertTrue(tM4.getSparseFlag());   //Idempotent, but in a small algebra... so half the grades are present.
         assertTrue(tM5.getSparseFlag());   //Nilpotent... so same issue.
         assertTrue(tM6.getSparseFlag());   //Fake nilpotent in a small algebra...
@@ -277,22 +223,10 @@ public class DegenerateRealMonadTests {
         assertDoesNotThrow(() -> tM8.anticommutator(tM6));                    //Not sparse multiply. Also tests addition.
         assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 2.0f);
         assertTrue(Monad.isGrade(tM8, 0));                           // Proves that E14*E14=0
-        //System.out.println(Monad.toXMLFullString(tM8, ""));
 
         tM8 = new Monad(tM6);
         assertDoesNotThrow(() -> tM8.commutator(tM6));                //Not sparse multiply. Also tests subtraction.
         assertTrue(((RealF) tM8.scales.getScalar()).getReal() == 0.0f);
         assertTrue(Monad.isGrade(tM8, 0)); 
- 
-        //No need to check sparse multiplication because the degenerate signature doesn't invalidate the sparse 
-        //multiplication tests of the core monad unit tests.
-
-
     }
-
-    //@Test
-	//public void testPSMultiplication() {  // This test isn't needed because pseudoscalar multiplication is 
-                                            // independent of degeneracy in the signature.
-    //}
-
 }
