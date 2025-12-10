@@ -2,7 +2,6 @@ package org.interworldtransport.cladosG;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,7 @@ class CoreBladeDuetTest {
 	Generator[] i = { Generator.E1, Generator.E2, Generator.E3, Generator.E4 };
 	byte[] sig = { 1, 1, 1, 1 };
 	byte[] bigsig = { 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1 };
-	Blade firstB, secondB, out;
+	Blade firstB, secondB, out, out2;
 	Blade euclidianB, minkowskiB;
 	BladeDuet tBD;
 
@@ -25,15 +24,49 @@ class CoreBladeDuetTest {
 	}
 
 	@Test
-	void testStatic() throws BadSignatureException {
-		out = BladeDuet.simplify(firstB, secondB, sig);
+	void testStaticComplement() {
+		out = BladeDuet.complement(firstB, sig);
 		assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
-		out = BladeDuet.simplify(firstB, firstB, sig);
+		assertTrue(out.sign() == -1);
+		out.remove(Generator.E4);
+		assertTrue(Blade.isScalar(out));
+
+		out = BladeDuet.complement(secondB, sig);
+		out2 = BladeDuet.complement(out, sig);
+		assertTrue(Blade.isPScalar(out2));
+		assertTrue(CanonicalBlade.equivalent(secondB, out2));
+		assertTrue(secondB.sign() == out2.sign());
+	}
+
+	@Test
+	void testStaticComplementDegenerate() {
+		byte[] dsig = { 1, 1, 1, 0 };
+		out = BladeDuet.complement(firstB, dsig);
+		assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
+		assertTrue(out.sign() == -1);
+		out.remove(Generator.E4);
+		assertTrue(Blade.isScalar(out));
+
+		out = BladeDuet.complement(secondB, dsig);
+		assertFalse(Blade.isPScalar(out));
 		assertTrue(Blade.isScalar(out));
 	}
 
 	@Test
-	void testBladeMatchFail() {
+	void testStaticSimplify() {
+		out = BladeDuet.simplify(firstB, secondB, sig);
+		assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
+		out = BladeDuet.simplify(firstB, firstB, sig);
+		assertTrue(Blade.isScalar(out));
+
+		Blade s1 = new Blade((byte) 0);
+		Blade s2 = new Blade((byte) 0);
+		out = BladeDuet.simplify(s1, s2, null);
+		assertTrue(Blade.isScalar(out));
+	}
+
+	@Test
+	void testBladeMatchFail() {									//max generator mismatch
 		assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
 	}
 
@@ -41,7 +74,7 @@ class CoreBladeDuetTest {
 	public void testMaxProduct() {
 		Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
 		Blade maxSize2 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
-		Blade singlet = Blade.createBladePlus(Generator.EF).add(Generator.EF);
+		Blade singlet = Blade.createBlade(Generator.EF).add(Generator.EF);
 
 		maxSize1.remove(Generator.EF);
 

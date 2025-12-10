@@ -32,7 +32,7 @@ import java.util.Collections;
  * 1) It supports blade discovery in blade multiplication by acting as a bucket for their generators that can
  * be reduced using a signature.<br>
  * 2) It supports blade discovery in blade complement operations and compute the resulting blade's sign so it
- * correctly multiplies to the pscalar in the basis that contains the input blade. TODO
+ * correctly multiplies to the pscalar in the basis that contains the input blade.
  * <br><br>
  * In Clados v1 the multiplication methods were all buried in the Basis and GProduct classes. BaldeDuet surfaces
  * them in order to support parallelization of product table generation. As a side benefit, the complement 
@@ -47,35 +47,39 @@ import java.util.Collections;
 public final class BladeDuet {
 
 	/**
-	 * 
+	 * This method takes the set of generators in the offered blade and returns a blade with a set of generators that 
+	 * complements the first in such a way that left multiplication of the initial blade by the complement blade produces
+	 * the +pscalar associated with the initial blade. There is nothing special about choosing left multiplication. It is
+	 * assumed that objects calling this method will deal with signs if what they really wanted was right multiplication.
+	 * <br><br>
+	 * The offered metric signature is needed to cope with degenerate generators.
 	 * <br><br>
 	 * @param pB1 Blade to be complemented with respect to it's basis pscalar blade
 	 * @param sig signature array to use to reduce duplicate generators
-	 * @return Blade complement of pB1
+	 * @return Blade complement of pB1 with sign set for left multiply returning pscalar
 	 */
 	public static final Blade complement(Blade pB1, byte[] sig) {
-		//BladeDuet tBD = new BladeDuet(pB1, Blade.createPScalarBlade(pB1.maxGenerator())) ;
-		//return tBD.simplify(sig);
-		return null;
+		BladeDuet tBD = new BladeDuet(pB1, Blade.createPScalarBlade(Generator.get(pB1.maxGenerator()))) ;
+		return tBD.complement(sig);
 	}
 
 	/**
 	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet list. It's actually two buckets of 
 	 * sorted generators that upon duplication removal MIGHT be sorted. If not, we can jump straight to the sorted order
 	 * simply by inserting the generators in an EnumSet which happens to be their destination in a Blade anyway. What we 
-	 * don't know immeidately is how many transpositions are necessary to reach that sort order. That's what this method 
+	 * don't know immediately is how many transpositions are necessary to reach that sort order. That's what this method 
 	 * does after removing generator duplicates.
-	 * <br>
+	 * <br><br>
 	 * The offered numeric signature is used for the reduction to handle sign flips. Generators with a positive square 
 	 * appear as a one (1) while those with negative squares appear as negative one (-1).
-	 * <br>
+	 * <br><br>
 	 * NOTE that the numeric signature representation is a departure with prior use in Clados where zero(0) implied no sign 
 	 * flip and one(1) implied sign flip for negative squared generator. Prior practice used to add up the sign flips and 
 	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit' sized data element to track signs.
-	 * <br>
+	 * <br><br>
 	 * Exception cases NOT checked because this is for CladosG internal use. The method itself is public, but it's 
 	 * really for internal use.
-	 * <br>
+	 * <br><br>
 	 * @param pB1 Blade appearing on the left/row of a multiplication operation
 	 * @param pB2 Blade appearing on the right/column of a multiplication operation
 	 * @param sig signature array to use to reduce duplicate generators
@@ -117,8 +121,7 @@ public final class BladeDuet {
 	private final Generator maxGen;
 
 	/**
-	 * This is a re-use constructor that builds this as a juxtaposition of the two
-	 * offered blades.
+	 * This is a re-use constructor that builds this as a juxtaposition of the two offered blades.
 	 * <br>
 	 * @param pB1 A Blade to re-use on the left.
 	 * @param pB2 A Blade to re-use on the right.
@@ -126,7 +129,6 @@ public final class BladeDuet {
 	public BladeDuet(Blade pB1, Blade pB2) {
 		assert (pB1.maxGenerator() == pB2.maxGenerator());
 		maxGen = Generator.get((byte) pB1.maxGenerator());
-		// assert (maxGen > 0);
 		bladeDuet = (maxGen != null) ? new ArrayList<>(2 * maxGen.ord) : new ArrayList<>(2);
 		pB1.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
 		sign = pB1.sign();
@@ -134,6 +136,43 @@ public final class BladeDuet {
 		pB2.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
 		sign *= pB2.sign();
 		bitKeyRight = pB2.bitKey();
+	}
+
+	/**
+	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet list. It's actually two buckets of 
+	 * sorted generators that upon duplication removal WILL be sorted because the second half of the bucket is a 
+	 * pscalar blade. Removal of any generators from the pscalar side will involve removal of them from the other side
+	 * leaving an already sorted set with no transpositions. What we don't know is how many transpositions were needed
+	 * to accomplish the pair removals, but the 'simplify' method faces exactly the same issue, so code from there 
+	 * appears here too.
+	 * <br><br>
+	 * The offered metric signature is needed to cope with degenerate generators in an algorithm that is VERY similar 
+	 * to the one used for blade multiplication.
+	 * <br><br>
+	 * @param pSig signature array to use to reduce duplicate generators
+	 * @return Blade complement of pB1
+	 */
+	protected Blade complement(byte[] pSig) {
+		int andKey = bitKeyLeft & bitKeyRight;
+		byte gen = 1;										//start with lowest generator
+		while (andKey > 0) {								//while any duplicate generators present
+			if (Integer.lowestOneBit(andKey) == 1) {		//andKey is odd => low bit names duplicate generator. Action required.
+				Generator eq = Generator.get(gen);			//find generator for that lowest bit
+				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? (byte) 1 : (byte) -1;
+															//lastIndexOf = right-most. indexOf = left-most.
+															//We won't be in this section unless there are exactly two.
+															//This 'permutes' generators without moving them.
+				sign *= (pSig[gen - 1] == 0) ? 1 : pSig[gen - 1];	//IF SIGNATURE of eq is 0, pretend it is +1. 
+																	//Otherwise use correct signature.
+				bladeDuet.removeAll(Collections.singleton(eq));
+			}
+			gen++;											//move up to the next generator to test
+			andKey = andKey >>> 1;							//shift andKey right dropping lowest bit
+		}
+		Blade returnIt = Blade.createBlade(maxGen); 		//A scalar blade with room to expand.
+		bladeDuet.stream().forEach(g -> returnIt.add(g));	//Load remaining generators 
+															//returnIt has the correct generators AND sign.
+		return returnIt.setSign(sign);
 	}
 
 	/**
@@ -165,10 +204,11 @@ public final class BladeDuet {
 				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? (byte) 1 : (byte) -1;
 															//lastIndexOf = right-most. indexOf = left-most.
 															//We won't be in this section unless there are exactly two.
-															//This permutes indexes getting both generators next to each other.
-				sign *= pSig[gen - 1];
+															//This 'permutes' generators without moving them.
+				sign *= pSig[gen - 1];						//Adjust again for signature of generators.
 				bladeDuet.removeAll(Collections.singleton(eq));
 			}
+			if (sign == 0) 	break;							//Degenerate eq found. We are done since result is a scalar ZERO.
 			gen++;											//move up to the next generator to test
 			andKey = andKey >>> 1;							//shift andKey right dropping lowest bit
 		}
