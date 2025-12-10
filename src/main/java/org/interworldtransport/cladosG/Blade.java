@@ -63,15 +63,12 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 	protected static final byte FLIP = -1;
 
 	/**
-	 * This method will try to deliver a Blade with one more generator in its
-	 * internal set. The new Blade will have its maximum generator ordinal raised
-	 * by 1 and then all the original generators are added to the set before 
-	 * the offered one is.
-	 * <br>
-	 * If the new Blade is too big, the old blade is return with no remark.
-	 * If the old Blade already had the generator, it comes back as a copy but with 
-	 * a higher maximum generator limit. 
+	 * This method will try to deliver a Blade with one more generator in its internal set. The maximum generator 
+	 * will be set to the larger of the offered generator or the largest one in the blade being copied. If the old 
+	 * Blade already had the generator, it comes back as a copy.
+	 * <br><br>
 	 * Note that once maxGen is set for a Blade it CANNOT be changed.
+	 * <br><br>
 	 * @param pB Blade offered to be augmented.
 	 * @param pG Generator offered to be added to pB.
 	 * @return Blade is returned, but there is a chance it is pB.
@@ -94,10 +91,9 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 	}
 
 	/**
-	 * This method is very similar to createBlade(byte) but because it uses an
-	 * full Blade it can bypass the safety check for support validity. The
-	 * Generator enumeration is assumed to have ONLY generators that can be
-	 * supported by internal representations of blades, bases, and products.
+	 * This method is very similar to createBlade(byte) but because it uses an full Blade it can bypass the 
+	 * safety check for support validity. The Generator enumeration is assumed to have ONLY generators that 
+	 * can be supported by internal representations of blades, bases, and products.
 	 * <br>
 	 * @param pB This is the Blade that will be copied.
 	 * @return Blade that references all the same generators as the offered one.
@@ -107,24 +103,31 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 	}
 
 	/**
-	 * This method is very similar to createBlade(byte) but because it uses an
-	 * actual generator it can bypass the safety check for support validity. The
-	 * Generator enumeration is assumed to have ONLY generators that can be
-	 * supported by internal representations of blades, bases, and products.
-	 * <br>
+	 * This method is very similar to createBlade(byte) but because it uses an actual generator it can bypass 
+	 * the safety check for support validity. 
+	 * <br><br>
 	 * @param pGen This points to the highest generator that could be used.
 	 * @return Blade with one generator contained and a max set at the same generator.
 	 */
 	public final static Blade createBlade(Generator pGen) {
+		return (new Blade(pGen));	 //Makes 0-blade then a 1-blade with pGen
+	}
+
+	/**
+	 * This method is very similar to createBlade(byte) but because it uses an actual generator it can bypass 
+	 * the safety check for support validity. 
+	 * <br><br>
+	 * @param pGen This points to the highest generator that could be used.
+	 * @return Blade with one generator contained and a max set at the same generator.
+	 */
+	public final static Blade createBladePlus(Generator pGen) {
 		return (new Blade(pGen)).add(pGen);	 //Makes 0-blade then a 1-blade with pGen
 	}
 	
 	/**
-	 * This method is very similar to createPScalarBlade(byte) but because it uses
-	 * an actual generator it can bypass the safety check for support validity. The
-	 * Generator enumeration is assumed to have ONLY generators that can be
-	 * supported by internal representations of blades, bases, and products.
-	 * <br>
+	 * This method is very similar to createPScalarBlade(byte) but because it uses an actual generator it can 
+	 * bypass the safety check for support validity. 
+	 * <br><br>
 	 * @param pGen This points to the highest generator that could be used.
 	 * @return Blade with all generators contained. Basically, a pscalar in the
 	 *         implied space.
@@ -324,56 +327,65 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 		maxGen = pB.maxGenerator();
 		genSet = EnumSet.noneOf(Generator.class);
 		genSet.addAll(pB.getGenerators());
-		//sign = pB.sign();
 		key = pB.key();
 		bitKey = pB.bitKey();
 	}
 
 /**
-	 * This is a copy constructor that builds an identical blade, but with
-	 * a maximum generator size just big enough to make room for adding the 
-	 * offered generator.
-	 * <br>
-	 * IF the new blade would be bigger than the maximum supported size then 
-	 * a copy of pB is constructed instead.
-	 * <br>
+	 * This is a copy constructor that builds an identical blade, but with a maximum generator size just big enough 
+	 * to make room for adding the offered generator.
+	 * <br><br>
+	 * IF the new blade would be bigger than the maximum supported size then a copy of pB is constructed instead.
+	 * <br><br>
 	 * @param pB The Blade to copy
 	 * @param pGen The Generator to add to the list.
 	 */
 	public Blade(Blade pB, Generator pGen) {
 		genSet = EnumSet.noneOf(Generator.class);
 		genSet.addAll(pB.getGenerators());
-		if (pGen.ord <= pB.maxGenerator() + 1 && pB.maxGenerator() < GENERATOR_MAX.ord) {
-			maxGen = (byte) (pB.maxGenerator() + 1);
-			genSet.add(pGen);
-		} else maxGen = (byte) (pB.maxGenerator());
-		//sign = pB.sign();
-		key = pB.key();
-		bitKey = pB.bitKey();
+		
+		if (genSet.stream().anyMatch(e -> e.ord >= pGen.ord))	//pGen not larger than a generator in the blade
+				maxGen = pB.maxGenerator();						//so preserve pB's max geneator
+		else 	maxGen = pGen.ord;								//or use pGen AS the max generator
+		
+		if (!genSet.contains(pGen))
+			genSet.add(pGen);									//Now append pGen
+				
+		makeKey();
 	}
 
 	/**
-	 * This is a minimal constructor that establishes the blade's future expectations 
-	 * regarding how many generators it might have to add to the set. This one is SO
-	 * minimal it winds up on its own producing a scalar blade, but with room to expand.
+	 * Simple constructor that establishes a SCALAR BLADE with room to expand up to as many generators as the offered integer. 
 	 * <br><br>
-	 * If the byte offered is outside the supported range, a blade with only room for 
-	 * a scalar will be generated.
+	 * The constructor converts the offered byte intger to a Generator and then calls the constructor that uses a Generator.
+	 * If the byte offered is outside the supported range, a scalar blade with only room for a scalar will be generated.
 	 * <br><br>
-	 * @param pMaxGen byte integer for the number of possible directions that might
-	 *                appear in this blade.
+	 * @param pMaxGen byte integer for the number of possible directions that might appear in this blade.
 	 */
-	public Blade(byte pMaxGen) {		
-		genSet = EnumSet.noneOf(Generator.class);
-		maxGen = (CanonicalBasis.validateSize(pMaxGen)) ? pMaxGen : 0;
+	public Blade(byte pMaxGen) {
+		this(Generator.get(pMaxGen));
 	}
 
 	/**
-	 * This is a maximal constructor that establishes the blade's future maxGen
-	 * expectations AND provides an array of directions to load into the blade.
-	 * <br>
-	 * @param pGen Generator used to get ordinal for the number of possible 
-	 * 				directions that might appear in this blade.
+	 * Simplest constructor that establishes a SCALAR BLADE by naming the largest generator that will ever be used within it.
+	 * <br><br>
+	 * If the generator offered is null, a scalar blade with only room for a scalar will be generated.
+	 * <br><br>
+	 * @param pMaxGen Generator that is the largest of the possible directions that might appear in this blade.
+	 */
+	public Blade(Generator pMaxGen) {
+		genSet = EnumSet.noneOf(Generator.class);
+		if (pMaxGen != null) 	maxGen = pMaxGen.ord;
+		else 					maxGen = 0;
+		key = 0L;
+		bitKey = 0;
+	}
+
+	/**
+	 * This is a maximal constructor that establishes the blade's future maxGen expectations AND provides an array of 
+	 * directions to load into the blade.
+	 * <br><br>
+	 * @param pGen Generator used to get ordinal for the number of possible directions that might appear in this blade.
 	 * @param pDirs  Contains an enumset of generators to append to the blade.
 	 */
 	public Blade(Generator pGen, EnumSet<Generator> pDirs) {
@@ -383,11 +395,10 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 	}
 
 	/**
-	 * This is a maximal constructor that establishes the blade's future maxGen
-	 * expectations AND provides an array of directions to load into the blade.
-	 * <br>
-	 * @param pMaxGen byte integer for the number of possible directions that might
-	 *                appear in this blade.
+	 * This is a maximal constructor that establishes the blade's future maxGen expectations AND provides an array of 
+	 * directions to load into the blade.
+	 * <br><br>
+	 * @param pMaxGen byte integer for the number of possible directions that might appear in this blade.
 	 * @param pDirs  Contains an enumset of generators to append to the blade.
 	 */
 	public Blade(byte pMaxGen, EnumSet<Generator> pDirs) {
@@ -408,20 +419,6 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 		this(pMaxGen);
 		Stream.of(pDirs).forEach(g -> genSet.add(g));
 		makeKey();
-	}
-
-	/**
-	 * Simplest constructor that establishes a Blade by naming directly the largest
-	 * generator that will ever be used within it. This sets the internal size
-	 * without having to validate an integer passed in to determine if it is in the
-	 * supported range because Generator enumeration is assumed ALL supported.
-	 * <br>
-	 * @param pMaxGen Generator that is the largest of the possible directions that
-	 *                might appear in this blade.
-	 */
-	public Blade(Generator pMaxGen) {
-		genSet = EnumSet.noneOf(Generator.class);
-		maxGen = pMaxGen.ord;
 	}
 
 	/**

@@ -25,25 +25,22 @@
 package org.interworldtransport.cladosG;
 
 import java.util.stream.Stream;
+import static org.interworldtransport.cladosG.CladosConstant.*;
 
 /**
- * Generators are just place holders representing 'directions' in a space. It
- * is best to think of them as labels for splits in the space where a 'direction'
- * is defined as 'away from the split to this side or that'. 
+ * Generators are just place holders representing 'directions' in a space. It is best to think of them as 
+ * labels for splits in the space where a 'direction' is defined as 'away from the split to this side or that'. 
  * <br><br>
- * These splits are 'signed' so one can know on which side one is. No other 
- * assumptions are encoded here about magnitudes, directions, or metrics. 
- * A Generator merely represents one split distinct from some other split.
+ * These splits are 'signed' so one can know on which side one is. No other assumptions are encoded here about 
+ * magnitudes, directions, or metrics. A Generator merely represents one split distinct from some other split.
  * <br><br>
- * The enumeration class works as a builder too. Shared static methods and instance
- * methods 'switch' on their identity determining what gets built and returned.
+ * The enumeration class works as a builder too. Shared static methods and instance methods 'switch' on their 
+ * identity determining what gets built and returned.
  * <br><br>
- * The enumeration has one instance data element that can't undergo state changes. 
- * Generator keeps in the INTERNAL STATE of each instance a constant byte that 
- * provides an ordinal for finding a matching instance from an integer. This 
- * internal state also provides a comparator an integer for bounds on supported 
- * blade sizes. Most uses of a generator make NO use of the internal state, thus 
- * cannot change it even if it wasn't constant.
+ * The enumeration has one instance data element that can't undergo state changes. Generator keeps in the 
+ * INTERNAL STATE of each instance a constant byte that provides an ordinal for finding a matching instance from an 
+ * integer. This internal state also provides a comparator an integer for bounds on supported blade sizes. Most uses
+ *  of a generator make NO use of the internal state, thus cannot change it even if it wasn't constant.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -140,7 +137,7 @@ public enum Generator {
 	 * @return Stream of Generator
 	 */
 	public final static Stream<Generator> stream() {
-		return Stream.of(Generator.values()).limit(CladosConstant.GENERATOR_MAX.ord);
+		return Stream.of(Generator.values()).limit(GENERATOR_MAX.ord);
 	}
 
 	/**
@@ -155,29 +152,27 @@ public enum Generator {
 	}
 
 	/**
-	 * This method connects byte integers to Generator instances. It gets a
-	 * reference to the enumeration instance that has the same ordinal as the byte
-	 * integer parameter.
+	 * This method connects a byte integer to Generator instances. It gets a reference to the enumeration 
+	 * instance that has the same ordinal as the byte integer parameter.
 	 * <br>
 	 * @param pS Offer a byte integer
 	 * @return and get back the corresponding Generator instance
 	 */
 	public final static Generator get(byte pS) {
-		if (pS < CladosConstant.GENERATOR_MIN.ord | pS > CladosConstant.GENERATOR_MAX.ord)
+		if (pS < GENERATOR_MIN.ord | pS > GENERATOR_MAX.ord)
 			return null;
 		return ((Generator[]) Generator.values())[pS - 1];
 	}
 
 	/**
-	 * This method connects boxed byte integers to Generator instances. It gets a
-	 * reference to the enumeration instance that has the same ordinal as the byte
-	 * integer within the boxed parameter.
+	 * This method connects a boxed byte integer to Generator instances. It gets areference to the 
+	 * enumeration instance that has the same ordinal as the byte integer within the boxed parameter.
 	 * <br>
 	 * @param pS Byte integer offered
 	 * @return and get back the corresponding Generator instance
 	 */
 	public final static Generator get(Byte pS) {
-		if (pS.byteValue() < CladosConstant.GENERATOR_MIN.ord | pS.byteValue() > CladosConstant.GENERATOR_MAX.ord)
+		if (pS.byteValue() < GENERATOR_MIN.ord | pS.byteValue() > GENERATOR_MAX.ord)
 			return null;
 		return ((Generator[]) Generator.values())[pS - 1];
 	}

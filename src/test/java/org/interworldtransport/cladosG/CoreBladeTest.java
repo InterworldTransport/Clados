@@ -77,7 +77,7 @@ class CoreBladeTest {
 			assertTrue(tB4.equals(tB43)); 			//Same inner meaning should pass equals test
 			assertFalse(tB4 == tB43); 				//but they are not the same objects
 
-			Blade testThis = Blade.createBlade(Generator.E5);
+			Blade testThis = Blade.createBladePlus(Generator.E5);
 			assertTrue(testThis.rank() == 1);
 			assertTrue(testThis.maxGenerator() == 5);
 
@@ -102,8 +102,8 @@ class CoreBladeTest {
 			Blade newTest = new Blade((byte)17);
 			assertTrue(newTest instanceof Blade);	//A scalar blade is now generated for out of range nonsense
 
-			Blade left = Blade.createBlade(Generator.E1).remove(Generator.E1);
-			Blade right = Blade.createBlade(Generator.E2).remove(Generator.E2);
+			Blade left = Blade.createBladePlus(Generator.E1).remove(Generator.E1);
+			Blade right = Blade.createBladePlus(Generator.E2).remove(Generator.E2);
 			assertFalse(left.equals(right));						//Both scalar blades, but from different sized spaces.
 			assertFalse(left.equals(right));						//Both scalar blades, but from different sized spaces.
 			assertTrue(CanonicalBlade.equivalent(left, right));		//but both are the E1 space
@@ -217,11 +217,11 @@ class CoreBladeTest {
 			assertTrue(testThis2.maxGenerator() == 5);
 
 			Blade testThis3 = Blade.augmentBlade(testThis2, Generator.EC);
-			assertTrue(testThis3.maxGenerator() == 5);
-			assertFalse(testThis3.rank() > 4); //Augment adds room for one more generator, but only the next one.
+			assertTrue(testThis3.maxGenerator() == 12);
+			assertFalse(testThis3.rank() == 6); //Augment increases rank by one.
 
 			Blade testThis4 = Blade.augmentBlade(testThis3, Generator.EF);
-			assertTrue(testThis4.maxGenerator() == 5);
+			assertTrue(testThis4.maxGenerator() == 15);
 		}
 
 		@Test
@@ -239,7 +239,7 @@ class CoreBladeTest {
 
 	@Test
 	public void testXMLOutput() {
-		Blade tB = Blade.createBlade(gMax);
+		Blade tB = Blade.createBladePlus(gMax);
 		Generator.stream(gMax.ord).forEach(g-> tB.add(g));
 		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
 		String ordString = "\t<Blade key=\"81985529216486895\" bitKey=\"0b111111111111111\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />\n";

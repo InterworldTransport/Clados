@@ -28,13 +28,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * This class just acts as a bucket two blades when they are combined and
- * reduced in product result discovery. In Clados v1 the methods were all buried
- * in the Basis and GProduct classes. They are surfaced here in BladeDuet in
- * order to support parallelization of product table generation.
+ * This class serves two highly related purposes.<br>
+ * 1) It supports blade discovery in blade multiplication by acting as a bucket for their generators that can
+ * be reduced using a signature.<br>
+ * 2) It supports blade discovery in blade complement operations and compute the resulting blade's sign so it
+ * correctly multiplies to the pscalar in the basis that contains the input blade. TODO
  * <br><br>
- * BladeDuet makes use of streams, but intentionally avoids parallelizing
- * computations internally. Most of what each one does must be done in sequence.
+ * In Clados v1 the multiplication methods were all buried in the Basis and GProduct classes. BaldeDuet surfaces
+ * them in order to support parallelization of product table generation. As a side benefit, the complement 
+ * operation supportual Dual() in Clados v2 also benefits from parallelization.
+ * <br><br>
+ * NOTE: BladeDuet makes use of streams, but intentionally avoids internal parallelization of computations. Most of 
+ * what must be done must be in sequence. It is a calling objects that may parallelize operations relying on BladeDuet.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -42,26 +47,34 @@ import java.util.Collections;
 public final class BladeDuet {
 
 	/**
-	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet
-	 * list. It's actually two buckets of sorted generators that upon duplication
-	 * removal MIGHT be sorted. If not, we can jump straight to the sorted order
-	 * simply by inserting the generators in an EnumSet which happens to be their
-	 * destination in a Blade anyway. What we don't know immeidately is how many
-	 * transpositions are necessary to reach that sort order. That's what this
-	 * method does after removing generator duplicates.
+	 * 
+	 * <br><br>
+	 * @param pB1 Blade to be complemented with respect to it's basis pscalar blade
+	 * @param sig signature array to use to reduce duplicate generators
+	 * @return Blade complement of pB1
+	 */
+	public static final Blade complement(Blade pB1, byte[] sig) {
+		//BladeDuet tBD = new BladeDuet(pB1, Blade.createPScalarBlade(pB1.maxGenerator())) ;
+		//return tBD.simplify(sig);
+		return null;
+	}
+
+	/**
+	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet list. It's actually two buckets of 
+	 * sorted generators that upon duplication removal MIGHT be sorted. If not, we can jump straight to the sorted order
+	 * simply by inserting the generators in an EnumSet which happens to be their destination in a Blade anyway. What we 
+	 * don't know immeidately is how many transpositions are necessary to reach that sort order. That's what this method 
+	 * does after removing generator duplicates.
 	 * <br>
-	 * The offered numeric signature is used for the reduction to handle sign flips.
-	 * Generators with a positive square appear as a one (1) while those with
-	 * negative squares appear as negative one (-1).
+	 * The offered numeric signature is used for the reduction to handle sign flips. Generators with a positive square 
+	 * appear as a one (1) while those with negative squares appear as negative one (-1).
 	 * <br>
-	 * NOTE that the numeric signature representation is a departure with prior use
-	 * in Clados where zero(0) implied no sign flip and one(1) implied sign flip for
-	 * negative squared generator. Prior practice used to add up the sign flips and
-	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit'
-	 * sized data element to track signs.
+	 * NOTE that the numeric signature representation is a departure with prior use in Clados where zero(0) implied no sign 
+	 * flip and one(1) implied sign flip for negative squared generator. Prior practice used to add up the sign flips and 
+	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit' sized data element to track signs.
 	 * <br>
-	 * Exception cases NOT checked because this is for CladosG internal use. The
-	 * method itself is public, but it's really for internal use.
+	 * Exception cases NOT checked because this is for CladosG internal use. The method itself is public, but it's 
+	 * really for internal use.
 	 * <br>
 	 * @param pB1 Blade appearing on the left/row of a multiplication operation
 	 * @param pB2 Blade appearing on the right/column of a multiplication operation
@@ -101,7 +114,7 @@ public final class BladeDuet {
 	 * maximum grade from one of the blades... which really should have the 
 	 * same maximum grade.
 	 */
-	private final byte maxGen;
+	private final Generator maxGen;
 
 	/**
 	 * This is a re-use constructor that builds this as a juxtaposition of the two
@@ -112,9 +125,9 @@ public final class BladeDuet {
 	 */
 	public BladeDuet(Blade pB1, Blade pB2) {
 		assert (pB1.maxGenerator() == pB2.maxGenerator());
-		maxGen = pB1.maxGenerator();
+		maxGen = Generator.get((byte) pB1.maxGenerator());
 		// assert (maxGen > 0);
-		bladeDuet = new ArrayList<>(2 * maxGen);
+		bladeDuet = (maxGen != null) ? new ArrayList<>(2 * maxGen.ord) : new ArrayList<>(2);
 		pB1.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
 		sign = pB1.sign();
 		bitKeyLeft = pB1.bitKey();
@@ -124,28 +137,23 @@ public final class BladeDuet {
 	}
 
 	/**
-	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet
-	 * list. It's actually two buckets of sorted generators that upon duplication
-	 * removal MIGHT be sorted. If not, we can jump straight to the sorted order
-	 * simply by inserting the generators in an EnumSet which happens to be their
-	 * destination in a Blade anyway. What we don't know immediately is how many
-	 * transpositions are necessary to reach that sort order. That's what this
-	 * method does after removing generator duplicates.
+	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet list. It's actually two buckets of 
+	 * sorted generators that upon duplication removal MIGHT be sorted. If not, we can jump straight to the sorted order
+	 * simply by inserting the generators in an EnumSet which happens to be their destination in a Blade anyway. What we 
+	 * don't know immediately is how many transpositions are necessary to reach that sort order. That's what this method 
+	 * does after removing generator duplicates.
 	 * <br>
-	 * The offered numeric signature is used for the reduction to handle sign flips.
-	 * Generators with a positive square appear as a one (1) while those with
-	 * negative squares appear as negative one (-1).
+	 * The offered numeric signature is used for the reduction to handle sign flips. Generators with a positive square 
+	 * appear as a one (1) while those with negative squares appear as negative one (-1).
 	 * <br>
-	 * NOTE that the numeric signature representation is a departure with prior use
-	 * in Clados where zero(0) implied no sign flip and one(1) implied sign flip for
-	 * negative squared generator. Prior practice used to add up the sign flips and
-	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit'
-	 * sized data element to track signs.
+	 * NOTE that the numeric signature representation is a departure with prior use in Clados where zero(0) implied no sign 
+	 * flip and one(1) implied sign flip for  negative squared generator. Prior practice used to add up the sign flips and 
+	 * then look at what was left modulo 2. Ideally, what we want is a 'signed bit' sized data element to track signs.
 	 * <br>
 	 * Exception cases NOT checked because this is for CladosG internal use.
 	 * <br>
-	 * @param pSig An array of unboxed short integers that signifies when sign flips
-	 *             occur as generator pairs are removed from the internal dual list.
+	 * @param pSig 	An array of unboxed short integers that signifies when sign flips occur as generator pairs are removed 
+	 * 				from the internal dual list.
 	 * @return Blade [supporting stream approach]
 	 */
 	protected Blade simplify(byte[] pSig) {
@@ -199,7 +207,7 @@ public final class BladeDuet {
 	 */
 	public final static String toXMLString(BladeDuet pBD) {
 		StringBuilder rB = new StringBuilder();
-		rB.append("<BladeDuet sign=\"").append(pBD.sign).append("\" maxGrade=\"").append(pBD.maxGen).append("\" generators=\"");
+		rB.append("<BladeDuet sign=\"").append(pBD.sign).append("\" maxGrade=\"").append(pBD.maxGen.ord).append("\" generators=\"");
 		pBD.bladeDuet.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
 		if (pBD.bladeDuet.size() > 0)
 			rB.deleteCharAt(rB.length() - 1);

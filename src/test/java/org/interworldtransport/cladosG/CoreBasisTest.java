@@ -270,9 +270,10 @@ class CoreBasisTest {
 		assertTrue(tBasis8.getGradeStart((byte) 8) == 255);
 		assertTrue(tBasis8.getGradeStart((byte) 9) < 0);
 
-		assertTrue(tBasis8.find(tBasis8.getPScalarBlade()) == 256); 	//Indexed position(!) and NOT array position.
-		assertTrue(tBasis8.find(null) == -1); 						//Nothing to find.
-		assertTrue(tBasis8.find(Blade.createBlade(Generator.EA)) == -1); //Not in the basis
+		assertTrue(tBasis8.find(tBasis8.getPScalarBlade()) == 256); 			//Indexed position(!) and NOT array position.
+		assertTrue(tBasis8.find(null) == -1); 								//Nothing to find.
+		assertTrue(tBasis8.find(Blade.createBladePlus(Generator.EA)) == -1); 	//E10 not in the basis
+		assertTrue(tBasis8.find(Blade.createBlade(Generator.EA)) == 1);			//Scalar with room to grow is in the basis
 	}
 
 

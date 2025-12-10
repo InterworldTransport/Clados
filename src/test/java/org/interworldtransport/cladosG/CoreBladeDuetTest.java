@@ -41,7 +41,7 @@ class CoreBladeDuetTest {
 	public void testMaxProduct() {
 		Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
 		Blade maxSize2 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
-		Blade singlet = Blade.createBlade(Generator.EF).add(Generator.EF);
+		Blade singlet = Blade.createBladePlus(Generator.EF).add(Generator.EF);
 
 		maxSize1.remove(Generator.EF);
 
