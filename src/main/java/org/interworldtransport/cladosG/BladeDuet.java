@@ -49,18 +49,35 @@ public final class BladeDuet {
 	/**
 	 * This method takes the set of generators in the offered blade and returns a blade with a set of generators that 
 	 * complements the first in such a way that left multiplication of the initial blade by the complement blade produces
-	 * the +pscalar associated with the initial blade. There is nothing special about choosing left multiplication. It is
-	 * assumed that objects calling this method will deal with signs if what they really wanted was right multiplication.
+	 * the +pscalar associated with the initial blade.
 	 * <br><br>
-	 * The offered metric signature is needed to cope with degenerate generators.
+	 * NOTE: Because generators might be degenerate, it is not possible to extract commute signs from the Cayley table
+	 * when computing complement blades. If not for degeneracy, complement would involve a table lookup.
 	 * <br><br>
 	 * @param pB1 Blade to be complemented with respect to it's basis pscalar blade
-	 * @param sig signature array to use to reduce duplicate generators
-	 * @return Blade complement of pB1 with sign set for left multiply returning pscalar
+	 * @param sig byte[] signature array to use when reducing duplicate generators
+	 * @return Blade complement of pB1 with sign set for left multiply returning +pscalar
 	 */
-	public static final Blade complement(Blade pB1, byte[] sig) {
+	public static final Blade complementLeft(Blade pB1, byte[] sig) {
 		BladeDuet tBD = new BladeDuet(pB1, Blade.createPScalarBlade(Generator.get(pB1.maxGenerator()))) ;
-		return tBD.complement(sig);
+		return tBD.simplifyForDual(sig);
+	}
+
+	/**
+	 * This method takes the set of generators in the offered blade and returns a blade with a set of generators that 
+	 * complements the first in such a way that right multiplication of the initial blade by the complement blade produces
+	 * the +pscalar associated with the initial blade.
+	 * <br><br>
+	 * NOTE: Because generators might be degenerate, it is not possible to extract commute signs from the Cayley table
+	 * when computing complement blades. If not for degeneracy, complement would involve a table lookup.
+	 * <br><br>
+	 * @param pB1 Blade to be complemented with respect to it's basis pscalar blade
+	 * @param sig byte[] signature array to use when reducing duplicate generators
+	 * @return Blade complement of pB1 with sign set for left multiply returning +pscalar
+	 */
+	public static final Blade complementRight(Blade pB1, byte[] sig) {
+		BladeDuet tBD = new BladeDuet(Blade.createPScalarBlade(Generator.get(pB1.maxGenerator())), pB1) ;
+		return tBD.simplifyForDual(sig);
 	}
 
 	/**
@@ -139,20 +156,19 @@ public final class BladeDuet {
 	}
 
 	/**
-	 * This method reduces pairs of directions in what is ALMOST a sorted bladeDuet list. It's actually two buckets of 
-	 * sorted generators that upon duplication removal WILL be sorted because the second half of the bucket is a 
-	 * pscalar blade. Removal of any generators from the pscalar side will involve removal of them from the other side
-	 * leaving an already sorted set with no transpositions. What we don't know is how many transpositions were needed
-	 * to accomplish the pair removals, but the 'simplify' method faces exactly the same issue, so code from there 
-	 * appears here too.
+	 * This method reduces generator pairs in what is an ALMOST sorted bladeDuet list. It is two buckets of sorted generators 
+	 * that upon pair removal WILL be fully sorted because one of the buckets is a pscalar blade. Every generator removed
+	 * from the input blade is paired with one in the pscalar blade, so removal of pairs leaves a sorted list ensuring the
+	 * second half of the 'simplify' algorithm isn't necessary here. The first half eliminates generator pairs and computes
+	 * transposition counts, so that is all this method does
 	 * <br><br>
-	 * The offered metric signature is needed to cope with degenerate generators in an algorithm that is VERY similar 
-	 * to the one used for blade multiplication.
+	 * The offered metric signature resolves what sign a generator pair produces with one twist. For degenerate generators, 
+	 * this method treats them as if they squared to +1.
 	 * <br><br>
-	 * @param pSig signature array to use to reduce duplicate generators
-	 * @return Blade complement of pB1
+	 * @param pSig byte[] signature array to use when reducing duplicate generators
+	 * @return Blade complement of the non-pscalar blade used to initialize the BladeDuet.
 	 */
-	protected Blade complement(byte[] pSig) {
+	private Blade simplifyForDual(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
 		byte gen = 1;										//start with lowest generator
 		while (andKey > 0) {								//while any duplicate generators present
@@ -195,7 +211,7 @@ public final class BladeDuet {
 	 * 				from the internal dual list.
 	 * @return Blade [supporting stream approach]
 	 */
-	protected Blade simplify(byte[] pSig) {
+	private Blade simplify(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
 		byte gen = 1;										//start with lowest generator
 		while (andKey > 0) {								//while any duplicate generators present

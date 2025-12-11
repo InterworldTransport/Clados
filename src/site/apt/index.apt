@@ -47,13 +47,16 @@ Project History
 	However, for implementors not interested in aggregates, the name 'Monad' is unfortunate. 
 	Please treat it as a synonym for multivector.
 
+	The most recent changes involve adapting Nnyads to be our implementation of extensors.
+
 Examples
 
 *---------------------------------------------+---------------------------------------------+---------------------------------------------------+----------------------------------+--------------------------------------------+-----------------------------------------+
 | Foot                                        | Basis                                       | Gproduct                                          | Algebra                          | Monad                                      | Nyad                                    |	
 *---------------------------------------------+---------------------------------------------+---------------------------------------------------+----------------------------------+--------------------------------------------+-----------------------------------------+
-| {{{./examples/Foot.txt} A Foot}}            | {{{./examples/Basis04.txt} 4 Generators}} \ | {{{./examples/GPpga.txt} 3, 0, 1 PGA}}          \ | {{{./examples/Cl310.txt} 3,1,0}} | {{{./examples/M_Long.txt} RD 3,1,0}}     \ | {{{./examples/N_Long.txt} Long Nyad}} \ |
-|                                             | {{{./examples/Basis10.txt} 10 Generators}}  | {{{./examples/GP5.txt} 4, 0, 1}}                \ |                                  | {{{./examples/M_Short.txt} RD p\+q\+r\=4}} | {{{./examples/N_Short.txt} Short Nyad}} |
+| {{{./examples/Foot.txt} A Foot}}            | {{{./examples/Basis04.txt} 4 Generators}} \ | {{{./examples/GP3.txt} 3, 0, 0 Euclid}}         \ | {{{./examples/Cl310.txt} 3,1,0}} | {{{./examples/M_Long.txt} RD 3,1,0}}     \ | {{{./examples/N_Long.txt} Long Nyad}} \ |
+|                                             | {{{./examples/Basis10.txt} 10 Generators}}  | {{{./examples/GPpga.txt} 3, 0, 1 PGA}}          \ |                                  | {{{./examples/M_Short.txt} RD p\+q\+r\=4}} | {{{./examples/N_Short.txt} Short Nyad}} |
+|                                             |                                             | {{{./examples/GP5.txt} 4, 0, 1}}                \ |                                  |                                            |                                         |
 |                                             |                                             | {{{./examples/GPSTAP.txt} 1, 3, 1 STAP}}        \ |                                  |                                            |                                         |
 |                                             |                                             | {{{./examples/GPSTAPAlt.txt} 3, 1, 1 STAP alt}} \ |                                  |                                            |                                         |
 |                                             |                                             | {{{./examples/GP10.txt} 9, 1, 0}}                 |                                  |                                            |                                         |
@@ -141,4 +144,4 @@ License
 	written by others. I AM interested in how people use this library, so small requests are 
 	likely to be supported free of charge. Larger ones can be negotiated. 
 	
-	I have a day job, so just take that into account. \-al
+	I have a day job, so just take that into account. 

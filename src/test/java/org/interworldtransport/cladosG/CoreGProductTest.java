@@ -3,6 +3,7 @@ package org.interworldtransport.cladosG;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -22,16 +23,9 @@ class CoreGProductTest {
 	String pSig30 = "+++0";
 	String pSigERR = "+++O";
 
-	@Test
-	public void testThingsThatShouldntHappen() {
-		try {
-			GProduct newTest = new GProduct(pSig16);
-			assertFalse(newTest instanceof GProduct);
-		} catch (BadSignatureException eS) {
-			assertTrue(eS.getSourceMessage().equals("Valid signature required."));
-			assertTrue(eS.getSourceGP() instanceof GProduct);
-		}
-	}
+	GProduct tryThis, tGP4, tGP8;
+	Blade scalar, out, out2, out3;
+
 
 	@Nested 
 	class testInfrastructure {
@@ -61,65 +55,141 @@ class CoreGProductTest {
 	}
 
 	@Test
-	public void testValidations() {
-		assertTrue(CliffordProduct.validateSignature(pSig4));
-		assertTrue(CliffordProduct.validateSignature("")); //Allowed. No generators.
-		assertFalse(CliffordProduct.validateSignature(pSig16)); //Beyond supported size right now.
-		assertFalse(CliffordProduct.validateSignature(pSigERR)); //Disallowed. Uses a letter 'O' instead of number '0'
-		assertFalse(CliffordProduct.validateSignature(null)); //Disallowed. No Info != No generators.
+	public void testThingsThatShouldntHappen() {
+		try {
+			GProduct newTest = new GProduct(pSig16);
+			assertFalse(newTest instanceof GProduct);
+		} catch (BadSignatureException eS) {
+			assertTrue(eS.getSourceMessage().equals("Valid signature required."));
+			assertTrue(eS.getSourceGP() instanceof GProduct);
+		}
+	}
+
+	@Nested
+	class testComplements {
+		@BeforeEach
+		void setUp() throws BadSignatureException {
+			GCache.INSTANCE.clearGProducts();
+			GCache.INSTANCE.clearBases();
+			tryThis = new GProduct(pSig3);
+			scalar = tryThis.getBasis().getScalarBlade();
+		}
+
+		@Test
+		void testComplementLeft() {	
+			out = tryThis.getComplementLeft(scalar);		
+			assertTrue(Blade.isPScalar(out));
+			assertTrue(out.sign() == +1);
+
+			out2 = Blade.createBlade(out);
+			out2.remove(Generator.E1);
+			
+			out3 = tryThis.getComplementLeft(out2);
+			assertTrue(CanonicalBlade.isNBlade(out3, (byte) 1));
+			assertTrue(out3.sign() == -1);
+		}
+		
+		@Test
+		void testComplementRight() {
+			out = tryThis.getComplementLeft(scalar);		
+			assertTrue(Blade.isPScalar(out));
+			assertTrue(out.sign() == +1);
+			
+			out2 = Blade.createBlade(out);
+			out2.remove(Generator.E1);
+			
+			out3 = tryThis.getComplementRight(out2);
+			assertTrue(CanonicalBlade.isNBlade(out3, (byte) 1));
+			assertTrue(out3.sign() == -1);
+		}
+
+		@Test
+		void testComplementSandwich() {
+			out = tryThis.getComplementLeft(scalar);
+			out2 = tryThis.getComplementRight(out);
+			assertTrue(Blade.isScalar(out2));
+			assertTrue(out2.sign() == -1);
+		}
+
+		@Test
+		void testComplementDegenerate() throws BadSignatureException {
+			tryThis = new GProduct(pSig30);
+			scalar = tryThis.getBasis().getScalarBlade();
+			out = tryThis.getComplementLeft(scalar);
+			assertTrue(Blade.isPScalar(out));
+			assertTrue(out.sign() == +1);
+
+			out2 = Blade.createBlade(out);
+			out2.remove(Generator.E1);
+			
+			out3 = tryThis.getComplementLeft(out2);
+			assertTrue(CanonicalBlade.isNBlade(out3, (byte) 1));
+			assertTrue(out3.sign() == 1);
+		}
+
+
 	}
 	
-	@Test
-	public void testSigns() {
-		try {
-			GProduct tGP = new GProduct(pSig4);
-			//System.out.println(tGP.toXMLString(""));
-			assertTrue(tGP.getACommuteSign(1, 2) == 1); //They anticommute
-			assertFalse(tGP.getACommuteSign(1, 12) == 1); //They commute
-			assertTrue(tGP.getCommuteSign(1, 11) == 1); //They commute
-			assertFalse(tGP.getCommuteSign(1, 3) == 1); //They anticommute
-
-			assertTrue(tGP.getSign(1, 2) == 1); //Should be positive on row 1
-			assertTrue(tGP.getSign(2, 1) == -1); //Should be neg to get anticommute
-			assertTrue(tGP.getResult(15, 15) == -1); //PScalar squares to -1.
-			assertTrue(tGP.signature().length() == 4);
-		} catch (BadSignatureException esig) {
-			;
+	@Nested
+	class testInternals {
+		@BeforeEach
+		void setUp() throws BadSignatureException {
+			GCache.INSTANCE.clearGProducts();
+			GCache.INSTANCE.clearBases();
+			tGP4 = new GProduct(pSig4);
+			tGP8 = GBuilder.createGProduct(pSig8);
 		}
-	}
 
-	@Test
-	public void testRanges() throws BadSignatureException {
-		try {
-			GProduct tGP = (GProduct) GBuilder.createGProduct(pSig8);
-			int[] pRange = tGP.getPScalarRange();
+		@Test
+		public void testValidations() {
+			assertTrue(CliffordProduct.validateSignature(pSig4));
+			assertTrue(CliffordProduct.validateSignature("")); //Allowed. No generators.
+			assertFalse(CliffordProduct.validateSignature(pSig16)); //Beyond supported size right now.
+			assertFalse(CliffordProduct.validateSignature(pSigERR)); //Disallowed. Uses a letter 'O' instead of number '0'
+			assertFalse(CliffordProduct.validateSignature(null)); //Disallowed. No Info != No generators.
+		}
+
+		@Test
+		public void testSigns() {
+			assertTrue(tGP4.getACommuteSign(1, 2) == 1); //They anticommute
+			assertFalse(tGP4.getACommuteSign(1, 12) == 1); //They commute
+			assertTrue(tGP4.getCommuteSign(1, 11) == 1); //They commute
+			assertFalse(tGP4.getCommuteSign(1, 3) == 1); //They anticommute
+
+			assertTrue(tGP4.getSign(1, 2) == 1); //Should be positive on row 1
+			assertTrue(tGP4.getSign(2, 1) == -1); //Should be neg to get anticommute
+			assertTrue(tGP4.getResult(15, 15) == -1); //PScalar squares to -1.
+			assertTrue(tGP4.signature().length() == 4);
+		}
+
+		@Test
+		public void testRanges() throws BadSignatureException {
+			int[] pRange = tGP8.getPScalarRange();
 			assertTrue(pRange[0] == pRange[1]);
 			assertTrue(pRange[0] == 255);
-			pRange = tGP.getGradeRange((byte) 2);
+			pRange = tGP8.getGradeRange((byte) 2);
 			assertTrue(pRange[0] == 9);
 			assertTrue(pRange[1] == 36);
-			pRange = tGP.getGradeRange((byte) 8);
+			pRange = tGP8.getGradeRange((byte) 8);
 			assertTrue(pRange[0] == pRange[1]);
 			assertTrue(pRange[0] == 255);
+		}
 
-		} catch (BadSignatureException esig) {
-			;
+		@Test
+		public void testXMLOutput() throws BadSignatureException {
+			GProduct tGP10 = (GProduct) GBuilder.createGProduct(pSig10);
+			String xmlout = GProduct.toXMLString(tGP10, "");
+			assertTrue(xmlout != null);
 		}
 	}
-/* 
-	@Test
-	public void testXMLOutput() {
-		try {
-			GProduct tGP = (GProduct) GBuilder.createGProduct(pSig10);
-			//System.out.println(tGP.toXMLString(""));
-		} catch (BadSignatureException esig) {
-			;
-		}
-	}
-*/
 
 	@Nested
 	class testSizing {
+		@BeforeEach
+		void setUp() {
+			GCache.INSTANCE.clearGProducts();
+			GCache.INSTANCE.clearBases();
+		}
 	
 		@Test
 		public void test00s() throws BadSignatureException {
@@ -182,7 +252,7 @@ class CoreGProductTest {
 		@Test
 		public void test03s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig3);
-			//System.out.println(tGP.toXMLString(""));
+			//System.out.println(GProduct.toXMLString(tGP, ""));
 			assertTrue(tGP.signature().equals("+++"));
 			assertTrue(tGP.getGradeCount() == 4);
 			assertTrue(tGP.getBladeCount() == (1<<3));

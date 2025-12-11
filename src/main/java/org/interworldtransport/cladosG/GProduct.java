@@ -25,28 +25,24 @@
 package org.interworldtransport.cladosG;
 
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 
 /**
- * This class defines a geometric product on an associated basis within a
- * Clifford Algebra. The flat space on which multiplication is defined is
- * assumed to be locally tangent to a manifold, but the difference in product
- * results form one tangent space to another are NOT tracked here. Only the
- * structure of the geometric product on a canonical basis is. Other
- * distinctions are kept in the algebra objects that reference a GProduct.
+ * This class defines a geometric product on an associated basis within a Clifford Algebra. The flat space on which 
+ * multiplication is defined is assumed to be locally tangent to a manifold, but the difference in product results 
+ * form one tangent space to another are NOT tracked here. Only the structure of the geometric product on a canonical 
+ * basis is. Other distinctions are kept in the algebra objects that reference a GProduct.
  * <br><br>
- * A GProduct object actually assumes it is OK to perform a requested operation
- * and will throw an exception if it discovers later that it isn't. This is true
- * most everywhere except in the constructor where input is examined first.
+ * A GProduct object actually assumes it is OK to perform a requested operation and will throw an exception if it 
+ * discovers later that it isn't. This is true most everywhere except in the constructor where input is examined first.
  * <br><br>
- * Most errors can be avoided by using GBuilder to construct this object.
- * However, it shouldn't be necessary to construct a GProduct directly. Best
- * practice is to create an algebra and let it construct its product.
+ * Most errors can be avoided by using GBuilder to construct this object. However, it shouldn't be necessary to 
+ * construct a GProduct directly. Best practice is to create an algebra and let it construct its product.
  * <br><br>
- * The implemented interface is currently all the methods available in this
- * class. That will change in the future as helper methods are built here that
- * need not be exposed elsewhere.
+ * The implemented interface is currently all the methods available in this class. That will change in the future as 
+ * helper methods are built here that need not be exposed elsewhere.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -54,49 +50,43 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
 public class GProduct implements CliffordProduct, Comparable<GProduct> {
 
 	/**
-	 * This basis holds a representation of all the elements that can be built from
-	 * the generators to span the algebra's vector space. It is the object that Ken
-	 * Greider called the Eddington Basis.
+	 * This basis holds a representation of all the elements that can be built from the generators to span the 
+	 * algebra's vector space. It is the object that Ken Greider called the Eddington Basis.
 	 */
 	private final Basis canonBasis;
 
 	/**
-	 * This array holds the geometric multiplication table for a Clifford algebra
-	 * using the associated basis. The array contains numbers that represent the
-	 * blade # one would produce with a product of blades (row) and (column) of
-	 * result.
-	 * <br>
+	 * This array holds the geometric multiplication table for a Clifford algebra using the associated basis. 
+	 * The array contains numbers that represent the blade # one would produce with a product of blades (row) 
+	 * and (column) of result.
+	 * <br><br>
 	 * Negative results in the array imply the resulting blade is scaled by -1.
 	 */
 	private final int[][] result;
 
 	/**
-	 * This string holds the signature information describing the squares of all
-	 * geometry generators present on the multiplication table.
-	 * <br>
-	 * The term 'signature' is currently overloaded with meanings. The one being 
-	 * used here is a long form aggregate of '+', '-', and '0' bytes encoding the
-	 * squares of an algebra's generators. The short form that adds up the number
-	 * for each byte and presents a list of three integers is NOT in use here. 
-	 * That means this signature string has the details one expects in a quadratic
-	 * form after generators have been assigned roles in a basis.
+	 * This string holds the signature information describing the squares of all geometry generators present on 
+	 * the multiplication table.
+	 * <br><br>
+	 * The term 'signature' is currently overloaded with meanings. The one being used here is a long form aggregate 
+	 * of '+', '-', and '0' characters encoding the squares of an algebra's generators. The short form that reports 
+	 * the count for each character as a list of three integers is NOT in use here. That means this signature string 
+	 * has the details one expects in a quadratic form after generators have been assigned roles in a basis.
 	 */
 	private final String signature;
 
 	/**
-	 * This array is an integer representation of the signature string. Generators
-	 * with positive squares are one (1), negative squares are minus one (-1), 
-	 * and degenerate ones as (0). The order of the array ALWAYS matches the order
+	 * This array is an integer representation of the signature string. Generators with positive squares are one (1), 
+	 * negative squares are minus one (-1), and degenerate ones as (0). The order of the array ALWAYS matches the order
 	 * of the generators in the basis.
-	 * <br>
+	 * <br><br>
 	 * This array is kept to increase the speed of product calculations.
 	 */
 	private final byte[] nSignature;
 
 	/**
-	 * Main constructor of GProduct with signature information passed in. It
-	 * figures out the rest of what it needs.
-	 * <br>
+	 * Main constructor of GProduct with signature information passed in. It figures out the rest of what it needs.
+	 * <br><br>
 	 * @param pSig String form of the signature. Looks like "-+++0".
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
@@ -105,47 +95,41 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	}
 
 	/**
-	 * A re-use constructor of GProduct with signature and Basis passed in. It
-	 * figures out the rest of what it needs.
+	 * A re-use constructor of GProduct with signature and Basis passed in. It figures out the rest of what it needs.
 	 * <br>
-	 * The size of the signature string used to be checked using a static method
-	 * on Basis, but that was duplicating the effort performed by CliffordProduct
-	 * when it checks the validity of the string. Size and characters ARE checked.
+	 * The size of the signature string used to be checked using a static method on Basis, but that was duplicating the 
+	 * effort performed by CliffordProduct when it checks the validity of the string. Size and characters ARE checked.
 	 * <br>
 	 * @param pSig String form of the signature. Looks like "-+++0".
 	 * @param pB   Optional Basis to re-use in constructing this product.
 	 * @throws BadSignatureException   Thrown when an invalid signature is found
 	 */
 	public GProduct(Optional<Basis> pB, String pSig) throws BadSignatureException {
-		if (!CliffordProduct.validateSignature(pSig))
-			throw new BadSignatureException(this, "Valid signature required.");
-		// ------Init signature
-		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];
-		int m = 0;
-		for (char b : pSig.toCharArray()) {
-			switch (b) {
-			case '+' -> nSignature[m] = 1;
-			case '0' -> nSignature[m] = 0;
-			case '-' -> nSignature[m] = -1;
-			}
-			m++;
-		}
+		if (!CliffordProduct.validateSignature(pSig))	throw new BadSignatureException(this, "Valid signature required.");
 		signature = pSig;
-		// ------Get Basis
-		canonBasis = (pB.isPresent()) ? pB.get() : GBuilder.createBasis((byte) pSig.length());
-		// ------Build Product Table
-		result = new int[getBladeCount()][getBladeCount()];
-		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {
-			int row = canonBasis.find(bladeLeft) - 1;
-			canonBasis.bladeStream().forEach(bladeRight -> {
-				int col = canonBasis.find(bladeRight) - 1;
-				Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
-				result[row][col] = ((int) bMult.sign() != 0) ? 
-							(int) bMult.sign() * (int) canonBasis.find(bMult)
-							: 
-							0;		//This case happens when the two blades share a generator that is degenerate.
-			});
-		});
+		nSignature = (pSig.length() == 0) ? new byte[1] : new byte[pSig.length()];				//initialize nSignature[]
+		IntStream.range(0, pSig.length()).forEach(i -> {
+															switch (pSig.charAt(i)){
+																case '+' -> nSignature[i] = 1;
+																case '0' -> nSignature[i] = 0;
+																case '-' -> nSignature[i] = -1;
+																}
+															});						
+		canonBasis = (pB.isPresent()) 	? pB.get() 												//Get A Basis. 
+										: GBuilder.createBasis((byte) pSig.length());			//Create it if necessary.
+		result = new int[getBladeCount()][getBladeCount()];										//Initialize the Cayley Table
+		canonBasis.bladeStream().parallel()
+								.forEach(bladeLeft -> {											//streaming the row blades
+									int row = canonBasis.find(bladeLeft) - 1;					//discover the blade's basis index
+									canonBasis	.bladeStream().parallel()
+												.forEach(bladeRight -> {						//streaming the column blades
+													int col = canonBasis.find(bladeRight) - 1;	//discover the blade's basis index
+		/* Compute result blade */					Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
+		/* Time to fill the Cayley Table */						result[row][col] = ((int) bMult.sign() != 0)
+		/* Discover result blade's basis index & fix sign */	? (int) bMult.sign() * (int) canonBasis.find(bMult)
+		/* Result sign was zero */								: 0;							//Degenerate generator paired up
+													});											//0 & 1 indicate a scalar blade
+									});
 	}
 
 	@Override
@@ -183,8 +167,8 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 
 	/**
 	 * Get the linear dimension of the vector space that uses the associated Basis.
-	 * <br>
-	 * @return int
+	 * <br><br>
+	 * @return int byte integer of the number of blades in the basis.
 	 */
 	@Override
 	public final int getBladeCount() {
@@ -194,10 +178,10 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	/**
 	 * Return a measure of whether blades pj and pk commute. Return a 1 if they
 	 * commute. Return a 0 otherwise.
-	 * <br>
+	 * <br><br>
 	 * @param pRow int
 	 * @param pCol int
-	 * @return int
+	 * @return int +1 if the blades at the row and column commute. 0 otherwise.
 	 */
 	@Override
 	public final int getCommuteSign(int pRow, int pCol) {
@@ -205,9 +189,51 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	}
 
 	/**
+	 * This method takes the offered blade and hunts through the Cayley table to find another one such that the offered one 
+	 * left multiplied by the other produces the +pscalar blade.
+	 * <br><br>
+	 * This method is a brute force search
+	 * <br><br>
+	 * @param pB1 Blade for which a complement blade is sought
+	 * @return Blade that is the complement of the input blade
+	 */
+	public final Blade getComplementLeft(Blade pB1) {
+		int row = canonBasis.find(pB1) - 1;			//pB1 determines row to hunt through
+		int hunt = getBladeCount() - 1;				//index of the pscalar blade... always at the end of the basis.
+		
+		Optional<Blade> maybeThis = canonBasis	.bladeStream().parallel()
+												.filter(b -> Math.abs(result[row][canonBasis.find(b)-1]) - 1 == hunt)
+												.findAny();		//THIS IS A BLADE IN THE BASIS. Alter it at your peril.
+		byte sign = (byte) getSign(pB1, canonBasis.getPScalarBlade());
+		if (maybeThis.isPresent())	return maybeThis.get().setSign((sign == 0) ? 1 : sign);
+		else						return null;
+	}
+
+	/**
+	 * This method takes the offered blade and hunts through the Cayley table to find another one such that the offered one 
+	 * right multiplied by the other produces the +pscalar blade.
+	 * <br><br>
+	 * This method is a brute force search
+	 * <br><br>
+	 * @param pB1 Blade for which a complement blade is sought
+	 * @return Blade that is the complement of the input blade
+	 */
+	public final Blade getComplementRight(Blade pB1) {
+		int col = canonBasis.find(pB1) - 1;			//pB1 determines column to hunt down
+		int hunt = getBladeCount() - 1;				//index of the pscalar blade... always at the end of the basis.
+
+		Optional<Blade> maybeThis = canonBasis	.bladeStream().parallel()
+												.filter(b -> Math.abs(result[canonBasis.find(b)-1][col]) - 1 == hunt)
+												.findAny();		//THIS IS A BLADE IN THE BASIS. Alter it at your peril.
+		byte sign = (byte) getSign(canonBasis.getPScalarBlade(), pB1);
+		if (maybeThis.isPresent())	return maybeThis.get().setSign((sign == 0) ? 1 : sign);
+		else						return null;
+	}
+
+	/**
 	 * Get the grade count of the algebra that uses this GProduct.
-	 * <br>
-	 * @return byte
+	 * <br><br>
+	 * @return byte integer of the number of grades in the basis.
 	 */
 	@Override
 	public final byte getGradeCount() {
@@ -244,8 +270,8 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	/**
 	 * Return row of result array. Meant for alternate multiplication methods.
 	 * <br>
-	 * @param pRow int
-	 * @return int[][]
+	 * @param pRow int row of the Cayley table requested.
+	 * @return int[] integer array that is the requested row of the Cayley table.
 	 */
 	public final int[] getResult(int pRow) {
 		return result[pRow];
@@ -309,11 +335,9 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 			int p = canonBasis.find(pRow) - 1;
 			int q = canonBasis.find(pCol) - 1;	
 			return getSign(p, q);
-			//return canonBasis.getSingleBlade(	(getResult(p, q)==0) ? 0 : Math.abs(getResult(p, q)) - 1	);	
 		}		
 		return 0;
 	}
-
 
 	/**
 	 * Return the signature of the generating geometry. This lists the squares of the

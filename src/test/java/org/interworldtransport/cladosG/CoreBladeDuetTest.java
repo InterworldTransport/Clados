@@ -25,14 +25,14 @@ class CoreBladeDuetTest {
 
 	@Test
 	void testStaticComplement() {
-		out = BladeDuet.complement(firstB, sig);
+		out = BladeDuet.complementLeft(firstB, sig);
 		assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
 		assertTrue(out.sign() == -1);
 		out.remove(Generator.E4);
 		assertTrue(Blade.isScalar(out));
 
-		out = BladeDuet.complement(secondB, sig);
-		out2 = BladeDuet.complement(out, sig);
+		out = BladeDuet.complementLeft(secondB, sig);
+		out2 = BladeDuet.complementLeft(out, sig);
 		assertTrue(Blade.isPScalar(out2));
 		assertTrue(CanonicalBlade.equivalent(secondB, out2));
 		assertTrue(secondB.sign() == out2.sign());
@@ -41,13 +41,13 @@ class CoreBladeDuetTest {
 	@Test
 	void testStaticComplementDegenerate() {
 		byte[] dsig = { 1, 1, 1, 0 };
-		out = BladeDuet.complement(firstB, dsig);
+		out = BladeDuet.complementLeft(firstB, dsig);
 		assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
 		assertTrue(out.sign() == -1);
 		out.remove(Generator.E4);
 		assertTrue(Blade.isScalar(out));
 
-		out = BladeDuet.complement(secondB, dsig);
+		out = BladeDuet.complementLeft(secondB, dsig);
 		assertFalse(Blade.isPScalar(out));
 		assertTrue(Blade.isScalar(out));
 	}

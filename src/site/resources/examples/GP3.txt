@@ -1,0 +1,30 @@
+<GProduct signature="+++">
+	<Basis UUID="6b2560f8-da23-43d5-94cc-4f97f1d7aaaf">
+		<Grades count="4">
+			<Grade rank="0" range="0-0" />
+			<Grade rank="1" range="1-3" />
+			<Grade rank="2" range="4-6" />
+			<Grade rank="3" range="7-7" />
+		</Grades>
+		<Blades count="8">
+			<Blade key="0"  bitKey="0b000" generators="        " />
+			<Blade key="1"  bitKey="0b001" generators="E1      " />
+			<Blade key="2"  bitKey="0b010" generators="   E2   " />
+			<Blade key="3"  bitKey="0b100" generators="      E3" />
+			<Blade key="6"  bitKey="0b011" generators="E1,E2   " />
+			<Blade key="7"  bitKey="0b101" generators="E1,   E3" />
+			<Blade key="11" bitKey="0b110" generators="   E2,E3" />
+			<Blade key="27" bitKey="0b111" generators="E1,E2,E3" />
+		</Blades>
+	</Basis>
+	<CayleyTable rows="8">
+		<row id="0" cells="1, 2, 3, 4, 5, 6, 7, 8" />
+		<row id="1" cells="2, 1, 5, 6, 3, 4, 8, 7" />
+		<row id="2" cells="3,-5, 1, 7,-2,-8, 4,-6" />
+		<row id="3" cells="4,-6,-7, 1, 8,-2,-3, 5" />
+		<row id="4" cells="5,-3, 2, 8,-1,-7, 6,-4" />
+		<row id="5" cells="6,-4,-8, 2, 7,-1,-5, 3" />
+		<row id="6" cells="7, 8,-4, 3,-6, 5,-1,-2" />
+		<row id="7" cells="8, 7,-6, 5,-4, 3,-2,-1" />
+	</CayleyTable>
+</GProduct>
