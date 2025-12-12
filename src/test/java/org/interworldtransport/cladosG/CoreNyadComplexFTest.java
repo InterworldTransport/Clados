@@ -231,7 +231,7 @@ public class CoreNyadComplexFTest {
 			assertTrue(thing1.algrity() == 2);
 			assertTrue(thing1.isJuxtaposition());
 
-			Nyad.projectReference(property, motion);
+			Monad.projectReference(property, motion);
 			assertTrue(property.getAlgebra().equals(motion.getAlgebra()));		//Projection is class method. NO NYADS informed of need for flag reset.
 			assertTrue(thing1.isJuxtaposition());								//Proof of not being informed. Nyad still says it is a juxtaposition.
 			thing1.resetFlags();												//Force the reset
