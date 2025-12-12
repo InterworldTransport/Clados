@@ -24,7 +24,9 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import org.interworldtransport.cladosF.Field;			//Algebras are defined over fields
 import org.interworldtransport.cladosF.Normalizable;	//Limit on usable fields
@@ -74,13 +76,65 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
  * @author Dr Alfred W Differ
  */
 public final class Algebra implements Comparable<Algebra> {
+
 	/**
-	 * This is an exporter of internal details to XML. It exists to bypass certain
-	 * security concerns related to Java serialization of objects.
-	 * <br>
+	 * This method constructs a subalgebra using the offered blade to produce its 'Support' vector space. The blade
+	 * contains a set of generators. Use those generators as vectors for a vector space and the span of them is the
+	 * 'Support'. All elements of that span are the vector space over which a Clifford algebra can be constructed,
+	 * but for CladosG it is sufficient to extract the sub-signature relevant to the blade and then simply construct 
+	 * the algebra for it.
+	 * <br><br>
+	 * One important point about the smaller algebra is it will NOT re-use the exact generators of the offered blade.
+	 * If the input blade is the bivector E5,E7 the output algebra will have E1,E2 as its pscalar blade. If the 
+	 * original relationship must be preserved, a nyad will have to be constructed relating E5(E7) in the larger 
+	 * algebra to E1(E2) in the smaller one. It is a simple nyad to construct, but it is not done here.
+	 * <br><br>
+	 * The returned algebra re-uses the Foot and adopts a name similar to the input algebra.
+	 * <br><br>
+	 * @param pA 		Algebra to use as source material for the returned algebra
+	 * @param pPScalar 	Blade to be used to indicate which element of the old basis acts as the pscalar in 
+	 *		 			the new basis.
+	 * @return Algebra	finished product that re-uses what it can from the offered algebra
+	 * @throws BadSignatureException is likely never thrown unless the input algebra has a corrupted signature
+	 */
+	public final static Algebra supportOf(Algebra pA, Blade pPScalar) throws BadSignatureException {
+		
+		if (pPScalar == null & pA == null)		
+			return null;										//Nothing to use for context
+
+		if (pPScalar == null )									//pA is NOT null here
+			return new Algebra("CopyOf-"+pA.getAName(), pA);	//Assume pA's pscalar and just copy pA
+
+		if (pA == null)	{										//No context, but pPScalar is NOT null at least
+			byte[] sig = new byte[pPScalar.rank()];					
+			Arrays.fill(sig, (byte) 0);							//Default to degeneracy
+			return new Algebra(	"", 					//nameless
+								new Foot(""), 			//nameless
+								new String(sig));				//k-blades will exist, but only barely
+		}
+																//Blade and context algebra exist. Now find relevant signature part.
+		Generator[] pointor = (Generator[]) pPScalar.getGenerators().toArray();	//Array of generators in pPScalar. pointor.length=rank.
+		byte[] refSignature = pA.getGP().nsignature();							//Recall that array index = generator.ord - 1
+		StringBuffer charSig = new StringBuffer(pPScalar.rank());
+		IntStream	.range(0, pointor.length)					//Determine index range from pPScalar.rank()
+					.forEach(i -> {												//Iterate through pointer on index 'i'.
+						switch (refSignature[(byte) (pointor[i].ord - 1)]) {	//switch on nsignature's byte at a generator.ord - 1
+							case +1 -> charSig.append("+");				//pointer's generator sqaures to +1
+							case 0 	-> charSig.append("0");				//pointer's generator sqaures to 0
+							case -1 -> charSig.append("-");				//pointer's generator sqaures to -1
+						}
+					});															//charSig has the relevant part of pA's signature
+		return new Algebra(	"SubAlgebraOf-"+pA.getAName(),						//This algebra will have the relevant signature but
+							pA.getFoot(),										//not use the same exact generators given by the
+							new String(charSig.toString()));					//input blade (pointor) whose maxgen was ignored.
+	}
+
+	/**
+	 * This is an exporter of internal details to XML. It exists to bypass certain security concerns related to 
+	 * Java serialization of objects.
+	 * <br><br>
 	 * @param pA     Algebra to be exported as XML data
-	 * @param indent String of tab characters to assist with human readability of
-	 *               output.
+	 * @param indent String of tab characters to assist with human readability of output.
 	 * @return String formatted as XML containing information about the Algebra
 	 */
 	public final static String toXMLString(Algebra pA, String indent) {

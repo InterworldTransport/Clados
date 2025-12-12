@@ -194,41 +194,6 @@ public class Nyad implements Modal {
 	}
 
 	/**
-	 * Project the second Monad into the algebra of the first where it is assumed that the two algebras
-	 * share the same basis. In that rare case, the algebra distinctions are merely bookkeeping tricks.
-	 * <br><br>
-	 * Also project onto the units of the first monad. Basically point at the other cardinal.
-	 * <br><br>
-	 * @param pLeft the monad acting as a source of an algebra to project into
-	 * @param pRight the monad to be projected
-	 * @return Monad which has been pressed into the other algebra
-	 */
-	public static Monad projectReference(Monad pLeft, Monad pRight) {
-
-		//Scale<?> tempRightWeights = pRight.getWeights();
-		//Algebra tempLeftAlg = pLeft.getAlgebra();
-		//Basis tempLeftBasis = tempLeftAlg.getGBasis();
-		//Scale<T> newRightScale = new Scale<>(pRight.getMode(), tempLeftBasis, tempRightWeights.getCardinal());
-
-		//tempLeftBasis.bladeStream().forEach(blade -> {
-		//	newRightScale.put(blade, (T) tempRightWeights.get(blade));
-		//	});;
-
-		// Because 'blade' is the same in left and right monads, there is no need to recast the Scale for pRight.
-		// If this is EVER to work with different bases, there must be a map (a frame?) supporting calculation
-		// of linear combination weight from the old basis to use for each blade in the new basis. 
-		
-		// Ken's old connector idea had the bases line up, though. Algebra distinctions were bookkeeping methods.
-		// Truth is... we can probably recover that without nyads by using a dual generator to double a basis size
-		// and place one of the monads in the degenerate extension. Weird, but it might work.
-
-		pRight.setAlgebra(pLeft.getAlgebra());
-		pRight.getWeights().setCardinal(pLeft.getWeights().getCardinal());
-
-		return pRight;
-	}
-
-	/**
 	 * Display XML string that represents the Nyad and all its internal details
 	 * <br>
 	 * @param pN The Nyad to be exported as XML
@@ -542,7 +507,7 @@ public class Nyad implements Modal {
 		if (!this.has(pKeep) || !this.has(pUse))							// Proceed only if both monads in nyad.
 						throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
 
-		pUse = Nyad.projectReference(pKeep, pUse);							// Right Monad is ALTERED HERE!
+		pUse = Monad.projectReference(pKeep, pUse);							// Right Monad is ALTERED HERE!
 		pKeep.commutator(pUse).scale(0.5);								// Now do the deed. (Precision doesn't matter)
 		monadList.remove(pUse);												// Right Monad is REMOVED HERE!
 		monadList.trimToSize();
@@ -599,7 +564,7 @@ public class Nyad implements Modal {
 		if (!this.has(pKeep) || !this.has(pUse))							// Proceed only if both monads in nyad.
 						throw new CladosNyadException(this, "Symmetric Compression requires monads be in the nyad.");
 
-		pUse = Nyad.projectReference(pKeep, pUse);							// Right Monad is ALTERED HERE!
+		pUse = Monad.projectReference(pKeep, pUse);							// Right Monad is ALTERED HERE!
 		pKeep.anticommutator(pUse).scale(0.5);							// Now do the deed. (Precision doesn't matter)
 		monadList.remove(pUse);												// Right Monad is REMOVED HERE!
 		monadList.trimToSize();
@@ -1057,6 +1022,21 @@ public class Nyad implements Modal {
 			pop(key);
 		}
 		return this;
+	}
+
+	/**
+	 * Project the monad onto the algebra offered. The end result is the monad using the offered algebra
+	 * <br><br>
+	 * The two algebras must share the same basis. If they do not, this method silently does nothing.
+	 * <br><br>
+	 * @param pUse Algebra onto which pKeep is to be projected.
+	 * @param pKeep Monad to be projected onto pUse
+	 * @return Monad which has been pressed into the other algebra
+	 */
+	public Monad projectOnto(Monad pKeep, Algebra pUse) {
+		if (pKeep.getAlgebra().getBasis().equals(pUse.getBasis()))
+			return pKeep.setAlgebra(pUse);
+		return pKeep;
 	}
 
 	/**

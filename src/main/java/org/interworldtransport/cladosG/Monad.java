@@ -293,16 +293,45 @@ public class Monad implements Modal, Unitized {
 	 * @return boolean True if they pass cardinal/unit match test
 	 */
 	public static boolean isUnitMatch(Monad pM, Monad pN) {
-		if (pM.getMode() != pN.getMode() )			
-			return false;							// Modes must match to avoid FieldBinaryExceptions elsewhere.
-													// If they don't, this test fails.
-
+		if (pM.getMode() != pN.getMode() )			// Modes must match to avoid FieldBinaryExceptions elsewhere.
+			return false;							// If they don't, fail the test.
 		return pM.getWeights().getCardinal().equals(pN.getWeights().getCardinal());
-													// The weights might share different cardinals.
-													// If so, we'd be comparing apples to oranges elsewhere.
+													// Different cardinals means comparing apples to oranges.
+	}
 
+	/**
+	 * Project the second Monad into the algebra of the first where it is assumed that the two algebras share the same basis. 
+	 * In that rare case, the algebra distinctions are merely bookkeeping tricks.
+	 * <br><br>
+	 * Also project onto the units of the first monad. Basically point at the other cardinal.
+	 * <br><br>
+	 * @param pLeft the monad acting as a source of an algebra to project into
+	 * @param pRight the monad to be projected
+	 * @return Monad which has been pressed into the other algebra
+	 */
+	public static Monad projectReference(Monad pLeft, Monad pRight) {
+
+		//Scale<?> tempRightWeights = pRight.getWeights();
+		//Algebra tempLeftAlg = pLeft.getAlgebra();
+		//Basis tempLeftBasis = tempLeftAlg.getGBasis();
+		//Scale<T> newRightScale = new Scale<>(pRight.getMode(), tempLeftBasis, tempRightWeights.getCardinal());
+
+		//tempLeftBasis.bladeStream().forEach(blade -> {
+		//	newRightScale.put(blade, (T) tempRightWeights.get(blade));
+		//	});;
+
+		// Because 'blade' is the same in left and right monads, there is no need to recast the Scale for pRight.
+		// If this is EVER to work with different bases, there must be a map (a frame?) supporting calculation
+		// of linear combination weight from the old basis to use for each blade in the new basis. 
 		
-			
+		// Ken's old connector idea had the bases line up. Algebra distinctions were bookkeeping methods.
+		// Truth is... we can probably recover that without nyads by using a dual generator to double a basis size
+		// and place one of the monads in the degenerate extension. Weird, but it might work.
+
+		pRight.setAlgebra(pLeft.getAlgebra());
+		pRight.getWeights().setCardinal(pLeft.getWeights().getCardinal());
+
+		return pRight;
 	}
 
 	/**

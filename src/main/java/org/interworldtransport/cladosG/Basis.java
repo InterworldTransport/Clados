@@ -138,13 +138,15 @@ public final class Basis implements CanonicalBasis, Comparable<Basis> {
 		return new Basis(mxBlade); 
 	}
 
-	/*
-	 * Deliver the powerset of generators present in the pscalar of a basis. Members
-	 * of this set ARE the other blades.
-	 * <br>
+	/**
+	 * Deliver the powerset of generators present in the pscalar of a basis. Members of this set ARE the other blades.
+	 * <br><br>
 	 * This is O(n^2), so improvements here matter.
+	 * <br><br>
+	 * @param inSet is a set of generators (essentially a pscalar) to use in making a powerset
+	 * @return Set of EnumSets of Generators. Each enumset is a blade, so the set is a basis
 	 */
-	private final static Set<EnumSet<Generator>> powerSet(Set<Generator> inSet) {
+	protected final static Set<EnumSet<Generator>> powerSet(Set<Generator> inSet) {
 		Set<EnumSet<Generator>> sets = new HashSet<EnumSet<Generator>>(inSet.size(), 0.75f);
 		if (inSet.isEmpty()) {
 			sets.add(EnumSet.noneOf(Generator.class));

@@ -24,6 +24,7 @@
  */
 package org.interworldtransport.cladosG;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -340,14 +341,23 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	}
 
 	/**
-	 * Return the signature of the generating geometry. This lists the squares of the
-	 * generators in their numeric order.
-	 * <br>
-	 * @return String
+	 * Return the signature of the generating geometry. This lists the squares of the generators in their 
+	 * numeric order.
+	 * <br><br>
+	 * @return String that is the actual signature of the GProduct.
 	 */
 	@Override
 	public final String signature() {
 		return signature;
+	}
+
+	/**
+	 * This method returns a copy of the byte array that is the signature of this GProduct.
+	 * <br><br>
+	 * @return byte array copy of the numeric signature of the GProduct
+	 */
+	public final byte[] nsignature() {
+		return Arrays.copyOf(nSignature, nSignature.length);
 	}
 
 	/**
