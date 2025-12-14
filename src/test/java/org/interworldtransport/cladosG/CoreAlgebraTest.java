@@ -121,11 +121,4 @@ class CoreAlgebraTest {
 		assertTrue(where[0] == 5);
 		assertTrue(where[1] == 10);
 	}
-
-	@Test
-	public void testXMLOutput() {
-		String test = Algebra.toXMLString(alg1, "");
-		assertTrue(test != null);
-	}
-
 }

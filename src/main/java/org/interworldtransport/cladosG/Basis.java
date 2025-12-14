@@ -184,7 +184,7 @@ public final class Basis implements CanonicalBasis, Comparable<Basis> {
 	 * used if there is a chance of confusing an algebra's "Generator Basis" with
 	 * the basis of the vector space spanned by all the blades.
 	 */
-	private final ArrayList<Blade> bladeList;
+	protected final ArrayList<Blade> bladeList;
 
 	/**
 	 * This integer is the number of grades in the algebra. It is one more than the
@@ -483,61 +483,6 @@ public final class Basis implements CanonicalBasis, Comparable<Basis> {
 	@Override
 	public LongStream keyStream() {
 		return bladeList.stream().mapToLong(blade -> blade.key());
-	}
-
-	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form. return String
-	 * <br>
-	 * @param pB The Basis to export as XML
-	 * @param indent String of 'tab' characters that help space the output correctly
-	 *               visually. It's not actually necessary except for human
-	 *               readability of the output.
-	 * @return String
-	 */
-	public static String toXMLString(Basis pB, String indent) {
-		if (indent == null)
-			indent = "\t\t\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Basis UUID=\"");
-		rB	.append(pB.uuid)
-			.append("\">\n");
-		// ------------------------------------------------------------------
-		rB.append(indent)
-			.append("\t<Grades count=\"")
-			.append(pB.getGradeCount() + "\">\n");
-		for (int k = 0; k <= pB.gradeCount - 2; k++) // loop to get all but the highest grade
-			rB	.append(indent)
-				.append("\t\t<Grade rank=\"")
-				.append(k)
-				.append("\" range=\"")
-				.append(pB.gradeList.get(k))
-				.append("-")
-				.append((pB.gradeList.get(k + 1) - 1))
-				.append("\" />\n");
-		// Handle last grade separate. There is no k+1 index for the largest grade
-		rB	.append(indent)
-			.append("\t\t<Grade rank=\"")
-			.append((pB.getGradeCount() - 1))
-			.append("\" range=\"")
-			.append(pB.gradeList.get(pB.gradeCount - 1))
-			.append("-")
-			.append(pB.gradeList.get(pB.gradeCount - 1))
-			.append("\" />\n");
-		rB.append(indent)
-			.append("\t</Grades>\n");
-		// ------------------------------------------------------------------
-		rB	.append(indent)
-			.append("\t<Blades count=\"")
-			.append(pB.getBladeCount())
-			.append("\">\n");
-		for (int k = 0; k < pB.bladeList.size(); k++) // Appending blades
-			rB	.append(Blade.toXMLString(pB.bladeList.get(k), indent + "\t\t"));
-		rB	.append(indent)
-			.append("\t</Blades>\n");
-		// ------------------------------------------------------------------
-		rB	.append(indent)
-			.append("</Basis>\n");
-		return rB.toString();
 	}
 
 	/**

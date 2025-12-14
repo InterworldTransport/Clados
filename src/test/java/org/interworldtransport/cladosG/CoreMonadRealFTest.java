@@ -440,10 +440,5 @@ public class CoreMonadRealFTest {
         }
     }
     
-	@Test
-	public void testXMLOutputs() {
-        assertNotNull(Monad.toXMLString(tM6, ""));
-		//System.out.println(Monad.toXMLString(tM6, ""));
-        //System.out.println(Monad.toXMLFullString(tM9, ""));
-	}
+	
 }

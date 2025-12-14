@@ -38,14 +38,4 @@ class CoreFootTest {
 		Foot tStaticFoot3 = Foot.buildAsType("Completely Different");
 		assertFalse(tStaticFoot3 == tFoot); //Same name. Different Object.
 	}
-
-	@Test
-	public void testFootStrings() {
-		String tOut = Foot.toXMLString(tFoot, "");
-		assertNotNull(tOut);
-		int howLong = tOut.length();
-
-		tOut = Foot.toXMLString(tFoot, null);
-		assertTrue(tOut.length()>howLong);
-	}
 }

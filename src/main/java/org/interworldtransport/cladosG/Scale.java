@@ -118,7 +118,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * emerge in unpredictable ways, then all operations must act on blades AND numbers which we are trying to avoid. 
 	 * Getting a predictable order (from a TreeMap) comes at a small performance cost that simply must be paid.
 	 */
-	private TreeMap<Blade, D> map;
+	protected TreeMap<Blade, D> map;
 
 	/**
 	 * This is the type of ProtoN that should be present in the list held by this class. For example, 
@@ -701,88 +701,6 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 			});
 		}
 		return this;
-	}
-
-	/**
-	 * This is a short exporter of internal details to XML. It exists to bypass certain security concerns related to Java serialization.
-	 * <br><br>
-	 * @param pS The Scale oject to be output as XML
-	 * @param indent String of 'tab' characters to get spacing right for human readable XML output.
-	 * @return String formatted as XML containing information about the Scale
-	 */
-	public final static String toXMLString(Scale<?> pS, String indent) {
-		StringBuilder rB = new StringBuilder(indent);		
-		rB	.append("<Scales mode=\""+pS.getMode()+"\" ");
-		rB	.append("pans=\""+pS.map.size()+"\" ")
-			.append("cardinal="+pS.getCardinal().getUnit()+"\">\n");
-
-		pS.gBasis.bladeStream().forEach(blade -> {
-			rB	.append(indent+"\t")
-				.append("<Pair bitKey=\"0b");
-			int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
-			while (pad>0) {
-				rB.append("0");
-				pad--;
-			}
-			rB	.append(Integer.toBinaryString(blade.bitKey()));
-			//rB	.append("\" cardinal=\""+pS.map.get(blade).getCardinalString());
-			rB	.append("\" ");
-			
-			switch (pS.getMode()){
-				case REALF:
-					rB	.append("realvalue=\""+((RealF)pS.map.get(blade)).getReal());
-					break;
-				case REALD:
-					rB	.append("realvalue=\""+((RealD)pS.map.get(blade)).getReal());
-					break;
-				case COMPLEXF:
-					rB	.append("realvalue=\""+((ComplexF)pS.map.get(blade)).getReal())
-						.append("\" imgvalue=\""+((ComplexF)pS.map.get(blade)).getImg());
-					break;
-				case COMPLEXD:
-					rB	.append("realvalue=\""+((ComplexD)pS.map.get(blade)).getReal())
-						.append("\" imgvalue=\""+((ComplexD)pS.map.get(blade)).getImg());
-					break;
-				default:
-					break;
-				
-			}
-			rB	.append("\" />\n");
-		});
-		rB	.append(indent)
-			.append("</Scales>\n");
-		return rB.toString();
-	}
-
-	/**
-	 * This is an exporter of internal details to XML. It exists to bypass certain security concerns related to Java serialization.
-	 * <br><br>
-	 * @param pS The Scale oject to be output as XML
-	 * @param indent String of 'tab' characters to get spacing right for human readable XML output.
-	 * @return String formatted as XML containing information about the Scale
-	 */
-	public final static String toXMLFullString(Scale<?> pS, String indent) {
-		StringBuilder rB = new StringBuilder(indent);		
-		rB	.append("<Scales mode=\""+pS.getMode()+"\" pans=\"")
-			.append(pS.map.size())
-			.append("\">\n");
-
-		pS.gBasis.bladeStream().forEach(blade -> {
-			rB	.append(indent)
-				.append("\t\t\t<Pair>\n");
-			rB	.append(indent)
-				.append(Blade.toXMLString(blade, "\t\t\t\t"));
-			switch (pS.getMode()){
-				case COMPLEXD -> {rB.append(indent + "\t\t\t\t").append(ComplexD.toXMLString((ComplexD) pS.map.get(blade))).append("\n");}
-				case COMPLEXF -> {rB.append(indent + "\t\t\t\t").append(ComplexF.toXMLString((ComplexF) pS.map.get(blade))).append("\n");}
-				case REALD -> 	{rB.append(indent + "\t\t\t\t").append(RealD.toXMLString((RealD) pS.map.get(blade))).append("\n");}
-				case REALF -> 	{rB.append(indent + "\t\t\t\t").append(RealF.toXMLString((RealF) pS.map.get(blade))).append("\n");}
-				default -> 		{rB.append(indent + "\t\t\t\t").append(ProtoN.toXMLString(pS.map.get(blade))).append("\n");}
-			}	
-			rB	.append(indent).append("\t\t\t</Pair>\n");
-		});
-		rB	.append(indent).append("\t\t</Scales>\n");
-		return rB.toString();
 	}
 
 	/**

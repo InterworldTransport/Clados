@@ -571,25 +571,4 @@ public class CoreScaleTest {
 
     }
 
-    @Test
-    public void testXMLString() {
-
-        workScaleRF = new Scale<>(CladosField.REALF, workBasis, workCard);
-        workScaleRD = new Scale<>(CladosField.REALD, workBasis, workCard);
-        workScaleCF = new Scale<>(CladosField.COMPLEXF, workBasis, workCard);
-        workScaleCD = new Scale<>(CladosField.COMPLEXD, workBasis, workCard);
-
-        assertNotNull(Scale.toXMLFullString(workScaleRF, ""));
-        assertNotNull(Scale.toXMLFullString(workScaleRD, ""));
-        assertNotNull(Scale.toXMLFullString(workScaleCF, ""));
-        assertNotNull(Scale.toXMLFullString(workScaleCD, ""));
-
-        assertNotNull(Scale.toXMLString(workScaleRF, ""));
-        assertNotNull(Scale.toXMLString(workScaleRD, ""));
-        assertNotNull(Scale.toXMLString(workScaleCF, ""));
-        assertNotNull(Scale.toXMLString(workScaleCD, ""));
-        //System.out.println(Scale.toXMLString(workScaleRF, ""));
-        //System.out.println(Scale.toXMLString(workScaleCD, ""));
-    }
-
 }

@@ -275,14 +275,4 @@ class CoreBasisTest {
 		assertTrue(tBasis8.find(Blade.createBladePlus(Generator.EA)) == -1); 	//E10 not in the basis
 		assertTrue(tBasis8.find(Blade.createBlade(Generator.EA)) == 1);			//Scalar with room to grow is in the basis
 	}
-
-
-	@Test
-	void testXMLOutput() {
-		String xml = Basis.toXMLString(tBasis4, "");
-		assertTrue(xml != null);
-		xml = Basis.toXMLString(tBasis4, null);
-		assertTrue(xml != null);
-		//System.out.println(xml);
-	}
 }

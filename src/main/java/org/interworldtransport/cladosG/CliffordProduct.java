@@ -29,7 +29,7 @@ package org.interworldtransport.cladosG;
  * cladosG. Most of the interface focuses upon gettor methods that return pieces
  * of a product table, but there are a few convenience methods too that support
  * grade information and ranges within the underlying basis. Finally there are
- * also a few methods for dealing with signature strings and XML output.
+ * also a few methods for dealing with signature strings.
  * <br><br>
  * The farther one gets from basic methods delivering 'results' and 'signs', the
  * more one is wandering off into conveniences.

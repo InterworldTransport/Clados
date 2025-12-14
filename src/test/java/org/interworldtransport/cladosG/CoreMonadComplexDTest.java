@@ -438,11 +438,4 @@ public class CoreMonadComplexDTest {
         assertThrows(CladosMonadException.class, () -> tM1.setScale(tM5b.getWeights()));  
                                                                         //Proving Bases get checked
     }
-
-	@Test
-	public void testXMLOutputs() {
-        assertNotNull(Monad.toXMLString(tM6, ""));
-		//System.out.println("tM6: "+Monad.toXMLString(tM6, ""));
-        //System.out.println("tM9: "+Monad.toXMLFullString(tM9, ""));
-	}
 }

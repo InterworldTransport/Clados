@@ -66,7 +66,7 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
  * Anyone wanting to get around this feature need only declare one 'Foot' and
  * then re-use it everywhere. The computational penalty is miniscule.
  * <br><br>
- * 2. There is a UUID string kept internally for use an XML variant of
+ * 2. There is a UUID string kept internally for use as an XML/JSON variant of
  * serialization. It has no geometric meaning. Think of it as a digital name.
  * <br><br>
  * 3. There is also a 'name' string for the human readable name of an algebra.
@@ -127,30 +127,6 @@ public final class Algebra implements Comparable<Algebra> {
 		return new Algebra(	"SubAlgebraOf-"+pA.getAName(),						//This algebra will have the relevant signature but
 							pA.getFoot(),										//not use the same exact generators given by the
 							new String(charSig.toString()));					//input blade (pointor) whose maxgen was ignored.
-	}
-
-	/**
-	 * This is an exporter of internal details to XML. It exists to bypass certain security concerns related to 
-	 * Java serialization of objects.
-	 * <br><br>
-	 * @param pA     Algebra to be exported as XML data
-	 * @param indent String of tab characters to assist with human readability of output.
-	 * @return String formatted as XML containing information about the Algebra
-	 */
-	public final static String toXMLString(Algebra pA, String indent) {
-		if (indent == null)		indent = "\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent+"<Algebra name=\"");
-		rB	.append(pA.getAName())
-			.append("\" UUID=\"")
-			.append(pA.uuid)
-			.append("\" >\n");
-		
-		rB	.append(Foot.toXMLString(pA.getFoot(), indent + "\t"));			//Algebra owns a reference to a Foot
-		rB	.append(GProduct.toXMLString(pA.getGP(), indent + "\t"));	//Algebra owns a reference to a GP
-		
-		rB	.append(indent)
-			.append("</Algebra>\n");
-		return rB.toString();
 	}
 
 	/**

@@ -29,27 +29,23 @@ import org.interworldtransport.cladosF.FCache;
 import org.interworldtransport.cladosF.ProtoN;
 
 /**
- * Objects within the cladosG package have a number of attributes in common that
- * relate to a point that describes where the geometry of the algebra is tangent
- * to the manifold underneath it. In a flat space it is not really necessary to
- * use a foot point, but a simple one is still used in the cladosG package to
- * help avoid the trap of assuming transport of objects along the manifold
- * doesn't cause them to re-orient and change into other objects.
+ * Objects within the cladosG package have a number of attributes in common that relate to a point that describes 
+ * where the geometry of the algebra is tangent to the manifold underneath it. In a flat space it is not necessary 
+ * to use a foot, but a simple one is still used by cladosG classes to help avoid the trap of assuming transport of 
+ * objects along the manifold doesn't cause them to transform into other objects.
  * <br><br>
- * At a minimum, a Foot is the name of an event and the type of numbers used 
- * as wieghts for the tangent space. At this location it is
- * assumed the geometry of the algebra is aligned with the tangent geometry of 
- * the manifold at that point. This makes a Foot the root reference.
+ * At a minimum a Foot is the name of a point, but it may also be thought of as a name for an open set of points
+ * covered by a 'chart' (topology). This set is the portion of the underlying manifold that has an image in the
+ * tangent space where the cladosG classes will represent geometry. Objects with different Feet, therefore, are 
+ * covered by different charts. That makes a Foot a root reference label.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
  */
 public final class Foot {
 	/**
-	 * This factory build method produces a new Foot with an empty cardinal list. It
-	 * is intend to name an otherwise opaque constructor that creates a new Foot but
-	 * re-uses a Cardinal.
-	 * <br>
+	 * This factory build method produces a new Foot. Plain and simple.
+	 * <br><br>
 	 * @param pFootName String name for the new Foot
 	 * @return Foot Factory method builds a new Foot re-using a Cardinal object.
 	 */
@@ -58,65 +54,49 @@ public final class Foot {
 	}
 
 	/**
-	 * This String is the name the footPoint. Think of it as naming the tangent
-	 * point between a flat algebra and the curvy manifold.
+	 * A human readable name for the Foot. The "tangent point" between a flat algebra and the curvy manifold is being labeled.
 	 */
 	private String footName;
 
 	/**
 	 * Build the Foot from scratch.
-	 * <br>
+	 * <br><br>
 	 * @param pName String This string will be the name of the foot point.
 	 */
 	public Foot(String pName) {
-		setFootName(pName);
+		setName(pName);
 		FBuilder.createCardinal(pName);
 	}
 
 	/**
 	 * Build the Foot from scratch then put the number's Cardinal in the internal list.
-	 * <br>
+	 * <br><br>
 	 * @param pName String This string will be the name of the foot point.
 	 * @param pF    ProtoN This object holds the cardinal that defines the kind of
 	 *              numbers that are meaningful for this foot point
 	 */
 	public Foot(String pName, ProtoN pF) {
-		setFootName(pName);
+		setName(pName);
 		FCache.INSTANCE.appendCardinal(pF.getCardinal());
 	}
 
 	/**
 	 * Simple gettor of the Foot's name element
-	 * <br>
+	 * <br><br>
 	 * @return String name of the Foot
 	 */
-	public String getFootName() {
+	public String getName() {
 		return footName;
 	}
 
 	/**
 	 * Simple setter of the Foot's name element.
-	 * <br>
+	 * <br><br>
 	 * @param footName String name of the Foot to set here
 	 */
-	public void setFootName(String footName) {
+	public void setName(String footName) {
 		this.footName = footName;
 	}
 
-	/**
-	 * This is an exporter of internal details to XML. It exists to bypass certain
-	 * security concerns related to Java serialization of objects.
-	 * <br>
-	 * @param pF Foot the be exported as XML.
-	 * @param indent String indentation to assist with human readability of output
-	 *               XML data
-	 * @return String formatted as XML containing information about the Foot
-	 */
-	public final static String toXMLString(Foot pF, String indent) {
-		if (indent == null)		indent = "\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Foot name=\"");
-		rB	.append(pF.getFootName())
-			.append("\" />\n");
-		return rB.toString();
-	}
+	
 }

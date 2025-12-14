@@ -235,18 +235,4 @@ class CoreBladeTest {
 			newtB10.add(Generator.E8); // Should be silently ignored since E8 is in there.
 		}
 	}
-	
-
-	@Test
-	public void testXMLOutput() {
-		Blade tB = Blade.createBladePlus(gMax);
-		Generator.stream(gMax.ord).forEach(g-> tB.add(g));
-		String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
-		String ordString = "\t<Blade key=\"81985529216486895\" bitKey=\"0b111111111111111\" generators=\"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\" />\n";
-		String test1 = Blade.toXMLString(tB,"\t");
-		String test2 = Blade.toXMLOrdString(tB,"\t");
-
-		assertTrue(test1.compareTo(regString) == -1); // blade key is off by one (too much) on the last digit
-		assertTrue(test2.compareTo(ordString) == 0); // blade key is exact match this time
-	}
 }

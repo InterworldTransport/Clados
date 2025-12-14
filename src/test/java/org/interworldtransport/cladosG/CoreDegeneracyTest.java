@@ -149,7 +149,6 @@ public class CoreDegeneracyTest {
         public void testSigns() {
             try {
                 GProduct tGP = new GProduct(pSig301);
-                //System.out.println(tGP.toXMLString(""));
                 assertTrue(tGP.getACommuteSign(1, 2) == 1);     //They anticommute
                 assertTrue(tGP.getCommuteSign(1, 9) == 1);      //They commute
                 assertTrue(tGP.getCommuteSign(2, 6) == 1);      //They commute
@@ -170,7 +169,6 @@ public class CoreDegeneracyTest {
         @Test
 		public void test101() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig101);
-			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0+"));
 			assertTrue(tGP.getGradeCount() == 3);
 			assertTrue(tGP.getBladeCount() == (1 << 2));
@@ -193,7 +191,6 @@ public class CoreDegeneracyTest {
         @Test
 		public void test201() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig201);
-			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0++"));
 			assertTrue(tGP.getGradeCount() == 4);
 			assertTrue(tGP.getBladeCount() == (1 << 3));
@@ -216,7 +213,6 @@ public class CoreDegeneracyTest {
         @Test
 		public void test301() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig301);
-			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0+++"));
 			assertTrue(tGP.getGradeCount() == 5);
 			assertTrue(tGP.getBladeCount() == (1 << 4));
@@ -239,7 +235,6 @@ public class CoreDegeneracyTest {
         @Test
 		public void test401() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig401);
-			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("0++++"));
 			assertTrue(tGP.getGradeCount() == 6);
 			assertTrue(tGP.getBladeCount() == (1 << 5));
@@ -258,11 +253,5 @@ public class CoreDegeneracyTest {
                 assertTrue(tScalarCount == 0 | tScalarCount == tGP.getBladeCount()/2);
 			}
 		}
-
-        //@Test
-        //public void testXMLOutput() throws BadSignatureException {
-            //GProduct printThis = new GProduct(pSig301);
-            //System.out.println(printThis.toXMLString(""));
-        //}
     }
 }

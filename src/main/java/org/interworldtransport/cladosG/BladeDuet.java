@@ -116,7 +116,7 @@ public final class BladeDuet {
 	 * This holds the combined list of generators from each blade.
 	 * Left blade goes first, then right
 	 */
-	private ArrayList<Generator> bladeDuet;
+	protected ArrayList<Generator> bladeDuet;
 
 	/**
 	 * This byte holds the sign of the blade to which the list of 
@@ -127,7 +127,7 @@ public final class BladeDuet {
 	 * Calculating the sign ALSO gets the algebra's signature involved,
 	 * so this DOES involve the metric.
 	 */
-	private byte sign = 1;
+	protected byte sign = 1;
 
 	/**
 	 * This is where the hint is kept for the largest possible blade in the 
@@ -135,7 +135,7 @@ public final class BladeDuet {
 	 * maximum grade from one of the blades... which really should have the 
 	 * same maximum grade.
 	 */
-	private final Generator maxGen;
+	protected final Generator maxGen;
 
 	/**
 	 * This is a re-use constructor that builds this as a juxtaposition of the two offered blades.
@@ -249,25 +249,5 @@ public final class BladeDuet {
 			}
 		}
 		return returnIt.setSign(sign);
-	}
-
-	/**
-	 * This method produces a printable and parseable string that represents the
-	 * BladeDuet in a human readable form. This is likely ONLY useful during debug
-	 * efforts.
-	 * <br>
-	 * This variation uses a Generator's name in the generator list.
-	 * <br>
-	 * @param pBD The blade duet to export as XML.
-	 * @return String The XML formated String representing the BladeDuet.
-	 */
-	public final static String toXMLString(BladeDuet pBD) {
-		StringBuilder rB = new StringBuilder();
-		rB.append("<BladeDuet sign=\"").append(pBD.sign).append("\" maxGrade=\"").append(pBD.maxGen.ord).append("\" generators=\"");
-		pBD.bladeDuet.stream().forEachOrdered(g -> rB.append(g.toString() + ","));
-		if (pBD.bladeDuet.size() > 0)
-			rB.deleteCharAt(rB.length() - 1);
-		rB.append("\" />\n");
-		return rB.toString();
 	}
 }

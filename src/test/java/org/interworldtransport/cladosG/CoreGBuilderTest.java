@@ -130,10 +130,10 @@ public class CoreGBuilderTest {
             ComplexD tNumber = FBuilder.COMPLEXD.createONE(tCard);
             assertDoesNotThrow(() -> GBuilder.createAlgebra(tNumber, 
                                                             tAlgebra.getAName()+"2", 
-                                                            tFoot.getFootName()+"2", 
+                                                            tFoot.getName()+"2", 
                                                             twoDPGA));
             try {
-                Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAName()+"2", tFoot.getFootName()+"2", twoDPGA);
+                Algebra ta2 = GBuilder.createAlgebra(tNumber, tAlgebra.getAName()+"2", tFoot.getName()+"2", twoDPGA);
                 assertNotNull(ta2);
             } catch (BadSignatureException es) {
                 ;

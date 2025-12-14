@@ -175,12 +175,6 @@ class CoreGProductTest {
 			assertTrue(pRange[0] == 255);
 		}
 
-		@Test
-		public void testXMLOutput() throws BadSignatureException {
-			GProduct tGP10 = (GProduct) GBuilder.createGProduct(pSig10);
-			String xmlout = GProduct.toXMLString(tGP10, "");
-			assertTrue(xmlout != null);
-		}
 	}
 
 	@Nested
@@ -197,7 +191,6 @@ class CoreGProductTest {
 			assertTrue(tGP.signature().equals(""));
 			assertTrue(tGP.getGradeCount() == 1);
 			assertTrue(tGP.getBladeCount() == (1 << 0));
-			//System.out.println(tGP.toXMLString(""));
 			int tS = (1 << 0);
 			int tSum = tS * (tS + 1) / 2;
 			for (int k = 0; k < tGP.getBladeCount(); k++) {
@@ -216,7 +209,6 @@ class CoreGProductTest {
 			assertTrue(tGP.signature().equals("+"));
 			assertTrue(tGP.getGradeCount() == 2);
 			assertTrue(tGP.getBladeCount() == (1 << 1));
-			//System.out.println(tGP.toXMLString(""));
 			int tS = (1 << 1);
 			int tSum = tS * (tS + 1) / 2;
 			for (int k = 0; k < tGP.getBladeCount(); k++) {
@@ -232,7 +224,6 @@ class CoreGProductTest {
 		@Test
 		public void test02s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig2);
-			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("-+"));
 			assertTrue(tGP.getGradeCount() == 3);
 			assertTrue(tGP.getBladeCount() == (1 << 2));
@@ -252,7 +243,6 @@ class CoreGProductTest {
 		@Test
 		public void test03s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig3);
-			//System.out.println(GProduct.toXMLString(tGP, ""));
 			assertTrue(tGP.signature().equals("+++"));
 			assertTrue(tGP.getGradeCount() == 4);
 			assertTrue(tGP.getBladeCount() == (1<<3));
@@ -272,7 +262,6 @@ class CoreGProductTest {
 		@Test
 		public void test04s() throws BadSignatureException {
 			GProduct tGP = new GProduct(pSig4);
-			//System.out.println(tGP.toXMLString(""));
 			assertTrue(tGP.signature().equals("-+++"));
 			assertTrue(tGP.getGradeCount() == 5);
 			assertTrue(tGP.getBladeCount() == (1<<4));

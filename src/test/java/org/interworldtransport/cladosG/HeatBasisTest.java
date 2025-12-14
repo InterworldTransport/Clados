@@ -136,7 +136,7 @@ class HeatBasisTest {
 	@Test
 	public void testGen15()  {
 		for (int m = 0; m < loopLimit; m++) {
-			a0 = new Basis((byte) 15);
+			a0 = new Basis(Generator.EF);
 			assertNotNull(a0);
 		}
 	}

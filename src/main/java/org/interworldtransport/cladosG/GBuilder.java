@@ -96,7 +96,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Foot (new instance)
 	 */
 	public final static Foot copyOfFoot(Foot pF) {
-		return createFootLike(pF.getFootName());
+		return createFootLike(pF.getName());
 	}
 
 	/**

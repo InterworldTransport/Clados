@@ -587,48 +587,6 @@ public class CoreNyadComplexDTest {
 	}
 
 	@Nested
-	class testOutputText {
-		@BeforeEach
-		void setUp() throws CladosNyadException, CladosMonadException {
-			thing1 = GBuilder.createNyadUsingMonad(motion, "Print this nyad");
-			thing1.append(property);
-		}
-
-		@Test
-		void testXMLFullOutput() throws CladosNyadException {
-			String printIt = Nyad.toXMLString(thing1, "");
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLFullString(thing1, "");
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLFullString(thing1, null);
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLString(thing1, null);
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLFullString(thing1, "\t\t\t");
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLString(thing1, "\t\t\t");
-			assertTrue(printIt != null);
-		}
-
-		@Test
-		void testXMLShortOutput() throws CladosNyadException {
-			String printIt = Nyad.toXMLString(thing1, "");
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLString(thing1, null);
-			assertTrue(printIt != null);
-
-			printIt = Nyad.toXMLString(thing1, "\t\t\t");
-			assertTrue(printIt != null);
-		}
-	}
-
-@Nested
 	class testCompositionBinaryOps {
 		Monad reflect, boost;
 		Blade time, spaceX, planeTX;

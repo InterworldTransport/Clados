@@ -335,55 +335,6 @@ public class Monad implements Modal, Unitized {
 	}
 
 	/**
-	 * Display XML string that represents the Monad
-	 * <br>
-	 * @param pM     MonadRealF This is the monad to be converted to XML.
-	 * @param indent String of tab characters to assign with human readability
-	 * @return String
-	 */
-	public final static String toXMLFullString(Monad pM, String indent) {
-		if (indent == null)			indent = "\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("name=\"")
-			.append(pM.getName())
-			.append("\" gradeKey=\"")
-			.append(pM.getGradeKey())
-			.append("\" sparseFlag=\"")
-			.append(pM.getSparseFlag())
-			.append("\" >\n");
-		rB.append(Algebra.toXMLString(pM.getAlgebra(), indent + "\t"));
-		rB.append(indent)
-			.append(Scale.toXMLFullString(pM.scales, "\t"));
-		rB.append(indent + "</Monad>\n");
-		return rB.toString();
-	}
-
-	/**
-	 * Display XML string that represents the Monad
-	 * <br>
-	 * @param pM     Monad This is the monad to be converted to XML.
-	 * @param indent String of tab characters to assign with human readability
-	 * @return String
-	 */
-	public final static String toXMLString(Monad pM, String indent) {
-		if (indent == null)			indent = "\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<Monad ");
-		rB.append("name=\"")
-			.append(pM.getName())
-			.append("\" algebra=\"")
-			.append(pM.getAlgebra().getAName())
-			.append("\" gradeKey=\"")
-			.append(pM.getGradeKey())
-			.append("\" sparseFlag=\"")
-			.append(pM.getSparseFlag())
-			.append("\" >\n");
-		rB.append(indent)
-			.append(Scale.toXMLString(pM.scales, "\t"));
-		rB.append(indent + "</Monad>\n");
-		return rB.toString();
-	}
-
-	/**
 	 * All clados objects are elements of some algebra. That algebra has a name.
 	 */
 	protected Algebra algebra;

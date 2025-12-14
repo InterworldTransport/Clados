@@ -361,38 +361,6 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 	}
 
 	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form.
-	 * <br>
-	 * @param pG A geometric product to be exported to XML
-	 * @param indent A string to use for XML element intentation. Not required.
-	 * @return String This is the XML string export of an object.
-	 */
-	public final static String toXMLString(GProduct pG, String indent) {
-		if (indent == null)			indent = "\t\t\t\t\t";
-		StringBuilder rB = new StringBuilder(indent + "<GProduct signature=\""+pG.signature()+"\">\n");
-		rB	.append(Basis.toXMLString(pG.getBasis(), indent + "\t"));
-		rB	.append(indent)
-			.append("\t<CayleyTable rows=\"")
-			.append(pG.getBladeCount())
-			.append("\">\n");
-		for (int k = 0; k < pG.getBladeCount(); k++) {		// Appending rows of the Cayley table
-			rB	.append(indent)
-				.append("\t\t<row id=\"")
-				.append(k)
-				.append("\" cells=\"");
-			for (int m = 0; m < pG.getBladeCount(); m++)
-				rB	.append(pG.getResult(k, m))
-					.append(",");
-			rB.deleteCharAt(rB.length() - 1);
-			rB.append("\" />\n");
-		}
-		rB.append(indent + "\t</CayleyTable>\n");
-		rB.append(indent + "</GProduct>\n");
-		return rB.toString();
-	}
-
-	/**
 	 * I may need to come up with a better idea here. String comparisons might not be how 
 	 * we should compare GP's. They should probably be size first and then string comparisons
 	 * that are restricted to p, q, r measures.
