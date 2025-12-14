@@ -206,6 +206,17 @@ public class ComplexD extends ProtoN implements Field, Normalizable {
 	}
 
 	/**
+	 * This method tacks on a value check for equality, but first checks whether the super class ProtoN agrees.
+	 * <br><br>
+	 * @param pF The number to be tested for equality
+	 * @return boolean answer to whether the numbers are equal
+	 */
+	public boolean equals(ComplexD pF) {
+		if (!super.equals(pF))		return false;
+		return (getReal() == pF.getReal() & getImg() == pF.getImg());
+	}
+
+	/**
 	 * Check for the equality of this object with that of the argument. This checks
 	 * for exact equality using no tolerances. The FieldObject types must match
 	 * first.

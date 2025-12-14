@@ -501,6 +501,17 @@ public class ComplexF extends ProtoN implements Field, Normalizable {
 	}
 
 	/**
+	 * This method tacks on a value check for equality, but first checks whether the super class ProtoN agrees.
+	 * <br><br>
+	 * @param pF The number to be tested for equality
+	 * @return boolean answer to whether the numbers are equal
+	 */
+	public boolean equals(ComplexF pF) {
+		if (!super.equals(pF))		return false;
+		return (getReal() == pF.getReal() & getImg() == pF.getImg());
+	}
+
+	/**
 	 * Get method for the argument of the complex number. This function uses the
 	 * arctangent function, so its range and domain are the same.
 	 * <br>

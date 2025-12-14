@@ -244,8 +244,7 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	 * <br>
 	 * @param pF1 RealF
 	 * @param pF2 RealF
-	 * @throws FieldBinaryException This exception is thrown when there is a field
-	 *                              mismatch.
+	 * @throws FieldBinaryException This exception is thrown when there is a field mismatch.
 	 * @return RealF
 	 */
 	public static RealF multiply(RealF pF1, RealF pF2) throws FieldBinaryException {
@@ -445,9 +444,20 @@ public class RealF extends ProtoN implements Field, Normalizable {
 	}
 
 	/**
+	 * This method tacks on a value check for equality, but first checks whether the super class ProtoN agrees.
+	 * <br><br>
+	 * @param pF The number to be tested for equality
+	 * @return boolean answer to whether the numbers are equal
+	 */
+	public boolean equals(RealF pF) {
+		if (!super.equals(pF))		return false;
+		return getReal() == pF.getReal();
+	}
+
+	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
-	 * <br>
+	 * <br><br>
 	 * @return Float
 	 */
 	@Override
@@ -481,9 +491,8 @@ public class RealF extends ProtoN implements Field, Normalizable {
 
 	/**
 	 * This method inverts real numbers.
-	 * <br>
-	 * @throws FieldException This exception is thrown if someone tries to invert a
-	 *                        ZERO.
+	 * <br><br>
+	 * @throws FieldException This exception is thrown if someone tries to invert a ZERO.
 	 * @return RealF
 	 */
 	@Override

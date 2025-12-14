@@ -448,6 +448,17 @@ public class RealD extends ProtoN implements Field, Normalizable {
 	}
 
 	/**
+	 * This method tacks on a value check for equality, but first checks whether the super class ProtoN agrees.
+	 * <br><br>
+	 * @param pF The number to be tested for equality
+	 * @return boolean answer to whether the numbers are equal
+	 */
+	public boolean equals(RealD pF) {
+		if (!super.equals(pF))		return false;
+		return getReal() == pF.getReal();
+	}
+
+	/**
 	 * This is the square root of the SQ Modulus. It is smarter to calculate
 	 * SQModulus first.
 	 * <br>
