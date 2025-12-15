@@ -25,15 +25,22 @@
 
 package org.interworldtransport.cladosG;
 
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.interworldtransport.cladosF.Cardinal;
 import org.interworldtransport.cladosF.CladosField;
+import org.interworldtransport.cladosF.ComplexD;
+import org.interworldtransport.cladosF.ComplexF;
 import org.interworldtransport.cladosF.FBuilder;
 import org.interworldtransport.cladosF.Field;
 import org.interworldtransport.cladosF.Normalizable;
 import org.interworldtransport.cladosF.ProtoN;
+import org.interworldtransport.cladosF.RealD;
+import org.interworldtransport.cladosF.RealF;
+
+
 
 /**
  * This class is essentially a connection patching the basis of one algebra to the basis of another. Think about
@@ -91,7 +98,7 @@ import org.interworldtransport.cladosF.ProtoN;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public final class Connection<D extends ProtoN & Field & Normalizable> {
+public final class Connection<D extends ProtoN & Field & Normalizable> implements Unitized, Modal{
 
     /**
 	 * The outer context for this Frame is an Algebra containing a basis with blades to BE represented as a linear 
@@ -133,17 +140,74 @@ public final class Connection<D extends ProtoN & Field & Normalizable> {
 	private final CladosField mode;
     
      /**
-      * Construct a Connetion with everything required being provided up front.
+      * Construct a Connetion with everything required being provided up front except the numbers acting as weights for linear combinations.
+      * Without numbers, assume the two bases connect directly. For example E1 in algebra1 is E1 in algebra2... and so on.
       * <br><br>
-      * @param pA       Algebra providing context for this Frame
+      * Note: Because the two algebras can be of different sizes there is an asymmetry in the map of maps due to how 'equivalent' blades are 
+      * found in the filter on the second algebra. There can be blades in the inner algebra that are never found which leaves the Scale for
+      * the outer blade set to ZERO. If the outer algebra is smaller (e.g. Cl(3,0,0)) while the inner algebra is larger (e.g. Cl(3,0,1)) then
+      * there are a number of blades in the outer algebra with ZERO scales in the map of maps. If the outer algebra is larger than the inner
+      * one, the same thing happens because no equivalent blade is found in the inner stream's filter. 
+      * <br><br>
+      * @param pA       Algebra #1 providing context
+      * @param pB       Algebra #2 providing context
       * @param pMode    Precision mode used by numbers in the transformation maps.
       * @param pCard    Cardinal used by the numbers in the transformation maps.
       */
-    public Connection(Algebra pA, CladosField pMode, Cardinal pCard) {
+    public Connection(Algebra pA, Algebra pB, CladosField pMode, Cardinal pCard) {
         algebra1 = pA;
+        algebra2 = pB;
         mode = pMode;
         card = pCard;
         mapOfMaps = new TreeMap<>();
+        pA.getBasis().bladeStream().parallel().forEach(b1 -> {                                                  //Pick a blade in the outer algebra
+            Scale<D> tScale = new Scale<D>(mode, pB.getBasis(), card);                                          //Create a zero Scale using the inner algebra
+            Optional<Blade> similar = pB.getBasis().bladeStream().filter(b2 -> CanonicalBlade.equivalent(b1, b2)).findFirst(); //Find equivalent blade in inner algebra
+            if (similar.isPresent()) {                                                                          //If inner algebra has equivalent blade
+                switch (mode) {
+                    case COMPLEXD -> tScale.put(similar.get(), (D) ComplexD.create(card, 1.0D, 0.0D));   //Replace weight at that blade to ONE
+                    case COMPLEXF -> tScale.put(similar.get(), (D) ComplexF.create(card, 1.0F, 0.0F));   //Replace weight at that blade to ONE
+                    case REALD -> tScale.put(similar.get(), (D) RealD.create(card, 1.0D));                  //Replace weight at that blade to ONE
+                    case REALF -> tScale.put(similar.get(), (D) RealF.create(card, 1.0F));                  //Replace weight at that blade to ONE
+                }
+            }                                                                                                   //ELSE not needed. tScale initiated with zero weights.
+                                                                                                                //Zero scale or ONE at equivalent blade
+            mapOfMaps.put(b1, tScale);                                                                          //Happens for every b1. Processing order doesn't matter.
+        });
+    
+    
+    }
+
+    /**
+     * Get the Scale object associated with the blade in the outer layer of the map.
+     * <br><br>
+     * @param pB    Blade to use as the index for finding the Scale map
+     * @return Scale of D which extend ProtoN and other numeric interfaces
+     */
+    public Scale<D> getAt(Blade pB) {
+        if (algebra1.getBasis().hasBlade(pB))
+            return mapOfMaps.get(pB);
+        return null;
+    }
+
+    /**
+	 * Simple gettor method for the Cardinal associated with these objects.
+	 * <br><br>
+	 * @return Cardinal in use in this.
+	 */
+    @Override
+    public Cardinal getCardinal() {
+        return card;
+    }
+
+    /**
+	 * Simple gettor method reporting the Connection's internal mode.
+	 * <br><br>
+	 * @return CladosField element reporting which ProtoN child is expected in the Scale's used.
+	 */
+    @Override
+    public CladosField getMode() {
+        return mode;
     }
 
     /**
@@ -157,18 +221,6 @@ public final class Connection<D extends ProtoN & Field & Normalizable> {
         if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB))   //This is enough to ensure Scale's basis matches Algebra's basis.
             mapOfMaps.put(pB, pS);
         return this;
-    }
-
-    /**
-     * Get the Scale object associated with the blade in the outer layer of the map.
-     * <br><br>
-     * @param pB    Blade to use as the index for finding the Scale map
-     * @return Scale of D which extend ProtoN and other numeric interfaces
-     */
-    public Scale<D> get(Blade pB) {
-        if (algebra1.getBasis().hasBlade(pB))
-            return mapOfMaps.get(pB);
-        return null;
     }
 
     /**

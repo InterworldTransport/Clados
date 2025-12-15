@@ -34,16 +34,21 @@ import java.util.List;
  * @author Dr Alfred W Differ
  */
 public final class CladosConstant {
+	/*
+	 * Private constructor ensures this will only ever get used for its class/static elements.
+	 */
+	private CladosConstant() {
+		;
+	}
 	/**
 	 * This is the smallest generator in the enumeration of the same name.
 	 */
 	public final static Generator GENERATOR_MIN = Generator.E1;
 	/**
-	 * This is the largest generator in the enumeration of the same name. It's value
-	 * can change here when Clados is reworked to support larger algebras. Changing
-	 * it here enables all support validity testing methods to refer here instead of
-	 * supporting their own 'magic numbers'.
-	 * <br>
+	 * This is the largest generator in the enumeration of the same name. It's value can change here when Clados 
+	 * is reworked to support larger algebras. Changing it here enables all support validity testing methods to 
+	 * refer here instead of supporting their own 'magic numbers'.
+	 * <br><br>
 	 * At present it is as large as it can be for the computer being used to test it.
 	 */
 	public final static Generator GENERATOR_MAX = Generator.EF;
@@ -56,8 +61,8 @@ public final class CladosConstant {
 	 */
 	public final static byte MAXGRADE = CladosConstant.GENERATOR_MAX.ord;
 	/**
-	 * This is just a list of the special cases for Monad construction. Rather than
-	 * have a copy of them in each monad class, we keep them here.
+	 * This is just a list of the special cases for Monad construction. Rather than have a copy of them in each monad 
+	 * class, we keep them here.
 	 */
 	public final static List<String> MONAD_SPECIAL_CASES = List.of("Unit Scalar", "Unit -Scalar",
 			"Unit PScalar", "Unit -PScalar");
@@ -87,14 +92,13 @@ public final class CladosConstant {
 	public final static Double BY2_D = Double.valueOf(0.5d);
 
 	/**
-	 * This small function is for key building and exist soley because java's 
-	 * Math.pow() accepts doubles and returns a double. I get why they do that, 
-	 * but I have fairly tight control over the inputs on this method in the 
-	 * Blade and Basis classes, so overflow isn't likely. 
+	 * This small function is for key building and exist soley because java's Math.pow() accepts doubles 
+	 * and returns a double. I get why they do that, but I have fairly tight control over the inputs on 
+	 * this method in the Blade and Basis classes, so overflow isn't likely. 
 	 * <br><br>
-	 * Having said that (!), future expansion the number of generators that can 
-	 * be used in blades and bases will have to revisit this method since long 
-	 * integers have a limit... even if it is very large by current standards.
+	 * Having said that (!), future expansion the number of generators that can be used in blades and 
+	 * bases will have to revisit this method since long integers have a limit... even if it is very 
+	 * large by current standards.
 	 * <br><br>
 	 * @param base byte to use as the exponential base
 	 * @param exponent integer to use as the power to raise the base
@@ -146,15 +150,12 @@ public final class CladosConstant {
 		The longest long integer (32bits) is 	9,223,372,036,854,775,807 (or 2^63 - 1)
 		The pscalar in a 15 generator algebra is   81,985,529,216,486,896 (grade count = 16)
 		while 16^15 (15 bit binary key) is		1,152,921,504,606,846,976 (meaning result doesn't overflow)
-		but setting sq = 16^16 does overflow. Fortunately sq isn't need again in this maximum case.
+		but setting sq = 16^16 does overflow. Fortunately sq isn't needed again in this maximum case.
 			This overflow is why java's Math.pow() using double precision floats, but it does so at a small cost.
 			It isn't clear that Clados should roll it's own pow function, but it isn't used often by Blade 
 			or Basis and developers are discouraged from re-using it. Even large byte entries can blow up.
+			(It is also used one per monad multiplication if the sparseFlag is set in making the grade mask.)
 		Speed tests suggest any change in efficiency is negligible for our purposes.
 		*/
-	}
-
-	private CladosConstant() {
-		;
 	}
 }

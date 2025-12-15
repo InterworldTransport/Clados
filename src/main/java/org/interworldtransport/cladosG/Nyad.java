@@ -63,11 +63,11 @@ import org.interworldtransport.cladosGExceptions.*;
  * composition are possible, the composition flag suffices.
  * <br><br>
  * Unary Operations :<br>
- * TODO 1) Nyad Weight	: Monads that share an algebra are added.<br> 
- * TODO 2) Nyad Compose	: Moads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
+ * TODO 1) Weight		: Monads that share an algebra are added.<br> 
+ * TODO 2) Compose		: Moads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
  * Binary Operations:<br>
- * TODO 3) Nyad Add		: Monad list of one is appended to the other.<br>
- * TODO 4) Nyad Multiply	: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.<br>
+ * TODO 3) Add			: Monad list of one is appended to the other.<br>
+ * TODO 4) Multiply		: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.<br>
  * Each of these pairs connects to the concepts of addition and multiplication and might easily be recognized by
  * other names. For example, nyad's 'compose' is both multiplication and simplification. A nyad with two mirrors
  * from the same algebra can be used to rotate operands in the algebra, but the two mirrors can be kept separate

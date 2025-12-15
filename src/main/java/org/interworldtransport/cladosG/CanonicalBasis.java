@@ -77,13 +77,20 @@ public interface CanonicalBasis {
 	}
 
 	/**
-	 * In support of streams, a basis should offer a stream of its blades of a
-	 * particular grade.
-	 * <br>
+	 * In support of streams, a basis should offer a stream of its blades of a particular grade.
+	 * <br><br>
 	 * @param pIn byte integer for magnitude of grade of blades in stream.
 	 * @return Stream of Blades in the basis of a particular grade.
 	 */
 	public abstract Stream<Blade> bladeOfGradeStream(byte pIn);
+
+	/**
+	 * In support of streams, a basis should offer a stream of its blades of particular grades.
+	 * <br><br>
+	 * @param pIn byte array for magnitude of grades of blades in stream.
+	 * @return Stream of Blades in the basis of a particular grade.
+	 */
+	//public abstract Stream<Blade> bladeOfGradesStream(byte[] pIn);
 
 	/**
 	 * In support of streams, a basis should offer a stream of its blades.

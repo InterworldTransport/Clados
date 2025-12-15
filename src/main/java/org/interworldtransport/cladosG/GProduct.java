@@ -119,11 +119,9 @@ public class GProduct implements CliffordProduct, Comparable<GProduct> {
 		canonBasis = (pB.isPresent()) 	? pB.get() 												//Get A Basis. 
 										: GBuilder.createBasis((byte) pSig.length());			//Create it if necessary.
 		result = new int[getBladeCount()][getBladeCount()];										//Initialize the Cayley Table
-		canonBasis.bladeStream().parallel()
-								.forEach(bladeLeft -> {											//streaming the row blades
+		canonBasis.bladeStream().parallel().forEach(bladeLeft -> {								//streaming the row blades
 									int row = canonBasis.find(bladeLeft) - 1;					//discover the blade's basis index
-									canonBasis	.bladeStream().parallel()
-												.forEach(bladeRight -> {						//streaming the column blades
+									canonBasis.bladeStream().parallel().forEach(bladeRight -> {	//streaming the column blades
 													int col = canonBasis.find(bladeRight) - 1;	//discover the blade's basis index
 		/* Compute result blade */					Blade bMult = BladeDuet.simplify(bladeLeft, bladeRight, nSignature);
 		/* Time to fill the Cayley Table */						result[row][col] = ((int) bMult.sign() != 0)

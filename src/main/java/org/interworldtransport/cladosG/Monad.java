@@ -101,23 +101,39 @@ import org.interworldtransport.cladosGExceptions.*;
  */
 public class Monad implements Modal, Unitized {
 	/**
+	 * This method sifts through the gradeKey and builds a boolean array. Entries are true/false at an index where the grade is 
+	 * present/not present.
+	 * <br><br>
+	 * @param pM Monad to examine when building the grade mask
+	 * @return boolean array as long as there are grades in the offered monad. Entries are true/false if grade is/isn't present.
+	 */
+	public static final boolean[] getGradeMask(Monad pM) {
+		boolean[] mask = new boolean[pM.getAlgebra().getGradeCount()];
+		long slideKey = pM.getGradeKey();					//The trick involves picking off powers of 10 from gradeKey
+		int logKey = (int) Math.log10(slideKey); 			//logKey has the highest grade with non-zero blades
+		while (logKey >= 0) {
+			mask[logKey] = true;							//put that grade in the mask
+			if (logKey == 0)					break;		//All grades are done if true.
+			slideKey -= pow((byte) 10, logKey); 			//Subtracting 10^logKey sets the stage for the next lower grade
+			logKey = (int) Math.log10(slideKey); 			//Reset logKey for the loop condition. If zero it will be the last time through.
+		} 													//While loop complete -> all non-zero grades set TRUE in mask
+		return mask;
+	}
+
+	/**
 	 * Return a boolean if the grade being checked is non-zero in the Monad.
-	 * <br>
-	 * The grade key is checked using a bit of trickery with integer math.
-	 * Divide the key by 10^grade and toss the remainder. If the result is odd
-	 * the grade is present. If even, it isn't. The depends on the technique used
-	 * to build the key in the first place.
-	 * @param pM     Monad
-	 * @param pGrade int
-	 * @return boolean
+	 * <br><br>
+	 * The grade key is checked using a bit of trickery with integer math. Divide the key by 10^grade and toss the remainder. If the 
+	 * result is odd the grade is present. If even, it isn't. The depends on the technique used to build the key in the first place.
+	 * <br><br>
+	 * @param pM     Monad to be checked for a grade
+	 * @param pGrade int grade to be checked
+	 * @return boolean answering the question whether the grade is present.
 	 */
 	public static boolean hasGrade(Monad pM, int pGrade) {
-		if (pM.getGradeKey() == 1 & pGrade == 0) 	//Monads have scalar parts
-			return true;							//if they have no other parts
-		if (((long) (pM.getGradeKey()) / ((long) Math.pow(10, pGrade))) % 2 == 1)
-			return true;
-
-		return false;
+		if (pM.getGradeKey() == 1 & pGrade == 0) 						return true;
+		if (((pM.getGradeKey()) / (pow((byte) 10, pGrade))) % 2 == 1)	return true;
+		else 															return false;
 	}
 
 	/**
@@ -192,20 +208,16 @@ public class Monad implements Modal, Unitized {
 	 */
 	public static <T extends ProtoN & Field & Normalizable> boolean isScaledIdempotent(Monad pM)
 			throws FieldException {
-		if (isIdempotent(pM))
-			return true;
-		else if (Monad.isNilpotent(pM, 2))
-			return false;
+		if (isIdempotent(pM))					return true;
+		if (Monad.isNilpotent(pM, 2))	return false;
 
-		Monad check1 = GBuilder.copyOfMonad(pM);
-		check1.multiplyLeft(check1);
-		Optional<Blade> first = check1.bladeStream().filter(blade -> 
-									check1.getWeights().isNotZeroAt(blade)).sequential().findFirst();
-		if (first.isPresent())
-			return isIdempotent(GBuilder.copyOfMonad(pM)
-									.scale((T) FBuilder.copyOf(check1.get(first.get()))
-										.invert()));
-		return false;
+		Monad check1 = GBuilder.copyOfMonad(pM);				//Work with a copy of the monad to avoid altering it
+		check1.multiplyLeft(check1);							//Multiply it by itself. Doesn't matter which side.
+		Optional<Blade> first = check1.bladesNotZeroStream().sequential().findFirst();				//Find first non-zero blade
+		if (first.isPresent())					return isIdempotent(GBuilder.copyOfMonad(pM)		//Return an idepotent test of a copy
+					/* scaled by that non-zero weight */					.scale((T) FBuilder	.copyOf(check1.get(first.get()))
+					/* inverted */																.invert()));
+		else									return false;
 	}
 
 	/**
@@ -661,8 +673,7 @@ public class Monad implements Modal, Unitized {
 	public Monad add(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Can't add monads when Algebras or Cardinals don't match.");
-
-		bladeStream().parallel().forEach(blade -> {		//Monads are reference matches now
+		pM.bladesNotZeroStream().forEach(blade -> {
 			try {										//but their Scales don't realize that and we have
 				scales.get(blade).add(pM.scales.get(blade));
 			} catch (FieldBinaryException e) {			//to check again because weights are mutable.
@@ -674,12 +685,59 @@ public class Monad implements Modal, Unitized {
 	}
 
 	/**
-	 * This method returns the actual blades the underlying basis as a stream.
-	 * <br>
-	 * @return Stream of Blades in the underlying Basis
+	 * This method returns the blades the underlying basis as a stream. It is just a shortcut to the basis.
+	 * <br><br>
+	 * @return Stream of Blades in the underlying Basis that is parallelized.
 	 */
 	public Stream<Blade> bladeStream() {
 		return algebra.getBasis().bladeStream();
+	}
+
+	/**
+	 * It is often the case that streams of values are needed for math operations and those streams contain
+	 * zeroes leading to wasted cycles in addition operations or chances to terminate multiplication operations.
+	 * This method streams blades where the associated weight is NOT zero. Its complement streams the other blades.
+	 * <br><br>
+	 * @param pIn single byte indicating the grade of the blades in the stream
+	 * @return Stream of Blades where the associated weight is NOT zero
+	 */
+	public Stream<Blade> bladeOfGradeStream(byte pIn) {
+		return algebra.getBasis().bladeOfGradeStream(pIn);
+	}
+
+	/**
+	 * The stream returned contains blades that match the grades requested in the mask parameter. Instead of
+	 * matching grade bytes, though, a boolean mask is sent that is long enough to cover all possible grades
+	 * in the bases. Where the mask array is true, that grade will be selected FOR in the stream. Where the 
+	 * mask array is false, that grade will be selected AGAINST (filtered out) in the stream.
+	 * <br><br>
+	 * @return Stream of Blades from the grades present in the monad.
+	 */
+	//@Override
+	public Stream<Blade> bladeOfGradesStream() {
+		return algebra.getBasis().bladeOfGradesStream(getGradeMask(this));
+	}
+
+	/**
+	 * It is often the case that streams of values are needed for math operations and those streams contain
+	 * zeroes leading to wasted cycles in addition operations or chances to terminate multiplication operations.
+	 * This method streams blades where the associated weight is NOT zero. Its complement streams the other blades.
+	 * <br><br>
+	 * @return Stream of Blades where the associated weight is NOT zero
+	 */
+	public Stream<Blade> bladesNotZeroStream() {
+		return getWeights().bladesNotZeroStream();
+	}
+
+	/**
+	 * It is often the case that streams of values are needed for math operations and those streams contain
+	 * zeroes leading to wasted cycles in addition operations or chances to terminate multiplication operations.
+	 * This method streams blades where the associated weight IS zero. Its complement streams the other blades.
+	 * <br><br>
+	 * @return Stream of Blades where the associated weight IS zero
+	 */
+	public Stream<Blade> bladesZeroStream() {
+		return getWeights().bladesZeroStream();
 	}
 
 	/**
@@ -1012,50 +1070,41 @@ public class Monad implements Modal, Unitized {
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyLeft(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))		throw new IllegalArgumentException("Left multiply fails reference match.");
 		GProduct GP = getAlgebra().getGP();
-		Basis basis = getAlgebra().getBasis();
-
-		Scale<T> newScales = new Scale<T>(getMode(), basis, scales.getCardinal()).zeroAll();
+		Scale<T> newScales = new Scale<T>(getMode(), getAlgebra().getBasis(), scales.getCardinal()).zeroAll();
 		if (sparseFlag) {										//If grade coverage is sparse, multiply blades BY grades present
-			long slideKey = gradeKey;							//The trick involves picking off powers of 10 from gradeKey
-			byte logKey = (byte) Math.log10(slideKey); 			//logKey has the highest grade with non-zero blades
-			while (logKey >= 0) {								//A grade remains unprocessed
-				basis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> { 		//blade0's are in a single grade of THIS monad
-					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {	//blade2's are in ANY grade of the OTHER monad
-						Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
-						try {
-							switch (getMode()) {				//get the number at the result blade and +/- it with the product of numbers at the two blades.
-								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
-																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
-																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
-																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-								case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
-																					.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							}
-						} catch (FieldBinaryException e) {		//Number reference match failures for multiply and add are caught here.
-							throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
-						}
-					});
-				});
-				slideKey -= Math.pow(10, logKey); 			//Subtracting 10^logKey means that grade as done.
-				if (slideKey == 0)		break; 					//All grades are done if true.
-				logKey = (byte) Math.log10(slideKey); 			//Reset logKey for the loop condition. If zero it will be the last time through.
-			} 													//While loop complete -> all non-zero grades in THIS monad processed against all blades in OTHER monad.
-		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
-			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> { 								//blade0's are in ANY grade of THIS monad
-				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {		//blade2's are in ANY grade of the OTHER monad
-					Blade bMult = GP.getResult(blade2, blade0);																//the two blades determine the result blade
+			bladeOfGradesStream().forEach(blade0 -> { 						//blade0's are in a single grade of THIS monad
+				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> { 												//blade2's are in ANY grade of the OTHER monad
+					Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
 							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
-																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
-																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
-																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
-																				.scale(GP.getSign(blade2, blade0)));		//here is the +/- decision
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+						}
+					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
+						throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
+					}
+				});
+			});
+		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
+			getWeights().bladesNotZeroStream().forEach(blade0 -> {  													//blade0's are in ANY grade of THIS monad
+				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> {  												//blade2's are in ANY grade of the OTHER monad
+					Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
+					try {
+						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
+																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
 						throw new IllegalArgumentException("Left multiply fails ProtoN reference match.");
@@ -1091,50 +1140,41 @@ public class Monad implements Modal, Unitized {
 	public <T extends ProtoN & Field & Normalizable> Monad multiplyRight(Monad pM) {
 		if (!isReferenceMatch(this, pM)) 			throw new IllegalArgumentException("Right multiply fails reference match.");
 		GProduct GP = getAlgebra().getGP();
-		Basis basis = getAlgebra().getBasis();
-
-		Scale<T> newScales = new Scale<T>(getMode(), basis, scales.getCardinal()).zeroAll();
+		Scale<T> newScales = new Scale<T>(getMode(), getAlgebra().getBasis(), scales.getCardinal()).zeroAll();
 		if (sparseFlag) {										//If grade coverage is sparse, multiply blades BY grades present
-			long slideKey = gradeKey;							//The trick involves picking off powers of 10 from gradeKey
-			byte logKey = (byte) Math.log10(slideKey); 			//logKey has the highest grade with non-zero blades
-			while (logKey >= 0) {								//A grade remains unprocessed
-				basis.bladeOfGradeStream(logKey).filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> { 		//blade0's are in a single grade of THIS monad
-					pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {	//blade2's are in ANY grade of the OTHER monad
-						Blade bMult = GP.getResult(blade0, blade2);		// NOTE the reversal from left multiplication		//the two blades determine the result blade
-						try {
-							switch (getMode()) {				//get the number at the result blade and +/- it with the product of numbers at the two blades.
-								case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
-																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-								case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
-																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-								case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
-																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-								case REALF ->	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
-																					.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							}
-						} catch (FieldBinaryException e) {		//Number reference match failures for multiply and add are caught here.
-							throw new IllegalArgumentException("Right multiply fails ProtoN reference match.");
-						}
-					});
-				});
-				slideKey -= Math.pow(10, logKey); 			//Subtracting 10^logKey means that grade as done.
-				if (slideKey == 0)		break; 					//All grades are done if true.
-				logKey = (byte) Math.log10(slideKey); 			//Reset logKey for the loop condition. If zero it will be the last time through.
-			} 													//While loop complete -> all non-zero grades in THIS monad processed against all blades in OTHER monad.
-		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
-			bladeStream().filter(blade -> getWeights().isNotZeroAt(blade)).forEach(blade0 -> {								//blade0's are in ANY grade of THIS monad
-				pM.bladeStream().filter(blade2 -> pM.getWeights().isNotZeroAt(blade2)).parallel().forEach(blade2 -> {		//blade2's are in ANY grade of the OTHER monad
+			bladeOfGradesStream().forEach(blade0 -> { 							//blade0's are in a single grade of THIS monad
+				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> {  													//blade2's are in ANY grade of the OTHER monad
 					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication				//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
 							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
-																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
-																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
-																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+							case REALF ->	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+						}
+					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
+						throw new IllegalArgumentException("Right multiply fails ProtoN reference match.");
+					}
+				});
+			});
+		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
+			getWeights().bladesNotZeroStream().forEach(blade0 -> {  													//blade0's are in ANY grade of THIS monad
+				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> {  												//blade2's are in ANY grade of the OTHER monad
+					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication			//the two blades determine the result blade
+					try {
+						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
-																				.scale(GP.getSign(blade0, blade2)));			//here is the +/- decision
+																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
 						throw new IllegalArgumentException("Right multiply fails ProtoN reference match.");
@@ -1163,13 +1203,14 @@ public class Monad implements Modal, Unitized {
 	}
 
 	/**
-	 * Normalize the monad using the definition that involves 
+	 * Normalize the monad using the definition that is being called a spinor norm.
+	 * <br><br>
 	 * @return Monad this after the operation is complete
 	 * @throws FieldException 	This exception is thrown when normalizing a zero-sized or field-conflicted monad. 
 	 * 							The object throwing it is one of the ProtoN children in Scale
 	 */
 	public Monad normalize() throws FieldException {
-		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();//This is GP reversal and complex conjugation.								
+		Monad tRev = (GBuilder.copyOfMonad(this)).reverse().conjugate();	//This is GP reversal and complex conjugation.								
 		(tRev.multiplyRight(this)).gradePart((byte) 0); 					//The scalar part will be real.
 
 		switch (getMode()) {
@@ -1320,8 +1361,7 @@ public class Monad implements Modal, Unitized {
 		gradeKey = 0;
 
 		gradeStream().forEach(grade -> {
-			if (getAlgebra().getBasis().bladeOfGradeStream((byte) grade).parallel().anyMatch(
-															blade -> getWeights().isNotZeroAt(blade))){
+			if (bladeOfGradeStream((byte) grade).anyMatch(blade -> getWeights().isNotZeroAt(blade))){
 				foundGrades++;
 				gradeKey += (long) Math.pow(10, grade);
 			}
@@ -1414,8 +1454,7 @@ public class Monad implements Modal, Unitized {
 	public Monad subtract(Monad pM) {
 		if (!Monad.isReferenceMatch(this, pM))
 			throw new IllegalArgumentException("Can't subtract monads without a reference match.");
-
-		bladeStream().parallel().forEach(blade -> {		//Monads are reference matches now
+		pM.bladesNotZeroStream().forEach(blade -> {		//Monads are reference matches now
 			try {										//but their Scales don't realize that and we have
 				scales.get(blade).subtract(pM.scales.get(blade));
 			} catch (FieldBinaryException e) {			//to check again because weights are mutable.

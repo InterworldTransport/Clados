@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.interworldtransport.cladosG.CladosConstant.*;
 import static org.interworldtransport.cladosF.CladosField.*;
 import org.interworldtransport.cladosF.*;
 import org.interworldtransport.cladosFExceptions.*;
@@ -128,6 +129,22 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	 * numeric field. It is also WHY Scale implements Modal.
 	 */
 	private final CladosField mode;
+
+	/**
+	 * This method streams through the weights and reports back true if they all self-report as being zero.
+	 * <br><br>
+	 * @param <D> stands in for a ProtoN child class
+	 * @param pS Scale to be tested for having all zero weights
+	 * @return boolean response that is true if all weights are zero and false otherwise.
+	 */
+	public final static <D extends ProtoN & Field & Normalizable> boolean isZero(Scale<D> pS) {
+		return switch (pS.getMode()) {
+			case COMPLEXD -> pS.weightsStream().allMatch(w -> ComplexD.isZero((ComplexD) w));
+			case COMPLEXF -> pS.weightsStream().allMatch(w -> ComplexF.isZero((ComplexF) w));
+			case REALD -> pS.weightsStream().allMatch(w -> RealD.isZero((RealD) w));
+			case REALF -> pS.weightsStream().allMatch(w -> RealF.isZero((RealF) w));
+		};
+	}
 
 	/**
 	 * This method is for detecting cardinal differences in an array of numbers to be used as weights for a monad.
@@ -246,6 +263,38 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
+	 * It is often the case that streams of values are needed for math operations and those streams contain
+	 * zeroes leading to wasted cycles in addition operations or chances to terminate multiplication operations.
+	 * This method streams blades where the associated weight is NOT zero. Its complement streams the other blades.
+	 * <br><br>
+	 * @return Stream of Blades where the associated weight is NOT zero
+	 */
+	public Stream<Blade> bladesNotZeroStream() {
+		return switch (getMode()) {
+			case COMPLEXD -> gBasis.bladeStream().filter(b -> !ComplexD.isZero((ComplexD) map.get(b)));
+			case COMPLEXF -> gBasis.bladeStream().filter(b -> !ComplexF.isZero((ComplexF) map.get(b)));
+			case REALD -> gBasis.bladeStream().filter(b -> !RealD.isZero((RealD) map.get(b)));
+			case REALF -> gBasis.bladeStream().filter(b -> !RealF.isZero((RealF) map.get(b)));
+		};
+	}
+
+	/**
+	 * It is often the case that streams of values are needed for math operations and those streams contain
+	 * zeroes leading to wasted cycles in addition operations or chances to terminate multiplication operations.
+	 * This method streams blades where the associated weight IS zero. Its complement streams the other blades.
+	 * <br><br>
+	 * @return Stream of Blades where the associated weight IS zero
+	 */
+	public Stream<Blade> bladesZeroStream() {
+		return switch (getMode()) {
+			case COMPLEXD -> gBasis.bladeStream().filter(b -> ComplexD.isZero((ComplexD) map.get(b)));
+			case COMPLEXF -> gBasis.bladeStream().filter(b -> ComplexF.isZero((ComplexF) map.get(b)));
+			case REALD -> gBasis.bladeStream().filter(b -> RealD.isZero((RealD) map.get(b)));
+			case REALF -> gBasis.bladeStream().filter(b -> RealF.isZero((RealF) map.get(b)));
+		};
+	}
+
+	/**
 	 * This method conjugates all the values in the internal map, but leaves the
 	 * blades of the algebra untouched.
 	 * <br><br>
@@ -275,8 +324,8 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	public Scale<D> conjugateShirokov(int pWhich) {
 		if (pWhich <1) 			return this;
 
-		int power = CladosConstant.pow((byte) 2, pWhich-1).intValue();			//1 -> 2^0=1	2 -> 2^1=2
-		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j/power)) == 1).parallel().forEach(grade -> {
+		int power = pow((byte) 2, pWhich-1).intValue();			//1 -> 2^0=1	2 -> 2^1=2
+		gBasis.gradeStream().filter(j -> (Integer.lowestOneBit(j/power)) == 1).forEach(grade -> {
 			gBasis.bladeOfGradeStream((byte) grade).forEach(blade -> {
 				switch (mode) {
 				case REALF:						//Tricky here. This case falls through to the next and gets handled.

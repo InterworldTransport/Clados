@@ -317,19 +317,40 @@ public final class Basis implements CanonicalBasis, Comparable<Basis> {
 	}
 
 	/**
-	 * The stream returned contains blades that match the grade requested in the
-	 * parameter.
-	 * <br>
-	 * There are silent fail behaviors in this method. If the requested grade falls
-	 * outside the range expected in the basis, the returned stream will be empty.
-	 * This happens for negative grades and grades larger than the pscalar.
-	 * <br>
-	 * Otherwise, this method works simply filters what bladeStream() would produce
-	 * on blade.rank().
+	 * The stream returned contains blades that match the grade requested in the  parameter. It works like 
+	 * the full bladeStream() but with a filtering on blade.rank().
+	 * <br><br>
+	 * There are silent ways this method fails. If the input grade falls outside the range in the basis, the 
+	 * returned stream will be empty. This happens for negative grades and grades larger than the pscalar.
+	 * <br><br>
+	 * 
+	 * <br><br>
+	 * @param pIn byte identifying the grade of the blades to be streamed.
+	 * @return Stream of Blades of the correct grade in the basis.
 	 */
 	@Override
 	public Stream<Blade> bladeOfGradeStream(byte pIn) {
 		return bladeList.stream().filter(blade -> blade.rank() == pIn);
+	}
+
+	/**
+	 * The stream returned contains blades that match the grades requested in the mask parameter. Instead of
+	 * matching grade bytes, though, a boolean mask is sent that is long enough to cover all possible grades
+	 * in the bases. Where the mask array is true, that grade will be selected FOR in the stream. Where the 
+	 * mask array is false, that grade will be selected AGAINST (filtered out) in the stream.
+	 * <br><br>
+	 * There are silent fail behaviors in this method. If the mask sent does not have a length that matches 
+	 * the gradecount for the basis, an empty stream is returned. A null mask does the same thing. If all is
+	 * well with the mask, this method works simply filters what bladeStream() would produce. Another way to
+	 * look at it is it expands on what bladeOfGradeStream() produces by covering more than one grade.
+	 * <br><br>
+	 * @param pMask boolean mask array identifying the grades of the blades to be streamed.
+	 * @return Stream of Blades of the correct grades in the basis.
+	 */
+	public Stream<Blade> bladeOfGradesStream(boolean[] pMask) {
+		if (pMask == null || pMask.length != gradeCount)
+			return Stream.empty();
+    	return bladeList.stream().filter(blade -> pMask[blade.rank()]);
 	}
 
 	@Override

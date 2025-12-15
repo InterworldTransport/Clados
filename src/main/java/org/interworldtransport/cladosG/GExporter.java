@@ -31,18 +31,20 @@ import org.interworldtransport.cladosF.RealD;
 import org.interworldtransport.cladosF.RealF;
 
 /**
- * This is a singleton class meant as a collector of all export methods for cladosG objects
+ * This is a non-constructable class meant as a collector of all export methods for cladosG objects
  * They are collected here not because a single object doing data exports is particularly efficient, 
  * (it is likely to be a bottleneck until everything is parallelized), but because the geometry
  * objects in real physical models are likely to be numerous. The geometry does not need to take 
  * up memory knowing how to export its contents to some format for every single piece of geometry.
  * It is enough that one object does it or even that it is all handled by static methods.
  */
-public enum GExporter {
-    /**
-	 * There is an implicit private constructor for this, but we won't override it.
+public class GExporter {
+    /*
+	 * Private constructor means this will only after get used for its class/static methods.
 	 */
-	INSTANCE;
+	private GExporter(){
+		;
+	}
 
     /**
 	 * Export a Foot as a small JSON fragment. Object properties are represented as attributes.
@@ -480,5 +482,4 @@ public enum GExporter {
 		rB.append(indent).append("</Nyad>\n");
 		return rB.toString();
 	}
-
 }
