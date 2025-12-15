@@ -26,9 +26,6 @@ public class CoreMonadRealFTest {
 	Monad tM5, tM6, tM7, tM8, tM9;
 	Monad tM10, tM11;
 
-
-
-
     @BeforeEach
 	public void setUp() throws BadSignatureException, CladosException {
 
