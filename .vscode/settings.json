@@ -1,6 +1,9 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.test.config": {
-        "args": ["-Xm24G"],
+"java.test.config": [
+    {
+        "name": "Default",
+        "args": ["-Xmx24G", "-Djol.magicFieldOffset=true", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "--add-opens", "java.base/java.lang.invoke=ALL-UNNAMED"]
     }
+],
+"java.configuration.updateBuildConfiguration": "automatic"
 }

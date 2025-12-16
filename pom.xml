@@ -34,6 +34,11 @@
 			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jol</groupId>
+			<artifactId>jol-core</artifactId>
+			<version>0.17</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -139,12 +144,14 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.4</version>
 				<configuration>
-					<argLine>-Xmx20G ${argLine}</argLine> <!-- heap size and JaCoCo agent-->
+					<argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED -Djol.magicFieldOffset=true -Xmx20G ${argLine}</argLine>
 					<excludes>
-						<exclude>**/Heat*.java</exclude>
+						<exclude>**/HeatStressTests.java</exclude>
+						<exclude>**/GeometryInfrastructureSizeTests.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
