@@ -64,10 +64,11 @@ import org.interworldtransport.cladosGExceptions.*;
  * <br><br>
  * Unary Operations :<br>
  * 1) Weight		: Monads that share an algebra are added.<br> 
- * 2) Compose		: Monads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
+ * 2) Compose(L/R)	: Monads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
  * Binary Operations:<br>
- * 3) Add			: Monad list of one is appended to the other.<br>
- * TODO 4) Multiply	: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.<br>
+ * 3) Append		: Monad list of one is appended to the other. Weight() operation is NOT performed.<br>
+ * 4) Multiply(L/R)	: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.
+ * <br><br>
  * Each of these pairs connects to the concepts of addition and multiplication and might easily be recognized by
  * other names. For example, nyad's 'compose' is both multiplication and simplification. A nyad with two mirrors
  * from the same algebra can be used to rotate operands in the algebra, but the two mirrors can be kept separate
@@ -232,30 +233,26 @@ public class Nyad implements Modal {
 	protected String Name;
 
 	/**
-	 * Simple copy constructor of a Nyad. The passed Nyad will be copied in detail.
-	 * This contructor is used most often to get around operations that alter one of
-	 * the nyads when the developer does not wish it to be altered.
-	 * <br>
-	 * @param pN Nyad
-	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null.
-	 * 								If the 'appendMonad' methods complain the exception
-	 * 								will arrive as an IllegalArgumentException instead.
+	 * Simple copy constructor of a Nyad. The passed Nyad will be copied in detail. This contructor is used most often to 
+	 * get around operations that alter one of the nyads when the developer does not wish it to be altered.
+	 * <br><br>
+	 * @param pN Nyad				copy this one
+	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null. If instead the 'appendMonad' methods 
+	 * 								complain the exception will arrive as an IllegalArgumentException.
 	 */
 	public Nyad(Nyad pN) throws CladosNyadException {
 		this(pN.getName(), pN, true);
 	}
 
 	/**
-	 * A basic constructor of a Nyad that starts with a Monad. The Monad will be
-	 * copied and placed at the top of the list OR reused based on pCopy The Foot,
-	 * however, will be used exactly as is either way.
-	 * <br>
-	 * @param pName String
-	 * @param pM    Monad
-	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
-	 * @throws CladosNyadException 	Two possible reasons for this. 
-	 * 								(1) The initialzing nyad is null or
-	 * 								(2) The 'appendMonad' methods threw it and this method passes it along.
+	 * A basic constructor of a Nyad that starts with a Monad. The Monad will be copied and placed at the top of the list OR 
+	 * reused based on pCopy The Foot, however, will be used exactly as is either way.
+	 * <br><br>
+	 * @param pName String			new name of the nyad to be created
+	 * @param pM    Monad			Single monad used to initiate this nyad.
+	 * @param pCopy boolean 		True - Copy the monads!		False - Re-use the monads!
+	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null. If instead the 'appendMonad' methods 
+	 * 								complain the exception will arrive as an IllegalArgumentException.
 	 */
 	public Nyad(String pName, Monad pM, boolean pCopy) throws CladosNyadException {
 		if (pM == null) 			throw new CladosNyadException(null, "This nyad constructor requires initializing nyad.");
@@ -275,17 +272,16 @@ public class Nyad implements Modal {
 	 * A simple copy constructor of a Nyad. The passed Nyad will be copied
 	 * without the name. This constructor is used most often to clone other objects
 	 * in every way except name.
-	 * <br>
+	 * <br><br>
 	 * The Foot object is re-used. The Algebra object is re-used. The Nyad's
 	 * proto-number object is re-used. The Nyad's monad objects are copyied OR
 	 * re-used depending on pCopy. 
-	 * <br>
-	 * @param pName String
-	 * @param pN    Nyad
-	 * @param pCopy boolean True - Copy monads first False - Re-use monads from Nyad
-	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null.
-	 * 								If the 'appendMonad' methods complain the exception
-	 * 								will arrive as an IllegalArgumentException instead.
+	 * <br><br>
+	 * @param pName String			new name of the nyad to be created
+	 * @param pN    Nyad			to be copied
+	 * @param pCopy boolean 		True - Copy the monads!		False - Re-use the monads!
+	 * @throws CladosNyadException 	One reason for this. The initialzing nyad is null. If instead the 'appendMonad' methods 
+	 * 								complain the exception will arrive as an IllegalArgumentException.
 	 */
 	public Nyad(String pName, Nyad pN, boolean pCopy) throws CladosNyadException {
 		if (pN == null) 			throw new CladosNyadException(null, "This nyad constructor requires initializing monad.");
@@ -311,6 +307,25 @@ public class Nyad implements Modal {
 	}
 
 	/**
+	 * This is just an alias for algebraList.stream().
+	 * <br><br>
+	 * @return Stream of distinct algebras in use in this Nyad.
+	 */
+	public Stream<Algebra> algebraStream() {
+		return algebraList.stream();
+	}
+
+
+	/**
+	 * Return the algebra order of this Nyad
+	 * <br><br>
+	 * @return integer number of algebras present in the monad list
+	 */
+	public int algrity() {
+		return algebraList.size();
+	}
+
+	/**
 	 * This method appends the monads from the offered nyad to this nyad's monadList.
 	 * <br><br>
 	 * There are ways this method silently fails.<br>
@@ -325,7 +340,7 @@ public class Nyad implements Modal {
 	 * @param pN Nyad to be added to this one. 
 	 * @return Nyad after the addition operation is complete
 	 */
-	public Nyad add(Nyad pN) {
+	public Nyad append(Nyad pN) {
 		if (pN == null) 				return this;
 		if (pN.getMode() != mode)		return this;
 		if (pN.getFoot() != sharedFoot)	return this;
@@ -336,25 +351,6 @@ public class Nyad implements Modal {
 		});
 		resetFlags();
 		return this;
-	}
-
-	/**
-	 * This is just an alias for algebraList.stream().
-	 * <br>
-	 * @return Stream of distinct algebras in use in this Nyad.
-	 */
-	public Stream<Algebra> algebraStream() {
-		return algebraList.stream();
-	}
-
-
-	/**
-	 * Return the algebra order of this Nyad
-	 * <br>
-	 * @return short
-	 */
-	public int algrity() {
-		return algebraList.size();
 	}
 
 	/**
@@ -417,15 +413,41 @@ public class Nyad implements Modal {
 		return monadList.size();
 	}
 
-	/**
+/**
 	 * Monads that share an algebra are 'composed'. Only one monad per algebra is kept after all is said and done. 
 	 * The algebra list is used to search for monads in the list. When two are more are found, a new monad is created 
-	 * that is a product (multiplyRight) of all the others. When only one is found, it is simply copied. As a result of 
+	 * that is a left-side product of all the others. When only one is found, it is simply copied. As a result of 
 	 * this, an entirely new list is created and the old one replaced.
 	 * <br><br>
 	 * @return Nyad after the algebra sharing modes are added as weights.
 	 */
-	public Nyad compose() {
+	public Nyad composeLeft() {
+		if (monadList.size() == 0)	return this;
+		ArrayList<Monad> newMonads = new ArrayList<>(monadList.size());
+		algebraStream().forEach(alg -> {								//Stream through algebras in the algebra list
+			int tHop = find(alg);										//index of first monad at the algebra
+			Monad tCopy = GBuilder.copyOfMonad(getMonadAt(tHop));		//Yep. Copy of the first monad at the algebra
+			while (findNext(alg, tHop) >= 0){							//There exists a next monad at the algebra
+				tCopy.multiplyLeft(getMonadAt(findNext(alg, tHop)));	//right multiply it to the working copy
+				tHop = findNext(alg, tHop);								//and hop along the list to the next monad at the algebra
+			}
+			newMonads.add(tCopy);										//Append the sum at the algebra to newMonads list
+		});
+		newMonads.trimToSize();
+		monadList = newMonads;											//Compose operation complete, so replace the monad list
+		resetFlags();													//and reset flags and algebra list.		
+		return this;
+	}
+
+	/**
+	 * Monads that share an algebra are 'composed'. Only one monad per algebra is kept after all is said and done. 
+	 * The algebra list is used to search for monads in the list. When two are more are found, a new monad is created 
+	 * that is a right-side product of all the others. When only one is found, it is simply copied. As a result of 
+	 * this, an entirely new list is created and the old one replaced.
+	 * <br><br>
+	 * @return Nyad after the algebra sharing modes are added as weights.
+	 */
+	public Nyad composeRight() {
 		if (monadList.size() == 0)	return this;
 		ArrayList<Monad> newMonads = new ArrayList<>(monadList.size());
 		algebraStream().forEach(alg -> {								//Stream through algebras in the algebra list
@@ -886,6 +908,34 @@ public class Nyad implements Modal {
 	 */
 	public Stream<Monad> monadStream() {
 		return monadList.stream();
+	}
+
+	/**
+	 * This method appends the monads from the offered nyad to this nyad's monadList and then composes. 
+	 * <br><br>
+	 * 'This' nyad is treated as the right monad stack and all compositions are done with left side multiplication. 
+	 * <br><br>
+	 * @param pN Nyad to be multiplied with this one. 
+	 * @return Nyad after the operation is complete
+	 */
+	public Nyad multiplyLeft(Nyad pN) {
+		this.append(pN);
+		this.composeLeft();		
+		return this;
+	}
+
+	/**
+	 * This method appends the monads from the offered nyad to this nyad's monadList and then composes. 
+	 * <br><br>
+	 * 'This' nyad is treated as the left monad stack and all compositions are done with right side multiplication. 
+	 * <br><br>
+	 * @param pN Nyad to be multiplied with this one. 
+	 * @return Nyad after the operation is complete
+	 */
+	public Nyad multiplyRight(Nyad pN) {
+		this.append(pN);
+		this.composeRight();		
+		return this;
 	}
 
 	/**
