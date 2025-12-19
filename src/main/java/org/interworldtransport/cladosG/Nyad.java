@@ -63,24 +63,24 @@ import org.interworldtransport.cladosGExceptions.*;
  * composition are possible, the composition flag suffices.
  * <br><br>
  * Unary Operations :<br>
- * TODO 1) Weight		: Monads that share an algebra are added.<br> 
- * TODO 2) Compose		: Moads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
+ * 1) Weight		: Monads that share an algebra are added.<br> 
+ * 2) Compose		: Monads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
  * Binary Operations:<br>
- * TODO 3) Add			: Monad list of one is appended to the other.<br>
- * TODO 4) Multiply		: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.<br>
+ * 3) Add			: Monad list of one is appended to the other.<br>
+ * TODO 4) Multiply	: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.<br>
  * Each of these pairs connects to the concepts of addition and multiplication and might easily be recognized by
  * other names. For example, nyad's 'compose' is both multiplication and simplification. A nyad with two mirrors
  * from the same algebra can be used to rotate operands in the algebra, but the two mirrors can be kept separate
  * or simplified to create a rotor without changing what they nyad can do.
  * <br><br>
  * Compression Operations:<br>
- * TODO 1) Projection	: A monad in one algebra is simply expressed in another algebra re-using weights.<br>
+ * TODO 5) Projection	: A monad in one algebra is simply expressed in another algebra re-using weights.<br>
  * Projection involves reassigning equivalent blades in the basis for a monad. Weights are preserved. The simplest
  * projection involves taking a scalar from one algebra and treating it like a scalar from another one. Another 
  * involves taking a k-blade in one algebra as the pscalar in a smaller algebra. It is assumed that a generator 
  * e_i in one algebra means the same thing in the other algebra, so transformations might have to occur before
  * projection in order to make this true.<br>
- * TODO 2) Compression	: A monad in one algebra is projected to another and then composed with another.<br>
+ * TODO 6) Compression	: A monad in one algebra is projected to another and then composed with another.<br>
  * Compression can be left or right sided or symmetric or antisymmetric versions. Projection then Composition.<br>
  * Examples of this operation can be found in the work of Ken Greider and his students in support of classical
  * and quantum field theories using Clifford algebras.
@@ -311,6 +311,34 @@ public class Nyad implements Modal {
 	}
 
 	/**
+	 * This method appends the monads from the offered nyad to this nyad's monadList.
+	 * <br><br>
+	 * There are ways this method silently fails.<br>
+	 * 1) Offer a nyad that does not share the same foot.<br>
+	 * 2) Offer a nyad with numbers in a different mode. (Mixed precision or Rea/Complex).<br>
+	 * If either these happen, this method just returns this nyad.
+	 * <br><br>
+	 * The try/catch block internal to the stream that does the actual list appending won't happen because the possible ways it 
+	 * happens are caught outside the stream with the silent fails. As a result, this method shouldn't throw anything unless
+	 * some egregious error has occured.
+	 * <br><br>
+	 * @param pN Nyad to be added to this one. 
+	 * @return Nyad after the addition operation is complete
+	 */
+	public Nyad add(Nyad pN) {
+		if (pN == null) 				return this;
+		if (pN.getMode() != mode)		return this;
+		if (pN.getFoot() != sharedFoot)	return this;
+
+		pN.monadStream().forEach(m -> {
+			try 							{ appendACopy(m); } 
+			catch (CladosNyadException e) 	{ ; /* Every way this can happen is deflected by the initial checks */ }
+		});
+		resetFlags();
+		return this;
+	}
+
+	/**
 	 * This is just an alias for algebraList.stream().
 	 * <br>
 	 * @return Stream of distinct algebras in use in this Nyad.
@@ -387,6 +415,32 @@ public class Nyad implements Modal {
 	 */
 	public int arity() {
 		return monadList.size();
+	}
+
+	/**
+	 * Monads that share an algebra are 'composed'. Only one monad per algebra is kept after all is said and done. 
+	 * The algebra list is used to search for monads in the list. When two are more are found, a new monad is created 
+	 * that is a product (multiplyRight) of all the others. When only one is found, it is simply copied. As a result of 
+	 * this, an entirely new list is created and the old one replaced.
+	 * <br><br>
+	 * @return Nyad after the algebra sharing modes are added as weights.
+	 */
+	public Nyad compose() {
+		if (monadList.size() == 0)	return this;
+		ArrayList<Monad> newMonads = new ArrayList<>(monadList.size());
+		algebraStream().forEach(alg -> {								//Stream through algebras in the algebra list
+			int tHop = find(alg);										//index of first monad at the algebra
+			Monad tCopy = GBuilder.copyOfMonad(getMonadAt(tHop));		//Yep. Copy of the first monad at the algebra
+			while (findNext(alg, tHop) >= 0){							//There exists a next monad at the algebra
+				tCopy.multiplyRight(getMonadAt(findNext(alg, tHop)));	//right multiply it to the working copy
+				tHop = findNext(alg, tHop);								//and hop along the list to the next monad at the algebra
+			}
+			newMonads.add(tCopy);										//Append the sum at the algebra to newMonads list
+		});
+		newMonads.trimToSize();
+		monadList = newMonads;											//Compose operation complete, so replace the monad list
+		resetFlags();													//and reset flags and algebra list.		
+		return this;
 	}
 
 	/**
@@ -1228,6 +1282,31 @@ public class Nyad implements Modal {
 			jFlag = false;										//it is NOT a juxtaposition
 			compositionFlag = false;							//and NOT a composition. (Mixed Case)
 		}
+		return this;
+	}
+
+	/**
+	 * Monads that share an algebra are 'added'. Only one monad per algebra is kept after all is said and done. The algebra list 
+	 * is used to search for monads in the list. When two are more are found, a new monad is created that is a sum of all the others. 
+	 * When only one is found, it is simply copied. As a result of this, an entirely new list is created and the old one replaced.
+	 * <br><br>
+	 * @return Nyad after the algebra sharing modes are added as weights.
+	 */
+	public Nyad weight() {
+		if (monadList.size() == 0)	return this;
+		ArrayList<Monad> newMonads = new ArrayList<>(monadList.size());
+		algebraStream().forEach(alg -> {								//Stream through algebras in the algebra list
+			int tHop = find(alg);										//index of first monad at the algebra
+			Monad tCopy = GBuilder.copyOfMonad(getMonadAt(tHop));		//Yep. Copy of the first monad at the algebra
+			while (findNext(alg, tHop) >= 0){							//There exists a next monad at the algebra
+				tCopy.add(getMonadAt(findNext(alg, tHop)));				//add it to the working copy
+				tHop = findNext(alg, tHop);								//and hop along the list to the next monad at the algebra
+			}
+			newMonads.add(tCopy);										//Append the sum at the algebra to newMonads list
+		});
+		newMonads.trimToSize();
+		monadList = newMonads;											//Summation operation complete, so replace the monad list
+		resetFlags();													//and reset flags and algebra list.		
 		return this;
 	}
 
