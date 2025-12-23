@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.IdentityHashMap;
+import java.util.TreeMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -534,10 +534,10 @@ public class GeometryInfrastructureUnitTests {
                 ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
                 ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
 
-                Map<Blade, RealF> mapRF = new IdentityHashMap<>(tRF.length);
-                Map<Blade, RealD> mapRD = new IdentityHashMap<>(tRD.length);
-                Map<Blade, ComplexF> mapCF = new IdentityHashMap<>(tCF.length);
-                Map<Blade, ComplexD> mapCD = new IdentityHashMap<>(tCD.length);
+                Map<Blade, RealF> mapRF = new TreeMap<>();
+                Map<Blade, RealD> mapRD = new TreeMap<>();
+                Map<Blade, ComplexF> mapCF = new TreeMap<>();
+                Map<Blade, ComplexD> mapCD = new TreeMap<>();
 
                 workBasis.bladeStream().forEach(blade -> {
                     mapRF.put(blade, tRF[workBasis.find(blade)-1]);

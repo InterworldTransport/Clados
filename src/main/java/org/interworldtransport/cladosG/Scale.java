@@ -46,15 +46,14 @@ import org.interworldtransport.cladosFExceptions.*;
  * developers of physical models.
  * <br><br>
  * The data structure used to represent 'coefficients' used to be a fixed array that had the same length as the 
- * number of blades in a monad's basis. That has been modernized to an IdentityHashMap contained within this class. 
+ * number of blades in a monad's basis. That has been modernized to a TreeMap contained within this class. 
  * The basis against which the map is applicable can be referenced by another private element, but shouldn't be 
  * manipulated once set. The private element is finalized.
  * <br><br>
- * An IdentityHashMap was used instead of a simpler HashMap in order to get reference equality between map keys 
- * instead of object equality. Map Keys are Blades from the basis, so reference equality is the correct expectation 
- * when comparing keys. Typical use of keys from the map occurs with streams that effectively iterate through the 
- * blades for access to coefficients in the encompassing vector space. The information within a blade is far less
- * important than which blade it is, thus reference equality is what is needed.
+ * The TreeMap keys are Blades from the basis and reference equality is the required expectation when comparing them. 
+ * Typical use of keys occurs with streams that effectively iterate through the blades for access to coefficients in 
+ * the encompassing vector space. Information within a blade is far less important than which blade it is, thus 
+ * reference equality is what is needed.
  * <br><br>
  * Map Values are CladosF numbers like RealF or ComplexD. Because they are objects instead of primitives, they 
  * behave much like Java's boxed primitives. In fact, they would BE those boxed primitives if not for the need to 
