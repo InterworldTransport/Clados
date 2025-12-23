@@ -140,7 +140,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
 	private final CladosField mode;
     
      /**
-      * Construct a Connetion with everything required being provided up front except the numbers acting as weights for linear combinations.
+      * Construct a Connection with everything required being provided up front except the numbers acting as weights for linear combinations.
       * Without numbers, assume the two bases connect directly. For example E1 in algebra1 is E1 in algebra2... and so on.
       * <br><br>
       * Note: Because the two algebras can be of different sizes there is an asymmetry in the map of maps due to how 'equivalent' blades are 
@@ -176,6 +176,24 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
         });
     
     
+    }
+
+    /**
+     * TODO CAST: A monad in one algebra is remapped to another algebra using a Connection.<br>
+     * Cast involves turning a monad's scale from a map defined in terms of blades of algebra1 into blades of algebra2. Where a blade in pM's 
+     * scale matches a blade in the outer mapOfMaps basis, the weight from pM's scale is used to weight the inner map. Once all pM's blades 
+     * are considered, the inner maps are summed a blade at a time with the result becoming the new Scale for pM.<br>
+     * Examples: <br>
+     * 1) The simplest cast involves projecting a monad from one algebra to another exactly parallel one. Weights simply transfer.<br>
+     * 2) Another casts a monad into a subalgebra where a k-blade in the larger one is the pscalar in the subalgebra.
+     * <br><br>
+     * Map(Blades1, Map(Blades2, Weights2)) casts Map(Blades1, Weights1) -> Map(Blades2, some linear combination of Weights1 and Weights2) 
+     * <br><br>
+     * @param pM Monad to be cast
+     * @return Monad transformed by the cast operation
+     */
+    public Monad cast(Monad pM) {
+        return null;
     }
 
     /**

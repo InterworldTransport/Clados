@@ -62,26 +62,20 @@ import org.interworldtransport.cladosGExceptions.*;
  * If it is through  addition, then summation is possible. Since only one flag is needed to signal summation and 
  * composition are possible, the composition flag suffices.
  * <br><br>
- * Unary Operations :<br>
+ * Unary Operations : One nyad involved.<br>
  * 1) Weight		: Monads that share an algebra are added.<br> 
  * 2) Compose(L/R)	: Monads that share an algebra are multiplied where left -> right is stack top -> bottom.<br>
- * Binary Operations:<br>
+ * Binary Operations: Two nyads involved.<br>
  * 3) Append		: Monad list of one is appended to the other. Weight() operation is NOT performed.<br>
  * 4) Multiply(L/R)	: Monads sharing algebras are multiplied. Danglers are added as if multiplied by ONE.
  * <br><br>
- * Each of these pairs connects to the concepts of addition and multiplication and might easily be recognized by
- * other names. For example, nyad's 'compose' is both multiplication and simplification. A nyad with two mirrors
- * from the same algebra can be used to rotate operands in the algebra, but the two mirrors can be kept separate
- * or simplified to create a rotor without changing what they nyad can do.
+ * Each of these pairs implements concepts of addition and multiplication that might easily be recognized by other
+ * names. For example, nyad's 'compose' is both multiplication and simplification. A nyad with two mirrorsfrom the 
+ * same algebra can be used to rotate operands in the algebra, but the two mirrors can be kept separate or simplified
+ * to create a rotor without changing what they nyad can do.
  * <br><br>
- * Compression Operations:<br>
- * TODO 5) Projection	: A monad in one algebra is simply expressed in another algebra re-using weights.<br>
- * Projection involves reassigning equivalent blades in the basis for a monad. Weights are preserved. The simplest
- * projection involves taking a scalar from one algebra and treating it like a scalar from another one. Another 
- * involves taking a k-blade in one algebra as the pscalar in a smaller algebra. It is assumed that a generator 
- * e_i in one algebra means the same thing in the other algebra, so transformations might have to occur before
- * projection in order to make this true.<br>
- * TODO 6) Compression	: A monad in one algebra is projected to another and then composed with another.<br>
+ * Multiple Algebra Operations:<br>
+ * TODO 5) Compression	: A monad in one algebra is cast to an algebra used by another monad then composed with it.<br>
  * Compression can be left or right sided or symmetric or antisymmetric versions. Projection then Composition.<br>
  * Examples of this operation can be found in the work of Ken Greider and his students in support of classical
  * and quantum field theories using Clifford algebras.
