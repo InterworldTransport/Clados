@@ -1302,14 +1302,14 @@ public class GeometryInfrastructureUnitTests {
 
         @Test
         void testStaticComplement() {
-            out = BladeDuet.complementLeft(firstB, sig);
+            out = BladeDuet.complementLeft(firstB, sig, true);
             assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
             assertTrue(out.sign() == -1);
             out.remove(Generator.E4);
             assertTrue(Blade.isScalar(out));
 
-            out = BladeDuet.complementLeft(secondB, sig);
-            out2 = BladeDuet.complementLeft(out, sig);
+            out = BladeDuet.complementLeft(secondB, sig, true);
+            out2 = BladeDuet.complementLeft(out, sig, true);
             assertTrue(Blade.isPScalar(out2));
             assertTrue(CanonicalBlade.equivalent(secondB, out2));
             assertTrue(secondB.sign() == out2.sign());
@@ -1318,13 +1318,13 @@ public class GeometryInfrastructureUnitTests {
         @Test
         void testStaticComplementDegenerate() {
             byte[] dsig = { 1, 1, 1, 0 };
-            out = BladeDuet.complementLeft(firstB, dsig);
+            out = BladeDuet.complementLeft(firstB, dsig, false);
             assertTrue(CanonicalBlade.isNBlade(out, (byte) 1));
             assertTrue(out.sign() == -1);
             out.remove(Generator.E4);
             assertTrue(Blade.isScalar(out));
 
-            out = BladeDuet.complementLeft(secondB, dsig);
+            out = BladeDuet.complementLeft(secondB, dsig, false);
             assertFalse(Blade.isPScalar(out));
             assertTrue(Blade.isScalar(out));
         }

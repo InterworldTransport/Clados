@@ -56,11 +56,13 @@ public final class BladeDuet {
 	 * <br><br>
 	 * @param pB1 Blade to be complemented with respect to it's basis pscalar blade
 	 * @param sig byte[] signature array to use when reducing duplicate generators
+	 * @param pElliptic True if degenerate pairs pretend to square to +1, False if they pretend to square to -1
 	 * @return Blade complement of pB1 with sign set for left multiply returning +pscalar
 	 */
-	public static final Blade complementLeft(Blade pB1, byte[] sig) {
+	public static final Blade complementLeft(Blade pB1, byte[] sig, boolean pElliptic) {
 		BladeDuet tBD = new BladeDuet(pB1, Blade.createPScalarBlade(Generator.get(pB1.maxGenerator()))) ;
-		return tBD.simplifyForDual(sig);
+		if (pElliptic) 	return tBD.simplifyForEllipticDual(sig);
+		else			return tBD.simplifyForHyperbolicDual(sig);
 	}
 
 	/**
@@ -73,11 +75,13 @@ public final class BladeDuet {
 	 * <br><br>
 	 * @param pB1 Blade to be complemented with respect to it's basis pscalar blade
 	 * @param sig byte[] signature array to use when reducing duplicate generators
+	 * @param pElliptic True if degenerate pairs pretend to square to +1, False if they pretend to square to -1
 	 * @return Blade complement of pB1 with sign set for left multiply returning +pscalar
 	 */
-	public static final Blade complementRight(Blade pB1, byte[] sig) {
+	public static final Blade complementRight(Blade pB1, byte[] sig, boolean pElliptic) {
 		BladeDuet tBD = new BladeDuet(Blade.createPScalarBlade(Generator.get(pB1.maxGenerator())), pB1) ;
-		return tBD.simplifyForDual(sig);
+		if (pElliptic) 	return tBD.simplifyForEllipticDual(sig);
+		else			return tBD.simplifyForHyperbolicDual(sig);
 	}
 
 	/**
@@ -168,7 +172,7 @@ public final class BladeDuet {
 	 * @param pSig byte[] signature array to use when reducing duplicate generators
 	 * @return Blade complement of the non-pscalar blade used to initialize the BladeDuet.
 	 */
-	private Blade simplifyForDual(byte[] pSig) {
+	private Blade simplifyForEllipticDual(byte[] pSig) {
 		int andKey = bitKeyLeft & bitKeyRight;
 		byte gen = 1;										//start with lowest generator
 		while (andKey > 0) {								//while any duplicate generators present
@@ -179,6 +183,42 @@ public final class BladeDuet {
 															//We won't be in this section unless there are exactly two.
 															//This 'permutes' generators without moving them.
 				sign *= (pSig[gen - 1] == 0) ? 1 : pSig[gen - 1];	//IF SIGNATURE of eq is 0, pretend it is +1. 
+																	//Otherwise use correct signature.
+				bladeDuet.removeAll(Collections.singleton(eq));
+			}
+			gen++;											//move up to the next generator to test
+			andKey = andKey >>> 1;							//shift andKey right dropping lowest bit
+		}
+		Blade returnIt = Blade.createBlade(maxGen); 		//A scalar blade with room to expand.
+		bladeDuet.stream().forEach(g -> returnIt.add(g));	//Load remaining generators 
+															//returnIt has the correct generators AND sign.
+		return returnIt.setSign(sign);
+	}
+
+	/**
+	 * This method reduces generator pairs in what is an ALMOST sorted bladeDuet list. It is two buckets of sorted generators 
+	 * that upon pair removal WILL be fully sorted because one of the buckets is a pscalar blade. Every generator removed
+	 * from the input blade is paired with one in the pscalar blade, so removal of pairs leaves a sorted list ensuring the
+	 * second half of the 'simplify' algorithm isn't necessary here. The first half eliminates generator pairs and computes
+	 * transposition counts, so that is all this method does
+	 * <br><br>
+	 * The offered metric signature resolves what sign a generator pair produces with one twist. For degenerate generators, 
+	 * this method treats them as if they squared to -1.
+	 * <br><br>
+	 * @param pSig byte[] signature array to use when reducing duplicate generators
+	 * @return Blade complement of the non-pscalar blade used to initialize the BladeDuet.
+	 */
+	private Blade simplifyForHyperbolicDual(byte[] pSig) {
+		int andKey = bitKeyLeft & bitKeyRight;
+		byte gen = 1;										//start with lowest generator
+		while (andKey > 0) {								//while any duplicate generators present
+			if (Integer.lowestOneBit(andKey) == 1) {		//andKey is odd => low bit names duplicate generator. Action required.
+				Generator eq = Generator.get(gen);			//find generator for that lowest bit
+				sign *= (Integer.lowestOneBit(bladeDuet.lastIndexOf(eq) ^ bladeDuet.indexOf(eq)) == 1) ? (byte) 1 : (byte) -1;
+															//lastIndexOf = right-most. indexOf = left-most.
+															//We won't be in this section unless there are exactly two.
+															//This 'permutes' generators without moving them.
+				sign *= (pSig[gen - 1] == 0) ? -1 : pSig[gen - 1];	//IF SIGNATURE of eq is 0, pretend it is -1. 
 																	//Otherwise use correct signature.
 				bladeDuet.removeAll(Collections.singleton(eq));
 			}
