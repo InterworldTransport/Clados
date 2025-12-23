@@ -370,7 +370,7 @@ public class Monad implements Modal, Unitized {
 	/**
 	 * This is the new coefficient 'array'. It's size should always match
 	 * bladeCount. It is keyed to the blades in a monad's basis. It is fundamentally
-	 * an IdentityHashMap with some frosting.
+	 * an TreeMap with some frosting.
 	 */
 	protected Scale<? extends ProtoN> scales;
 
