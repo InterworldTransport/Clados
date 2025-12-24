@@ -1,0 +1,36 @@
+Progress
+
+    Activity can be tracked in the project's task tracker, but I summarize it here.
+
+
+* Recent Activity
+
+    Scale how has the aggregate(*) method it needs to support Connection.
+
+    Connection now has a cast(*) method providing its core purpose.
+
+    Nyads are being adapted to be our implementation of extensors.
+
+* What's Next
+
+[./img/TaskList.png]
+
+====================================
+
+* Can you trust it?
+
+    Well? Does a particular class actually work yet? 
+    
+    *   If you don't see unit tests covering it properly you are looking at brand new code that works 
+        only in the sweetest of my delusions. Maybe it does. Maybe it doesn't.
+
+    *   If you see unit tests covering it well, then the basic methods produce about what I expect 
+        they should, but that doesn't mean the tests are actually all that good. For example, adding 
+        zeroes exercises an add(*) method, but a test of the result can't distinguish success from fail.
+
+    *   If you really care to know, examine the unit tests in the source test folder. Until I get the 
+        four-function calculator operating on clados v2.0, that's the best I can offer.
+
+    []
+
+[./img/TestCoverage.png]

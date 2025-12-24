@@ -47,7 +47,7 @@ Clados
 	However, for implementors not interested in aggregates, the name 'Monad' is unfortunate. 
 	Please treat it as a synonym for multivector.
 
-	The most recent changes involve adapting Nnyads to be our implementation of extensors.
+	{{{./ProgressIndicator.html}Progress Signs}}
 
 * Documentation 
 

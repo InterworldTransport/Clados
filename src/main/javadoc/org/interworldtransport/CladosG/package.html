@@ -2,12 +2,13 @@
   <head>
     <title>CladosG Package Documentation</title>
 <body>
-Provides the geometry classes and the structures needed for multi-algebra geometric models.
+Provides the geometry classes and structure needed for multi-algebra geometric models.
 <br>
 <b>Class list</b>
 <br>
 <b>Interfaces</b>
 <ul>
+  <li><i>CanonicalBlade</i></li>
   <li><i>CanonicalBasis</i></li>
   <li><i>CliffordProduct</i></li>
   <li><i>Unitized</i></li>
@@ -16,17 +17,14 @@ Provides the geometry classes and the structures needed for multi-algebra geomet
 <b>Enumerations</b>
 <ul>
   <li><i>Generator</i></li>
-  <li><i>GBuilder</i></li>
-  <li><i>GCache</i></li>
 </ul>
 <b>Extendable Classes</b>
 <ul>
   <li>Monad</li>
   <li>Nyad</li>
 </ul>
-<b>Final Classes</b>
+<b>Finalized Infrastructure Classes</b>
 <ul>
-  <li>CladosConstant</li>
   <li>Foot</li>
   <li>Blade</li>
   <li>BladeDuet</li>
@@ -34,7 +32,16 @@ Provides the geometry classes and the structures needed for multi-algebra geomet
   <li>GProduct</li>
   <li>Algebra</li>
   <li>Scale&lt;Blade, ? extends ProtoN, Field, Normalizable&gt;</li>
+  <li>Connection&lt;Blade, ? extends ProtoN, Field, Normalizable&gt;</li>
 </ul>
+<b>Utilities</b>
+<ul>
+  <li>CladosConstant - Final</li>
+  <li>GBuilder - Enumeration</li>
+  <li>GCache - Singleton</li>
+  <li>GExporter</li>  
+</ul>
+
 <br>
 <h2>Background</h2>
 <p>
