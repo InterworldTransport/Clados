@@ -47,53 +47,9 @@ import org.interworldtransport.cladosF.RealF;
  * Cristoffel coefficients and you get the rough idea. As such, there will always be two different algebras
  * with two different Feet.
  * <br><br>
- * 
- * 
- * This class contains cladosF numbers that act together as the coefficients of a monad. They are all children of 
- * ProtoN and implement Field, so they have both a sense of 'units' and support basic arithmetic operations. Which
- * numbers are contained internally, therefore, is tracked by two private elements. One contains a reference to a 
- * Cardinal that all the numbers should share. The other is a reference two one of the CladosField elements so we
- * know whether this Scale is expected to contain real or complex numbers and at what level of floating point 
- * precision. Access to the two private elements is managed by their 'get' methods. getCardinal() and getMode(). 
- * There are set methods for them too, but they are package protected methods that should not be handled much by 
- * developers of physical models.
- * <br><br>
- * The data structure used to represent 'coefficients' used to be a fixed array that had the same length as the 
- * number of blades in a monad's basis. That has been modernized to an IdentityHashMap contained within this class. 
- * The basis against which the map is applicable can be referenced by another private element, but shouldn't be 
- * manipulated once set. The private element is finalized.
- * <br><br>
- * An IdentityHashMap was used instead of a simpler HashMap in order to get reference equality between map keys 
- * instead of object equality. Map Keys are Blades from the basis, so reference equality is the correct expectation 
- * when comparing keys. Typical use of keys from the map occurs with streams that effectively iterate through the 
- * blades for access to coefficients in the encompassing vector space. The information within a blade is far less
- * important than which blade it is, thus reference equality is what is needed.
- * <br><br>
- * Map Values are CladosF numbers like RealF or ComplexD. Because they are objects instead of primitives, they 
- * behave much like Java's boxed primitives. In fact, they would BE those boxed primitives if not for the need to 
- * track units in physical models. For example, one meter is not one second. No equality test should pass.
- * <br><br>
- * Because values are objects, care must be taken once one has a reference to them. Any reference to one enables a 
- * developer to change it without the Scale or Monad knowing. This is the hydra monster named Mutability. It IS a 
- * danger here. Many of Scale's methods copy inbound numbers to avoid altering them, but some do not INTENTIONALLY.
- * <br><br>
- * 1. Coefficient settors that accept arrays do NOT copy values before placing them in the internal map. BEWARE BEWARE
- * <br><br>
- * 2. Put() does not copy the incoming value before placing it in the internal map. Again... BEWARE.
- * <br><br>
- * 3. Coefficient settors that accept maps DO COPY values before placing them in the internal map. Any object 
- * from which values are taken to be used here are safe from the hydra.
- * <br><br>
- * 4. All gettors for coefficients provide direct references to values in the map. The most common use is 
- * INTENTIONAL MUTABILITY, so... BEWARE THE HYDRA. The safest way to use them is within streams / lambdas.
- * <br><br>
- * GENERAL NOTE | Many of the methods for Scale look a lot like Monad, so one can reasonably wonder why all the 
- * extra stuff in Monad when Scale looks enough like a tuple to represent things. The primary difference is that Scale 
- * contains only the coefficients and references a basis like what we got used to as students. That's not enough 
- * because a basis is only enough to represent linear combinations for a vector space. Other geometric meanings aren't 
- * in the basis. They are in the product table. Combining product table and basis into an 'algebra' gives a MUCH 
- * better description of a 'tuple's' reference frame than a vector space.
- * <br><br>
+ * This class has a usage doc with the primary scenario that drives its design. Rather than duplicate the explanation
+ * from there to here and risk getting the documentation out of sync, check out the Connection usage page.
+ * <br><br> 
  * @param <D> ProtoN child class is used in the inner maps for weights of blades. (Linear Combinations)
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -173,9 +129,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
             }                                                                                                   //ELSE not needed. tScale initiated with zero weights.
                                                                                                                 //Zero scale or ONE at equivalent blade
             mapOfMaps.put(b1, tScale);                                                                          //Happens for every b1. Processing order doesn't matter.
-        });
-    
-    
+        });    
     }
 
     /**

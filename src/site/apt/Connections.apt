@@ -1,0 +1,200 @@
+Connection
+
+    The 'Connection' class attempts to represent connection coefficients in Clados without having all the indexes 
+    one must track with Christoffel coefficients and similar concepts. This document represents what is being
+    attempted in terms of examples and how the class tries to encode reasonable expections.
+
+* Prime Scenario: Coordinates on a Globe
+
+    The prototypical example involves coordinates for flat charts on a globe. We start with classic spherical coordinates. 
+
+    * Distance ρ [from the Earth's center]
+
+    * Latitutde θ [from the equator]
+
+    * Longitude φ [from the prime meridian]
+
+    []
+
+    Terrain maps on flat pieces of paper use a locally Euclidean system (x, y, h) and represent h in terms of color or
+    something like that. The coordinate transformation is a map.
+
+------------------------------------------------------------------------     
+        (ρ, θ, φ) -> (x, y, h)    or maybe just (x, y) if elevation isn't drawn
+------------------------------------------------------------------------ 
+    The relationship between these systems is not in scope here, but not because it is an easy thing to represent 
+    geometrically. What the Connection class deals with involves something slightly different. Imagine there are two 
+    flat charts with their own Euclidean systems covering regions that are near each other on the globe. They are 
+    'tangential' charts. Place them next to each other so one can draw paths from one onto the other. There should 
+    be a way to patch from one coordinate system to the next as the path crosses over the edge. For closed paths 
+    (imagine hiking around a mountain), we want our 'patch' to work in both directions.
+
+------------------------------------------------------------------------ 
+        (x, y, h) <-> (x', y', h')      or (x, y) <-> (x', y') if elevation isn't drawn.
+------------------------------------------------------------------------ 
+    The same kind of need also has to cover the simpler case involving coordinates before the flat maps are drawn.
+
+------------------------------------------------------------------------ 
+        (θ, φ) <-> (θ', φ')
+------------------------------------------------------------------------ 
+    One might think the last case is trivial. It almost is because its solution is exactly why people use spherical
+    coordinates in the first place. However, note that the θ and φ directions on the two patches of the globe are 
+    NOT the same. The basis changes across the edges of our charts.
+
+* General Approach
+
+    Patching geometric primitives is not a difficult to thing to describe, but even easier is patching the underlying 
+    blades. If we do that, we have an approach for the primatives through linearity. So what we need is a list of
+    blades from one chart and another list of what each becomes on the other chart. What they become is a linear 
+    combination of blades from the second basis, so that is what the second listing is.
+
+------------------------------------------------------------------------ 
+        Set of pairs of (Blades from first chart, -A Linear Combination- of (basis blades from the second chart.))
+------------------------------------------------------------------------ 
+    In terms of data structures the outer set of pairs is a map of key/value pairs. The linear combination is a 
+    multivector, though a cladosG Scale object suffices as we shall see. That means what is needed is a map of maps
+    with blades of each basis acting as keys at different layers. Numbers provide the weights and ARE our connection 
+    coefficients. [In CladosG, these maps are implemented as TreeMaps.]
+
+    <<<Example:>>> <<Charts drawn with "north" up on the page>>
+
+    With two charts representing areas of nearby land, we start with two Cl(2,0,0) algebras where each represents
+    objects drawn on their respective pages. Because "North" is placed along the top of each page and the Earth's 
+    surface is curved, we should not assume the blades in each algebra align perfectly with their counterpart even 
+    if we make attempts to align them using a right-handed frame with positive directions leading rightward or 
+    upward. "North" defines what the top of each chart means, so the blades pointing that way can't be quite
+    the same. They can be very close if the charts cover small patches of land, but the match isn't exact. Even if 
+    "North is up" is sacrificed, the curvature of the Earth will eventually turn the directions. A series of
+    charts wrapping around the world would show this.
+
+    With only two charts, the situation is still a little complicated. A 1-blade on one chart has to be projected
+    onto the plane of the second chart. The Earth's curved surface is two dimensional, but it is embedded in three.
+    The patch from one algebra to the next can also project. The general case involves transferring from the algebra 
+    of the first chart up to an embedding space, transforming our chart location to one on the second chart, and 
+    then transforming down to the second algebra. It is that second transformation that involves a projection in
+    the general case, but the Connection patch will hide all that by adjusting the linear combination of blades 
+    in the second algebra to account for it.
+
+    So the first algebra has multivectors in it with four parts. The chart drawn likely only uses two of them
+    since the pscalar represents the plane of the chart. The (x, y) chart coordinates can be written as 1-blades 
+    in Cl(2,0,0), but the multivector for that is just (0, x, y, 0) if all the blades are made explicit. The same 
+    holds true on the second chart where the multivectors look like (0', x', y', 0'). Primed zeroes might look
+    a little odd, but they hint at the blades from the second algebra not quite aligning with their counterparts.
+
+    If the chart areas are very close and we make every effort to keep the two bases aligned without sacrificing 
+    "north is up", then...
+
+-------------
+    the 1-blade e_i -> (1-ε)e'_i +/- ε e'_j where i isn't j. Consequences follow to scalar and pscalar blades.
+-------------
+    This just means the 1-blades are still the same but for a small contribution from the other one. The change isn't
+    quite a rotation, but it is close. Don't forget the projection. e_12 isn't quite e'_12 with the difference being 
+    of order ε^2. The scalar blades aren't quite the same either, but that is also of order ε^2.
+
+-------------
+       e ->  (1)e' +   (0)e'_1 +   (0)e'_2 +(0)e'_12 (close enough)     [no generator blade = scalar]
+     e_1 ->  (0)e' + (1-ε)e'_1 +   (ε)e'_2 +(0)e'_12
+     e_2 ->  (0)e' -   (ε)e'_1 + (1-ε)e'_2 +(0)e'_12 
+    e_12 ->  (0)e' +   (0)e'_1 +   (0)e'_2 +(1)e'_12 (close enough)     [all generators blade = pscalar]
+-------------
+    That's it. Basis blades are keys in Connection's outer map. The linear combination in the primed algebra is 
+    Scale's TreeMap using the primed blades as keys. A multivector would work just fine too, but in Clados it is
+    the Scale object doing representing the 'unsimplified' multivector expression. All that remains is to show how
+    one uses this Connection object to stitch things together at the edge of a chart.
+
+    However, we said we wanted the chart patch to work in both directions. How to do that? Our weights in each linear
+    combination form a square matrix taking a vector of blades from one algebra to the other. A transpose of the 
+    matrix would swap the direction of the operation. If the square matrix is actually invertible, then the patch
+    can be undone with no information loss. In general, though, it is the transpose map that matters. A closed loop
+    transport of an object across chart edges need not bring it back to the start unchanged. Connections with 
+    torsion are examples.
+
+    <<<Example:>>> <<As above but using Cl(2,0,1) algebras [2D PGA]>>
+
+    If we use 2D PGA instead of 2D VGA the implementation doesn't change much. The difference is PGA's have three 
+    generators, so multivectors have eight terms. Instead of (x, y) <-> (x', y') we get (x, y, ω) <-> (x', y', ω')
+    where that last coordinate weights the 1-blade representing a chart's inifinitely distant edge. Would anyone try
+    to use a algebras where the two infinite edges aren't the same? Probably not. One could, but why bother?
+
+    If one does not, the weights for ω' in expressions for finite unprimed generators will all be zero and the
+    situation almost reverts to the previous discussion for Cl(2,0,0)'s... except the 2-blade e'_12 representing 
+    the second chart's drawing plane isn't a pscalar. There are two other 2-blade complements to the primed finite 
+    1-blades. That means there are points at infinity, so e'_12 could be a weighted sum involving them too. The math 
+    is a little different. Projective geometry is  like that. However, the conceptual role of Connection is unchanged
+    because they relate one basis to another. What the blades mean geometrically is not IN Connection.
+
+* Using Connection
+
+    In Clados, it is the cast(*) method that patches an input multivector between algebras. This method is the primary 
+    purpose of a Connection object. This method works as follows.
+
+    [[1]]   A new linear combination of weighted blades (A Scale) in the second algebra is going to be needed,
+            so one is initiated using details from that algebra and the mode of the input multivector.
+    
+    [[2]]   The input multivector is treated as a stream of blades with associated weights. [The stream originates 
+            at the Scale inside Monad.] The method streams through non-zero weighted blades in order to match them with...
+
+    [[3]]   blades in the outer map of the Connection object. When found, the paired Scale is scaled by the weight 
+            at the multivector's blade and then summed into the Scale initiated outside the blade stream. This continues until...
+
+    [[4]]   the blade stream runs out of non-zero weighted blades. Once it does, the summing Scale has become precisely 
+            the Scale needed for the patch. The input multivector is assigned to the second algebra, its Scale is replaced,
+            and the adjusted multivector is passed back by the method.
+            
+    []
+
+    The stream of blades used depends on optimization opportunities. A simple stream of all blades not filtering the 
+    zero weights could be used because the zero weights would eliminate the streaming contribution to the new Scale, 
+    but that involves wasted cycles. In small algebras, the waste isn't huge leaving open the possibility that checking
+    for zeroes is actually the more expensive operation. In sparse multivectors (most grades are zero weighted) the 
+    filter might be better optimized by skipping whole grades, but the savings is offset by cycles spent up front 
+    determining whether or not it is worth doing. In terms of the algorithm for cast(*), though, it does not matter.
+    The patched Scale is a weighted sum of Scales. (See the end note for blade streaming details.)
+
+========================================================================
+
+    <<<Examples>>> <<Not related to the prime scenario>>
+
+    *  The simplest cast involves projecting a monad from one algebra to another exactly parallel one. Every blade in
+the first algebra is a key in the outer map. Every blade in the second algebra is a key in the inner map, but
+only one of the weights is ONE while the others are ZERO. If the ZERO weighted blades are missing from the inner
+maps, the Connection still performs correctly. This is Ken Greider's "Connector".
+
+    *  The second algebra could be a rotated version of the first algebra. If so, the patch is invertible and the Scales
+in the inner maps can be computed from the actions of rotors on blades in the first algebra.
+
+    *  The first algebra could be a subalgebra of the second where a chosen k-blade maps to the pscalar in the first.
+Such a connection won't be invertible as only the 'support' of the k-blade will be mapped in the patch.
+
+    []
+
+========================================================================
+
+    <<<End Note:>>> <<On Blade Streams>>
+
+*-----------------:--------------------------+----------------------------------------------------------------------+
+| <<Stream From>> | <<Method Name>>          | Description of Multivector's Method                                  | 
+*-----------------:--------------------------+----------------------------------------------------------------------+
+| <<Basis>>       | bladeStream()            | All blades are included regardless of weights.                       |
+*-----------------:--------------------------+----------------------------------------------------------------------+
+| (see note 1)    | bladeOfGradeStream(byte) | All blades at a particular grade are included regardless of weights. |
+*-----------------:--------------------------+----------------------------------------------------------------------+
+|                 | bladeOfGradesStream()    | All blades at non-zero grades are included regardless of weights.    |
+*-----------------:--------------------------+----------------------------------------------------------------------+
+| <<Scale>>       | bladesNotZeroStream()    | All blades with non-zero weights are included.                       |
+*-----------------:--------------------------+----------------------------------------------------------------------+
+| (see note 2)    | bladesZeroStream()       | All blades with zero weights are included to assist optimizations.   |
+*-----------------:--------------------------+----------------------------------------------------------------------+
+
+    [[1]] Blade streams originating at a Basis have no awareness of weights. 
+    
+    [[2]] Blade streams originating at a Scale have no awareness of grades. 
+    
+    []
+
+    The partial exception is bladeOfGradesStream() which uses a multivector's grade mask to provide some information 
+    on blades that may be skipped in the stream.
+
+========================================================================
+
+    \xA9 2025 Dr Alfred Differ
