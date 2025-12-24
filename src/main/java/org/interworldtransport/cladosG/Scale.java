@@ -262,6 +262,38 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	}
 
 	/**
+	 * This method is very similar to to Monad's add method, but works only at the Scale level.
+	 * Weights in the input Scale are added to weights in this Scale.
+	 * <br><br>
+	 * @param pIn Scale object to 'add' to this one.
+	 * @return Scale after it has been adjusted by the input Scale
+	 */
+	protected Scale<D> aggregate(Scale<D> pIn) {
+		if (pIn == null)							return this;
+		if (pIn.getCardinal() != getCardinal())		return this;
+		if (pIn.getMode() != getMode())				return this;
+
+		pIn.bladesNotZeroStream().forEach(b -> {
+			try {get(b).add(pIn.get(b));} 										//This should never fail because...
+			catch (FieldBinaryException e) {									//the possible ways this can happen are caught at...
+				switch (mode) {													//the top of the method. This handlder forces addition.
+					case COMPLEXD -> {
+						((ComplexD) get(b)).setReal(((ComplexD) get(b)).getReal() + ((ComplexD) pIn.get(b)).getReal());
+						((ComplexD) get(b)).setImg(((ComplexD) get(b)).getImg() + ((ComplexD) pIn.get(b)).getImg());
+					}
+					case COMPLEXF -> {
+						((ComplexF) get(b)).setReal(((ComplexF) get(b)).getReal() + ((ComplexF) pIn.get(b)).getReal());
+						((ComplexF) get(b)).setImg(((ComplexF) get(b)).getImg() + ((ComplexF) pIn.get(b)).getImg());
+					}
+					case REALD -> ((RealD) get(b)).setReal(((RealD) get(b)).getReal() + ((RealD) pIn.get(b)).getReal());
+					case REALF -> ((RealF) get(b)).setReal(((RealF) get(b)).getReal() + ((RealF) pIn.get(b)).getReal());
+				}
+			}
+		});
+		return this;
+	}
+
+	/**
 	 * It is often the case that streams of values are needed for math operations and those streams contain
 	 * zeroes leading to wasted cycles in addition operations or chances to terminate multiplication operations.
 	 * This method streams blades where the associated weight is NOT zero. Its complement streams the other blades.
@@ -329,11 +361,11 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 				switch (mode) {
 				case REALF:						//Tricky here. This case falls through to the next and gets handled.
 				case COMPLEXF:
-					(map.get(blade)).scale(CladosConstant.MINUS_ONE_F);
+					(get(blade)).scale(CladosConstant.MINUS_ONE_F);
 					break;						//Both cases handled in one then break.
 				case REALD:						//Tricky here. This case falls through to the next and gets handled.
 				case COMPLEXD:
-					(map.get(blade)).scale(CladosConstant.MINUS_ONE_D);
+					(get(blade)).scale(CladosConstant.MINUS_ONE_D);
 				}			//Both cases handled in one then done.
 			});
 		});

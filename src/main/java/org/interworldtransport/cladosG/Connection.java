@@ -29,18 +29,9 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.Field;
-import org.interworldtransport.cladosF.Normalizable;
-import org.interworldtransport.cladosF.ProtoN;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.*;
 
-
+import org.interworldtransport.cladosGExceptions.CladosMonadException;
 
 /**
  * This class is essentially a connection patching the basis of one algebra to the basis of another. Think about
@@ -133,21 +124,45 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
-     * TODO CAST: A monad in one algebra is remapped to another algebra using a Connection.<br>
+     * A monad in one algebra is remapped to another algebra using a Connection.
+     * <br><br>
      * Cast involves turning a monad's scale from a map defined in terms of blades of algebra1 into blades of algebra2. Where a blade in pM's 
      * scale matches a blade in the outer mapOfMaps basis, the weight from pM's scale is used to weight the inner map. Once all pM's blades 
-     * are considered, the inner maps are summed a blade at a time with the result becoming the new Scale for pM.<br>
-     * Examples: <br>
-     * 1) The simplest cast involves projecting a monad from one algebra to another exactly parallel one. Weights simply transfer.<br>
-     * 2) Another casts a monad into a subalgebra where a k-blade in the larger one is the pscalar in the subalgebra.
+     * are considered, the inner maps are summed and the result becomes the new Scale for pM.
      * <br><br>
-     * Map(Blades1, Map(Blades2, Weights2)) casts Map(Blades1, Weights1) -> Map(Blades2, some linear combination of Weights1 and Weights2) 
+     * See the usage documentation for Connection for more details.
      * <br><br>
      * @param pM Monad to be cast
      * @return Monad transformed by the cast operation
      */
     public Monad cast(Monad pM) {
-        return null;
+        if (pM == null)                 return null;                                        //Oops. Nothing to do.
+        if (pM.getMode() != mode)       return pM;                                          //No. Mixed modes makes messes.
+        if (pM.getCardinal() != card)   return pM;                                          //No. Apples and Oranges.
+        Scale<D> newScale = new Scale<>(mode, algebra2.getBasis(), card);                   //new zeroed Scale uses THIS mode and cardinal
+
+        if (pM.sparseFlag)                                                  //Few grades in use, so blocks of zero weights are skipped
+            pM  .bladeOfGradesStream()                                      //No parallelization (I think) because aggregating
+                .forEach(b1 -> {newScale.aggregate(                         //aggregate into the replacement Scale
+                                GBuilder.copyOfScale(getAt(b1))             //a copy of the relevant Scale
+                                        .scale(pM.get(b1)));                //weighted correctly for that blade. (Could be scaled by ZERO.)
+                               }    //[the action for each non-zero blade in pM]
+                        );          //[far edge of forEach loop]
+        else                                                                //Many grades in use, so individual zero weights are skipped.
+            pM  .getWeights()
+                .bladesNotZeroStream()                                      //No parallelization (I think) because aggregating
+                .forEach(b1 -> {newScale.aggregate(                         //aggregate into the replacement Scale
+                                GBuilder.copyOfScale(getAt(b1))             //a copy of the relevant Scale
+                                        .scale(pM.get(b1)));                //weighted correctly for that blade. (Never scaled by ZERO.)
+                               }    //[the action for each non-zero blade in pM]
+                        );          //[far edge of forEach loop]
+
+        pM.setAlgebra(algebra2);
+        try {pM.setScale(newScale);}                                                        //This should never fail because...
+        catch (CladosMonadException e) {                                                    //the possible ways for it are...
+            throw new IllegalArgumentException("Connection.cast error shouldn't happen");//prevented by use of algebra2.
+        }
+        return pM;
     }
 
     /**
