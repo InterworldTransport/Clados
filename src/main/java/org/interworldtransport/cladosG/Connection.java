@@ -107,7 +107,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
         mode = pMode;
         card = pCard;
         mapOfMaps = new TreeMap<>();
-        pA.getBasis().bladeStream().parallel().forEach(b1 -> {                                                  //Pick a blade in the outer algebra
+        pA.getBasis().bladeStream().forEach(b1 -> {                                                             //Pick a blade in the outer algebra. Don't go parallel.
             Scale<D> tScale = new Scale<D>(mode, pB.getBasis(), card);                                          //Create a zero Scale using the inner algebra
             Optional<Blade> similar = pB.getBasis().bladeStream().filter(b2 -> CanonicalBlade.equivalent(b1, b2)).findFirst(); //Find equivalent blade in inner algebra
             if (similar.isPresent()) {                                                                          //If inner algebra has equivalent blade
@@ -121,6 +121,15 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
                                                                                                                 //Zero scale or ONE at equivalent blade
             mapOfMaps.put(b1, tScale);                                                                          //Happens for every b1. Processing order doesn't matter.
         });    
+    }
+
+    /**
+     * This is the blade stream of the outer map. These blades from algebra1 are keys paired up with Scales using algebra2.
+	 * <br><br>
+     * @return Stream of Blades from algebra1 that are in the outer map
+     */
+    public Stream<Blade> bladeStream() {
+        return mapOfMaps.keySet().stream();
     }
 
     /**
@@ -178,6 +187,18 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
+     * Retrieve a reference to one of the algebras used in this object. The boolean input picks between
+     * outer/inner (algebra1/algebra2) choices.
+     * <br><br>
+     * @param pOuter boolean True returns the outer map's algebra, False returns the inner maps algebra
+     * @return Algebra (Either the first or second one depending on the boolean)
+     */
+    public Algebra getAlgebra(boolean pOuter) {
+        if (pOuter)     return algebra1;
+        else            return algebra2;
+    }
+
+    /**
 	 * Simple gettor method for the Cardinal associated with these objects.
 	 * <br><br>
 	 * @return Cardinal in use in this.
@@ -198,9 +219,9 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
-     * PUT a Blade, Scale key/value pair into the mapOfMaps. Check that the operation is legitimat first, though.
+     * PUT a Blade, Scale key/value pair into the mapOfMaps. Check that the operation is legitimate first, though.
      * <br><br>
-     * @param pB    Blade to use as the index for finding the Scale map
+     * @param pB    Blade to use as the key for finding the Scale map
      * @param pS    Scale of D which extend ProtoN and other numeric interfaces
      * @return Frame of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
@@ -211,34 +232,33 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
-     * This is the compliment of a blade stream involving the scaling maps 'multiplied' by blades in the sense 
-	 * of a linear combination in a vector space. When framing a new blade in terms of others in the basis, these scales
-     * are the linear combinations of blades to construct them.
+     * Remove a Blade, Scale key/value pair into the mapOfMaps. Check for legitimate use isn't needed, though, because remove
+     * fails quietly if the key isn't present.
+     * <br><br>
+     * @param pB    Blade to use as the key for finding the Scale map
+     * @return Connection of D which extend ProtoN and other numeric interfaces. Basically... this object.
+     */
+    public Connection<D> remove(Blade pB) {
+        if (algebra1.getBasis().hasBlade(pB))       mapOfMaps.remove(pB);        
+        return this;
+    }
+
+    /**
+     * This is the compliment of a blade stream involving the scaling maps that act as connection patches.
 	 * <br><br>
-     * 
 	 * Since the internal map can accept any of the CladosF numbers as values, there is a cast to a 'generic' type 
 	 * within this method. This would normally cause warnings by the compiler since the generic named in the internal 
 	 * map IS a ProtoN child AND casting an unchecked type could fail at runtime.
 	 * <br><br>
-	 * That won't happen when CladosF builders are used because they dan't build anything that is NOT a ProtoN child. 
+	 * That won't happen when CladosF builders are used because they can't build anything that is NOT a ProtoN child. 
 	 * Scale's internal map only accepts ProtoN child classes, so there is no danger of a failed cast operation... 
 	 * until someone creates a new ProtoN child class and fails to update the builders.
 	 * <br><br>
      * @return Stream of Scales of numbers (ProtoN children)
      */
-    public Stream<Scale<D>> scaleStream() {
-        return mapOfMaps.values().stream();
-    }
-
-    /**
-	 * This method returns a parallelizable stream of the Scales in this Frame. It is intended for wholesale 
-     * operations on the weights that may be done in any order. It is mostly for use by the owning object of this Scale.
-	 * <br><br>
-	 * @return A stream of weights as children of ProtoN.
-	 */
-    public Stream<Scale<D>> scaleParallelStream() {
-        return mapOfMaps.values().parallelStream();
-    }
+    //public Stream<Scale<D>> scaleStream() {
+    //    return mapOfMaps.sequencedValues().stream();
+    //}
 
     /**
      * This method causes all coefficients to be set to zero re-using their cardinals.
@@ -264,7 +284,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      */
     protected Connection<D> zeroAll(CladosField pMode, Cardinal pCard) {
 		algebra1.getBasis()  .bladeStream().forEach(b -> {
-			    mapOfMaps   .get(b).weightsParallelStream().forEach(scl -> {
+			     mapOfMaps   .get(b).weightsParallelStream().forEach(scl -> {
                     scl =   FBuilder.createZERO(pMode, pCard);}
             );
         });

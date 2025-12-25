@@ -291,9 +291,9 @@ public class GExporter {
 	 */
 	public final static String toXMLString(Scale<?> pS, String indent) {
 		StringBuilder rB = new StringBuilder(indent);		
-		rB	.append("<Scales mode=\""+pS.getMode()+"\" ");
+		rB	.append("<Scale mode=\""+pS.getMode()+"\" ");
 		rB	.append("pans=\""+pS.map.size()+"\" ")
-			.append("cardinal="+pS.getCardinal().getUnit()+"\">\n");
+			.append("cardinal=\""+pS.getCardinal().getUnit()+"\">\n");
 
 		pS.getBasis().bladeStream().forEach(blade -> {
 			rB	.append(indent+"\t")
@@ -329,7 +329,7 @@ public class GExporter {
 			rB	.append("\" />\n");
 		});
 		rB	.append(indent)
-			.append("</Scales>\n");
+			.append("</Scale>\n");
 		return rB.toString();
 	}
 
@@ -342,7 +342,7 @@ public class GExporter {
 	 */
 	public final static String toXMLFullString(Scale<?> pS, String indent) {
 		StringBuilder rB = new StringBuilder(indent);		
-		rB	.append("<Scales mode=\""+pS.getMode()+"\" pans=\"")
+		rB	.append("<Scale mode=\""+pS.getMode()+"\" pans=\"")
 			.append(pS.map.size())
 			.append("\">\n");
 
@@ -360,7 +360,7 @@ public class GExporter {
 			}	
 			rB	.append(indent).append("\t\t\t</Pair>\n");
 		});
-		rB	.append(indent).append("\t\t</Scales>\n");
+		rB	.append(indent).append("\t\t</Scale>\n");
 		return rB.toString();
 	}
 
@@ -480,6 +480,28 @@ public class GExporter {
 		rB.append(indent).append("\t</MonadList>\n");
 		
 		rB.append(indent).append("</Nyad>\n");
+		return rB.toString();
+	}
+
+	public final static String toXMLFullString(Connection<?> pC) {
+		
+		StringBuilder rB = new StringBuilder("<Connection  mode=\""+pC.getMode());
+		rB	.append("\" cardinal=\""+pC.getCardinal().getUnit()+"\">\n");
+
+		rB	.append(GExporter.toXMLString(pC.getAlgebra(true), "\t"));
+		rB	.append(GExporter.toXMLString(pC.getAlgebra(false), "\t"));
+
+		//TODO Sketch out the map of maps. Probably looks like Scale's <Pairs> section matching blades and scales
+
+		pC.bladeStream().forEach(blade -> {
+			rB	.append("\t").append("<OuterMap>\n");
+			rB	.append("\t").append(GExporter.toXMLString(blade, "\t"));
+			rB	.append("\t").append(GExporter.toXMLString(pC.getAt(blade), "\t"));
+			rB	.append("\t").append("</OuterMap>\n");
+		});
+
+
+		rB	.append("</Connection>\n");
 		return rB.toString();
 	}
 }
