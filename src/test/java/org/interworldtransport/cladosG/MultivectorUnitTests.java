@@ -6,14 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.interworldtransport.cladosF.Cardinal;
-import org.interworldtransport.cladosF.CladosField;
-import org.interworldtransport.cladosF.ComplexD;
-import org.interworldtransport.cladosF.ComplexF;
-import org.interworldtransport.cladosF.FBuilder;
-import org.interworldtransport.cladosF.FListBuilder;
-import org.interworldtransport.cladosF.RealD;
-import org.interworldtransport.cladosF.RealF;
+import org.interworldtransport.cladosF.*;
 import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 import org.interworldtransport.cladosGExceptions.CladosException;
