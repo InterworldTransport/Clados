@@ -24,7 +24,6 @@
  */
 package org.interworldtransport.cladosG;
 
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -34,43 +33,34 @@ import org.interworldtransport.cladosF.ProtoN;			//Parent class of usable fields
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 
 /**
- * The algebra object holds all geometric details that support the definition of
- * a multivector over a division field {Cl(p,q) x ProtoN} except for the
- * actual field. That makes this a partial abstraction of an algebra. Once an
- * actual division field is in the mix we are there, but that structure is
- * reserved for the Monad class.
+ * The algebra object holds all geometric details that support the definition of a multivector over a division 
+ * field {Cl(p,q) x ProtoN} except for the actual field. That makes this a partial abstraction of an algebra. 
+ * Once an actual division field is in the mix we are there, but that structure is reserved for the Monad class.
  * <br><br>
- * The primary data structures in a Algebra are a Basis and a GProduct.
- * Between them they define the structure of operations an Algebra can support.
- * The basis provides for most behaviors people know from vector spaces. The
- * product provides the other behaviors people know from differential forms.
- * Together, though, they enable linear combinations of multi-ranked sums, thus
- * they step beyond familiar ground from forms and outer products AND the
- * familiar ground of scalar-only multiplication in vector spaces. All elements
- * of an algebra an participate in addition and multiplication and
- * multiplicative commutativity is NOT expected.
+ * The primary data structures in a Algebra are a Basis and a GProduct. Between them they define the structure 
+ * of operations an Algebra can support. The basis provides for most behaviors people know from vector spaces. 
+ * The product provides the other behaviors people know from differential forms. Together, though, they enable 
+ * linear combinations of multi-ranked sums, thus they step beyond familiar ground from forms and outer products 
+ * AND the familiar ground of scalar-only multiplication in vector spaces. All elements of an algebra an 
+ * participate in addition and multiplication and multiplicative commutativity is NOT expected.
  * <br><br>
- * This isn't the place to explain what Clifford Algebras are and what they do.
- * This IS the place to point that that Clados extends the idea slightly in
- * order to support future uses.
+ * This isn't the place to explain what Clifford Algebras are and what they do. This IS the place to point out 
+ * that Clados extends the idea slightly in order to support future uses.
  * <br><br>
- * 1. An Algebra references a 'Foot' object to imitate a location where the
- * algebra's geometry is expected to be a tangent space to some underlying
- * curved sub-manifold. No attempt at curvature is made here, but the Foot
- * object IS used in reference match tests. This is intentionally done to
- * prevent different tangent spaces being compared. In a model that assumes
- * curvature on the manifold, one must first transport their frame before making
- * comparisons. No 'transport' capability is written for Clados, but it might be
- * some day.
+ * 1. An Algebra references a 'Foot' object to imitate a location where the algebra's geometry is expected to be a 
+ * tangent space to some underlying curved sub-manifold. No attempt at curvature is made here, but the Foot object 
+ * IS used in reference match tests. This is intentionally done to prevent different tangent spaces being compared. 
+ * In a model that assumes curvature on the manifold, one must first transport their frame before making comparisons. 
+ * A Connection IS being added to the library, but as a different class.
  * <br><br>
- * Anyone wanting to get around this feature need only declare one 'Foot' and
- * then re-use it everywhere. The computational penalty is miniscule.
+ * Anyone wanting to get around use of a Foot need only declare one and then re-use it everywhere. The computational 
+ * penalty is miniscule.
  * <br><br>
- * 2. There is a UUID string kept internally for use as an XML/JSON variant of
- * serialization. It has no geometric meaning. Think of it as a digital name.
+ * 2. There is a UUID string kept internally for use as an XML/JSON variant of serialization. It has no geometric 
+ * meaning. Think of it as a digital name.
  * <br><br>
- * 3. There is also a 'name' string for the human readable name of an algebra.
- * It has no geometric meaning and is not used for anything important.
+ * 3. There is also a 'name' string for the human readable name of an algebra. It has no geometric meaning and is
+ * not used for anything more important than finding an algebra from a list.
  * <br><br>
  * @version 2.0
  * @author Dr Alfred W Differ
@@ -103,22 +93,24 @@ public final class Algebra implements Comparable<Algebra> {
 			return null;										//Nothing to use for context
 
 		if (pPScalar == null )									//pA is NOT null here
-			return new Algebra("CopyOf-"+pA.getAName(), pA);	//Assume pA's pscalar and just copy pA
+			return new Algebra(pA.getAName()+"-CopyOf", pA);	//Assume pA's pscalar and just copy pA
 
 		if (pA == null)	{										//No context, but pPScalar is NOT null at least
-			byte[] sig = new byte[pPScalar.rank()];					
-			Arrays.fill(sig, (byte) 0);							//Default to degeneracy
+			StringBuffer charSig = new StringBuffer();
+			for (int j=0; j<pPScalar.rank(); j++)	
+				charSig.append("0");						//Default to degeneracy
 			return new Algebra(	"", 					//nameless
 								new Foot(""), 			//nameless
-								new String(sig));				//k-blades will exist, but only barely
+								charSig.toString());			//k-blades will exist, but only barely
 		}
-																//Blade and context algebra exist. Now find relevant signature part.
-		Generator[] pointor = (Generator[]) pPScalar.getGenerators().toArray();	//Array of generators in pPScalar. pointor.length=rank.
+																//Blade and context algebra exist. Now find relevant signature part.		
+		Object[] pointor = pPScalar.getGenerators().toArray();	//Array of generators in pPScalar. pointor.length=rank.
 		byte[] refSignature = pA.getGP().nsignature();							//Recall that array index = generator.ord - 1
+
 		StringBuffer charSig = new StringBuffer(pPScalar.rank());
-		IntStream	.range(0, pointor.length)					//Determine index range from pPScalar.rank()
+		IntStream	.range(0, pPScalar.rank())					//Determine index range from pPScalar.rank()
 					.forEach(i -> {												//Iterate through pointer on index 'i'.
-						switch (refSignature[(byte) (pointor[i].ord - 1)]) {	//switch on nsignature's byte at a generator.ord - 1
+						switch (refSignature[(byte) (((Generator) pointor[i]).ord - 1)]) {	//switch on nsignature's byte at a generator.ord - 1
 							case +1 -> charSig.append("+");				//pointer's generator sqaures to +1
 							case 0 	-> charSig.append("0");				//pointer's generator sqaures to 0
 							case -1 -> charSig.append("-");				//pointer's generator sqaures to -1
@@ -276,14 +268,13 @@ public final class Algebra implements Comparable<Algebra> {
 	}
 
 	/**
-	 * This method is present to enable sorting of lists of algebras. It isn't
-	 * critical in the geometric sense, but it might be useful in certain physical
-	 * models.
+	 * This method is present to enable sorting of lists of algebras. It isn't critical in the geometric sense, 
+	 * but it might be useful in certain physical models.
 	 * <br>
 	 * @param pAnother Algebra This is the algebra to be name compared
-	 * @return int -1 if the name of 'this' algebra is 'less' than that of pAnother.
-	 *         0 if the two names are the same +1 if the name of this algebra is
-	 *         'greater' than that of pAnother.
+	 * @return int 	-1 if the name of 'this' algebra is 'less' than that of pAnother. 
+	 * 				 0 if the two names are the same 
+	 * 				+1 if the name of this algebra is 'greater' than that of pAnother.
 	 */
 	@Override
 	public int compareTo(Algebra pAnother) {

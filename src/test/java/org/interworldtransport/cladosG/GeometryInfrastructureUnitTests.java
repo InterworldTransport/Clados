@@ -601,6 +601,28 @@ public class GeometryInfrastructureUnitTests {
         }
 
         @Test
+        public void testSupportOf() throws BadSignatureException {
+            Blade e12 = alg1.getBasis().getSingleBlade(5);          //Should be E1,E2
+                        
+            Algebra vga2Da = Algebra.supportOf(null, null);
+            assertNull(vga2Da);
+            
+            vga2Da = Algebra.supportOf(alg1, null);
+            assertNotNull(vga2Da);
+            assertTrue(vga2Da.compareTo(alg1) > 0);
+
+            vga2Da = Algebra.supportOf(null, e12);
+            assertNotNull(vga2Da);
+            assertTrue(vga2Da.getBladeCount() == 4);
+            assertTrue(vga2Da.getGP().signature().equals("00"));
+
+            Algebra vga2Dc = Algebra.supportOf(alg1, e12);
+            assertNotNull(vga2Dc);
+            assertTrue(vga2Dc.getBladeCount() == 4);
+            assertTrue(CanonicalBlade.equivalent(vga2Dc.getBasis().getPScalarBlade(), e12));
+        }
+
+        @Test
         public void testHashChanges() {
             int hash3 = alg3.hashCode();
             alg3.setAName("Something Else");
