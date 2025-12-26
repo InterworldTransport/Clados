@@ -83,7 +83,7 @@ public class MachineryUnitTests {
             }
 
             @Test
-            public void testXMLOutputBladeDuet() {
+            public void testBladeDuetXMLOutput() {
                 Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
                 Blade maxSize2 = Blade.createBlade(Generator.EF).add(Generator.E1).add(Generator.E2);
                 BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
@@ -96,7 +96,7 @@ public class MachineryUnitTests {
             }
 
             @Test
-            void testXMLOutputBasis() {
+            void testBasisStrings() {
                 Basis tBasis12 = new Basis(Generator.EC);
                 String xml = GExporter.toXMLString(tBasis12, "");
                         //System.out.println("Character Count: "+xml.length());
@@ -106,6 +106,10 @@ public class MachineryUnitTests {
                         //System.out.println("Character Count: "+xml.length());
                 assertTrue(xml != null);
                 assertTrue(xml.length() == 354176);
+
+                String tOut = GExporter.toJSON(new Basis(Generator.E2));
+                assertNotNull(tOut);
+                //System.out.println("A Basis\n"+tOut);
             }
 
             @Test

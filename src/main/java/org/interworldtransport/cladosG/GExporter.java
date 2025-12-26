@@ -61,7 +61,7 @@ public class GExporter {
 	 */
 	public final static String toJSON(Foot pF) {
 		StringBuilder rB = new StringBuilder();
-		rB	.append("{\"Foot\": {\"name\": \"")
+		rB	.append("{\"foot\": {\"name\": \"")
 			.append(pF.getName())
 			.append("\"}}\n");
 		return rB.toString();
@@ -84,9 +84,9 @@ public class GExporter {
 	*/
 	public final static String toJSON(Blade blade) {
 		StringBuilder rB = new StringBuilder();
-		rB	.append("{\"Blade\": {\"key\": \"")
+		rB	.append("{\"blade\": {\"key\": ")
 			.append(blade.key())
-			.append("\", \"bitKey\": \"0b");
+			.append(", \"bitKey\": \"0b");
 		int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
 		while (pad>0) {
 			rB.append("0");
@@ -98,6 +98,80 @@ public class GExporter {
 				.forEachOrdered(g -> rB.append("\""+g.toString()+"\"").append(","));
 		if (blade.getGenerators().size() > 0)	rB.deleteCharAt(rB.length() - 1);
 		rB	.append("]}}");
+		return rB.toString();
+	}
+
+	public final static String toJSON(BladeDuet duet) {
+		StringBuilder rB = new StringBuilder();
+
+		//TODO Build JSON output for BladeDuet. It will be very similar to Blade's version.
+
+		return rB.toString();
+	}
+
+	/**
+	 * Export a Basis as a JSON fragment. Object properties are represented as attributes.
+	 * This is intended as an output format.
+	 * <br><br>
+	 * Example:<br>
+	 * {<br>
+	 *	"basis": {<br>
+	 *	"UUID": "6f264df4-0b45-4ac2-9679-3ff1d181a0dc", <br>
+	 *	"Grades": {<br>
+	 *		"count": 3,<br> 
+	 *		"grade": [	{"rank": 0, "range": "0-0"}, <br>
+	 *					{"rank": 1, "range": "1-2"}, <br>
+	 *					{"rank": 2, "range": "3-3"}]<br>
+	 *		}, <br>
+	 *	"Blades": {<br>
+	 *		"count": 4,<br> 
+	 *		"blade": [ 	{"key": 0, "bitKey": "0b00", "generators": []}, <br>
+	 *					{"key": 1, "bitKey": "0b01", "generators": ["E1"]}, <br>
+	 *					{"key": 2, "bitKey": "0b10", "generators": ["E2"]}, <br>
+	 *					{"key": 5, "bitKey": "0b11", "generators": ["E1","E2"]}]<br>
+	 *		}<br>
+	 *	}<br>
+	 * }
+	 * <br><br>
+	 * @param basis to be exported as JSON
+	 * @return String formatted as JSON containing information about the input
+	 */
+	public final static String toJSON(Basis basis) {
+		StringBuilder rB = new StringBuilder();
+
+		rB	.append("{\"basis\": {\"UUID\": \"")
+			.append(basis.uuid)
+			.append("\", \"Grades\": {\"count\": ")
+			.append(basis.getGradeCount());
+			
+		rB	.append(", \"grade\": [");
+		for (int k = 0; k < basis.getGradeCount(); k++) {						//loop through grades constructing grade ranges.
+			rB	.append("{\"rank\": ")
+				.append(k)
+				.append(", \"range\": \"");
+			rB	.append(basis.getGrades().get(k))
+				.append("-");
+			if (k == basis.getGradeCount() - 1 )
+					rB	.append(basis.getGrades().get(k));						//this is why the pscalar is handled separately
+			else 	rB	.append(basis.getGrades().get(k + 1) - 1);				//there is is a next higher grade
+			rB	.append("\"}, ");
+			}
+		rB	.deleteCharAt(rB.length()-1);										//lop the last character (removes trailing space)
+		rB	.deleteCharAt(rB.length()-1);										//lop the last character (removes trailing comma)
+		rB	.append("]}, ");
+
+		rB	.append("\"Blades\": {\"count\": ")
+			.append(basis.getBladeCount());
+		rB	.append(", \"blade\": [");
+		basis.bladeStream().forEach(blade -> {
+			StringBuffer workThis = new StringBuffer(GExporter.toJSON(blade));
+			workThis.delete(0,9);
+			workThis.deleteCharAt(workThis.length()-1);
+			workThis.append(",");
+			rB.append(workThis);
+		});
+		rB	.deleteCharAt(rB.length()-1);									//lop the last character (removes trailing comma)
+		rB	.append("]}}}");
 		return rB.toString();
 	}
 
@@ -528,15 +602,12 @@ public class GExporter {
 		rB	.append(GExporter.toXMLString(pC.getAlgebra(true), "\t"));
 		rB	.append(GExporter.toXMLString(pC.getAlgebra(false), "\t"));
 
-		//TODO Sketch out the map of maps. Probably looks like Scale's <Pairs> section matching blades and scales
-
 		pC.bladeStream().forEach(blade -> {
 			rB	.append("\t").append("<OuterMap>\n");
 			rB	.append("\t").append(GExporter.toXMLString(blade, "\t"));
 			rB	.append("\t").append(GExporter.toXMLString(pC.getAt(blade), "\t"));
 			rB	.append("\t").append("</OuterMap>\n");
 		});
-
 
 		rB	.append("</Connection>\n");
 		return rB.toString();
