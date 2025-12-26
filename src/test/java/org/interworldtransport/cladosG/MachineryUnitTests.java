@@ -59,10 +59,14 @@ public class MachineryUnitTests {
 
                 tOut = GExporter.toXMLString(here, null);
                 assertTrue(tOut.length()>howLong);						//Odd? No. Defaults a number of tab characters as indent.
+
+                tOut = GExporter.toJSON(here);
+                assertNotNull(tOut);
+                //System.out.println("A Foot\n"+tOut);
             }
 
             @Test
-            public void testXMLOutputBlade() {
+            public void testBladeStrings() {
                 Blade tB = Blade.createBladePlus(gMax);
                 Generator.stream(gMax.ord).forEach(g-> tB.add(g));
                 String regString = "\t<Blade key=\"81985529216486896\" bitKey=\"0b111111111111111\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
@@ -72,6 +76,10 @@ public class MachineryUnitTests {
 
                 assertTrue(test1.compareTo(regString) == -1); // blade key is off by one (too much) on the last digit
                 assertTrue(test2.compareTo(ordString) == 0); // blade key is exact match this time
+
+                String tOut = GExporter.toJSON(tB);
+                assertNotNull(tOut);
+                //System.out.println("A Blade\n"+tOut);
             }
 
             @Test

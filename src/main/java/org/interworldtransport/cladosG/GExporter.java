@@ -50,16 +50,54 @@ public class GExporter {
 	 * Export a Foot as a small JSON fragment. Object properties are represented as attributes.
 	 * This is intended as an output format.
 	 * <br><br>
-	 * {"Foot": {"name": "NamedPoint"}}
+	 * {<br>
+	 * 	"Foot": {<br>
+	 * 		"name": "NamedPoint"<br>
+	 * 		}<br>
+	 * }
 	 * <br><br>
 	 * @param pF Foot to be exported as JSON
-	 * @return String formatted as JSON containing information about the Foot
+	 * @return String formatted as JSON containing information about the input
 	 */
 	public final static String toJSON(Foot pF) {
 		StringBuilder rB = new StringBuilder();
 		rB	.append("{\"Foot\": {\"name\": \"")
 			.append(pF.getName())
 			.append("\"}}\n");
+		return rB.toString();
+	}
+	/**
+	 * Export a Blade as a small JSON fragment. Object properties are represented as attributes.
+	 * This is intended as an output format.
+	 * <br><br>
+	 * Example:<br>
+	 * {<br>
+	 * 	"Blade": {<br>
+	 * 		"key": "81985529216486895", <br>
+	 * 		"bitKey": "0b111111111111111", <br>
+	 * 		"generators": ["E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF"]<br>
+	 * 		}<br>
+	 * }
+	 * <br><br>
+	 * @param blade Blade to be exported as JSON
+	 * @return String formatted as JSON containing information about the input
+	*/
+	public final static String toJSON(Blade blade) {
+		StringBuilder rB = new StringBuilder();
+		rB	.append("{\"Blade\": {\"key\": \"")
+			.append(blade.key())
+			.append("\", \"bitKey\": \"0b");
+		int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
+		while (pad>0) {
+			rB.append("0");
+			pad--;
+		}
+		rB	.append(Integer.toBinaryString(blade.bitKey()))
+			.append("\", \"generators\": [");
+		blade	.generatorStream()
+				.forEachOrdered(g -> rB.append("\""+g.toString()+"\"").append(","));
+		if (blade.getGenerators().size() > 0)	rB.deleteCharAt(rB.length() - 1);
+		rB	.append("]}}");
 		return rB.toString();
 	}
 
@@ -121,11 +159,10 @@ public class GExporter {
 	 * <br>
 	 * This variation uses a Generator's name in the generator list.
 	 * <br>
-	 * @param blade  The Blade to be exported to XML.
-	 * @param indent String of 'tab' characters that help space the output correctly
-	 *               visually. It's not actually necessary except for human
-	 *               readability of the output.
-	 * @return String The XML formated String representing the Blade.
+	 * @param blade  	The Blade to be exported to XML.
+	 * @param indent 	String of 'tab' characters that help space the output correctly visually. 
+	 * 					It's not actually necessary except for human readability of the output.
+	 * @return String 	The XML formated String representing the Blade.
 	 */
 	public final static String toXMLString(Blade blade, String indent) {
 		if (indent == null)		indent = "\t\t\t\t\t\t\t\t";

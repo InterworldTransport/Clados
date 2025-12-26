@@ -1,1 +1,9 @@
+XML
 <Foot name="Test:TangentPoint" />
+
+JSON
+{
+"Foot": {
+    "name": "YouAreHere"
+    }
+}
