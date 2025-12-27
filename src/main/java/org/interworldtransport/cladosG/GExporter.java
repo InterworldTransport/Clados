@@ -123,6 +123,7 @@ public class GExporter {
 	 * @param duet BladeDuet to be exported as JSON
 	 * @return String formatted as JSON containing information about the input
 	*/
+	/*
 	public final static String toJSON(BladeDuet duet) {		
 		StringBuilder rB = new StringBuilder();
 		rB	.append("{\"duet\": {\"sign\": ")
@@ -135,6 +136,7 @@ public class GExporter {
 		rB	.append("]}}");
 		return rB.toString();
 	}
+	*/
 
 	/**
 	 * Export a Basis as a JSON fragment. Object properties are represented as attributes.
@@ -299,6 +301,7 @@ public class GExporter {
 	 * @param pBD The blade duet to export as XML.
 	 * @return String The XML formated String representing the BladeDuet.
 	 */
+	/*
 	public final static String toXMLString(BladeDuet pBD) {
 		StringBuilder rB = new StringBuilder();
 		rB.append("<BladeDuet sign=\"").append(pBD.sign).append("\" maxGrade=\"").append(pBD.maxGen.ord).append("\" generators=\"");
@@ -308,7 +311,8 @@ public class GExporter {
 		rB.append("\" />\n");
 		return rB.toString();
 	}
-
+	 */
+	
 	/**
 	 * This method produces a printable and parseable string that represents the
 	 * Basis in a human readable form. return String

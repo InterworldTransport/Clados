@@ -81,7 +81,7 @@ public class MachineryUnitTests {
                 assertNotNull(tOut);
                 //System.out.println("A Blade\n"+tOut);
             }
-
+            /*
             @Test
             public void testBladeDuetStrings() {
                 Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
@@ -98,7 +98,7 @@ public class MachineryUnitTests {
                 assertNotNull(tOut);
                 //System.out.println("A BladeDuet\n"+tOut);
             }
-
+            */
             @Test
             void testBasisStrings() {
                 Basis tBasis12 = new Basis(Generator.EC);

@@ -110,11 +110,16 @@ public final class BladeDuet {
 		BladeDuet tBD = new BladeDuet(pB1, pB2);
 		return tBD.simplify(sig);
 	}
+
 	/**
-	 * These are the bitKey's of the Blades inserted.
-	 * They get used to help with the simplify algorithm.
+	 * This is the left blade in the ordered pair that BladeDuet really is.
 	 */
-	private int bitKeyLeft, bitKeyRight = 0;
+	protected final Blade bladeLeft;
+
+	/**
+	 * This is the right blade in the ordered pair that BladeDuet really is.
+	 */
+	protected final Blade bladeRight;
 	
 	/**
 	 * This holds the combined list of generators from each blade.
@@ -134,29 +139,41 @@ public final class BladeDuet {
 	protected byte sign = 1;
 
 	/**
-	 * This is where the hint is kept for the largest possible blade in the 
-	 * basis to which the resulting blade actually belongs. It is capped by the 
-	 * maximum grade from one of the blades... which really should have the 
-	 * same maximum grade.
+	 * This is where the hint is kept for the largest possible blade in the basis to which the resulting blade actually belongs. 
+	 * It is capped by the maximum grade from one of the blades... which really should have the same maximum grade.
 	 */
-	protected final Generator maxGen;
+	protected Generator maxGen;
 
 	/**
-	 * This is a re-use constructor that builds this as a juxtaposition of the two offered blades.
-	 * <br>
+	 * This constructor builds what is essentially an ordered pair of blades and then sets up the simplification steps
+	 * that usually follow.
+	 * <br><br>
 	 * @param pB1 A Blade to re-use on the left.
 	 * @param pB2 A Blade to re-use on the right.
 	 */
 	public BladeDuet(Blade pB1, Blade pB2) {
-		assert (pB1.maxGenerator() == pB2.maxGenerator());
-		maxGen = Generator.get((byte) pB1.maxGenerator());
-		bladeDuet = (maxGen != null) ? new ArrayList<>(2 * maxGen.ord) : new ArrayList<>(2);
-		pB1.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
-		sign = pB1.sign();
-		bitKeyLeft = pB1.bitKey();
-		pB2.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
-		sign *= pB2.sign();
-		bitKeyRight = pB2.bitKey();
+		bladeLeft = pB1;
+		bladeRight = pB2;
+	}
+
+	/**
+	 * The details in this method were originally in the Constructor, but have been moved to this private method which gets called 
+	 * by any other method that ACTUALLY needs the work to be done. The contents of private data elements don't need to be preserved
+	 * long most of the time, so once the Cayley Table is constructed, the primary use for BladeDuet is as an ordered pair of blades
+	 * in maps. That use in maps does not require the work done in this method.
+	 * <br><br>
+	 * There is a secondary use that does wind up calling here that involves blade complements. The complement methods rely on the 
+	 * simplify methods, so initialization of the bladeDuet is handled properly.
+	 */
+	private void setup() {
+		assert (bladeLeft.maxGenerator() == bladeRight.maxGenerator());											//Don't simplify mismatched blades basically
+		maxGen = Generator.get((byte) Math.max(bladeLeft.maxGenerator(), bladeRight.maxGenerator()));			//Only relevant when blades are multiplied
+		bladeDuet = (maxGen != null) ? new ArrayList<>(2 * maxGen.ord) : new ArrayList<>(2);	//Only relevant when blades are multiplied
+		
+		bladeLeft.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
+		sign = bladeLeft.sign();
+		bladeRight.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
+		sign *= bladeRight.sign();
 	}
 
 	/**
@@ -173,7 +190,8 @@ public final class BladeDuet {
 	 * @return Blade complement of the non-pscalar blade used to initialize the BladeDuet.
 	 */
 	private Blade simplifyForEllipticDual(byte[] pSig) {
-		int andKey = bitKeyLeft & bitKeyRight;
+		setup();
+		int andKey = bladeLeft.bitKey() & bladeRight.bitKey();
 		byte gen = 1;										//start with lowest generator
 		while (andKey > 0) {								//while any duplicate generators present
 			if (Integer.lowestOneBit(andKey) == 1) {		//andKey is odd => low bit names duplicate generator. Action required.
@@ -209,7 +227,8 @@ public final class BladeDuet {
 	 * @return Blade complement of the non-pscalar blade used to initialize the BladeDuet.
 	 */
 	private Blade simplifyForHyperbolicDual(byte[] pSig) {
-		int andKey = bitKeyLeft & bitKeyRight;
+		setup();
+		int andKey = bladeLeft.bitKey() & bladeRight.bitKey();
 		byte gen = 1;										//start with lowest generator
 		while (andKey > 0) {								//while any duplicate generators present
 			if (Integer.lowestOneBit(andKey) == 1) {		//andKey is odd => low bit names duplicate generator. Action required.
@@ -252,7 +271,8 @@ public final class BladeDuet {
 	 * @return Blade [supporting stream approach]
 	 */
 	private Blade simplify(byte[] pSig) {
-		int andKey = bitKeyLeft & bitKeyRight;
+		setup();
+		int andKey = bladeLeft.bitKey() & bladeRight.bitKey();
 		byte gen = 1;										//start with lowest generator
 		while (andKey > 0) {								//while any duplicate generators present
 			if (Integer.lowestOneBit(andKey) == 1) {		//andKey is odd => low bit points at duplicate generator
@@ -274,9 +294,9 @@ public final class BladeDuet {
 		
 		bladeDuet.stream().forEach(g -> returnIt.add(g));	//Load remaining generators IF NO paired generator was degenerate
 															//returnIt has the correct generators, but might have the wrong sign
-		andKey = bitKeyLeft & bitKeyRight;
+		andKey = bladeLeft.bitKey() & bladeRight.bitKey();
 															// if either residue key vanishes, the bladeDuet is already in SORT order.
-		if ((bitKeyLeft - andKey) != 0 & (bitKeyRight - andKey) != 0) {
+		if ((bladeLeft.bitKey() - andKey) != 0 & (bladeRight.bitKey() - andKey) != 0) {
 			ArrayList<Generator> pB = new ArrayList<>(returnIt.getGenerators());
 			for (Generator pG : pB) { 						// Exploiting the KNOWN correct order.
 				int found = bladeDuet.indexOf(pG);

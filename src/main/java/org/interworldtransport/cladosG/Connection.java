@@ -62,13 +62,16 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
 	 */
 	protected Algebra algebra2;
 
-
     /**
 	 * When scales are appended to the internal map, they should all share the same cardinal. That cardinal is 
 	 * referenced here for ease of access and to act as a standard.
 	 */
 	private Cardinal card;
 
+
+
+    private TreeMap<Blade, Blade> mapOfBlades;
+    
     /**
      * This map is the heart of this class. At the top level the key blades from the basis in 'algebra1' are used to 
      * point at other maps (Scales) that contain key blades from the basis in 'algebra2' to number values. 
@@ -96,20 +99,23 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
       * there are a number of blades in the outer algebra with ZERO scales in the map of maps. If the outer algebra is larger than the inner
       * one, the same thing happens because no equivalent blade is found in the inner stream's filter. 
       * <br><br>
-      * @param pA       Algebra #1 providing context
-      * @param pB       Algebra #2 providing context
+      * @param pA1      Algebra #1 providing context
+      * @param pA2      Algebra #2 providing context
       * @param pMode    Precision mode used by numbers in the transformation maps.
       * @param pCard    Cardinal used by the numbers in the transformation maps.
       */
-    public Connection(Algebra pA, Algebra pB, CladosField pMode, Cardinal pCard) {
-        algebra1 = pA;
-        algebra2 = pB;
+    public Connection(Algebra pA1, Algebra pA2, CladosField pMode, Cardinal pCard) {
         mode = pMode;
         card = pCard;
+
+        algebra1 = pA1;
+        algebra2 = pA2;
+        
+        mapOfBlades = new TreeMap<>();
         mapOfMaps = new TreeMap<>();
-        pA.getBasis().bladeStream().forEach(b1 -> {                                                             //Pick a blade in the outer algebra. Don't go parallel.
-            Scale<D> tScale = new Scale<D>(mode, pB.getBasis(), card);                                          //Create a zero Scale using the inner algebra
-            Optional<Blade> similar = pB.getBasis().bladeStream().filter(b2 -> CanonicalBlade.equivalent(b1, b2)).findFirst(); //Find equivalent blade in inner algebra
+        pA1.getBasis().bladeStream().forEach(b1 -> {                                                             //Pick a blade in the outer algebra. Don't go parallel.
+            Scale<D> tScale = new Scale<D>(mode, pA2.getBasis(), card);                                          //Create a zero Scale using the inner algebra
+            Optional<Blade> similar = pA2.getBasis().bladeStream().filter(b2 -> CanonicalBlade.equivalent(b1, b2)).findFirst(); //Find equivalent blade in inner algebra
             if (similar.isPresent()) {                                                                          //If inner algebra has equivalent blade
                 switch (mode) {
                     case COMPLEXD -> tScale.put(similar.get(), (D) ComplexD.create(card, 1.0D, 0.0D));   //Replace weight at that blade to ONE
@@ -120,7 +126,22 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
             }                                                                                                   //ELSE not needed. tScale initiated with zero weights.
                                                                                                                 //Zero scale or ONE at equivalent blade
             mapOfMaps.put(b1, tScale);                                                                          //Happens for every b1. Processing order doesn't matter.
-        });    
+        });
+        setBladesMap();
+    }
+
+    /**
+     * This method sifts through the map of maps and rebuilds the blade lists to support connection transpose operations.
+     */
+    private void setBladesMap() {
+        bladeStream().forEachOrdered(b1 -> {
+            Scale<D> value = mapOfMaps.get(b1);
+            value.getMap().keySet().stream().forEach(b2 -> {
+                mapOfBlades.put(b1, b2);
+                //TODO the value at this location in the scale should be copied to a matrix
+            });
+        });
+
     }
 
     /**

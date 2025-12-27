@@ -86,7 +86,7 @@ public class DegenerateInfrastructureUnitTests {
         byte[] stapwsig = { 0, 1, -1, -1, -1 };
         Blade firstB, secondB, thirdB, out;
         Blade euclidianB, minkowskiB, projectiveB;
-        BladeDuet tBD;
+        Blade tB;
 
         /**
          * This test just makes sure that the mixed blade scenario is still prevented with degenerate signatures.
@@ -96,8 +96,8 @@ public class DegenerateInfrastructureUnitTests {
                 euclidianB = new Blade((byte) 3, g);
                 minkowskiB = new Blade((byte) 4, i);
                 projectiveB = new Blade((byte) 5, j);
-                assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
-                assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, projectiveB));
+                assertThrows(AssertionError.class, () -> tB = BladeDuet.simplify(euclidianB, minkowskiB, pgasig));
+                assertThrows(AssertionError.class, () -> tB = BladeDuet.simplify(euclidianB, projectiveB, pgasig));
         }
 
         /**

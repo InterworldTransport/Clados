@@ -1310,8 +1310,8 @@ public class GeometryInfrastructureUnitTests {
         byte[] sig = { 1, 1, 1, 1 };
         byte[] bigsig = { 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1 };
         Blade firstB, secondB, out, out2;
-        Blade euclidianB, minkowskiB;
-        BladeDuet tBD;
+        Blade euclidianB, minkowskiB, tB;
+        //BladeDuet tBD;
 
         @BeforeEach
         public void setUp() {
@@ -1366,7 +1366,7 @@ public class GeometryInfrastructureUnitTests {
 
         @Test
         void testBladeMatchFail() {									//max generator mismatch
-            assertThrows(AssertionError.class, () -> tBD = new BladeDuet(euclidianB, minkowskiB));
+            assertThrows(AssertionError.class, () -> tB = BladeDuet.simplify(euclidianB, minkowskiB, sig));
         }
 
         @Test
