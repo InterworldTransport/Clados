@@ -136,7 +136,7 @@ public final class BladeDuet {
 	 * Calculating the sign ALSO gets the algebra's signature involved,
 	 * so this DOES involve the metric.
 	 */
-	protected byte sign = 1;
+	protected byte sign = 0;
 
 	/**
 	 * This is where the hint is kept for the largest possible blade in the basis to which the resulting blade actually belongs. 
@@ -154,7 +154,7 @@ public final class BladeDuet {
 	public BladeDuet(Blade pB1, Blade pB2) {
 		bladeLeft = pB1;
 		bladeRight = pB2;
-		bladeDuet = new ArrayList<Generator>();
+		bladeDuet = new ArrayList<Generator>(30);
 	}
 
 	/**
@@ -166,15 +166,15 @@ public final class BladeDuet {
 	 * There is a secondary use that does wind up calling here that involves blade complements. The complement methods rely on the 
 	 * simplify methods, so initialization of the bladeDuet is handled properly.
 	 */
-	private void setup() {
+	private void setup() {																						//Only relevant when blades are multiplied
 		assert (bladeLeft.maxGenerator() == bladeRight.maxGenerator());											//Don't simplify mismatched blades basically
-		maxGen = Generator.get((byte) Math.max(bladeLeft.maxGenerator(), bladeRight.maxGenerator()));			//Only relevant when blades are multiplied
-		bladeDuet = (maxGen != null) ? new ArrayList<>(2 * maxGen.ord) : new ArrayList<>(2);	//Only relevant when blades are multiplied
-		
+		sign = (byte) (bladeLeft.sign() * bladeRight.sign());													
+		maxGen = Generator.get((byte) Math.max(bladeLeft.maxGenerator(), bladeRight.maxGenerator()));
+
+		bladeDuet = new ArrayList<Generator>(2*CladosConstant.MAXGRADE);
 		bladeLeft.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
-		sign = bladeLeft.sign();
 		bladeRight.generatorStream().forEachOrdered(g -> bladeDuet.add(g));
-		sign *= bladeRight.sign();
+		bladeDuet.trimToSize();
 	}
 
 	/**

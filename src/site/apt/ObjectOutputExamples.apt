@@ -44,6 +44,32 @@ JSON
 
 +----------------------
 
+** Blade Pairs (The BladeDuet)
+
+	Ordered pairs of Blades are needed in a few ways. The primary need involves construction of the (Cayley) table supporting
+	the geometric product. The blades are the row and column entries in the table just like multiplication tables for 
+	integers. The other need is highly related and involves transformations from one basis to another. The transformation 
+	map keys on one set of blades and takes values from linear combinations of the other blades.
+
+	The BladeDuet is essentially an ordered pair of Blades, but here are a few other structures found within that might
+	be in use or empty depending on what methods have been called lately.
+
++----------------------
+
+JSON
+{
+"duet": {
+	"sign": 1, 
+	"maxGrade": 3, 
+	"Blades": {
+		"blade": [ 	{"key": 27, "bitKey": "0b111", "generators": ["E1","E2","E3"]}, 
+				{"key": 6, "bitKey": "0b011", "generators": ["E1","E2"]} ]
+		}
+	}
+}
+
++----------------------
+
 ** Bases
 
     A Basis is mostly an array of Blades but stored as a list and sorted by Blade's key. The smallest key corresponds

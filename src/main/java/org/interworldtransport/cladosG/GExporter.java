@@ -120,7 +120,8 @@ public class GExporter {
 	 *			"blade": [ 	{"key": 27, "bitKey": "0b111", "generators": ["E1","E2","E3"]}, <br>
 	 *						{"key": 6, "bitKey": "0b011", "generators": ["E1","E2"]} ]<br>
 	 *		}<br>
-	 *	}
+	 *	}<br>
+	 * }
 	 * <br><br>
 	 * @param duet BladeDuet to be exported as JSON
 	 * @return String formatted as JSON containing information about the input
