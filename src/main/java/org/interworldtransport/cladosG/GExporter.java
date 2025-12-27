@@ -66,6 +66,7 @@ public class GExporter {
 			.append("\"}}\n");
 		return rB.toString();
 	}
+
 	/**
 	 * Export a Blade as a small JSON fragment. Object properties are represented as attributes.
 	 * This is intended as an output format.
@@ -73,16 +74,17 @@ public class GExporter {
 	 * Example:<br>
 	 * {<br>
 	 * 	"Blade": {<br>
-	 * 		"key": "81985529216486895", <br>
+	 * 		"key": 81985529216486895, <br>
 	 * 		"bitKey": "0b111111111111111", <br>
 	 * 		"generators": ["E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF"]<br>
 	 * 		}<br>
 	 * }
 	 * <br><br>
 	 * @param blade Blade to be exported as JSON
+	 * @param pAsText boolean determines whether generators are exported in text or ordinal representation.
 	 * @return String formatted as JSON containing information about the input
 	*/
-	public final static String toJSON(Blade blade) {
+	public final static String toJSON(Blade blade, boolean pAsText) {
 		StringBuilder rB = new StringBuilder();
 		rB	.append("{\"blade\": {\"key\": ")
 			.append(blade.key())
@@ -94,18 +96,43 @@ public class GExporter {
 		}
 		rB	.append(Integer.toBinaryString(blade.bitKey()))
 			.append("\", \"generators\": [");
-		blade	.generatorStream()
-				.forEachOrdered(g -> rB.append("\""+g.toString()+"\"").append(","));
+
+		if(pAsText)	blade	.generatorStream()
+							.forEachOrdered(g -> rB.append("\""+g.toString()+"\"").append(","));
+		else		blade	.generatorStream()
+							.forEachOrdered(g -> rB.append(g.ord).append(","));
+
 		if (blade.getGenerators().size() > 0)	rB.deleteCharAt(rB.length() - 1);
 		rB	.append("]}}");
 		return rB.toString();
 	}
 
-	public final static String toJSON(BladeDuet duet) {
+	/**
+	 * Export a BladeDuet as a small JSON fragment. Object properties are represented as attributes.
+	 * This is intended as an output format.
+	 * <br><br>
+	 * Example:<br>
+	 * {<br>
+	 * 	"duet": {<br>
+	 * 		"sign": 1, <br>
+	 * 		"maxGrade": 15, <br>
+	 * 		"generators": ["E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF","E1","E2"]<br>
+	 * 		}<br>
+	 * } 
+	 * <br><br>
+	 * @param duet BladeDuet to be exported as JSON
+	 * @return String formatted as JSON containing information about the input
+	*/
+	public final static String toJSON(BladeDuet duet) {		
 		StringBuilder rB = new StringBuilder();
-
-		//TODO Build JSON output for BladeDuet. It will be very similar to Blade's version.
-
+		rB	.append("{\"duet\": {\"sign\": ")
+			.append(duet.sign)
+			.append(", \"maxGrade\": ")
+			.append(duet.maxGen.ord)
+			.append(", \"generators\": [");
+		duet.bladeDuet.stream().forEachOrdered(g -> rB.append("\""+g.toString()+"\","));
+		if (duet.bladeDuet.size() > 0)	rB.deleteCharAt(rB.length() - 1);
+		rB	.append("]}}");
 		return rB.toString();
 	}
 
@@ -164,7 +191,7 @@ public class GExporter {
 			.append(basis.getBladeCount());
 		rB	.append(", \"blade\": [");
 		basis.bladeStream().forEach(blade -> {
-			StringBuffer workThis = new StringBuffer(GExporter.toJSON(blade));
+			StringBuffer workThis = new StringBuffer(GExporter.toJSON(blade, true));
 			workThis.delete(0,9);
 			workThis.deleteCharAt(workThis.length()-1);
 			workThis.append(",");
@@ -594,6 +621,12 @@ public class GExporter {
 		return rB.toString();
 	}
 
+	/**
+	 * Display XML string that represents the Connection and all its internal details
+	 * <br><br>
+	 * @param pC The Connection to be exported as XML
+	 * @return String XML output of the offered Connection
+	 */
 	public final static String toXMLFullString(Connection<?> pC) {
 		
 		StringBuilder rB = new StringBuilder("<Connection  mode=\""+pC.getMode());

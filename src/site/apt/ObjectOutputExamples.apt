@@ -1,0 +1,131 @@
+Object Ouputs - Using GExporter
+
+    There are currently two supported formats for exporting Clados instances to flat text data. Neither is perfect in 
+    the sense of conforming to type standards, but they are generally close.
+
+    *   XML format is the older way. GExporter has a set of static methods that accept cladosG objects and an 'indentation'
+        hint. The original idea was to provide each object with a static method to export itself, but in physical models
+        with a lot of objects that seems like a waste of memory. The v2.0 way is to pile all of the methods in GExporter.
+
+    *   JSON format is the newer way. GExporter doesn't have methods for exporting every type of cladosG object this way
+        just yet... but will. I think the JSON exports will be a little smaller than XML exports, but that remains to 
+        be seen.
+    
+    []
+
+* Geometry Infrastructure
+
+** Generators
+
+    Generators don't have explicit XML or JSON output methods. They are all from the cladosG.Generator enumeration class,
+    so one can simply call generator.toString() on them to get their text representation or generator.ord to get the byte int.
+
+** Blades
+
+    Blades are mostly an array of generators expressed in comma separated strings or byte int's. Blade in cladosG also 
+    tracks two keys, though, so they also get exported. Blade's bit key is most likely familiar to geometric algebra 
+    developers. Blade's other key is a long int than can distiguish two equivalent blades belonging to bases with 
+    different sized pscalars.
+
++----------------------
+Generators can be exported as byte integers instead.
+
+XML
+<Blade key="81985529216486896" bitKey="0b111111111111111" generators="E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF" />
+------
+JSON
+{
+"blade": {
+    "key": 81985529216486895, 
+    "bitKey": "0b111111111111111",
+    "generators": ["E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF"]
+    }
+}
+
++----------------------
+
+** Bases
+
+    A Basis is mostly an array of Blades but stored as a list and sorted by Blade's key. The smallest key corresponds
+    to the scalar blade while the largest key indicates the pscalar blade.
+
+    Basis also tracks an array of list locations where blades of a particular grade are found. This is about cycle
+    management because a lot of typical uses for multivectors do not populate all the grades equally. Rather than
+    compute blade ranges every time they are needed, they are stored in Basis.
+
+    Finally, Basis also tracks a UUID to assist with memory management efforts that recognize that Basis has no signature 
+    information. This makes every basis using the same number of generators internally identical suggesting references
+    to bases stored in a cache would suffice in many problems. (Signature shows up in the geometric product class.)
+    This use of UUID may change in the near future, though, since the pscalar's key is smaller and should suffice.
+
++----------------------
+Generators can be exported as byte integers instead.
+
+XML
+<Basis UUID="cb77eeff-fe96-4645-add3-13c709de3691">
+	<Grades count="5">
+		<Grade rank="0" range="0-0" />
+		<Grade rank="1" range="1-4" />
+		<Grade rank="2" range="5-10" />
+		<Grade rank="3" range="11-14" />
+		<Grade rank="4" range="15-15" />
+	</Grades>
+	<Blades count="16">
+		<Blade key="0"   bitKey="0b0000" generators="           " />
+		<Blade key="1"   bitKey="0b0001" generators="E1         " />
+		<Blade key="2"   bitKey="0b0010" generators="   E2      " />
+		<Blade key="3"   bitKey="0b0100" generators="      E3   " />
+		<Blade key="4"   bitKey="0b1000" generators="         E4" />
+		<Blade key="7"   bitKey="0b0011" generators="E1,E2      " />
+		<Blade key="8"   bitKey="0b0101" generators="E1,   E3   " />
+		<Blade key="9"   bitKey="0b1001" generators="E1,      E4" />
+		<Blade key="13"  bitKey="0b0110" generators="   E2,E3   " />
+		<Blade key="14"  bitKey="0b1010" generators="   E2,   E4" />
+		<Blade key="19"  bitKey="0b1100" generators="      E3,E4" />
+		<Blade key="38"  bitKey="0b0111" generators="E1,E2,E3   " />
+		<Blade key="39"  bitKey="0b1011" generators="E1,E2,   E4" />
+		<Blade key="44"  bitKey="0b1101" generators="E1,   E3,E4" />
+		<Blade key="69"  bitKey="0b1110" generators="   E2,E3,E4" />
+		<Blade key="194" bitKey="0b1111" generators="E1,E2,E3,E4" />
+	</Blades>
+</Basis>
+------
+JSON
+{
+"basis": {
+	"UUID": "ae411b73-e758-4f1b-a00f-4a1ca8feae5f", 
+	"Grades": {
+		"count": 5, 
+		"grade": [	{"rank": 0, "range": "0-0"}, 
+				{"rank": 1, "range": "1-4"}, 
+				{"rank": 2, "range": "5-10"}, 
+				{"rank": 3, "range": "11-14"}, 
+				{"rank": 4, "range": "15-15"}]
+		}, 
+	"Blades": {
+		"count": 16, 
+		"blade": [ 	{"key": 0, "bitKey": "0b0000", "generators": []}, 
+				{"key": 1, "bitKey": "0b0001", "generators": ["E1"]}, 
+				{"key": 2, "bitKey": "0b0010", "generators": ["E2"]}, 
+				{"key": 3, "bitKey": "0b0100", "generators": ["E3"]}, 
+				{"key": 4, "bitKey": "0b1000", "generators": ["E4"]}, 
+				{"key": 7, "bitKey": "0b0011", "generators": ["E1","E2"]}, 
+				{"key": 8, "bitKey": "0b0101", "generators": ["E1","E3"]}, 
+				{"key": 9, "bitKey": "0b1001", "generators": ["E1","E4"]}, 
+				{"key": 13, "bitKey": "0b0110", "generators": ["E2","E3"]}, 
+				{"key": 14, "bitKey": "0b1010", "generators": ["E2","E4"]}, 
+				{"key": 19, "bitKey": "0b1100", "generators": ["E3","E4"]}, 
+				{"key": 38, "bitKey": "0b0111", "generators": ["E1","E2","E3"]}, 
+				{"key": 39, "bitKey": "0b1011", "generators": ["E1","E2","E4"]}, 
+				{"key": 44, "bitKey": "0b1101", "generators": ["E1","E3","E4"]}, 
+				{"key": 69, "bitKey": "0b1110", "generators": ["E2","E3","E4"]}, 
+				{"key": 194, "bitKey": "0b1111", "generators": ["E1","E2","E3","E4"]} ]
+		}
+	}
+}
+
++----------------------
+
+** GProducts
+
+	x

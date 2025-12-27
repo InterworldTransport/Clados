@@ -77,13 +77,13 @@ public class MachineryUnitTests {
                 assertTrue(test1.compareTo(regString) == -1); // blade key is off by one (too much) on the last digit
                 assertTrue(test2.compareTo(ordString) == 0); // blade key is exact match this time
 
-                String tOut = GExporter.toJSON(tB);
+                String tOut = GExporter.toJSON(tB, true);
                 assertNotNull(tOut);
                 //System.out.println("A Blade\n"+tOut);
             }
 
             @Test
-            public void testBladeDuetXMLOutput() {
+            public void testBladeDuetStrings() {
                 Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
                 Blade maxSize2 = Blade.createBlade(Generator.EF).add(Generator.E1).add(Generator.E2);
                 BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
@@ -93,6 +93,10 @@ public class MachineryUnitTests {
                 Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
                 regString ="<Blade key=\"920735923817967\" bitKey=\"0b111111111111100\" generators=\"E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
                 assertTrue(GExporter.toXMLString(together, "").compareTo(regString) == 0); // should match exactly
+
+                String tOut = GExporter.toJSON(bduet);
+                assertNotNull(tOut);
+                //System.out.println("A BladeDuet\n"+tOut);
             }
 
             @Test
