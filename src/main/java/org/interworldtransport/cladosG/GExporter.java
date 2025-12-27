@@ -113,30 +113,44 @@ public class GExporter {
 	 * <br><br>
 	 * Example:<br>
 	 * {<br>
-	 * 	"duet": {<br>
-	 * 		"sign": 1, <br>
-	 * 		"maxGrade": 15, <br>
-	 * 		"generators": ["E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF","E1","E2"]<br>
-	 * 		}<br>
-	 * } 
+	 *	"duet": {<br>
+	 *		"sign": 1, <br>
+	 *		"maxGrade": 3, <br>
+	 *		"Blades": {<br>
+	 *			"blade": [ 	{"key": 27, "bitKey": "0b111", "generators": ["E1","E2","E3"]}, <br>
+	 *						{"key": 6, "bitKey": "0b011", "generators": ["E1","E2"]} ]<br>
+	 *		}<br>
+	 *	}
 	 * <br><br>
 	 * @param duet BladeDuet to be exported as JSON
 	 * @return String formatted as JSON containing information about the input
 	*/
-	/*
 	public final static String toJSON(BladeDuet duet) {		
 		StringBuilder rB = new StringBuilder();
 		rB	.append("{\"duet\": {\"sign\": ")
 			.append(duet.sign)
-			.append(", \"maxGrade\": ")
-			.append(duet.maxGen.ord)
-			.append(", \"generators\": [");
-		duet.bladeDuet.stream().forEachOrdered(g -> rB.append("\""+g.toString()+"\","));
-		if (duet.bladeDuet.size() > 0)	rB.deleteCharAt(rB.length() - 1);
+			.append(", \"maxGrade\": ");
+	
+		if(duet.maxGen != null)	rB.append(duet.maxGen.ord);
+		else 					rB.append(Math.max(duet.bladeLeft.maxGenerator(), duet.bladeRight.maxGenerator()));
+		
+		rB	.append(", \"Blades\": {\"blade\": [");
+			
+		StringBuffer workThis = new StringBuffer(GExporter.toJSON(duet.bladeLeft, true));
+		workThis.delete(0,9);
+		workThis.deleteCharAt(workThis.length()-1);
+		workThis.append(",");
+		rB.append(workThis);
+
+		workThis = new StringBuffer(GExporter.toJSON(duet.bladeRight, true));
+		workThis.delete(0,9);
+		workThis.deleteCharAt(workThis.length()-1);
+		rB.append(workThis);
+
 		rB	.append("]}}");
 		return rB.toString();
 	}
-	*/
+	
 
 	/**
 	 * Export a Basis as a JSON fragment. Object properties are represented as attributes.

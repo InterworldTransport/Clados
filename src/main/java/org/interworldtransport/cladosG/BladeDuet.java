@@ -154,6 +154,7 @@ public final class BladeDuet {
 	public BladeDuet(Blade pB1, Blade pB2) {
 		bladeLeft = pB1;
 		bladeRight = pB2;
+		bladeDuet = new ArrayList<Generator>();
 	}
 
 	/**

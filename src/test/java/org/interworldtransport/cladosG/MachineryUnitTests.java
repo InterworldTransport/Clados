@@ -81,24 +81,25 @@ public class MachineryUnitTests {
                 assertNotNull(tOut);
                 //System.out.println("A Blade\n"+tOut);
             }
-            /*
+            
             @Test
             public void testBladeDuetStrings() {
-                Blade maxSize1 = Blade.createPScalarBlade(CladosConstant.GENERATOR_MAX);
-                Blade maxSize2 = Blade.createBlade(Generator.EF).add(Generator.E1).add(Generator.E2);
-                BladeDuet bduet = new BladeDuet(maxSize1, maxSize2);
-                String regString = "<BladeDuet sign=\"1\" maxGrade=\"15\" generators=\"E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,E1,E2\" />\n";
-                assertTrue(GExporter.toXMLString(bduet).compareTo(regString) == 0); // should match exactly
+                byte[] testSig = {1, 1};
+                Blade maxSize1 = Blade.createPScalarBlade(Generator.E3);
+                Blade maxSize2 = Blade.createBlade(Generator.E3).add(Generator.E1).add(Generator.E2);
+                Blade bduet = BladeDuet.simplify(maxSize1, maxSize2, testSig);
+                String regString = "<Blade key=\"3\" bitKey=\"0b100\" generators=\"E3\" />\n";
+                assertTrue(GExporter.toXMLString(bduet, "").compareTo(regString) == 0);     //should match exactly
                 
-                Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);
-                regString ="<Blade key=\"920735923817967\" bitKey=\"0b111111111111100\" generators=\"E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF\" />\n";
-                assertTrue(GExporter.toXMLString(together, "").compareTo(regString) == 0); // should match exactly
+                Blade together = BladeDuet.simplify(maxSize1, maxSize2, bigsig);                    //proving it really doesn't matter if sig is too big.
+                regString ="<Blade key=\"3\" bitKey=\"0b100\" generators=\"E3\" />\n";
+                assertTrue(GExporter.toXMLString(together, "").compareTo(regString) == 0);  //should match exactly
 
-                String tOut = GExporter.toJSON(bduet);
+                String tOut = GExporter.toJSON(new BladeDuet(maxSize1, maxSize2));
                 assertNotNull(tOut);
                 //System.out.println("A BladeDuet\n"+tOut);
             }
-            */
+            
             @Test
             void testBasisStrings() {
                 Basis tBasis12 = new Basis(Generator.EC);
