@@ -68,8 +68,17 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
 	 */
 	private Cardinal card;
 
-
-
+    /**
+     * This map is is a helper for transposing the cast operation. It has key/value pairs at every blade in the first
+     * algebra that is mapped to a blade in the second algebra. One key/value pair for each relationship. That makes
+     * this map a direct container for ordered pairs of blades. Both keys and values are fundamentally similar even
+     * if they are from different algebras because they are JUST blades. That makes the relationship is symmetric.
+     * Both sets of blades can be streamed to find related blades in the other algebra.
+     * <br><br>
+     * In this map, blades from algebra1 act as keys. Blades from algebra2 act as values. If a key/value pair is 
+     * inserted for (bladeX, bladeY) it means there is a weighted entry in mapOfMaps for bladeX's Scale for bladeY.
+     * <br><br>
+     */
     private TreeMap<Blade, Blade> mapOfBlades;
     
     /**
@@ -82,8 +91,25 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     private TreeMap<Blade, Scale<D>> mapOfMaps;
 
     /**
-	 * This is the type of ProtoN that should be present in the map of scales referenced by this class. For example, 
-	 * if mode = CladosField.REALF, then all elements in the list will be the RealF child of ProtoN. 
+     * This map is the inversed heart of this class. At the top level the key blades from the basis in 'algebra2' 
+     * are used to point at other maps (Scales) that contain key blades from the basis in 'algebra1' to number values. 
+     * That means the inner map is a linear combination of blades that collected into a set with the other blades 
+     * are a transformation from one blade set to the other. That makes this map an inverse of mapOfMaps if the weights
+     * are multiplicative inverses.
+     * <br><br>
+     */
+    private TreeMap<Blade, Scale<D>> mapOfMapsInverse;
+
+    /**
+     * This map is the counterpart to mapOfBlades that has an ordered pair of blades (BladeDuet) as keys and the kind 
+     * of numbers found in the Scales from mapOfMaps as values. The value IS the weight of the relationship between 
+     * the two blades in the ordered pair.
+     */
+    private TreeMap<BladeDuet, D> mapOfWeights;
+
+    /**
+	 * This is the type of ProtoN child that should be present in the map of scales referenced by this class. 
+     * For example, if mode = CladosField.REALF, then all elements in the list will be the RealF child of ProtoN. 
 	 * <br><br>
 	 * Mode ensures the scale elements all have the same precision and come from the same numeric field.
 	 */
@@ -113,6 +139,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
         
         mapOfBlades = new TreeMap<>();
         mapOfMaps = new TreeMap<>();
+        mapOfWeights = new TreeMap<>();
         pA1.getBasis().bladeStream().forEach(b1 -> {                                                             //Pick a blade in the outer algebra. Don't go parallel.
             Scale<D> tScale = new Scale<D>(mode, pA2.getBasis(), card);                                          //Create a zero Scale using the inner algebra
             Optional<Blade> similar = pA2.getBasis().bladeStream().filter(b2 -> CanonicalBlade.equivalent(b1, b2)).findFirst(); //Find equivalent blade in inner algebra
@@ -127,22 +154,48 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
                                                                                                                 //Zero scale or ONE at equivalent blade
             mapOfMaps.put(b1, tScale);                                                                          //Happens for every b1. Processing order doesn't matter.
         });
-        setBladesMap();
+        setAltMaps();
     }
 
     /**
      * This method sifts through the map of maps and rebuilds the blade lists to support connection transpose operations.
      */
-    private void setBladesMap() {
+    private void setAltMaps() {
         bladeStream().forEachOrdered(b1 -> {
             Scale<D> value = mapOfMaps.get(b1);
             value.getMap().keySet().stream().forEach(b2 -> {
                 mapOfBlades.put(b1, b2);
-                //TODO the value at this location in the scale should be copied to a matrix
+                mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
             });
         });
-
     }
+
+    /**
+     * This stream should produce the same output (blades from algebra1) as bladeStream(), but it does so by looking 
+     * at the mapOfBlades instead of the mapOfMaps. That means when you get the corresponding value from the pair you 
+     * get a single blade from algebra2.
+     * <br><br>
+     * The counterpart stream is blade2PairStream().
+     * <br><br>
+     * @return Stream of Blades from algebra1 that appear as keys in mapOfMaps
+     */
+    public Stream<Blade> blade1PairStream() {
+        return mapOfBlades.keySet().stream();
+    }
+
+    /**
+     * This stream would produce output blades from algebra2 like bladeStream() if mapOfMaps was transposed. It does so 
+     * by looking at the mapOfBlades instead. That means when you get the corresponding key from the pair you get a 
+     * single blade from algebra1.
+     * <br><br>
+     * The counterpart stream is blade1PairStream().
+     * <br><br>
+     * @return Stream of Blades from algebra2 that appear any Scale in mapOfMaps.
+     */
+    public Stream<Blade> blade2PairStream() {
+        return mapOfBlades.values().stream();
+    }
+
 
     /**
      * This is the blade stream of the outer map. These blades from algebra1 are keys paired up with Scales using algebra2.
@@ -174,7 +227,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
         if (pM.sparseFlag)                                                  //Few grades in use, so blocks of zero weights are skipped
             pM  .bladeOfGradesStream()                                      //No parallelization (I think) because aggregating
                 .forEach(b1 -> {newScale.aggregate(                         //aggregate into the replacement Scale
-                                GBuilder.copyOfScale(getAt(b1))             //a copy of the relevant Scale
+                                GBuilder.copyOfScale(get(b1))             //a copy of the relevant Scale
                                         .scale(pM.get(b1)));                //weighted correctly for that blade. (Could be scaled by ZERO.)
                                }    //[the action for each non-zero blade in pM]
                         );          //[far edge of forEach loop]
@@ -182,7 +235,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
             pM  .getWeights()
                 .bladesNotZeroStream()                                      //No parallelization (I think) because aggregating
                 .forEach(b1 -> {newScale.aggregate(                         //aggregate into the replacement Scale
-                                GBuilder.copyOfScale(getAt(b1))             //a copy of the relevant Scale
+                                GBuilder.copyOfScale(get(b1))             //a copy of the relevant Scale
                                         .scale(pM.get(b1)));                //weighted correctly for that blade. (Never scaled by ZERO.)
                                }    //[the action for each non-zero blade in pM]
                         );          //[far edge of forEach loop]
@@ -201,7 +254,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @param pB    Blade to use as the index for finding the Scale map
      * @return Scale of D which extend ProtoN and other numeric interfaces
      */
-    public Scale<D> getAt(Blade pB) {
+    public Scale<D> get(Blade pB) {
         if (algebra1.getBasis().hasBlade(pB))
             return mapOfMaps.get(pB);
         return null;

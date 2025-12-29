@@ -69,25 +69,25 @@ public class ConnectionTests {
             assertFalse(tRF1.getAlgebra(false) == algSTA);
             assertFalse(tRF1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tRF1.bladeStream().count() == tRF1.getAlgebra(true).getBladeCount());
-            assertTrue(tRF1.getAt(tRF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tRF1.get(tRF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
             
             assertTrue(tRD1.getAlgebra(true) == algSTA);
             assertFalse(tRD1.getAlgebra(false) == algSTA);
             assertFalse(tRD1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tRD1.bladeStream().count() == tRD1.getAlgebra(true).getBladeCount());
-            assertTrue(tRD1.getAt(tRD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tRD1.get(tRD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
 
             assertTrue(tCF1.getAlgebra(true) == algSTA);
             assertFalse(tCF1.getAlgebra(false) == algSTA);
             assertFalse(tCF1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tCF1.bladeStream().count() == tCF1.getAlgebra(true).getBladeCount());
-            assertTrue(tCF1.getAt(tCF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tCF1.get(tCF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
 
             assertTrue(tCD1.getAlgebra(true) == algSTA);
             assertFalse(tCD1.getAlgebra(false) == algSTA);
             assertFalse(tCD1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tCD1.bladeStream().count() == tCD1.getAlgebra(true).getBladeCount());
-            assertTrue(tCD1.getAt(tCD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tCD1.get(tCD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
 
             //System.out.println(GExporter.toXMLFullString(tRF1));
         }

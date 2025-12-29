@@ -421,17 +421,15 @@ public class Blade implements CanonicalBlade, Comparable<Blade> {
 	}
 
 	/**
-	 * The method needs to be as efficient as possible because it is used in comparators.
-	 * It determines the sort order of blades in a basis, thus the streaming order for
-	 * coefficients in a Scale.
-	 * <br>
-	 * This function is WHY Blades keep a Long key. The bit key suffices to distinguish
-	 * blades, but not to sort them into grades in a basis.
-	 * <br>
+	 * The method needs to be as efficient as possible because it is used in comparators. It determines 
+	 * the sort order of blades in a basis, thus the streaming order for coefficients in a Scale.
+	 * <br><br>
+	 * This function is WHY Blades keep a Long key. The bit key suffices to distinguish blades, but not 
+	 * to sort them into grades in a basis.
+	 * <br><br>
 	 * @param pIn Blade to be compared to this one
-	 * @return int in {-1, 0, 1} depending on the size of the offered blade's long
-	 *         integer key relative to this one. If the incoming long key is larger
-	 * 		   the integer returned is +1.
+	 * @return int 	in {-1, 0, 1} depending on the size of the offered blade's long integer key relative 
+	 * 				to this one. If the incoming long key is larger the integer returned is +1.
 	 */
 	@Override
 	public int compareTo(Blade pIn) {

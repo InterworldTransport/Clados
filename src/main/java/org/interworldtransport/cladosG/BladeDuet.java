@@ -44,7 +44,7 @@ import java.util.Collections;
  * @version 2.0
  * @author Dr Alfred W Differ
  */
-public final class BladeDuet {
+public final class BladeDuet implements Comparable<BladeDuet>{
 
 	/**
 	 * This method takes the set of generators in the offered blade and returns a blade with a set of generators that 
@@ -155,6 +155,40 @@ public final class BladeDuet {
 		bladeLeft = pB1;
 		bladeRight = pB2;
 		bladeDuet = new ArrayList<Generator>(30);
+	}
+
+	/**
+	 * The method needs to be as efficient as possible because it is used in comparators. It determines the 
+	 * sort order of ordered pairs of blades, thus the streaming order for key/value pairs.
+	 * <br><br>
+	 * The way this works is simple. If the left blades compare to +/-1, return that. If they compare to ZERO,
+	 * return the comparison of the right blades. This ensures the sort order in maps containing BladeDuets
+	 * will sort on the left blade first and then the right blade. Remember that blade comparisons use their
+	 * blade keys, so the net effect of this method for sorting BladeDuet will place them in the same order
+	 * as the blades appear in a Basis. 
+	 * <br><br>
+	 * @param pIn BladeDuet to be compared to this one
+	 * @return int in {-1, 0, 1} depending on the blade comparisons in the duet.
+	 */
+	@Override
+	public int compareTo(BladeDuet pIn) {
+		int testThis = this.bladeLeft.compareTo(pIn.bladeLeft);
+		if (testThis == 0)		return (this.bladeRight.compareTo(pIn.bladeRight));
+		else 					return testThis;
+	}
+
+	/**
+	 * Overridden Equals method from Object.
+	 * This ensures reference equality is the standard. They must literally refer to the same blade objects to be equal.
+	 * @return boolean check for reference equality
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)						return false;
+		if (! (obj instanceof BladeDuet)) 		return false;
+
+		return 		this.bladeLeft  == ((BladeDuet) obj).bladeLeft 
+				& 	this.bladeRight == ((BladeDuet) obj).bladeRight;
 	}
 
 	/**
