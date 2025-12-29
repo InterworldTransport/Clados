@@ -104,8 +104,8 @@
 	<xs:attribute	name="cells"		type="xs:string"/>
 </xs:complexType>
 
-<xs:element	 		name="ProductTable"	type="ProductTable"/>
-<xs:complexType 	name="ProductTable">
+<xs:element	 		name="CayleyTable"	type="CayleyTable"/>
+<xs:complexType 	name="CayleyTable">
 	<xs:sequence>
 		<xs:element name="row" 			type="row"	minOccurs="1" maxOccurs="unbounded"/>
 	</xs:sequence>
@@ -117,7 +117,7 @@
 	<xs:all>
 		<xs:element name="Signature"	type="xs:string"/>
 		<xs:element	name="Basis"		type="Basis"/>
-		<xs:element name="ProductTable" type="ProductTable"/>
+		<xs:element name="CayleyTable" type="CayleyTable"/>
 	</xs:all>
 </xs:complexType>
 

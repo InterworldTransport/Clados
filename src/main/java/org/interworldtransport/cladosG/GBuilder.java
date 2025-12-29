@@ -248,7 +248,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	public final static Foot createFoot(String pName, String pCardName) {
 		Cardinal.generate(pCardName);
-		return Foot.buildAsType(pName);
+		return Foot.build(pName);
 	}
 
 	/**
@@ -260,7 +260,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 */
 	public final static Foot createFootLike(String pName, Cardinal pCard) {
 		FCache.INSTANCE.appendCardinal(pCard);
-		return Foot.buildAsType(pName);
+		return Foot.build(pName);
 	}
 
 	/**
@@ -277,7 +277,7 @@ public enum GBuilder { // This has an implicit private constructor we won't over
 	 * @return Foot (new instance)
 	 */
 	public final static Foot createFootLike(String pName) {
-		return Foot.buildAsType(pName);
+		return Foot.build(pName);
 	}
 
 	/**

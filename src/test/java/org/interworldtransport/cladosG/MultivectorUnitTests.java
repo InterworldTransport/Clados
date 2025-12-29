@@ -925,7 +925,7 @@ public class MultivectorUnitTests {
 
             assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving why setScale() is dangerous
 
-            Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+            Foot tFoot = Foot.build("0++");        //One Cardinal in the Foot's tracker
             Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.REALF.createONE(tCard) , 
                                                         tFoot,
                                                         "TestMonadNameRF",
@@ -1349,7 +1349,7 @@ public class MultivectorUnitTests {
 
             assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
 
-            Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+            Foot tFoot = Foot.build("0++");        //One Cardinal in the Foot's tracker
             Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.REALD.createONE(tCard) , 
                                                         tFoot,
                                                         "TestMonadNameRD",
@@ -1775,7 +1775,7 @@ public class MultivectorUnitTests {
 
             assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
 
-            Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+            Foot tFoot = Foot.build("0++");        //One Cardinal in the Foot's tracker
             Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.COMPLEXF.createONE(tCard) , 
                                                         tFoot,
                                                         "TestMonadNameCF",
@@ -2200,7 +2200,7 @@ public class MultivectorUnitTests {
 
             assertDoesNotThrow(() -> tM1.setScale(tM5.getWeights()));       //Proving setScale() is dangerous
 
-            Foot tFoot = Foot.buildAsType("0++");        //One Cardinal in the Foot's tracker
+            Foot tFoot = Foot.build("0++");        //One Cardinal in the Foot's tracker
             Monad tM5b = GBuilder.createMonadWithFoot(  FBuilder.COMPLEXD.createONE(tCard) , 
                                                         tFoot,
                                                         "TestMonadNameCD",

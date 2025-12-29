@@ -593,7 +593,7 @@ public class GeometryInfrastructureUnitTests {
             fType = Cardinal.generate("Test:NumberType");
             rNumber = new RealF(fType, 0.0f);
             tFoot = new Foot(fName);
-            tFoot2 = new Foot(fName, rNumber);
+            tFoot2 = new Foot(fName);//, rNumber);
 
             alg1 = new Algebra(aName, tFoot, pSig31);
             alg2 = new Algebra(aName, tFoot, pSig13);
@@ -1654,31 +1654,30 @@ public class GeometryInfrastructureUnitTests {
     @Nested
     class testsForFoot {
         public String fName = "Test:TangentPoint";
-        public Cardinal fType = Cardinal.generate("Test:NumberType");
-        public RealD rNumber;
+        //public Cardinal fType = Cardinal.generate("Test:NumberType");
+        //public RealD rNumber;
         public Foot tFoot;
         public Foot tFoot2;
 
         @BeforeEach
         public void setUp() {
-            rNumber = new RealD(fType, 0.0D);
             tFoot = new Foot(fName);
-            tFoot2 = new Foot(fName, rNumber);	//Can be created with a ProtoN or ProtoN child
-                                                //but no longer keeps references to the Cardinals.
+            tFoot2 = new Foot(fName);
         }
 
         @Test
         public void testFootCompare() {
             assertFalse(tFoot == tFoot2);
+            assertTrue(tFoot.getName() == tFoot2.getName());
         }
 
         @Test
         public void testFootStaticBuilds() {
-            Foot tStaticFoot = Foot.buildAsType("Completely Different");
+            Foot tStaticFoot = Foot.build("Completely Different");
             assertFalse(tStaticFoot == tFoot); //Different foot name
-            Foot tStaticFoot2 = Foot.buildAsType(fName);
+            Foot tStaticFoot2 = Foot.build(fName);
             assertFalse(tStaticFoot == tStaticFoot2); //Same name. Different Object.
-            Foot tStaticFoot3 = Foot.buildAsType("Completely Different");
+            Foot tStaticFoot3 = Foot.build("Completely Different");
             assertFalse(tStaticFoot3 == tFoot); //Same name. Different Object.
         }
     }

@@ -38,6 +38,7 @@ public class MachineryUnitTests {
         final String mNameQ = "ChargeDensity";
         final String sigD = "-+++";
         String pSig12 = "-+++-+++-+++";
+        String pSig14 = "-+++-+++-+++-+";
         byte[] bigsig = { 1,1,1,-1, 1,1,1,-1, 1,1,1,-1, 1,1,1 };
         Foot here = GBuilder.createFootLike(footName, speed);
 
@@ -118,21 +119,29 @@ public class MachineryUnitTests {
             }
 
             @Test
-            public void testXMLOutputGP() throws BadSignatureException {
+            public void testGPStrings() throws BadSignatureException {
                 GProduct tGP12 = (GProduct) GBuilder.createGProduct(pSig12);
                 String xmlout = GExporter.toXMLString(tGP12, "");
-                            //System.out.println("Character Count: "+xmlout.length());
+                //System.out.println("12 generator GP outputs: ");
+                //System.out.println("XML : "+xmlout.length());
                 assertTrue(xmlout != null);
-                assertTrue(xmlout.length() == 88171302);
-            }
-
-            @Test
-            public void testXMLOutputGPDegen() throws BadSignatureException {
+                assertTrue(xmlout.length() == 87837701);
+           
                 GProduct tGP301 = new GProduct("+++0");
-                String xmlout = GExporter.toXMLString(tGP301, "");
+                xmlout = GExporter.toXMLString(tGP301, "");
                             //System.out.println("Character Count: "+xmlout.length());
                 assertTrue(xmlout != null);
-                assertTrue(xmlout.length() == 2394);
+                assertTrue(xmlout.length() == 1183);
+
+                String tOut = GExporter.toJSON(tGP301);
+                assertNotNull(tOut);
+                //System.out.println("A GP\n"+tOut);
+                tOut =GExporter.toJSON(tGP12);
+                assertTrue(tOut.length() == 87732285);
+
+                //GProduct tGP14 = (GProduct) GBuilder.createGProduct(pSig14);
+                //tOut =GExporter.toJSON(tGP14);
+                //System.out.println("JSON: "+tOut.length());
             }
         }
 
@@ -145,7 +154,7 @@ public class MachineryUnitTests {
                 String test = GExporter.toXMLString(alg1, "");
                             //System.out.println("Character Count: "+test.length());
                 assertTrue(test != null);
-                assertTrue(test.length() == 88179620);
+                assertTrue(test.length() == 88175505);
             }
 
 
@@ -519,7 +528,7 @@ public class MachineryUnitTests {
                 GCache.INSTANCE.clearBases();
                 GCache.INSTANCE.clearGProducts();
 
-                tFoot = Foot.buildAsType(twoDPGA);                   //One Cardinal in the Foot's tracker
+                tFoot = Foot.build(twoDPGA);                   //One Cardinal in the Foot's tracker
                 tAlgebra = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra", twoDPGA);
                                     //This constructure adds the GP to the cache by calling GBuilder.createGProduct(sig)
                                     //which means it looks for the GP first and builds it if needed.
@@ -880,7 +889,7 @@ public class MachineryUnitTests {
                 GCache.INSTANCE.clearBases();
                 GCache.INSTANCE.clearGProducts();
 
-                tFoot = Foot.buildAsType(twoDPGA);                   //One Cardinal in the Foot's tracker
+                tFoot = Foot.build(twoDPGA);                   //One Cardinal in the Foot's tracker
                 tAlgebra = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra", twoDPGA);
                 tAlgebra2 = GBuilder.createAlgebraWithFoot(tFoot, "TestAlgebra2", twoDPGA);
                                     //This constructure adds the GP to the cache by calling GBuilder.createGProduct(sig)

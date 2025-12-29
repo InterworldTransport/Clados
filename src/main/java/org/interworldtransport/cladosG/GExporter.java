@@ -219,6 +219,61 @@ public class GExporter {
 		return rB.toString();
 	}
 
+	/**
+	 * Export a GProduct as a JSON fragment. Object properties are represented as attributes.
+	 * This is intended as an output format.
+	 * <br><br>
+	 * Example: <br>
+	 * {<br>
+	 * 	"gproduct": {<br>
+	 * 		"signature": "+++0", <br>
+	 * 		"cayleytable": [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], <br>
+	 * 						[2, 1, 6, 7, 8, 3, 4, 5, 12, 13, 14, 9, 10, 11, 16, 15], <br>
+	 * 						[3, -6, 1, 9, 10, -2, -12, -13, 4, 5, 15, -7, -8, -16, 11, -14], <br>
+	 * 						[4, -7, -9, 1, 11, 12, -2, -14, -3, -15, 5, 6, 16, -8, -10, 13], <br>
+	 * 						[5, -8, -10, -11, 0, 13, 14, 0, 15, 0, 0, -16, 0, 0, 0, 0], <br>
+	 * 						[6, -3, 2, 12, 13, -1, -9, -10, 7, 8, 16, -4, -5, -15, 14, -11], <br>
+	 * 						[7, -4, -12, 2, 14, 9, -1, -11, -6, -16, 8, 3, 15, -5, -13, 10], <br>
+	 * 						[8, -5, -13, -14, 0, 10, 11, 0, 16, 0, 0, -15, 0, 0, 0, 0], <br>
+	 * 						[9, 12, -4, 3, 15, -7, 6, 16, -1, -11, 10, -2, -14, 13, -5, -8], <br>
+	 * 						[10, 13, -5, -15, 0, -8, -16, 0, 11, 0, 0, 14, 0, 0, 0, 0], <br>
+	 * 						[11, 14, 15, -5, 0, 16, -8, 0, -10, 0, 0, -13, 0, 0, 0, 0], <br>
+	 * 						[12, 9, -7, 6, 16, -4, 3, 15, -2, -14, 13, -1, -11, 10, -8, -5], <br>
+	 * 						[13, 10, -8, -16, 0, -5, -15, 0, 14, 0, 0, 11, 0, 0, 0, 0], <br>
+	 * 						[14, 11, 16, -8, 0, 15, -5, 0, -13, 0, 0, -10, 0, 0, 0, 0], <br>
+	 * 						[15, -16, 11, -10, 0, -14, 13, 0, -5, 0, 0, 8, 0, 0, 0, 0], <br>
+	 * 						[16, -15, 14, -13, 0, -11, 10, 0, -8, 0, 0, 5, 0, 0, 0, 0] ]<br>
+	 * 	}<br>
+	 * }
+	 * <br><br>
+	 * @param pG GProduct to be exported as JSON
+	 * @return String formatted as JSON containing information about the input
+	 */
+	public final static String toJSON(GProduct pG) {
+		StringBuilder rB = new StringBuilder();
+		rB	.append("{\"gproduct\": {\"signature\": \"")
+			.append(pG.signature());
+		rB	.append("\", \"cayleytable\": [");
+
+		pG.getBasis().bladeStream().forEach(blade0 -> {
+			StringBuffer workThis0 = new StringBuffer("[");
+			pG.getBasis().bladeStream().forEach(blade1 -> {
+				int p = pG.getBasis().find(blade0) - 1;
+				int q = pG.getBasis().find(blade1) - 1;	
+				workThis0.append(pG.getResult(p, q)+",");
+			});
+			workThis0.deleteCharAt(workThis0.length()-1);
+			workThis0.append("],");
+			//workThis0.replace(workThis0.length()-2, workThis0.length()-1, "],");	//swap trailing comma and space -> for bracket and comma
+			rB.append(workThis0);
+		});
+		rB	.deleteCharAt(rB.length()-1);
+		//rB	.deleteCharAt(rB.length()-1);									//lop the last character (removes trailing space)
+		//rB	.deleteCharAt(rB.length()-1);									//lop the last character (removes trailing comma)
+		rB	.append("]}}");
+		return rB.toString();
+	}
+
     /**
 	 * Export a Foot as a small XML fragment. Object properties are represented as attributes.
 	 * This is intended as an output format.
@@ -384,8 +439,8 @@ public class GExporter {
 	}
 
 	/**
-	 * This method produces a printable and parseable string that represents the
-	 * Basis in a human readable form.
+	 * This method produces a printable and parseable string that represents the GProduct in a human readable form.
+	 * NOTE the GProduct no longer exports the Basis on which it is built. It exports the Cayley table and signature.
 	 * <br>
 	 * @param pG A geometric product to be exported to XML
 	 * @param indent A string to use for XML element intentation. Not required.
@@ -394,14 +449,14 @@ public class GExporter {
 	public final static String toXMLString(GProduct pG, String indent) {
 		if (indent == null)			indent = "\t\t\t\t\t";
 		StringBuilder rB = new StringBuilder(indent + "<GProduct signature=\""+pG.signature()+"\">\n");
-		rB	.append(GExporter.toXMLString(pG.getBasis(), indent + "\t"));
+		//rB	.append(GExporter.toXMLString(pG.getBasis(), indent + "\t"));
 		rB	.append(indent)
 			.append("\t<CayleyTable rows=\"")
 			.append(pG.getBladeCount())
 			.append("\">\n");
 		for (int k = 0; k < pG.getBladeCount(); k++) {		// Appending rows of the Cayley table
 			rB	.append(indent)
-				.append("\t\t<row id=\"")
+				.append("\t\t<row id=\"") 
 				.append(k)
 				.append("\" cells=\"");
 			for (int m = 0; m < pG.getBladeCount(); m++)
@@ -431,8 +486,9 @@ public class GExporter {
 			.append(pA.uuid)
 			.append("\" >\n");
 		
-		rB	.append(GExporter.toXMLString(pA.getFoot(), indent + "\t"));			//Algebra owns a reference to a Foot
-		rB	.append(GExporter.toXMLString(pA.getGP(), indent + "\t"));				//Algebra owns a reference to a GP
+		rB	.append(GExporter.toXMLString(pA.getFoot(), indent + "\t"));	//Algebra owns a reference to a Foot
+		rB	.append(GExporter.toXMLString(pA.getBasis(), indent+"\t"));		//Algebra owns a reference to a Basis
+		rB	.append(GExporter.toXMLString(pA.getGP(), indent + "\t"));		//Algebra owns a reference to a GP
 		
 		rB	.append(indent)
 			.append("</Algebra>\n");
@@ -654,10 +710,10 @@ public class GExporter {
 		rB	.append(GExporter.toXMLString(pC.getAlgebra(true), "\t"));
 		rB	.append(GExporter.toXMLString(pC.getAlgebra(false), "\t"));
 
-		pC.bladeStream().forEach(blade -> {
+		pC.blade1Stream().forEach(blade -> {
 			rB	.append("\t").append("<OuterMap>\n");
 			rB	.append("\t").append(GExporter.toXMLString(blade, "\t"));
-			rB	.append("\t").append(GExporter.toXMLString(pC.getAt(blade), "\t"));
+			rB	.append("\t").append(GExporter.toXMLString(pC.get(blade), "\t"));
 			rB	.append("\t").append("</OuterMap>\n");
 		});
 

@@ -1,34 +1,34 @@
 <Monad name="Test MonadRF9" gradeKey="10" sparseFlag="true" >
 	<Algebra name="Property Algebra" UUID="d3fdda51-7ba8-425a-bb34-45d816339795" >
 		<Foot name="Test Foot 1" />
+		<Basis UUID="076317fa-bcc8-4f6c-8fcc-79c639cb9265">
+			<Grades count="5">
+				<Grade rank="0" range="0-0" />
+				<Grade rank="1" range="1-4" />
+				<Grade rank="2" range="5-10" />
+				<Grade rank="3" range="11-14" />
+				<Grade rank="4" range="15-15" />
+			</Grades>
+			<Blades count="16">
+				<Blade key="0" bitKey="0b0000" generators="" />
+				<Blade key="1" bitKey="0b0001" generators="E1" />
+				<Blade key="2" bitKey="0b0010" generators="E2" />
+				<Blade key="3" bitKey="0b0100" generators="E3" />
+				<Blade key="4" bitKey="0b1000" generators="E4" />
+				<Blade key="7" bitKey="0b0011" generators="E1,E2" />
+				<Blade key="8" bitKey="0b0101" generators="E1,E3" />
+				<Blade key="9" bitKey="0b1001" generators="E1,E4" />
+				<Blade key="13" bitKey="0b0110" generators="E2,E3" />
+				<Blade key="14" bitKey="0b1010" generators="E2,E4" />
+				<Blade key="19" bitKey="0b1100" generators="E3,E4" />
+				<Blade key="38" bitKey="0b0111" generators="E1,E2,E3" />
+				<Blade key="39" bitKey="0b1011" generators="E1,E2,E4" />
+				<Blade key="44" bitKey="0b1101" generators="E1,E3,E4" />
+				<Blade key="69" bitKey="0b1110" generators="E2,E3,E4" />
+				<Blade key="194" bitKey="0b1111" generators="E1,E2,E3,E4" />
+			</Blades>
+		</Basis>
 		<GProduct signature="-+++">
-			<Basis UUID="076317fa-bcc8-4f6c-8fcc-79c639cb9265">
-				<Grades count="5">
-					<Grade rank="0" range="0-0" />
-					<Grade rank="1" range="1-4" />
-					<Grade rank="2" range="5-10" />
-					<Grade rank="3" range="11-14" />
-					<Grade rank="4" range="15-15" />
-				</Grades>
-				<Blades count="16">
-					<Blade key="0" bitKey="0b0000" generators="" />
-					<Blade key="1" bitKey="0b0001" generators="E1" />
-					<Blade key="2" bitKey="0b0010" generators="E2" />
-					<Blade key="3" bitKey="0b0100" generators="E3" />
-					<Blade key="4" bitKey="0b1000" generators="E4" />
-					<Blade key="7" bitKey="0b0011" generators="E1,E2" />
-					<Blade key="8" bitKey="0b0101" generators="E1,E3" />
-					<Blade key="9" bitKey="0b1001" generators="E1,E4" />
-					<Blade key="13" bitKey="0b0110" generators="E2,E3" />
-					<Blade key="14" bitKey="0b1010" generators="E2,E4" />
-					<Blade key="19" bitKey="0b1100" generators="E3,E4" />
-					<Blade key="38" bitKey="0b0111" generators="E1,E2,E3" />
-					<Blade key="39" bitKey="0b1011" generators="E1,E2,E4" />
-					<Blade key="44" bitKey="0b1101" generators="E1,E3,E4" />
-					<Blade key="69" bitKey="0b1110" generators="E2,E3,E4" />
-					<Blade key="194" bitKey="0b1111" generators="E1,E2,E3,E4" />
-				</Blades>
-			</Basis>
 			<CayleyTable rows="16">
 				<row id="0" cells="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" />
 				<row id="1" cells="2,-1,6,7,8,-3,-4,-5,12,13,14,-9,-10,-11,16,-15" />

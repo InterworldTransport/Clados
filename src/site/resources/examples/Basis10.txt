@@ -1,16 +1,16 @@
 <Basis UUID="cb77eeff-fe96-4645-add3-13c74892e691">
 	<Grades count="11">
-		<Grade number="0" range="0-0" />
-		<Grade number="1" range="1-10" />
-		<Grade number="2" range="11-55" />
-		<Grade number="3" range="56-175" />
-		<Grade number="4" range="176-385" />
-		<Grade number="5" range="386-637" />
-		<Grade number="6" range="638-847" />
-		<Grade number="7" range="848-967" />
-		<Grade number="8" range="968-1012" />
-		<Grade number="9" range="1013-1022" />
-		<Grade number="10" range="1023-1023" />
+		<Grade rank="0" range="0-0" />
+		<Grade rank="1" range="1-10" />
+		<Grade rank="2" range="11-55" />
+		<Grade rank="3" range="56-175" />
+		<Grade rank="4" range="176-385" />
+		<Grade rank="5" range="386-637" />
+		<Grade rank="6" range="638-847" />
+		<Grade rank="7" range="848-967" />
+		<Grade rank="8" range="968-1012" />
+		<Grade rank="9" range="1013-1022" />
+		<Grade rank="10" range="1023-1023" />
 	</Grades>
 	<Blades count="1024">
 		<Blade key="0"          bitKey="0b0000000000" generators="                             " />
