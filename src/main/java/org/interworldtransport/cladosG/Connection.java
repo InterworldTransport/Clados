@@ -98,7 +98,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * are multiplicative inverses.
      * <br><br>
      */
-    private TreeMap<Blade, Scale<D>> mapOfMapsInverse;
+    //private TreeMap<Blade, Scale<D>> mapOfMapsInverse;
 
     /**
      * This map is the counterpart to mapOfBlades that has an ordered pair of blades (BladeDuet) as keys and the kind 
@@ -154,18 +154,44 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
                                                                                                                 //Zero scale or ONE at equivalent blade
             mapOfMaps.put(b1, tScale);                                                                          //Happens for every b1. Processing order doesn't matter.
         });
-        setAltMaps();
+        setAltMaps();                                                                                           //Fill the blade pairs map and the map relating pairs to weights.
     }
 
     /**
      * This method sifts through the map of maps and rebuilds the blade lists to support connection transpose operations.
      */
     private void setAltMaps() {
+        mapOfBlades.clear();
+        mapOfWeights.clear();
         bladeStream().forEachOrdered(b1 -> {
             Scale<D> value = mapOfMaps.get(b1);
             value.getMap().keySet().stream().forEach(b2 -> {
-                mapOfBlades.put(b1, b2);
-                mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
+                switch (mode) {
+                    case COMPLEXD -> {
+                        if (!ComplexD.isZero((ComplexD) value.get(b2))) {
+                            mapOfBlades.put(b1, b2);
+                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
+                        }
+                    }
+                    case COMPLEXF -> {
+                        if (!ComplexF.isZero((ComplexF) value.get(b2))) {
+                            mapOfBlades.put(b1, b2);
+                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
+                        }
+                    }
+                    case REALD -> {
+                        if (!RealD.isZero((RealD) value.get(b2))) {
+                            mapOfBlades.put(b1, b2);
+                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
+                        }
+                    }
+                    case REALF -> {
+                        if (!RealF.isZero((RealF) value.get(b2))) {
+                            mapOfBlades.put(b1, b2);
+                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
+                        }
+                    } 
+                }
             });
         });
     }
@@ -227,7 +253,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
         if (pM.sparseFlag)                                                  //Few grades in use, so blocks of zero weights are skipped
             pM  .bladeOfGradesStream()                                      //No parallelization (I think) because aggregating
                 .forEach(b1 -> {newScale.aggregate(                         //aggregate into the replacement Scale
-                                GBuilder.copyOfScale(get(b1))             //a copy of the relevant Scale
+                                GBuilder.copyOfScale(getScale(b1))             //a copy of the relevant Scale
                                         .scale(pM.get(b1)));                //weighted correctly for that blade. (Could be scaled by ZERO.)
                                }    //[the action for each non-zero blade in pM]
                         );          //[far edge of forEach loop]
@@ -235,7 +261,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
             pM  .getWeights()
                 .bladesNotZeroStream()                                      //No parallelization (I think) because aggregating
                 .forEach(b1 -> {newScale.aggregate(                         //aggregate into the replacement Scale
-                                GBuilder.copyOfScale(get(b1))             //a copy of the relevant Scale
+                                GBuilder.copyOfScale(getScale(b1))             //a copy of the relevant Scale
                                         .scale(pM.get(b1)));                //weighted correctly for that blade. (Never scaled by ZERO.)
                                }    //[the action for each non-zero blade in pM]
                         );          //[far edge of forEach loop]
@@ -246,18 +272,6 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
             throw new IllegalArgumentException("Connection.cast error shouldn't happen");//prevented by use of algebra2.
         }
         return pM;
-    }
-
-    /**
-     * Get the Scale object associated with the blade in the outer layer of the map.
-     * <br><br>
-     * @param pB    Blade to use as the index for finding the Scale map
-     * @return Scale of D which extend ProtoN and other numeric interfaces
-     */
-    public Scale<D> get(Blade pB) {
-        if (algebra1.getBasis().hasBlade(pB))
-            return mapOfMaps.get(pB);
-        return null;
     }
 
     /**
@@ -293,6 +307,31 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
+     * Get the Scale object associated with the blade in the outer layer of the map.
+     * <br><br>
+     * @param pB    Blade to use as the index for finding the Scale map
+     * @return Scale of D which extend ProtoN and other numeric interfaces
+     */
+    public Scale<D> getScale(Blade pB) {
+        if (algebra1.getBasis().hasBlade(pB))
+            return mapOfMaps.get(pB);
+        return null;
+    }
+
+    /**
+     * Get the weight at the blade pair.
+     * <br><br>
+     * @param pB1 Blade #1 of the pair (a row) for which to fetch a weight
+     * @param pB2 Blade #2 of the pair (a col) for which to fetch a weight
+     * @return D which is just a cladosF number. A child of ProtoN.
+     */
+    public D getWeight(Blade pB1, Blade pB2) {
+        if (mapOfBlades.containsKey(pB1))
+            return mapOfWeights.get(new BladeDuet(pB1, mapOfBlades.get(pB1)));
+        return null;
+    }
+
+    /**
      * PUT a Blade, Scale key/value pair into the mapOfMaps. Check that the operation is legitimate first, though.
      * <br><br>
      * @param pB    Blade to use as the key for finding the Scale map
@@ -300,8 +339,10 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Frame of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
     public Connection<D> put(Blade pB, Scale<D> pS) {
-        if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB))   //This is enough to ensure Scale's basis matches Algebra's basis.
+        if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB)) {  //This is enough to ensure Scale's basis matches Algebra's basis.
             mapOfMaps.put(pB, pS);
+            setAltMaps();
+        }    
         return this;
     }
 
@@ -313,7 +354,10 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Connection of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
     public Connection<D> remove(Blade pB) {
-        if (algebra1.getBasis().hasBlade(pB))       mapOfMaps.remove(pB);        
+        if (algebra1.getBasis().hasBlade(pB)) {
+            mapOfMaps.remove(pB);
+            setAltMaps();
+        }
         return this;
     }
 
@@ -338,15 +382,10 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * This method causes all coefficients to be set to zero re-using their cardinals.
      * <br><br>
      * @param pMode CladosField mode in which the numbers operate.
-     * @return Frame after it has had all the numbers zero'd out.
+     * @return Connection after it has had all the numbers zero'd out.
      */
     protected Connection<D> zeroAll(CladosField pMode) {
-		algebra1.getBasis()  .bladeStream().forEach(b -> {
-			    mapOfMaps   .get(b).weightsParallelStream().forEach(scl -> {
-                    scl =   FBuilder.createZERO(pMode, scl.getCardinal());}
-            );
-        });
-		return this;
+        return zeroAll(pMode, card);
 	}
 
     /**
@@ -354,15 +393,14 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * <br><br>
      * @param pMode CladosField mode in which the numbers operate.
      * @param pCard Cardinal to use when rebuilding the numbers.
-     * @return Frame after it has had all the numbers zero'd out.
+     * @return Connection after it has had all the numbers zero'd out.
      */
     protected Connection<D> zeroAll(CladosField pMode, Cardinal pCard) {
-		algebra1.getBasis()  .bladeStream().forEach(b -> {
-			     mapOfMaps   .get(b).weightsParallelStream().forEach(scl -> {
-                    scl =   FBuilder.createZERO(pMode, pCard);}
-            );
-        });
+        bladeStream().forEach(b -> {
+             Scale<D> tScale = new Scale<D>(mode, algebra2.getBasis(), pCard);                                          //Create a zero Scale using the inner algebra
+			    mapOfMaps.put(b, tScale);
+            });
+        setAltMaps();
 		return this;
 	}
-
 }

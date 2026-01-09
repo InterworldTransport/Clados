@@ -713,7 +713,7 @@ public class GExporter {
 		pC.bladeStream().forEach(blade -> {
 			rB	.append("\t").append("<OuterMap>\n");
 			rB	.append("\t").append(GExporter.toXMLString(blade, "\t"));
-			rB	.append("\t").append(GExporter.toXMLString(pC.get(blade), "\t"));
+			rB	.append("\t").append(GExporter.toXMLString(pC.getScale(blade), "\t"));
 			rB	.append("\t").append("</OuterMap>\n");
 		});
 

@@ -2,13 +2,13 @@ package org.interworldtransport.cladosG;
 
 import static org.interworldtransport.cladosF.CladosField.*;
 import org.interworldtransport.cladosF.*;
-import org.interworldtransport.cladosFExceptions.FieldException;
+//import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+//import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+//import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -69,27 +69,61 @@ public class ConnectionTests {
             assertFalse(tRF1.getAlgebra(false) == algSTA);
             assertFalse(tRF1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tRF1.bladeStream().count() == tRF1.getAlgebra(true).getBladeCount());
-            assertTrue(tRF1.get(tRF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tRF1.getScale(tRF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
             
             assertTrue(tRD1.getAlgebra(true) == algSTA);
             assertFalse(tRD1.getAlgebra(false) == algSTA);
             assertFalse(tRD1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tRD1.bladeStream().count() == tRD1.getAlgebra(true).getBladeCount());
-            assertTrue(tRD1.get(tRD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tRD1.getScale(tRD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
 
             assertTrue(tCF1.getAlgebra(true) == algSTA);
             assertFalse(tCF1.getAlgebra(false) == algSTA);
             assertFalse(tCF1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tCF1.bladeStream().count() == tCF1.getAlgebra(true).getBladeCount());
-            assertTrue(tCF1.get(tCF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tCF1.getScale(tCF1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
 
             assertTrue(tCD1.getAlgebra(true) == algSTA);
             assertFalse(tCD1.getAlgebra(false) == algSTA);
             assertFalse(tCD1.getAlgebra(false).compareTo(algSTA) < 0);
             assertTrue(tCD1.bladeStream().count() == tCD1.getAlgebra(true).getBladeCount());
-            assertTrue(tCD1.get(tCD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
+            assertTrue(tCD1.getScale(tCD1.getAlgebra(true).getBasis().getPScalarBlade()).bladesNotZeroStream().count() == 1); //Default constructor is Ken's connector
 
             //System.out.println(GExporter.toXMLFullString(tRF1));
+        }
+
+        @Test
+        void testMapFills() {
+            tRF1 = new Connection<>(algSTA, GBuilder.copyOfAlgebra(algSTA, "Motion-Rotated"), REALF, tCard);
+            tRD1 = new Connection<>(algSTA, GBuilder.copyOfAlgebra(algSTA, "Motion-Rotated"), REALD, tCard);
+            tCF1 = new Connection<>(algSTA, GBuilder.copyOfAlgebra(algSTA, "Motion-Rotated"), COMPLEXF, tCard);
+            tCD1 = new Connection<>(algSTA, GBuilder.copyOfAlgebra(algSTA, "Motion-Rotated"), COMPLEXD, tCard);
+
+            assertTrue(tRF1.blade1PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tRD1.blade1PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCF1.blade1PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCD1.blade1PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+
+            assertTrue(tRF1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tRD1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCF1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCD1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+
+            tRF1.zeroAll(REALF);
+            tRD1.zeroAll(REALD);
+            tCF1.zeroAll(COMPLEXF);
+            tCD1.zeroAll(COMPLEXD);
+
+            //assertTrue(tRF1.mapOfBlades.isEmpty());
+            assertTrue(tRF1.blade1PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tRD1.blade1PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCF1.blade1PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCD1.blade1PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+
+            assertTrue(tRF1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tRD1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCF1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
+            assertTrue(tCD1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
         }
     }
 
