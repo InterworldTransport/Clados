@@ -7,7 +7,9 @@ import org.interworldtransport.cladosGExceptions.BadSignatureException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-//import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 //import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,7 +110,116 @@ public class ConnectionTests {
             assertTrue(tRD1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
             assertTrue(tCF1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
             assertTrue(tCD1.blade2PairStream().count() == 16);                                                           //Default constructor pairs equivalent blades
+        }
+    }
 
+    @Nested
+    class testNonMutators {
+
+        @BeforeEach
+        void setUp() {
+            tRF1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), REALF, tCard);
+            tRD1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), REALD, tCard);
+            tCF1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), COMPLEXF, tCard);
+            tCD1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), COMPLEXD, tCard);
+        }
+        
+        @Test
+        void testGetScales() {
+            assertInstanceOf( Scale.class, tRF1.getScale(alg2D.getBasis().getScalarBlade()));               //Blade mapped to a scale
+            assertNotNull(tRF1.getScale(algSTA.getBasis().getScalarBlade()));                                             //Scalar blades between algebras have same key
+            assertNull(tRF1.getScale(algSTA.getBasis().getPScalarBlade()));                                               //pScalar blades don't share keys if generator count is different.
+            
+            assertInstanceOf( Scale.class, tRD1.getScale(alg2D.getBasis().getScalarBlade()));               //Blade mapped to a scale
+            assertNotNull(tRD1.getScale(algSTA.getBasis().getScalarBlade()));                                             //Scalar blades between algebras have same key
+            assertNull(tRD1.getScale(algSTA.getBasis().getPScalarBlade()));                                               //pScalar blades don't share keys if generator count is different.
+
+            assertInstanceOf( Scale.class, tCF1.getScale(alg2D.getBasis().getScalarBlade()));               //Blade mapped to a scale
+            assertNotNull(tCF1.getScale(algSTA.getBasis().getScalarBlade()));                                             //Scalar blades between algebras have same key
+            assertNull(tCF1.getScale(algSTA.getBasis().getPScalarBlade()));                                               //pScalar blades don't share keys if generator count is different.
+
+            assertInstanceOf( Scale.class, tCD1.getScale(alg2D.getBasis().getScalarBlade()));               //Blade mapped to a scale
+            assertNotNull(tCD1.getScale(algSTA.getBasis().getScalarBlade()));                                             //Scalar blades between algebras have same key
+            assertNull(tCD1.getScale(algSTA.getBasis().getPScalarBlade()));                                               //pScalar blades don't share keys if generator count is different.
+        }
+
+        @Test
+        void testGetWeights() {
+            assertInstanceOf(RealF.class, tRF1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNull(tRF1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNull(tRF1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
+
+            assertInstanceOf(RealD.class, tRD1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNull(tRD1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNull(tRD1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
+
+            assertInstanceOf(ComplexF.class, tCF1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNull(tCF1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNull(tCF1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
+
+            assertInstanceOf(ComplexD.class, tCD1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNull(tCD1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNull(tCD1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
+        }
+    }
+
+    @Nested
+    class testMutators {
+
+        @BeforeEach
+        void setUp() {
+            tRF1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), REALF, tCard);
+            tRD1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), REALD, tCard);
+            tCF1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), COMPLEXF, tCard);
+            tCD1 = new Connection<>(alg2D, GBuilder.copyOfAlgebra(alg2D, "Plane-Rotated"), COMPLEXD, tCard);
+        }
+
+        @Test
+        void testRemoveScale() {
+            //Remove on Connection
+            assertTrue(tRF1.blade1PairStream().count() == 4);                        
+            assertTrue(tRD1.blade1PairStream().count() == 4);                        
+            assertTrue(tCF1.blade1PairStream().count() == 4);                        
+            assertTrue(tCD1.blade1PairStream().count() == 4);                        
+
+            tRF1.remove(alg2D.getBasis().getScalarBlade());
+            assertTrue(tRF1.blade1PairStream().count() == 3); 
+            tRF1.remove(algSTA.getBasis().getPScalarBlade());
+            assertTrue(tRF1.blade1PairStream().count() == 3); 
+            assertNull(tRF1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNotNull(tRF1.getWeight(alg2D.getBasis().getPScalarBlade(), alg2D.getBasis().getPScalarBlade()));
+
+            tRD1.remove(alg2D.getBasis().getScalarBlade());
+            assertTrue(tRD1.blade1PairStream().count() == 3); 
+            tRD1.remove(algSTA.getBasis().getPScalarBlade());
+            assertTrue(tRD1.blade1PairStream().count() == 3); 
+            assertNull(tRD1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNotNull(tRD1.getWeight(alg2D.getBasis().getPScalarBlade(), alg2D.getBasis().getPScalarBlade()));
+
+            tCF1.remove(alg2D.getBasis().getScalarBlade());
+            assertTrue(tCF1.blade1PairStream().count() == 3); 
+            tCF1.remove(algSTA.getBasis().getPScalarBlade());
+            assertTrue(tCF1.blade1PairStream().count() == 3); 
+            assertNull(tCF1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNotNull(tCF1.getWeight(alg2D.getBasis().getPScalarBlade(), alg2D.getBasis().getPScalarBlade()));
+
+            tCD1.remove(alg2D.getBasis().getScalarBlade());
+            assertTrue(tCD1.blade1PairStream().count() == 3); 
+            tCD1.remove(algSTA.getBasis().getPScalarBlade());
+            assertTrue(tCD1.blade1PairStream().count() == 3); 
+            assertNull(tCD1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
+            assertNotNull(tCD1.getWeight(alg2D.getBasis().getPScalarBlade(), alg2D.getBasis().getPScalarBlade()));
+
+            assertInstanceOf(Connection.class,  tRF1.remove(alg2D.getBasis().getPScalarBlade()));
+        }
+
+        @Test 
+        void testPutScale() {
+            //This addition should adjust all three internal maps
+        }
+
+        @Test
+        void testZeroing() { 
             tRF1.zeroAll(REALF);
             tRD1.zeroAll(REALD);
             tCF1.zeroAll(COMPLEXF);
@@ -124,26 +235,6 @@ public class ConnectionTests {
             assertTrue(tRD1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
             assertTrue(tCF1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
             assertTrue(tCD1.blade2PairStream().count() == 0);                                                           //Default constructor pairs equivalent blades
-        }
-    }
-
-    @Nested
-    class testMutators {
-
-        @BeforeEach
-        void setUp() {
-            //Construct testable elements that get shared... like algebras, scales
-            //And a Connection
-        }
-
-        @Test
-        void testPutAndRemove() {
-            //Put and Remove on shared Connection
-        }
-
-        @Test
-        void testZeroing() {
-            //Use shared Connection for Zero'ing
         }
     }
 

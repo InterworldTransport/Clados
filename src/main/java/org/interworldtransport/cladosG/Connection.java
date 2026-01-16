@@ -307,13 +307,21 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
-     * Get the Scale object associated with the blade in the outer layer of the map.
+     * Get the Scale object associated with the blade in the outer layer of the map. 
+     * <br><br>
+     * Be aware that blades from outside algebra1 might be passed in here... AND SUCCEED. This can happen because blades are not
+     * aware of an algebra's signature. They aren't even aware of the algebra. What will cause a miss here happens when blades 
+     * from different sized algebras (p+q+r) are offered. A pscalar from a large algebra won't match any blade from a smaller 
+     * algebra because their long keys are unique. However, scalar blades in all bases WILL match.
+     * <br><br>
+     * If it is necessary to prevent blades from outside algebra1 working here, the developer must do the check themselves by 
+     * examinging the object from which they are deriving a blade reference.
      * <br><br>
      * @param pB    Blade to use as the index for finding the Scale map
      * @return Scale of D which extend ProtoN and other numeric interfaces
      */
     public Scale<D> getScale(Blade pB) {
-        if (algebra1.getBasis().hasBlade(pB))
+        if (mapOfMaps.containsKey(pB))
             return mapOfMaps.get(pB);
         return null;
     }
@@ -326,7 +334,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return D which is just a cladosF number. A child of ProtoN.
      */
     public D getWeight(Blade pB1, Blade pB2) {
-        if (mapOfBlades.containsKey(pB1))
+        if (mapOfBlades.containsKey(pB1) & mapOfBlades.containsValue(pB2))
             return mapOfWeights.get(new BladeDuet(pB1, mapOfBlades.get(pB1)));
         return null;
     }
@@ -339,7 +347,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Frame of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
     public Connection<D> put(Blade pB, Scale<D> pS) {
-        if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB)) {  //This is enough to ensure Scale's basis matches Algebra's basis.
+        if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB)) {  //Ensures Scale's basis matches (well enough) Algebra's basis.
             mapOfMaps.put(pB, pS);
             setAltMaps();
         }    
@@ -354,7 +362,7 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Connection of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
     public Connection<D> remove(Blade pB) {
-        if (algebra1.getBasis().hasBlade(pB)) {
+        if (mapOfMaps.containsKey(pB)) {
             mapOfMaps.remove(pB);
             setAltMaps();
         }
