@@ -216,6 +216,7 @@ public class ConnectionTests {
         @Test 
         void testPutScale() {
             //This addition should adjust all three internal maps
+            //TODO Write the tests for put/insertions of new Scales
         }
 
         @Test
@@ -250,12 +251,14 @@ public class ConnectionTests {
 
         @Test
         void testCastingSparseMonads() {
+            //TODO Write the casting tests for sparse monads
             //Cast a sparse monad 
             //Cast it back?
         }
 
         @Test
         void testCastingThickMonads() {
+            //TODO Write the casting tests for thick monads
             //Cast a regular monad
             //Cast it back?
         }
