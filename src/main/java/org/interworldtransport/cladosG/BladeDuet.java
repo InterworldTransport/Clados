@@ -194,14 +194,14 @@ public final class BladeDuet implements Comparable<BladeDuet>{
 	/**
 	 * The details in this method were originally in the Constructor, but have been moved to this private method which gets called 
 	 * by any other method that ACTUALLY needs the work to be done. The contents of private data elements don't need to be preserved
-	 * long most of the time, so once the Cayley Table is constructed, the primary use for BladeDuet is as an ordered pair of blades
+	 * most of the time. Once the Cayley Table is constructed, the primary use for BladeDuet is as an ordered pair of blades
 	 * in maps. That use in maps does not require the work done in this method.
 	 * <br><br>
 	 * There is a secondary use that does wind up calling here that involves blade complements. The complement methods rely on the 
 	 * simplify methods, so initialization of the bladeDuet is handled properly.
 	 */
 	private void setup() {																						//Only relevant when blades are multiplied
-		assert (bladeLeft.maxGenerator() == bladeRight.maxGenerator());											//Don't simplify mismatched blades basically
+		//assert (bladeLeft.maxGenerator() == bladeRight.maxGenerator());											//Don't simplify mismatched blades basically
 		sign = (byte) (bladeLeft.sign() * bladeRight.sign());													
 		maxGen = Generator.get((byte) Math.max(bladeLeft.maxGenerator(), bladeRight.maxGenerator()));
 

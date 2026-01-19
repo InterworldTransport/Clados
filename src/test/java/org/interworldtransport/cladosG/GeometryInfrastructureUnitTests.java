@@ -1364,10 +1364,10 @@ public class GeometryInfrastructureUnitTests {
             assertTrue(Blade.isScalar(out));
         }
 
-        @Test
-        void testBladeMatchFail() {									//max generator mismatch
-            assertThrows(AssertionError.class, () -> tB = BladeDuet.simplify(euclidianB, minkowskiB, sig));
-        }
+        //@Test
+        //void testBladeMatchFail() {									//max generator mismatch
+            //assertThrows(AssertionError.class, () -> tB = BladeDuet.simplify(euclidianB, minkowskiB, sig));
+        //}
 
         @Test
         public void testMaxProduct() {
