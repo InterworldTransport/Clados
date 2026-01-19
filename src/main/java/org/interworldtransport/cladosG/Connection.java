@@ -173,6 +173,17 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
     }
 
     /**
+     * This stream produces BladeDuets that are the ordered pairs that appear in the weights map computed from 
+     * mapOfMaps. If no weight appears in mapOfMaps for a blade pair, the pair will not appear in this stream.
+     * That means this is a stream that may be used to discover non-zero weights no matter the clados mode.
+     * <br><br>
+     * @return Stream of Blade pairs appearing in the weights map.
+     */
+    public Stream<BladeDuet> bladePairStream() {
+        return mapOfWeights.keySet().stream();
+    }
+
+    /**
      * This stream should produce the same output (blades from algebra1) as bladeStream(), but it does so by looking 
      * at the mapOfBlades instead of the mapOfMaps. That means when you get the corresponding value from the pair you 
      * get a single blade from algebra2.

@@ -1,0 +1,87 @@
+
+<Connection  mode="REALF" cardinal="Tests">
+	<Algebra name="Property" UUID="ba5d69e4-35d3-4357-bfcc-307b12be7623" >
+		<Foot name="Foot0" />
+		<Basis UUID="806a1735-540e-4df5-a0e4-0c7e87424c9d">
+			<Grades count="3">
+				<Grade rank="0" range="0-0" />
+				<Grade rank="1" range="1-2" />
+				<Grade rank="2" range="3-3" />
+			</Grades>
+			<Blades count="4">
+				<Blade key="0" bitKey="0b00" generators="" />
+				<Blade key="1" bitKey="0b01" generators="E1" />
+				<Blade key="2" bitKey="0b10" generators="E2" />
+				<Blade key="5" bitKey="0b11" generators="E1,E2" />
+			</Blades>
+		</Basis>
+		<GProduct signature="++">
+			<CayleyTable rows="4">
+				<row id="0" cells="1,2,3,4" />
+				<row id="1" cells="2,1,4,3" />
+				<row id="2" cells="3,-4,1,-2" />
+				<row id="3" cells="4,-3,2,-1" />
+			</CayleyTable>
+		</GProduct>
+	</Algebra>
+	<Algebra name="Plane-Rotated" UUID="09101965-3f42-403c-9a22-a5da097bbb30" >
+		<Foot name="Foot0" />
+		<Basis UUID="806a1735-540e-4df5-a0e4-0c7e87424c9d">
+			<Grades count="3">
+				<Grade rank="0" range="0-0" />
+				<Grade rank="1" range="1-2" />
+				<Grade rank="2" range="3-3" />
+			</Grades>
+			<Blades count="4">
+				<Blade key="0" bitKey="0b00" generators="" />
+				<Blade key="1" bitKey="0b01" generators="E1" />
+				<Blade key="2" bitKey="0b10" generators="E2" />
+				<Blade key="5" bitKey="0b11" generators="E1,E2" />
+			</Blades>
+		</Basis>
+		<GProduct signature="++">
+			<CayleyTable rows="4">
+				<row id="0" cells="1,2,3,4" />
+				<row id="1" cells="2,1,4,3" />
+				<row id="2" cells="3,-4,1,-2" />
+				<row id="3" cells="4,-3,2,-1" />
+			</CayleyTable>
+		</GProduct>
+	</Algebra>
+	<Map>
+		<Blade key="0" bitKey="0b00" generators="" />
+		<Scale mode="REALF" pans="4" cardinal="Tests">
+			<Pair bitKey="0b00" realvalue="1.0" />
+			<Pair bitKey="0b01" realvalue="0.0" />
+			<Pair bitKey="0b10" realvalue="0.0" />
+			<Pair bitKey="0b11" realvalue="1.0" />
+		</Scale>
+	</Map>
+	<Map>
+		<Blade key="1" bitKey="0b01" generators="E1" />
+		<Scale mode="REALF" pans="4" cardinal="Tests">
+			<Pair bitKey="0b00" realvalue="0.0" />
+			<Pair bitKey="0b01" realvalue="1.0" />
+			<Pair bitKey="0b10" realvalue="1.0" />
+			<Pair bitKey="0b11" realvalue="0.0" />
+		</Scale>
+	</Map>
+	<Map>
+		<Blade key="2" bitKey="0b10" generators="E2" />
+		<Scale mode="REALF" pans="4" cardinal="Tests">
+			<Pair bitKey="0b00" realvalue="0.0" />
+			<Pair bitKey="0b01" realvalue="-1.0" />
+			<Pair bitKey="0b10" realvalue="1.0" />
+			<Pair bitKey="0b11" realvalue="0.0" />
+		</Scale>
+	</Map>
+	<Map>
+		<Blade key="5" bitKey="0b11" generators="E1,E2" />
+		<Scale mode="REALF" pans="4" cardinal="Tests">
+			<Pair bitKey="0b00" realvalue="1.0" />
+			<Pair bitKey="0b01" realvalue="0.0" />
+			<Pair bitKey="0b10" realvalue="0.0" />
+			<Pair bitKey="0b11" realvalue="1.0" />
+		</Scale>
+	</Map>
+</Connection>

@@ -217,8 +217,7 @@ public class ConnectionTests {
         }
 
         @Test 
-        void testPutScale() {
-            //TODO Write the tests for put/insertions of new Scales
+        void testPutScaleRF() {
             Blade scalar1 = tRF1.algebra1.getBasis().getScalarBlade();
             Blade scalar2 = tRF1.algebra2.getBasis().getScalarBlade();
                 assertNotNull(scalar1);
@@ -255,7 +254,7 @@ public class ConnectionTests {
                 assertDoesNotThrow(() -> tRF1.getWeight(null, pscalar2));
                 assertDoesNotThrow(() -> tRF1.getWeight(null, null));
                 assertDoesNotThrow(() -> tRF1.getWeight(pscalar1, null));
-            /*
+            
             Blade v1 = alg2D.getBasis().getSingleBlade(1);
             Blade v2 = alg2D.getBasis().getSingleBlade(2);
             Scale<RealF> weightMap1 = GBuilder.copyOfScale(tRF1.getScale(v1));
@@ -264,13 +263,177 @@ public class ConnectionTests {
             weightMap2.put(v1, RealF.copyOf(weightMap2.get(v2)).scale(-1.0F));
             tRF1.put(v1, weightMap1);
             tRF1.put(v2, weightMap2);
-            */
-
-            //System.out.println("After\n"+GExporter.toXMLString(tRF1));
+            
+            //System.out.println("After\n"+GExporter.toXMLFullString(tRF1));
 
             assertTrue(tRF1.blade1PairStream().count() == 4);                   //All four blades are mapped from
             assertTrue(tRF1.blade2PairStream().count() == 4);                   //All four blades are mapped to
+            assertTrue(tRF1.bladePairStream().count() == 8);                    //Twice with grade mixing.
+        }
 
+        @Test 
+        void testPutScaleRD() {
+            Blade scalar1 = tRD1.algebra1.getBasis().getScalarBlade();
+            Blade scalar2 = tRD1.algebra2.getBasis().getScalarBlade();
+                assertNotNull(scalar1);
+                assertNotNull(scalar2);
+                assertFalse(tRD1.algebra1 == tRD1.algebra2);                                                //Different algebra objects
+                assertTrue(scalar1 == scalar2);                                                             //while pointing to same scalar blade
+            
+            Scale<RealD> weightMapS = GBuilder.copyOfScale(tRD1.getScale(scalar1));                         //keys come from algebra2
+                assertFalse(weightMapS == tRD1.getScale(scalar1));                                          //Distinct Scales but
+                assertTrue(weightMapS.getBasis().getScalarBlade() == scalar1);                              //blades are reused
+            
+            Blade pscalar1 = tRD1.algebra1.getBasis().getPScalarBlade();
+            Blade pscalar2 = tRD1.algebra2.getBasis().getPScalarBlade();
+                assertNotNull(pscalar1);
+                assertNotNull(pscalar2);
+                assertTrue(pscalar1 == pscalar2);                                                           //while pointing to same pscalar blade
+
+            weightMapS.put(pscalar2, RealD.copyOf(weightMapS.get(scalar2)));
+                assertNotNull(weightMapS.get(pscalar2));
+                assertNotNull(weightMapS.get(scalar2));
+                assertDoesNotThrow(() -> tRD1.put(scalar1, weightMapS));                                    //replacing Scale at the scalar must not throw
+                assertNotNull(tRD1.getWeight(scalar1, scalar2));
+                assertNotNull(tRD1.getWeight(scalar1, pscalar2));
+                assertDoesNotThrow(() -> tRD1.put(null, weightMapS));                                   //Show that stupid stuff does nothing.
+            
+            Scale<RealD> weightMapPS = GBuilder.copyOfScale(tRD1.getScale(pscalar1));
+                assertFalse(weightMapPS == tRD1.getScale(pscalar1));                                        //Distinct Scales but
+                assertTrue(weightMapPS.getBasis().getPScalarBlade() == pscalar1);                           //blades are reused
+            
+            weightMapPS.put(scalar2, RealD.copyOf(weightMapPS.get(pscalar2)));
+                assertDoesNotThrow(() -> tRD1.put(pscalar1, weightMapPS));                                  //replacing Scale at the pscalar must not throw
+                assertNotNull(tRD1.getWeight(pscalar1, scalar2));
+                assertNotNull(tRD1.getWeight(pscalar1, pscalar2));
+                assertDoesNotThrow(() -> tRD1.getWeight(null, pscalar2));
+                assertDoesNotThrow(() -> tRD1.getWeight(null, null));
+                assertDoesNotThrow(() -> tRD1.getWeight(pscalar1, null));
+            
+            Blade v1 = alg2D.getBasis().getSingleBlade(1);
+            Blade v2 = alg2D.getBasis().getSingleBlade(2);
+            Scale<RealD> weightMap1 = GBuilder.copyOfScale(tRD1.getScale(v1));
+            Scale<RealD> weightMap2 = GBuilder.copyOfScale(tRD1.getScale(v2));
+            weightMap1.put(v2, RealD.copyOf(weightMap1.get(v1)));
+            weightMap2.put(v1, RealD.copyOf(weightMap2.get(v2)).scale(-1.0F));
+            tRD1.put(v1, weightMap1);
+            tRD1.put(v2, weightMap2);
+            
+            //System.out.println("After\n"+GExporter.toXMLFullString(tRD1));
+
+            assertTrue(tRD1.blade1PairStream().count() == 4);                   //All four blades are mapped from
+            assertTrue(tRD1.blade2PairStream().count() == 4);                   //All four blades are mapped to
+            assertTrue(tRD1.bladePairStream().count() == 8);                    //Twice with grade mixing.
+        }
+
+        @Test 
+        void testPutScaleCF() {
+            Blade scalar1 = tCF1.algebra1.getBasis().getScalarBlade();
+            Blade scalar2 = tCF1.algebra2.getBasis().getScalarBlade();
+                assertNotNull(scalar1);
+                assertNotNull(scalar2);
+                assertFalse(tCF1.algebra1 == tCF1.algebra2);                                                //Different algebra objects
+                assertTrue(scalar1 == scalar2);                                                             //while pointing to same scalar blade
+            
+            Scale<ComplexF> weightMapS = GBuilder.copyOfScale(tCF1.getScale(scalar1));                         //keys come from algebra2
+                assertFalse(weightMapS == tCF1.getScale(scalar1));                                          //Distinct Scales but
+                assertTrue(weightMapS.getBasis().getScalarBlade() == scalar1);                              //blades are reused
+            
+            Blade pscalar1 = tCF1.algebra1.getBasis().getPScalarBlade();
+            Blade pscalar2 = tCF1.algebra2.getBasis().getPScalarBlade();
+                assertNotNull(pscalar1);
+                assertNotNull(pscalar2);
+                assertTrue(pscalar1 == pscalar2);                                                           //while pointing to same pscalar blade
+
+            weightMapS.put(pscalar2, ComplexF.copyOf(weightMapS.get(scalar2)));
+                assertNotNull(weightMapS.get(pscalar2));
+                assertNotNull(weightMapS.get(scalar2));
+                assertDoesNotThrow(() -> tCF1.put(scalar1, weightMapS));                                    //replacing Scale at the scalar must not throw
+                assertNotNull(tCF1.getWeight(scalar1, scalar2));
+                assertNotNull(tCF1.getWeight(scalar1, pscalar2));
+                assertDoesNotThrow(() -> tCF1.put(null, weightMapS));                                   //Show that stupid stuff does nothing.
+            
+            Scale<ComplexF> weightMapPS = GBuilder.copyOfScale(tCF1.getScale(pscalar1));
+                assertFalse(weightMapPS == tCF1.getScale(pscalar1));                                        //Distinct Scales but
+                assertTrue(weightMapPS.getBasis().getPScalarBlade() == pscalar1);                           //blades are reused
+            
+            weightMapPS.put(scalar2, ComplexF.copyOf(weightMapPS.get(pscalar2)));
+                assertDoesNotThrow(() -> tCF1.put(pscalar1, weightMapPS));                                  //replacing Scale at the pscalar must not throw
+                assertNotNull(tCF1.getWeight(pscalar1, scalar2));
+                assertNotNull(tCF1.getWeight(pscalar1, pscalar2));
+                assertDoesNotThrow(() -> tCF1.getWeight(null, pscalar2));
+                assertDoesNotThrow(() -> tCF1.getWeight(null, null));
+                assertDoesNotThrow(() -> tCF1.getWeight(pscalar1, null));
+            
+            Blade v1 = alg2D.getBasis().getSingleBlade(1);
+            Blade v2 = alg2D.getBasis().getSingleBlade(2);
+            Scale<ComplexF> weightMap1 = GBuilder.copyOfScale(tCF1.getScale(v1));
+            Scale<ComplexF> weightMap2 = GBuilder.copyOfScale(tCF1.getScale(v2));
+            weightMap1.put(v2, ComplexF.copyOf(weightMap1.get(v1)));
+            weightMap2.put(v1, ComplexF.copyOf(weightMap2.get(v2)).scale(-1.0F));
+            tCF1.put(v1, weightMap1);
+            tCF1.put(v2, weightMap2);
+            
+            //System.out.println(GExporter.toXMLFullString(tCF1));
+
+            assertTrue(tCF1.blade1PairStream().count() == 4);                   //All four blades are mapped from
+            assertTrue(tCF1.blade2PairStream().count() == 4);                   //All four blades are mapped to
+            assertTrue(tCF1.bladePairStream().count() == 8);                    //Twice with grade mixing.
+        }
+
+         @Test 
+        void testPutScaleCD() {
+            Blade scalar1 = tCD1.algebra1.getBasis().getScalarBlade();
+            Blade scalar2 = tCD1.algebra2.getBasis().getScalarBlade();
+                assertNotNull(scalar1);
+                assertNotNull(scalar2);
+                assertFalse(tCD1.algebra1 == tCD1.algebra2);                                                //Different algebra objects
+                assertTrue(scalar1 == scalar2);                                                             //while pointing to same scalar blade
+            
+            Scale<ComplexD> weightMapS = GBuilder.copyOfScale(tCD1.getScale(scalar1));                         //keys come from algebra2
+                assertFalse(weightMapS == tCD1.getScale(scalar1));                                          //Distinct Scales but
+                assertTrue(weightMapS.getBasis().getScalarBlade() == scalar1);                              //blades are reused
+            
+            Blade pscalar1 = tCD1.algebra1.getBasis().getPScalarBlade();
+            Blade pscalar2 = tCD1.algebra2.getBasis().getPScalarBlade();
+                assertNotNull(pscalar1);
+                assertNotNull(pscalar2);
+                assertTrue(pscalar1 == pscalar2);                                                           //while pointing to same pscalar blade
+
+            weightMapS.put(pscalar2, ComplexD.copyOf(weightMapS.get(scalar2)));
+                assertNotNull(weightMapS.get(pscalar2));
+                assertNotNull(weightMapS.get(scalar2));
+                assertDoesNotThrow(() -> tCD1.put(scalar1, weightMapS));                                    //replacing Scale at the scalar must not throw
+                assertNotNull(tCD1.getWeight(scalar1, scalar2));
+                assertNotNull(tCD1.getWeight(scalar1, pscalar2));
+                assertDoesNotThrow(() -> tCD1.put(null, weightMapS));                                   //Show that stupid stuff does nothing.
+            
+            Scale<ComplexD> weightMapPS = GBuilder.copyOfScale(tCD1.getScale(pscalar1));
+                assertFalse(weightMapPS == tCD1.getScale(pscalar1));                                        //Distinct Scales but
+                assertTrue(weightMapPS.getBasis().getPScalarBlade() == pscalar1);                           //blades are reused
+            
+            weightMapPS.put(scalar2, ComplexD.copyOf(weightMapPS.get(pscalar2)));
+                assertDoesNotThrow(() -> tCD1.put(pscalar1, weightMapPS));                                  //replacing Scale at the pscalar must not throw
+                assertNotNull(tCD1.getWeight(pscalar1, scalar2));
+                assertNotNull(tCD1.getWeight(pscalar1, pscalar2));
+                assertDoesNotThrow(() -> tCD1.getWeight(null, pscalar2));
+                assertDoesNotThrow(() -> tCD1.getWeight(null, null));
+                assertDoesNotThrow(() -> tCD1.getWeight(pscalar1, null));
+            
+            Blade v1 = alg2D.getBasis().getSingleBlade(1);
+            Blade v2 = alg2D.getBasis().getSingleBlade(2);
+            Scale<ComplexD> weightMap1 = GBuilder.copyOfScale(tCD1.getScale(v1));
+            Scale<ComplexD> weightMap2 = GBuilder.copyOfScale(tCD1.getScale(v2));
+            weightMap1.put(v2, ComplexD.copyOf(weightMap1.get(v1)));
+            weightMap2.put(v1, ComplexD.copyOf(weightMap2.get(v2)).scale(-1.0F));
+            tCD1.put(v1, weightMap1);
+            tCD1.put(v2, weightMap2);
+            
+            //System.out.println(GExporter.toXMLFullString(tCD1));
+
+            assertTrue(tCD1.blade1PairStream().count() == 4);                   //All four blades are mapped from
+            assertTrue(tCD1.blade2PairStream().count() == 4);                   //All four blades are mapped to
+            assertTrue(tCD1.bladePairStream().count() == 8);                    //Twice with grade mixing.
         }
 
         @Test
