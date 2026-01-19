@@ -5,12 +5,12 @@ import org.interworldtransport.cladosF.*;
 //import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
 
+//import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -129,7 +129,8 @@ public class ConnectionTests {
             assertInstanceOf( Scale.class, tRF1.getScale(alg2D.getBasis().getScalarBlade()));               //Blade mapped to a scale
             assertNotNull(tRF1.getScale(algSTA.getBasis().getScalarBlade()));                                             //Scalar blades between algebras have same key
             assertNull(tRF1.getScale(algSTA.getBasis().getPScalarBlade()));                                               //pScalar blades don't share keys if generator count is different.
-            
+            assertDoesNotThrow(() -> tRF1.getScale(null));
+
             assertInstanceOf( Scale.class, tRD1.getScale(alg2D.getBasis().getScalarBlade()));               //Blade mapped to a scale
             assertNotNull(tRD1.getScale(algSTA.getBasis().getScalarBlade()));                                             //Scalar blades between algebras have same key
             assertNull(tRD1.getScale(algSTA.getBasis().getPScalarBlade()));                                               //pScalar blades don't share keys if generator count is different.
@@ -146,19 +147,19 @@ public class ConnectionTests {
         @Test
         void testGetWeights() {
             assertInstanceOf(RealF.class, tRF1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
-            assertNull(tRF1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNotNull(tRF1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));         //Scalar blades have the same key
             assertNull(tRF1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
 
             assertInstanceOf(RealD.class, tRD1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
-            assertNull(tRD1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNotNull(tRD1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
             assertNull(tRD1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
 
             assertInstanceOf(ComplexF.class, tCF1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
-            assertNull(tCF1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNotNull(tCF1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
             assertNull(tCF1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
 
             assertInstanceOf(ComplexD.class, tCD1.getWeight(alg2D.getBasis().getScalarBlade(), alg2D.getBasis().getScalarBlade()));
-            assertNull(tCD1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
+            assertNotNull(tCD1.getWeight(alg2D.getBasis().getScalarBlade(), algSTA.getBasis().getScalarBlade()));
             assertNull(tCD1.getWeight(alg2D.getBasis().getPScalarBlade(), algSTA.getBasis().getPScalarBlade()));
         }
     }
@@ -211,12 +212,65 @@ public class ConnectionTests {
             assertNotNull(tCD1.getWeight(alg2D.getBasis().getPScalarBlade(), alg2D.getBasis().getPScalarBlade()));
 
             assertInstanceOf(Connection.class,  tRF1.remove(alg2D.getBasis().getPScalarBlade()));
+
+            assertDoesNotThrow(() -> tRF1.remove(null));
         }
 
         @Test 
         void testPutScale() {
-            //This addition should adjust all three internal maps
             //TODO Write the tests for put/insertions of new Scales
+            Blade scalar1 = tRF1.algebra1.getBasis().getScalarBlade();
+            Blade scalar2 = tRF1.algebra2.getBasis().getScalarBlade();
+                assertNotNull(scalar1);
+                assertNotNull(scalar2);
+                assertFalse(tRF1.algebra1 == tRF1.algebra2);                                                //Different algebra objects
+                assertTrue(scalar1 == scalar2);                                                             //while pointing to same scalar blade
+            
+            Scale<RealF> weightMapS = GBuilder.copyOfScale(tRF1.getScale(scalar1));                         //keys come from algebra2
+                assertFalse(weightMapS == tRF1.getScale(scalar1));                                          //Distinct Scales but
+                assertTrue(weightMapS.getBasis().getScalarBlade() == scalar1);                              //blades are reused
+            
+            Blade pscalar1 = tRF1.algebra1.getBasis().getPScalarBlade();
+            Blade pscalar2 = tRF1.algebra2.getBasis().getPScalarBlade();
+                assertNotNull(pscalar1);
+                assertNotNull(pscalar2);
+                assertTrue(pscalar1 == pscalar2);                                                           //while pointing to same pscalar blade
+
+            weightMapS.put(pscalar2, RealF.copyOf(weightMapS.get(scalar2)));
+                assertNotNull(weightMapS.get(pscalar2));
+                assertNotNull(weightMapS.get(scalar2));
+                assertDoesNotThrow(() -> tRF1.put(scalar1, weightMapS));                                    //replacing Scale at the scalar must not throw
+                assertNotNull(tRF1.getWeight(scalar1, scalar2));
+                assertNotNull(tRF1.getWeight(scalar1, pscalar2));
+                assertDoesNotThrow(() -> tRF1.put(null, weightMapS));                                   //Show that stupid stuff does nothing.
+            
+            Scale<RealF> weightMapPS = GBuilder.copyOfScale(tRF1.getScale(pscalar1));
+                assertFalse(weightMapPS == tRF1.getScale(pscalar1));                                        //Distinct Scales but
+                assertTrue(weightMapPS.getBasis().getPScalarBlade() == pscalar1);                           //blades are reused
+            
+            weightMapPS.put(scalar2, RealF.copyOf(weightMapPS.get(pscalar2)));
+                assertDoesNotThrow(() -> tRF1.put(pscalar1, weightMapPS));                                  //replacing Scale at the pscalar must not throw
+                assertNotNull(tRF1.getWeight(pscalar1, scalar2));
+                assertNotNull(tRF1.getWeight(pscalar1, pscalar2));
+                assertDoesNotThrow(() -> tRF1.getWeight(null, pscalar2));
+                assertDoesNotThrow(() -> tRF1.getWeight(null, null));
+                assertDoesNotThrow(() -> tRF1.getWeight(pscalar1, null));
+            /*
+            Blade v1 = alg2D.getBasis().getSingleBlade(1);
+            Blade v2 = alg2D.getBasis().getSingleBlade(2);
+            Scale<RealF> weightMap1 = GBuilder.copyOfScale(tRF1.getScale(v1));
+            Scale<RealF> weightMap2 = GBuilder.copyOfScale(tRF1.getScale(v2));
+            weightMap1.put(v2, RealF.copyOf(weightMap1.get(v1)));
+            weightMap2.put(v1, RealF.copyOf(weightMap2.get(v2)).scale(-1.0F));
+            tRF1.put(v1, weightMap1);
+            tRF1.put(v2, weightMap2);
+            */
+
+            //System.out.println("After\n"+GExporter.toXMLString(tRF1));
+
+            assertTrue(tRF1.blade1PairStream().count() == 4);                   //All four blades are mapped from
+            assertTrue(tRF1.blade2PairStream().count() == 4);                   //All four blades are mapped to
+
         }
 
         @Test
