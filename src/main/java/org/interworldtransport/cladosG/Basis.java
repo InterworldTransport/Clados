@@ -471,11 +471,9 @@ public final class Basis implements CanonicalBasis, Comparable<Basis> {
 	}
 
 	/**
-	 * Simple gettor method retrieves the Blade at the indexed position in the
-	 * Basis.
-	 * <br>
+	 * Simple gettor method retrieves the Blade at the indexed position in the Basis.
 	 * Note that a null can be returned from here if the index is out of range.
-	 * <br>
+	 * <br><br>
 	 * @param p1 integer index
 	 * @return Blade at the indexed position.
 	 */
