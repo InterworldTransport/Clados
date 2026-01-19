@@ -165,33 +165,9 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
         mapOfWeights.clear();
         bladeStream().forEachOrdered(b1 -> {
             Scale<D> value = mapOfMaps.get(b1);
-            value.getMap().keySet().stream().forEach(b2 -> {
-                switch (mode) {
-                    case COMPLEXD -> {
-                        if (!ComplexD.isZero((ComplexD) value.get(b2))) {
-                            mapOfBlades.put(b1, b2);
-                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
-                        }
-                    }
-                    case COMPLEXF -> {
-                        if (!ComplexF.isZero((ComplexF) value.get(b2))) {
-                            mapOfBlades.put(b1, b2);
-                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
-                        }
-                    }
-                    case REALD -> {
-                        if (!RealD.isZero((RealD) value.get(b2))) {
-                            mapOfBlades.put(b1, b2);
-                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
-                        }
-                    }
-                    case REALF -> {
-                        if (!RealF.isZero((RealF) value.get(b2))) {
-                            mapOfBlades.put(b1, b2);
-                            mapOfWeights.put(new BladeDuet(b1, b2), mapOfMaps.get(b1).get(b2));
-                        }
-                    } 
-                }
+            value.bladesNotZeroStream().forEach(b2 -> {                                                         //(!) this lets the Scale decide what ZERO means
+                mapOfBlades.put(b1, b2);
+                mapOfWeights.put(new BladeDuet(b1, b2), value.get(b2));
             });
         });
     }
@@ -321,22 +297,20 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Scale of D which extend ProtoN and other numeric interfaces
      */
     public Scale<D> getScale(Blade pB) {
-        if (mapOfMaps.containsKey(pB))
-            return mapOfMaps.get(pB);
-        return null;
+        if (pB == null)                                         return null;    //Dodge the null pointer exception
+        else return mapOfMaps.get(pB);                                          //If mapOfMaps does NOT have the key, return null.        
     }
 
     /**
-     * Get the weight at the blade pair.
+     * Get the weight at the blade pair. If the blade pair isn't in the weights map, null is returned.
      * <br><br>
      * @param pB1 Blade #1 of the pair (a row) for which to fetch a weight
      * @param pB2 Blade #2 of the pair (a col) for which to fetch a weight
      * @return D which is just a cladosF number. A child of ProtoN.
      */
     public D getWeight(Blade pB1, Blade pB2) {
-        if (mapOfBlades.containsKey(pB1) & mapOfBlades.containsValue(pB2))
-            return mapOfWeights.get(new BladeDuet(pB1, mapOfBlades.get(pB1)));
-        return null;
+        if (pB1 == null | pB2 == null)                          return null;    //Null is returned BECAUSE the blade pair can't exist
+        else return mapOfWeights.get(new BladeDuet(pB1, pB2));                  //Null is returned IF the blade pair isn't in the map
     }
 
     /**
@@ -347,9 +321,10 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Frame of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
     public Connection<D> put(Blade pB, Scale<D> pS) {
-        if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB)) {  //Ensures Scale's basis matches (well enough) Algebra's basis.
-            mapOfMaps.put(pB, pS);
-            setAltMaps();
+        if (pB == null)                                         return this;    //Do nothing.
+        if (algebra1.getBasis().hasBlade(pB) & pS.getBasis().hasBlade(pB)) {    //Ensures Scale's basis matches (well enough) Algebra's basis.
+            mapOfMaps.put(pB, pS);                                              //Do something
+            setAltMaps();                                                       //that has ripple effects
         }    
         return this;
     }
@@ -362,29 +337,10 @@ public final class Connection<D extends ProtoN & Field & Normalizable> implement
      * @return Connection of D which extend ProtoN and other numeric interfaces. Basically... this object.
      */
     public Connection<D> remove(Blade pB) {
-        if (mapOfMaps.containsKey(pB)) {
-            mapOfMaps.remove(pB);
-            setAltMaps();
-        }
+        if (pB == null)                        return this;                     //Do nothing.
+        if (mapOfMaps.remove(pB) != null)      setAltMaps();                    //Do something.
         return this;
     }
-
-    /**
-     * This is the compliment of a blade stream involving the scaling maps that act as connection patches.
-	 * <br><br>
-	 * Since the internal map can accept any of the CladosF numbers as values, there is a cast to a 'generic' type 
-	 * within this method. This would normally cause warnings by the compiler since the generic named in the internal 
-	 * map IS a ProtoN child AND casting an unchecked type could fail at runtime.
-	 * <br><br>
-	 * That won't happen when CladosF builders are used because they can't build anything that is NOT a ProtoN child. 
-	 * Scale's internal map only accepts ProtoN child classes, so there is no danger of a failed cast operation... 
-	 * until someone creates a new ProtoN child class and fails to update the builders.
-	 * <br><br>
-     * @return Stream of Scales of numbers (ProtoN children)
-     */
-    //public Stream<Scale<D>> scaleStream() {
-    //    return mapOfMaps.sequencedValues().stream();
-    //}
 
     /**
      * This method causes all coefficients to be set to zero re-using their cardinals.

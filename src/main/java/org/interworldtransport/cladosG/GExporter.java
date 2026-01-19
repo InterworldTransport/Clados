@@ -509,7 +509,7 @@ public class GExporter {
 			.append("cardinal=\""+pS.getCardinal().getUnit()+"\">\n");
 
 		pS.getBasis().bladeStream().forEach(blade -> {
-			rB	.append(indent+"\t")
+			rB	.append(indent+"\t\t")
 				.append("<Pair bitKey=\"0b");
 			int pad = blade.maxGen - Integer.toBinaryString(blade.bitKey()).length();
 			while (pad>0) {
@@ -541,7 +541,7 @@ public class GExporter {
 			}
 			rB	.append("\" />\n");
 		});
-		rB	.append(indent)
+		rB	.append(indent+"\t")
 			.append("</Scale>\n");
 		return rB.toString();
 	}
@@ -711,10 +711,35 @@ public class GExporter {
 		rB	.append(GExporter.toXMLString(pC.getAlgebra(false), "\t"));
 
 		pC.bladeStream().forEach(blade -> {
-			rB	.append("\t").append("<OuterMap>\n");
+			rB	.append("\t").append("<Map>\n");
 			rB	.append("\t").append(GExporter.toXMLString(blade, "\t"));
 			rB	.append("\t").append(GExporter.toXMLString(pC.getScale(blade), "\t"));
-			rB	.append("\t").append("</OuterMap>\n");
+			rB	.append("\t").append("</Map>\n");
+		});
+
+		rB	.append("</Connection>\n");
+		return rB.toString();
+	}
+
+	/**
+	 * Display shorter XML string that represents the Connection and all its internal details
+	 * <br><br>
+	 * @param pC The Connection to be exported as XML
+	 * @return String XML output of the offered Connection
+	 */
+	public final static String toXMLString(Connection<?> pC) {
+		
+		StringBuilder rB = new StringBuilder("<Connection  mode=\""+pC.getMode());
+		rB	.append("\" cardinal=\""+pC.getCardinal().getUnit()+"\">\n");
+
+		//rB	.append(GExporter.toXMLString(pC.getAlgebra(true), "\t"));
+		//rB	.append(GExporter.toXMLString(pC.getAlgebra(false), "\t"));
+
+		pC.bladeStream().forEach(blade -> {
+			rB	.append("\t").append("<Map>\n");
+			rB	.append("\t").append(GExporter.toXMLString(blade, "\t"));
+			rB	.append("\t").append(GExporter.toXMLString(pC.getScale(blade), "\t"));
+			rB	.append("\t").append("</Map>\n");
 		});
 
 		rB	.append("</Connection>\n");
