@@ -703,17 +703,17 @@ public class MultivectorUnitTests {
             assertTrue(Monad.isUniGrade(tM6));                                  //Force vector part and then prove it
             //assertTrue(Monad.isGrade(tM5, tM5.getAlgebra().getGradeCount() - 1)); //Detect PScalar
         }
-
+/*
         @Test
-        public void testGetWeights() {
-            assertTrue(((RealF) tM6.getCoeff(15)).getReal() == 1.0f);
-            assertTrue(((RealF) tM6.getCoeff(0)).getReal() == 1.0f);
-            assertTrue((RealF) tM6.getCoeff(-1) == null);
-            assertTrue((RealF) tM6.getCoeff(16) == null);
+        public void testgetWeightsAs() {
+            assertTrue((tM6.<RealF>getCoeff(15)).getReal() == 1.0f);
+            assertTrue((tM6.<RealF>getCoeff(0)).getReal() == 1.0f);
+            assertTrue(tM6.<RealF>getCoeff(-1) == null);
+            assertTrue(tM6.<RealF>getCoeff(16) == null);
 
-            assertTrue(tM6.getCoeff().length == 16);
+            assertTrue(tM6.<RealF>getCoeff().length == 16);
         }
-
+ */
         @Test
         public void testChangingWeights() {
             assertInstanceOf( Scale.class, tM6.getWeights());
@@ -1127,17 +1127,17 @@ public class MultivectorUnitTests {
             assertTrue(Monad.isUniGrade(tM6));                                  //Force vector part and then prove it
             //assertTrue(Monad.isGrade(tM5, tM5.getAlgebra().getGradeCount() - 1)); //Detect PScalar
         }
-
+/*
         @Test
-        public void testGetWeights() {
-        assertTrue(((RealD) tM6.getCoeff(15)).getReal() == 1.0d);
-        assertTrue(((RealD) tM6.getCoeff(0)).getReal() == 1.0d);
-        assertTrue((RealD) tM6.getCoeff(-1) == null);
-        assertTrue((RealD) tM6.getCoeff(16) == null);
+        public void testgetWeightsAs() {
+        assertTrue((tM6.<RealD>getCoeff(15)).getReal() == 1.0d);
+        assertTrue((tM6.<RealD>getCoeff(0)).getReal() == 1.0d);
+        assertTrue(tM6.<RealD>getCoeff(-1) == null);
+        assertTrue(tM6.<RealD>getCoeff(16) == null);
 
-        assertTrue(tM6.getCoeff().length == 16);
+        assertTrue(tM6.<RealD>getCoeff().length == 16);
         }
-
+ */
         @Test
         public void testChangingWeights() {
             assertInstanceOf( Scale.class, tM6.getWeights());
@@ -1545,17 +1545,17 @@ public class MultivectorUnitTests {
             assertTrue(Monad.isUniGrade(tM6));                                  //Force vector part and then prove it
             //assertTrue(Monad.isGrade(tM5, tM5.getAlgebra().getGradeCount() - 1)); //Detect PScalar
         }
-
+        /*
         @Test
-        public void testGetWeights() {
-        assertTrue(((ComplexF) tM6.getCoeff(15)).getReal() == 1.0f);
-        assertTrue(((ComplexF) tM6.getCoeff(0)).getReal() == 1.0f);
-        assertTrue((ComplexF) tM6.getCoeff(-1) == null);
-        assertTrue((ComplexF) tM6.getCoeff(16) == null);
+        public void testgetWeightsAs() {
+        assertTrue((tM6.<ComplexF>getCoeff(15)).getReal() == 1.0f);
+        assertTrue((tM6.<ComplexF>getCoeff(0)).getReal() == 1.0f);
+        assertTrue(tM6.<ComplexF>getCoeff(-1) == null);
+        assertTrue(tM6.<ComplexF>getCoeff(16) == null);
 
-        assertTrue(tM6.getCoeff().length == 16);
+        assertTrue(tM6.<ComplexF>getCoeff().length == 16);
         }
-
+        */
         @Test
         public void testChangingWeights() {
             assertInstanceOf(Scale.class, tM6.getWeights());
@@ -1970,17 +1970,17 @@ public class MultivectorUnitTests {
             tM6.gradeSuppress((byte) 3).gradeSuppress((byte) 2).gradeSuppress((byte) 0);
             assertTrue(Monad.isUniGrade(tM6));                                  //Force vector part and then prove it
         }
-
+/*
         @Test
-        public void testGetWeights() {
-        assertTrue(((ComplexD) tM6.getCoeff(15)).getReal() == 1.0d);
-        assertTrue(((ComplexD) tM6.getCoeff(0)).getReal() == 1.0d);
-        assertTrue((ComplexD) tM6.getCoeff(-1) == null);
-        assertTrue((ComplexD) tM6.getCoeff(16) == null);
+        public void testgetWeightsAs() {
+        assertTrue((tM6.<ComplexD>getCoeff(15)).getReal() == 1.0d);
+        assertTrue((tM6.<ComplexD>getCoeff(0)).getReal() == 1.0d);
+        assertTrue(tM6.<ComplexD>getCoeff(-1) == null);
+        assertTrue( tM6.<ComplexD>getCoeff(16) == null);
 
-        assertTrue(tM6.getCoeff().length == 16);
+        assertTrue(tM6.<ComplexD>getCoeff().length == 16);
         }
-
+ */
         @Test
         public void testChangingWeights() {
             assertInstanceOf(Scale.class, tM6.getWeights());

@@ -323,7 +323,7 @@ public class Monad implements Modal, Unitized {
 	 */
 	public static Monad projectReference(Monad pLeft, Monad pRight) {
 
-		//Scale<?> tempRightWeights = pRight.getWeights();
+		//Scale<T> tempRightWeights = pRight.getWeights();
 		//Algebra tempLeftAlg = pLeft.getAlgebra();
 		//Basis tempLeftBasis = tempLeftAlg.getGBasis();
 		//Scale<T> newRightScale = new Scale<>(pRight.getMode(), tempLeftBasis, tempRightWeights.getCardinal());
@@ -392,7 +392,7 @@ public class Monad implements Modal, Unitized {
 	public Monad(Monad pM) {
 		setName(pM.getName());
 		setAlgebra(pM.getAlgebra());
-		scales = new Scale<>((Scale<?>) pM.getWeights());
+		scales = new Scale<>(pM.getWeights());
 		setGradeKey();
 	}
 
@@ -827,9 +827,9 @@ public class Monad implements Modal, Unitized {
 	 * @param <T> ProtoN number from CladosF without the interfaces this time.
 	 * @return ProtoN[]
 	 */
-	public <T extends ProtoN & Field & Normalizable> T[] getCoeff() {
-		return (T[]) scales.getNumbers();
-	}
+	//public <T extends ProtoN & Field & Normalizable> T[] getCoeff() {
+	//	return (T[]) scales.getNumbers();
+	//}
 
 	/**
 	 * Return a field Coefficient for this Monad. These coefficients are the
@@ -916,8 +916,24 @@ public class Monad implements Modal, Unitized {
 	 * <br><br>
 	 * @return Scale of Blades and ProtoN children. This is the 'coefficients' object.
 	 */
-	public Scale<?> getWeights() {
-		return scales;
+	//public Scale<?> getWeights() {
+	//	return scales;
+	//}
+
+	/**
+	 * This method returns the map relating basis blades to coefficients.
+	 * <br><br>
+	 * Typed accessor for the monad's Scale. This one avoids repeated unchecked casts at call sites.<br>
+	 * If one knows/does not know the concrete ProtoN numeric type of the Monad, this method is called like <br>
+	 * 1. monad.&lt;ProtoN child type&gt;getWeightsAs()<br>
+	 * 2. monad.getWeightsAs()
+	 * <br><br>
+	 * @param <T> ProtoN child type used by the caller
+	 * @return Scale typed to the caller's numeric type (unchecked cast)
+	 */
+	//@SuppressWarnings("unchecked")
+	public <T extends ProtoN & Field & Normalizable> Scale<T> getWeights() {
+		return (Scale<T>) scales;
 	}
 
 	/**
@@ -1077,13 +1093,13 @@ public class Monad implements Modal, Unitized {
 					Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
-							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
@@ -1093,17 +1109,17 @@ public class Monad implements Modal, Unitized {
 			});
 		} else {												//If grade coverage is NOT sparse, multiply blades in order if non-zero. No gradeKey trickery.
 			getWeights().bladesNotZeroStream().forEach(blade0 -> {  													//blade0's are in ANY grade of THIS monad
-				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> {  												//blade2's are in ANY grade of the OTHER monad
+				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> { 												//blade2's are in ANY grade of the OTHER monad
 					Blade bMult = GP.getResult(blade2, blade0);															//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
-							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
-							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade2, blade0)));	//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
@@ -1143,17 +1159,17 @@ public class Monad implements Modal, Unitized {
 		Scale<T> newScales = new Scale<T>(getMode(), getAlgebra().getBasis(), scales.getCardinal()).zeroAll();
 		if (sparseFlag) {										//If grade coverage is sparse, multiply blades BY grades present
 			bladeOfGradesStream().forEach(blade0 -> { 							//blade0's are in a single grade of THIS monad
-				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> {  													//blade2's are in ANY grade of the OTHER monad
-					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication				//the two blades determine the result blade
+				pM.getWeights().bladesNotZeroStream().forEach(blade2 -> {  												//blade2's are in ANY grade of the OTHER monad
+					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication			//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
-							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							case REALF ->	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
+							case REALF ->	 newScales.get(bMult).add(RealF		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
@@ -1167,13 +1183,13 @@ public class Monad implements Modal, Unitized {
 					Blade bMult = GP.getResult(blade0, blade2);	// NOTE the reversal from left multiplication			//the two blades determine the result blade
 					try {
 						switch (getMode()) {					//get the number at the result blade and +/- it with the product of numbers at the two blades.
-							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply((ComplexD) get(blade0), (ComplexD) pM.get(blade2))
+							case COMPLEXD -> newScales.get(bMult).add(ComplexD	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply((ComplexF) get(blade0), (ComplexF) pM.get(blade2))
+							case COMPLEXF -> newScales.get(bMult).add(ComplexF	.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply((RealD) get(blade0), (RealD) pM.get(blade2))
+							case REALD -> 	 newScales.get(bMult).add(RealD		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
-							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply((RealF) get(blade0), (RealF) pM.get(blade2))
+							case REALF -> 	 newScales.get(bMult).add(RealF		.multiply(get(blade0), pM.get(blade2))
 																				.scale(GP.getSign(blade0, blade2)));	//here is the +/- decision
 						}
 					} catch (FieldBinaryException e) {			//Number reference match failures for multiply and add are caught here.
@@ -1215,22 +1231,22 @@ public class Monad implements Modal, Unitized {
 
 		switch (getMode()) {
 			case COMPLEXD -> {
-				ComplexD tMagCD = ((ComplexD) tRev.getWeights().getScalar().invert()); //img part == 0
+				ComplexD tMagCD = (tRev.<ComplexD>getWeights().getScalar().invert()); //img part == 0
 				tMagCD.setReal(Math.sqrt(Math.abs(tMagCD.getReal())));
 				this.scale(tMagCD);
 			}	
 			case COMPLEXF -> {
-				ComplexF tMagCF = ((ComplexF) tRev.getWeights().getScalar().invert()); //img part == 0
+				ComplexF tMagCF = (tRev.<ComplexF>getWeights().getScalar().invert()); //img part == 0
 				tMagCF.setReal((float) Math.sqrt(Math.abs(tMagCF.getReal())));
 				this.scale(tMagCF);	
 			}
 			case REALD -> {
-				RealD tMagRD = ((RealD) tRev.getWeights().getScalar().invert());
+				RealD tMagRD = (tRev.<RealD>getWeights().getScalar().invert());
 				tMagRD.setReal(Math.sqrt(Math.abs(tMagRD.getReal())));
 				this.scale(tMagRD);		
 			}
 			case REALF -> {
-				RealF tMagRF = ((RealF) tRev.getWeights().getScalar().invert());
+				RealF tMagRF = (tRev.<RealF>getWeights().getScalar().invert());
 				tMagRF.setReal((float) Math.sqrt(Math.abs(tMagRF.getReal())));
 				this.scale(tMagRF);
 			}
