@@ -33,6 +33,7 @@ public class GeometryInfrastructureUnitTests {
      */
     class testsForScale {
         Cardinal workCard = FBuilder.createCardinal("WorkingItOut");
+        Cardinal workCard2 = FBuilder.createCardinal("WorkingItOut2");
         Basis workBasis;
         Scale<RealF> workScaleRF;
         Scale<RealD> workScaleRD;
@@ -57,6 +58,44 @@ public class GeometryInfrastructureUnitTests {
                 workScaleRD = new Scale<>(CladosField.REALD, workBasis, workCard);
                 workScaleCF = new Scale<>(CladosField.COMPLEXF, workBasis, workCard);
                 workScaleCD = new Scale<>(CladosField.COMPLEXD, workBasis, workCard);
+            }
+
+            @Test
+            public void testAggregation() {
+                tRF = (RealF[]) FListBuilder.REALF.createONE(workCard, 16);            //new RealF[16];
+                tRD = (RealD[]) FListBuilder.REALD.createONE(workCard, 16);            //new RealD[16];
+                tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(workCard, 16);   //new ComplexF[16];
+                tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(workCard, 16);   //new ComplexD[16];
+
+                Scale<RealF> workRF2 = GBuilder.copyOfScale(workScaleRF);
+                Scale<RealD> workRD2 = GBuilder.copyOfScale(workScaleRD);
+                Scale<ComplexF> workCF2 = GBuilder.copyOfScale(workScaleCF);
+                Scale<ComplexD> workCD2 = GBuilder.copyOfScale(workScaleCD);
+
+                workRF2.setNumbers(tRF);
+                workRD2.setNumbers(tRD);
+                workCF2.setNumbers(tCF);
+                workCD2.setNumbers(tCD);
+
+                workScaleRF.aggregate(workRF2);
+                workScaleRD.aggregate(workRD2);
+                workScaleCF.aggregate(workCF2);
+                workScaleCD.aggregate(workCD2);
+
+                assertFalse(workScaleRF.equals(workRF2));
+                assertFalse(workScaleRD.equals(workRD2));
+                assertFalse(workScaleCF.equals(workCF2));
+                assertFalse(workScaleCD.equals(workCD2));
+                assertTrue(workScaleRF.bladesZeroStream().count() == 0);
+                assertTrue(workScaleRD.bladesZeroStream().count() == 0);
+                assertTrue(workScaleCF.bladesZeroStream().count() == 0);
+                assertTrue(workScaleCD.bladesZeroStream().count() == 0);
+
+                assertTrue(workScaleRF.aggregate(null).equals(workScaleRF));        //null means do nothing
+                
+                Scale<RealF> workScaleRF2 = GBuilder.copyOfScale(workScaleRF);
+                workScaleRF2.setCardinal(workCard2);
+                assertTrue(workScaleRF.aggregate(workScaleRF2).equals(workScaleRF));    //wrong cardinal so do nothing
             }
 
             @Test

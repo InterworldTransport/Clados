@@ -271,7 +271,7 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	protected Scale<D> aggregate(Scale<D> pIn) {
 		if (pIn == null)							return this;
 		if (pIn.getCardinal() != getCardinal())		return this;
-		if (pIn.getMode() != getMode())				return this;
+		if (pIn.getMode() != getMode())				return this; 				//Don't think this can happen due to type checking
 
 		pIn.bladesNotZeroStream().forEach(b -> {
 			try {get(b).add(pIn.get(b));} 										//This should never fail because...
@@ -874,7 +874,8 @@ public final class Scale<D extends ProtoN & Field & Normalizable> implements Uni
 	protected <T extends ProtoN & Field & Normalizable> Scale<D> setNumber(Blade pB, T pIn) {
 		if (pIn == null)																//Nulls aren't tolerated
 					throw new IllegalArgumentException("Offered number MUST NOT be null.");
-		if (!map.containsKey(pB))
+		if (!gBasis.hasBlade(pB))
+		//if (!map.containsKey(pB))
 					throw new IllegalArgumentException("Offered Blade MUST be in the basis.");
 		if  (	!(pIn instanceof RealF) & (getMode() == REALF)
 			& 	!(pIn instanceof RealD) & (getMode() == REALD)

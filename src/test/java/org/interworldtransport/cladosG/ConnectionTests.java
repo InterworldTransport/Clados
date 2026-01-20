@@ -4,6 +4,7 @@ import static org.interworldtransport.cladosF.CladosField.*;
 import org.interworldtransport.cladosF.*;
 //import org.interworldtransport.cladosFExceptions.FieldException;
 import org.interworldtransport.cladosGExceptions.BadSignatureException;
+import org.interworldtransport.cladosGExceptions.CladosException;
 
 //import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -26,11 +27,12 @@ public class ConnectionTests {
     String aName1 = "Motion";
     String aName2 = "Property";
     String vga2Dsig = "++";
+    String vga3Dsig = "+++";
     String stasig = "-+++";
     String pgasig = "+++0";
 
-    Algebra alg2D, algSTA, algPGA;
-    Monad tM1, tM2, tM3, tM4;
+    Algebra alg2D, algSTA, algPGA, algEuclid;
+    Monad tMRF1, tMRF2, tMRD1, tMRD2, tMCF1, tMCF2, tMCD1, tMCD2;
     Connection<RealF> tRF1, tRF2;
     Connection<RealD> tRD1, tRD2;
     Connection<ComplexF> tCF1, tCF2;
@@ -42,9 +44,7 @@ public class ConnectionTests {
         alg2D = GBuilder.createAlgebraWithFoot(pFoot0, aName2, vga2Dsig);
         algSTA = GBuilder.createAlgebraWithFoot(pFoot0, aName1, stasig);
         algPGA = GBuilder.createAlgebraWithFoot(pFoot0, aName0, pgasig);
-        
-        //Construct testable elements that get shared... like algebras
-
+        algEuclid = GBuilder.createAlgebraWithFoot(pFoot0, aName0+"Euclid", vga3Dsig);
     }
 
     @Nested
@@ -460,23 +460,59 @@ public class ConnectionTests {
     class testCasting {
 
         @BeforeEach
-        void setUp() {
-            //Construct testable elements that get shared... like algebras, scales
-            //And a Connection
-            //and a couple of monads. One sparse. One not sparse.
+        void setUp() throws CladosException {
+            //alg2D = GBuilder.createAlgebraWithFoot(pFoot0, aName2, vga2Dsig);
+            //algSTA = GBuilder.createAlgebraWithFoot(pFoot0, aName1, stasig);
+            //algPGA = GBuilder.createAlgebraWithFoot(pFoot0, aName0, pgasig);
+            //algEuclid = GBuilder.createAlgebraWithFoot(pFoot0, aName0+"Euclid", vga3Dsig);
+            
+            tRF1 = new Connection<>(algEuclid, algPGA, REALF, tCard);
+            tRD1 = new Connection<>(algEuclid, algPGA, REALD, tCard);
+            tCF1 = new Connection<>(algEuclid, algPGA, COMPLEXF, tCard);
+            tCD1 = new Connection<>(algEuclid, algPGA, COMPLEXD, tCard);
+
+            tRF2 = new Connection<>(algEuclid, alg2D, REALF, tCard);
+            tRD2 = new Connection<>(algEuclid, alg2D, REALD, tCard);
+            tCF2 = new Connection<>(algEuclid, alg2D, COMPLEXF, tCard);
+            tCD2 = new Connection<>(algEuclid, alg2D, COMPLEXD, tCard);
+
+            RealF[] tRF = (RealF[]) FListBuilder.REALF.createONE(tCard, 3);            //new RealF[3];
+            RealD[] tRD = (RealD[]) FListBuilder.REALD.createONE(tCard, 3);            //new RealD[3];
+            ComplexF[] tCF = (ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 3);   //new ComplexF[3];
+            ComplexD[] tCD = (ComplexD[]) FListBuilder.COMPLEXD.createONE(tCard, 3);   //new ComplexD[3];
+
+            tMRF1 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(REALF, algEuclid.getBasis(), tCard), algEuclid, mName+"RF1");
+            tMRF1.<RealF>getWeights().setNumbersAtGrade((byte) 1, tRF);
+            tMRF2 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(REALF, algEuclid.getBasis(), tCard), algEuclid, mName+"RF2");
+            tMRF2.setCoeff((RealF[]) FListBuilder.REALF.createONE(tCard, 8));
+            
+            tMRD1 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(REALD, algEuclid.getBasis(), tCard), algEuclid, mName+"RD1");
+            tMRD1.<RealD>getWeights().setNumbersAtGrade((byte) 1, tRD);
+            tMRD2 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(REALD, algEuclid.getBasis(), tCard), algEuclid, mName+"RD2");
+            tMRD2.setCoeff((RealD[]) FListBuilder.REALD.createONE(tCard, 8));
+        
+            tMCF1 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(COMPLEXF, algEuclid.getBasis(), tCard), algEuclid, mName+"CF1");
+            tMCF1.<ComplexF>getWeights().setNumbersAtGrade((byte) 1, tCF);
+            tMCF2 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(COMPLEXF, algEuclid.getBasis(), tCard), algEuclid, mName+"CF2");
+            tMCF2.setCoeff((ComplexF[]) FListBuilder.COMPLEXF.createONE(tCard, 8));
+
+            tMCD1 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(COMPLEXD, algEuclid.getBasis(), tCard), algEuclid, mName+"CD1");
+            tMCD1.<ComplexD>getWeights().setNumbersAtGrade((byte) 1, tCD);
+            tMCD2 = GBuilder.createMonadWithAlgebra(GBuilder.createScale(COMPLEXD, algEuclid.getBasis(), tCard), algEuclid, mName+"CD2");
+            tMCD2.setCoeff((ComplexD[]) FListBuilder.COMPLEXD.createONE(tCard, 8));
         }
 
         @Test
         void testCastingSparseMonads() {
             //TODO Write the casting tests for sparse monads
-            //Cast a sparse monad 
+            //Cast a sparse monad. (These are the '1' monads)
             //Cast it back?
         }
 
         @Test
         void testCastingThickMonads() {
             //TODO Write the casting tests for thick monads
-            //Cast a regular monad
+            //Cast a regular monad. (These are the '2' monads)
             //Cast it back?
         }
     }
